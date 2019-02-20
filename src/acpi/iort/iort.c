@@ -555,12 +555,12 @@ static void iort_check_smmu(
 		node->pmu_interrupt_array_offset, node->pmu_interrupt_count, passed);
 	iort_id_mappings_check(fw, data, node_end, passed);
 
-	if (node->model > 3) {
+	if (node->model > 5) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"IORTSmmuInvalidModel",
 			"IORT SMMU Model is 0x%" PRIx32 " and was expecting "
-			"a model value 0 to 3.", node->model);
+			"a model value 0 to 5.", node->model);
 	}
 
 	fwts_acpi_reserved_bits_check(fw, "IORT", "SMMU Reserved Flags", node->flags, sizeof(node->flags), 2, 31, passed);

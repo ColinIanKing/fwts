@@ -130,7 +130,7 @@ iort              Number of ID mappings:    0x00000001
 iort              Reference to ID Array:    0x00000090
 iort              Base Address:             0xf01030c020908000
 iort              Span:                     0x0000000020000000
-iort              Model:                    0x00000004
+iort              Model:                    0x00000006
 iort              Flags:                    0x000000aa
 iort              Global Intr. Offset:      0x0000003c
 iort              Number of Context Intr.:  0x00000004
@@ -195,7 +195,7 @@ iort            Mapping 0 is outside the IORT ACPI table. Either the
 iort            offset is incorrect or the IORT table size or the node is
 iort            too small.
 iort            FAILED [HIGH] IORTSmmuInvalidModel: Test 1, IORT SMMU
-iort            Model is 0x4 and was expecting a model value 0 to 3.
+iort            Model is 0x6 and was expecting a model value 0 to 5.
 iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT SMMU
 iort            Reserved Flags Bits [31..2] must be zero, got 0x000000aa
 iort            instead

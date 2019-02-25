@@ -1436,6 +1436,39 @@ void fwts_acpi_reserved_zero_check(
 }
 
 /*
+ *  fwts_acpi_reserved_zero_array_check()
+ *  verify whether the reserved array is all zeroed
+ */
+void fwts_acpi_reserved_zero_array_check(
+	fwts_framework *fw,
+	const char *table,
+	const char *field,
+	uint8_t* data,
+	uint8_t length,
+	bool *passed)
+{
+	uint32_t value = 0;
+	char label[20];
+	uint8_t i;
+
+	strncpy(label + 4, "ReservedNonZero", sizeof(label) - 4);
+	strncpy(label, table, 4);	/* ACPI table name is 4 char long */
+
+	for (i = 0; i < length; i++)
+		value += data[i];
+
+	if (value != 0) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, label,
+			"%4.4s %s field must be all zero, got below instead",
+			table, field);
+
+		for (i = 0; i < length; i++)
+			fwts_log_info_verbatim(fw, "  %s [%2.2" PRId8 "] = 0x%2.2" PRIx8, field, i, data[i]);
+	}
+}
+
+/*
  *  fwts_acpi_reserved_bits_check()
  *  verify whether the reserved bits are zero
  */

@@ -57,13 +57,8 @@ static int slit_test1(fwts_framework *fw)
 	fwts_acpi_table_slit *slit = (fwts_acpi_table_slit *)table->data;
 
 	/* Size sanity check #1, got enough table to at least get matrix size */
-	if (table->length < sizeof(fwts_acpi_table_slit)) {
+	if (!fwts_acpi_table_length_check(fw, "SLIT", table->length, sizeof(fwts_acpi_table_slit))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SLITTooShort",
-			"SLIT table too short, must be at least %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_spmi), table->length);
 		goto done;
 	}
 

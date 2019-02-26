@@ -52,13 +52,8 @@ static int boot_test1(fwts_framework *fw)
 	bool passed = true;
 	fwts_acpi_table_boot *boot = (fwts_acpi_table_boot *)table->data;
 
-	if (table->length < sizeof(fwts_acpi_table_boot)) {
+	if (!fwts_acpi_table_length_check(fw, "BOOT", table->length, sizeof(fwts_acpi_table_boot))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"BOOTTooShort",
-			"BOOT table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_boot), table->length);
 		goto done;
 	}
 

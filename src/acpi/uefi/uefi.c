@@ -61,13 +61,8 @@ static int uefi_test1(fwts_framework *fw)
 						0x9d, 0x94, 0xdb, 0x65, 0xac, 0xc5, 0xc3, 0x32 };
 
 	/* Enough length for the uefi table? */
-	if (table->length < sizeof(fwts_acpi_table_uefi)) {
+	if (!fwts_acpi_table_length_check(fw, "UEFI", table->length, sizeof(fwts_acpi_table_uefi))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"UEFITooShort",
-			"UEFI table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_uefi), table->length);
 		goto done;
 	}
 

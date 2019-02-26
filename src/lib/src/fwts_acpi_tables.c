@@ -1547,6 +1547,29 @@ void fwts_acpi_reserved_type_check(
 }
 
 /*
+ *  fwts_acpi_table_length_check()
+ *  verify whether table length is sane
+ */
+bool fwts_acpi_table_length_check(
+	fwts_framework *fw,
+	const char *table,
+	uint32_t length,
+	uint32_t size)
+{
+	if (length < size) {
+		char label[30];
+		strncpy(label, table, 4);	/* ACPI name is 4 char long */
+		strncpy(label + 4, "TooShort", sizeof(label) - 4);
+		fwts_failed(fw, LOG_LEVEL_HIGH, label,
+			"%4.4s table too short, expecting %2.2" PRIu8
+			" bytes, instead got %2.2" PRIu8 " bytes",
+			table, size, length);
+		return false;
+	}
+	return true;
+}
+
+/*
  *  fwts_acpi_structure_length_check()
  *  verify whether sub structure length is sane
  */

@@ -55,13 +55,8 @@ static int waet_test1(fwts_framework *fw)
 	fwts_acpi_table_waet *waet = (fwts_acpi_table_waet *)table->data;
 
 	/* Enough length for the initial waet header? */
-	if (table->length < sizeof(fwts_acpi_table_waet)) {
+	if (!fwts_acpi_table_length_check(fw, "WAET", table->length, sizeof(fwts_acpi_table_waet))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"WAETTooShort",
-			"WAET table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_waet), table->length);
 		goto done;
 	}
 

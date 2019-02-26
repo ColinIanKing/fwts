@@ -55,13 +55,8 @@ static int spmi_test1(fwts_framework *fw)
 	bool passed = true;
 	fwts_acpi_table_spmi *spmi = (fwts_acpi_table_spmi *)table->data;
 
-	if (table->length < sizeof(fwts_acpi_table_spmi)) {
+	if (!fwts_acpi_table_length_check(fw, "SPMI", table->length, sizeof(fwts_acpi_table_spmi))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPMITooShort",
-			"SPMI table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_spmi), table->length);
 		goto done;
 	}
 

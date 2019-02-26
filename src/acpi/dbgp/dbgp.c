@@ -53,13 +53,8 @@ static int dbgp_test1(fwts_framework *fw)
 	char *interface_type;
 	fwts_acpi_table_dbgp *dbgp = (fwts_acpi_table_dbgp *)table->data;
 
-	if (table->length < sizeof(fwts_acpi_table_dbgp)) {
+	if (!fwts_acpi_table_length_check(fw, "DBGP", table->length, sizeof(fwts_acpi_table_dbgp))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"DBGPTooShort",
-			"DBGP table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_dbgp), table->length);
 		goto done;
 	}
 

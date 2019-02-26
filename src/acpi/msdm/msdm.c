@@ -55,13 +55,8 @@ static int msdm_test1(fwts_framework *fw)
 	bool passed = true;
 
 	/* Size sanity check #1, got enough table to get initial header */
-	if (table->length < sizeof(fwts_acpi_table_msdm)) {
+	if (!fwts_acpi_table_length_check(fw, "MSDM", table->length, sizeof(fwts_acpi_table_msdm))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"MSDMTooShort",
-			"MSDM table too short, must be at least %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_msdm), table->length);
 		goto done;
 	}
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, msdm->reserved);

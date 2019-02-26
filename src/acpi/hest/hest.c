@@ -801,14 +801,8 @@ static int hest_test1(fwts_framework *fw)
 		 hest_type_02_count = 0,
 		 hest_type_11_count = 0;
 
-
-	if (table->length < sizeof(fwts_acpi_table_hest)) {
+	if (!fwts_acpi_table_length_check(fw, "HEST", table->length, sizeof(fwts_acpi_table_hest))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"HESTTooShort",
-			"HEST table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_hest), table->length);
 		goto done;
 	}
 

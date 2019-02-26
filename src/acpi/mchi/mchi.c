@@ -54,13 +54,8 @@ static int mchi_test1(fwts_framework *fw)
 	bool passed = true;
 	fwts_acpi_table_mchi *mchi = (fwts_acpi_table_mchi *)table->data;
 
-	if (table->length < sizeof(fwts_acpi_table_mchi)) {
+	if (!fwts_acpi_table_length_check(fw, "MCHI", table->length, sizeof(fwts_acpi_table_mchi))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"MCHITooShort",
-			"MCHI table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_mchi), table->length);
 		goto done;
 	}
 

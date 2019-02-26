@@ -80,14 +80,8 @@ static int fpdt_test1(fwts_framework *fw)
 	const size_t fpdt_hdr_len = sizeof(fwts_acpi_table_fpdt_header);
 
 	/* Size sanity, got enough table to get initial header */
-	if (table->length < sizeof(fwts_acpi_table_header)) {
+	if (!fwts_acpi_table_length_check(fw, "FPDT", table->length, sizeof(fwts_acpi_table_header))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"FPDTTooShort",
-			"FPDT table too short, must be at least %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_header),
-			table->length);
 		goto done;
 	}
 

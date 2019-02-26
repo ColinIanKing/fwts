@@ -148,13 +148,8 @@ static int dbg2_test1(fwts_framework *fw)
 	size_t total_size;
 
 	/* Enough length for the initial dbg2 header? */
-	if (table->length < sizeof(fwts_acpi_table_dbg2)) {
+	if (!fwts_acpi_table_length_check(fw, "DBG2", table->length, sizeof(fwts_acpi_table_dbg2))) {
 		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"DBG2TooShort",
-			"DBG2 table too short, expecting %zu bytes, "
-			"instead got %zu bytes",
-			sizeof(fwts_acpi_table_dbg2), table->length);
 		goto done;
 	}
 

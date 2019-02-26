@@ -106,7 +106,7 @@ static int sdev_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (!fwts_acpi_subtable_length_check(fw, "SDEV", entry->type, entry->length, type_length)) {
+		if (!fwts_acpi_structure_length_check(fw, "SDEV", entry->type, entry->length, type_length)) {
 			passed = false;
 			break;
 		}

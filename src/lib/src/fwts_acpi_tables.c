@@ -1547,24 +1547,24 @@ void fwts_acpi_reserved_type_check(
 }
 
 /*
- *  fwts_acpi_subtable_length_check()
- *  verify whether sub-table length is sane
+ *  fwts_acpi_structure_length_check()
+ *  verify whether sub structure length is sane
  */
-bool fwts_acpi_subtable_length_check(
+bool fwts_acpi_structure_length_check(
 	fwts_framework *fw,
 	const char *table,
-	uint8_t subtable_type,
-	uint32_t subtable_length,
+	uint8_t type,
+	uint32_t length,
 	uint32_t size)
 {
-	if (subtable_length != size) {
+	if (length != size) {
 		char label[30];
 		strncpy(label, table, 4);	/* ACPI name is 4 char long */
-		strncpy(label + 4, "BadSubTableLength", sizeof(label) - 4);
+		strncpy(label + 4, "BadStructureLength", sizeof(label) - 4);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, label,
-			"%4.4s subtable Type 0x%2.2" PRIx8 " should have "
+			"%4.4s structure Type 0x%2.2" PRIx8 " should have "
 			"length 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8,
-			table, subtable_type, subtable_length, size);
+			table, type, length, size);
 		return false;
 	}
 	return true;

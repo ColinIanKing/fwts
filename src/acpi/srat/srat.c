@@ -62,12 +62,8 @@ static void srat_check_local_apic_sapic_affinity(
 		goto done;
 	}
 
-	if (affinity->length != sizeof(fwts_acpi_table_local_apic_sapic_affinity)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATLocalApicSapicAffinityLength",
-			"SRAT Local APIC/SPAIC Affinity Length incorrect, got "
-			"%" PRIu8 ", expecting %zu",
-			affinity->length, sizeof(fwts_acpi_table_local_apic_sapic_affinity));
+	if (!fwts_acpi_structure_length_check(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_local_apic_sapic_affinity))) {
 		*passed = false;
 		goto done;
 	}
@@ -120,12 +116,8 @@ static void srat_check_memory_affinity(
 		goto done;
 	}
 
-	if (affinity->length != sizeof(fwts_acpi_table_memory_affinity)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATMemoryAffinityLength",
-			"SRAT Memory Affinity Length incorrect, got "
-			"%" PRIu8 ", expecting %zu",
-			affinity->length, sizeof(fwts_acpi_table_memory_affinity));
+	if (!fwts_acpi_structure_length_check(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_memory_affinity))) {
 		*passed = false;
 		goto done;
 	}
@@ -170,12 +162,8 @@ static void srat_check_local_x2apic_affinity(
 		goto done;
 	}
 
-	if (affinity->length != sizeof(fwts_acpi_table_local_x2apic_affinity)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATLocalx2apicAffinityLength",
-			"SRAT Local x2APIC Affinity Length incorrect, got "
-			"%" PRIu8 ", expecting %zu",
-			affinity->length, sizeof(fwts_acpi_table_local_x2apic_affinity));
+	if (!fwts_acpi_structure_length_check(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_local_x2apic_affinity))) {
 		*passed = false;
 		goto done;
 	}
@@ -232,12 +220,8 @@ static void srat_check_gicc_affinity(
 		goto done;
 	}
 
-	if (affinity->length != sizeof(fwts_acpi_table_gicc_affinity)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATGICCAffinityLength",
-			"SRAT GICC Affinity Length incorrect, got "
-			"%" PRIu8 ", expecting %zu",
-			affinity->length, sizeof(fwts_acpi_table_gicc_affinity));
+	if (!fwts_acpi_structure_length_check(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_gicc_affinity))) {
 		*passed = false;
 		goto done;
 	}
@@ -282,12 +266,8 @@ static void srat_check_its_affinity(
 		goto done;
 	}
 
-	if (affinity->length != sizeof(fwts_acpi_table_its_affinity)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATITSAffinityLength",
-			"SRAT ITS Affinity Length incorrect, got "
-			"%" PRIu8 ", expecting %zu",
-			affinity->length, sizeof(fwts_acpi_table_its_affinity));
+	if (!fwts_acpi_structure_length_check(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_its_affinity))) {
 		*passed = false;
 		goto done;
 	}
@@ -329,12 +309,8 @@ static void srat_check_initiator_affinity(
 		goto done;
 	}
 
-	if (affinity->length != sizeof(fwts_acpi_table_initiator_affinity)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATInitiatorAffinityLength",
-			"SRAT Initiator Affinity Length incorrect, got "
-			"%" PRIu8 ", expecting %zu",
-			affinity->length, sizeof(fwts_acpi_table_initiator_affinity));
+	if (!fwts_acpi_structure_length_check(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_initiator_affinity))) {
 		*passed = false;
 		goto done;
 	}

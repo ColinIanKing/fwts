@@ -17,8 +17,6 @@
  *
  */
 
-#define _DECLARE_GLOBALS
-
 #include <unistd.h>
 #include <stdbool.h>
 #include <stdint.h>

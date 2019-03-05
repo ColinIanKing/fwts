@@ -37,6 +37,12 @@ acpidump        [048h 0072   4]       ACPI Table Address   9 : BF6D981A
 acpidump        [04Ch 0076   4]       ACPI Table Address  10 : BF6D8E10
 acpidump        [050h 0080   4]       ACPI Table Address  11 : BF6D8D6A
 acpidump        [054h 0084   4]       ACPI Table Address  12 : BF6D8884
+acpidump            0000: 52 53 44 54 58 00 00 00 01 43 4C 45 4E 4F 56 4F  // RSDTX....CLENOVO
+acpidump            0010: 54 50 2D 36 38 20 20 20 00 00 04 06 20 4C 54 50  // TP-68   .... LTP
+acpidump            0020: 00 00 00 00 5E FB 6D BF C6 FC 6D BF 2E FD 6D BF  // ....^.m...m...m.
+acpidump            0030: 66 FD 6D BF D8 FF 6D BF D4 FD 6D BF FA FD 6D BF  // f.m...m...m...m.
+acpidump            0040: 70 FF 6D BF BD 98 6D BF 1A 98 6D BF 10 8E 6D BF  // p.m...m...m...m.
+acpidump            0050: 6A 8D 6D BF 84 88 6D BF                          // j.m...m.
 acpidump        
 acpidump        DSDT @ bf6d9b6a (24564 bytes) (loaded from file)
 acpidump        ----
@@ -66,6 +72,10 @@ acpidump        [020h 0032   1]                      Version : 01
 acpidump        [021h 0033   3]                     Reserved : 000000
 acpidump        [024h 0036   4]    OspmFlags (decoded below) : 00000000
 acpidump                       64-bit Wake Env Required (V2) : 0
+acpidump            0000: 46 41 43 53 40 00 00 00 00 00 00 00 00 00 00 00  // FACS@...........
+acpidump            0010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
+acpidump            0020: 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
+acpidump            0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
 acpidump        
 acpidump        FACP @ bf6dfb5e (116 bytes) (loaded from file)
 acpidump        ----
@@ -144,6 +154,14 @@ acpidump                         Use APIC Cluster Model (V4) : 0
 acpidump             Use APIC Physical Destination Mode (V4) : 0
 acpidump                               Hardware Reduced (V5) : 0
 acpidump                              Low Power S0 Idle (V5) : 0
+acpidump            0000: 46 41 43 50 74 00 00 00 01 5C 54 4F 53 43 50 4C  // FACPt....\TOSCPL
+acpidump            0010: 43 52 45 53 54 4C 4E 45 00 00 04 06 4C 4F 48 52  // CRESTLNE....LOHR
+acpidump            0020: 5A 00 00 00 C0 2F 6E BF 6A 9B 6D BF 00 00 09 00  // Z..../n.j.m.....
+acpidump            0030: B2 00 00 00 F0 F1 00 80 00 10 00 00 00 00 00 00  // ................
+acpidump            0040: 04 10 00 00 00 00 00 00 20 10 00 00 08 10 00 00  // ........ .......
+acpidump            0050: 28 10 00 00 00 00 00 00 04 02 01 04 08 00 00 85  // (...............
+acpidump            0060: 01 00 39 00 00 00 00 00 01 03 0D 00 32 00 00 00  // ..9.........2...
+acpidump            0070: A5 80 00 00                                      // ....
 acpidump        
 acpidump        APIC @ bf6dfcc6 (104 bytes) (loaded from file)
 acpidump        ----
@@ -209,6 +227,13 @@ acpidump        [065h 0101   2]        Flags (decoded below) : 0005
 acpidump                                            Polarity : 1
 acpidump                                        Trigger Mode : 1
 acpidump        [067h 0103   1]         Interrupt Input LINT : 01
+acpidump            0000: 41 50 49 43 68 00 00 00 01 CC 49 4E 54 45 4C 20  // APICh.....INTEL 
+acpidump            0010: 43 52 45 53 54 4C 4E 45 00 00 04 06 4C 4F 48 52  // CRESTLNE....LOHR
+acpidump            0020: 5A 00 00 00 00 00 E0 FE 01 00 00 00 00 08 00 00  // Z...............
+acpidump            0030: 01 00 00 00 00 08 01 01 01 00 00 00 01 0C 01 00  // ................
+acpidump            0040: 00 00 C0 FE 00 00 00 00 02 0A 00 00 02 00 00 00  // ................
+acpidump            0050: 00 00 02 0A 00 09 09 00 00 00 0D 00 04 06 00 05  // ................
+acpidump            0060: 00 01 04 06 01 05 00 01                          // ........
 acpidump        
 acpidump        HPET @ bf6dfd2e (56 bytes) (loaded from file)
 acpidump        ----
@@ -233,6 +258,10 @@ acpidump        [035h 0053   2]          Minimum Clock Ticks : 0080
 acpidump        [037h 0055   1]        Flags (decoded below) : 00
 acpidump                                     4K Page Protect : 0
 acpidump                                    64K Page Protect : 0
+acpidump            0000: 48 50 45 54 38 00 00 00 01 0A 49 4E 54 45 4C 20  // HPET8.....INTEL 
+acpidump            0010: 43 52 45 53 54 4C 4E 45 00 00 04 06 4C 4F 48 52  // CRESTLNE....LOHR
+acpidump            0020: 5A 00 00 00 01 A2 86 80 00 00 00 00 00 00 D0 FE  // Z...............
+acpidump            0030: 00 00 00 00 00 80 00 00                          // ........
 acpidump        
 acpidump        MCFG @ bf6dfd66 (60 bytes) (loaded from file)
 acpidump        ----
@@ -251,6 +280,10 @@ acpidump        [034h 0052   2]         Segment Group Number : 0000
 acpidump        [036h 0054   1]             Start Bus Number : 00
 acpidump        [037h 0055   1]               End Bus Number : FF
 acpidump        [038h 0056   4]                     Reserved : 00000000
+acpidump            0000: 4D 43 46 47 3C 00 00 00 01 32 49 4E 54 45 4C 20  // MCFG<....2INTEL 
+acpidump            0010: 43 52 45 53 54 4C 4E 45 00 00 04 06 4C 4F 48 52  // CRESTLNE....LOHR
+acpidump            0020: 5A 00 00 00 00 00 00 00 00 00 00 00 00 00 00 E0  // Z...............
+acpidump            0030: 00 00 00 00 00 00 00 FF 00 00 00 00              // ............
 acpidump        
 acpidump        BOOT @ bf6dffd8 (40 bytes) (loaded from file)
 acpidump        ----
@@ -265,6 +298,9 @@ acpidump        [01Ch 0028   4]              Asl Compiler ID : " LTP"
 acpidump        [020h 0032   4]        Asl Compiler Revision : 00000001
 acpidump        [024h 0036   1]          Boot Register Index : 36
 acpidump        [025h 0037   3]                     Reserved : 000000
+acpidump            0000: 42 4F 4F 54 28 00 00 00 01 A5 50 54 4C 54 44 20  // BOOT(.....PTLTD 
+acpidump            0010: 24 53 42 46 54 42 4C 24 00 00 04 06 20 4C 54 50  // $SBFTBL$.... LTP
+acpidump            0020: 01 00 00 00 36 00 00 00                          // ....6...
 acpidump        
 acpidump        TMOR @ bf6dfdd4 (38 bytes) (loaded from file)
 acpidump        ----
@@ -316,6 +352,30 @@ acpidump            5C 9B A0 86 41 46 66 9D E2 F2 E7 36 9C 33 91 27 \
 acpidump            E7 8D 5C A1 D8 F9 A4 61 8A 1C 04 07 E3 2A 1E 14 \
 acpidump            F1 BD 7F 4C 09 FF 19 11 A9 D4 74 CA 11 9E DC 54 \
 acpidump            39 BF 
+acpidump            0000: 53 4C 49 43 76 01 00 00 01 99 4C 45 4E 4F 56 4F  // SLICv.....LENOVO
+acpidump            0010: 54 50 2D 36 38 20 20 20 00 00 04 06 54 42 44 20  // TP-68   ....TBD 
+acpidump            0020: 01 00 00 00 00 00 00 00 9C 00 00 00 06 02 00 00  // ................
+acpidump            0030: 00 24 00 00 52 53 41 31 00 04 00 00 01 00 01 00  // .$..RSA1........
+acpidump            0040: 69 16 4A 9F B1 4B 3A FB 80 20 AA AF C4 F9 3E C1  // i.J..K:.. ....>.
+acpidump            0050: 80 49 EE 6A 65 26 72 1E CD BF 5F 2F 96 D6 C0 0A  // .I.je&r..._/....
+acpidump            0060: 92 F5 06 B5 00 B2 3B 29 02 E2 4C 8D C2 F2 BC 41  // ......;)..L....A
+acpidump            0070: 77 9C 70 F0 F3 1B 09 D2 63 5A DC A8 83 F8 5E C9  // w.p.....cZ....^.
+acpidump            0080: 15 95 F9 FA FD DC 05 B7 4D 67 7F 2D B3 84 33 20  // ........Mg.-..3 
+acpidump            0090: E1 D1 79 2A A7 6A 77 D1 B6 20 2A 76 42 C5 D5 E9  // ..y*.jw.. *vB...
+acpidump            00A0: B6 43 40 55 44 C3 C9 37 99 5F 41 97 70 F3 D1 F6  // .C@UD..7._A.p...
+acpidump            00B0: 07 EC 7B 1A 29 A1 C1 F1 91 FD 48 86 6E 3E CE CB  // ..{.).....H.n>..
+acpidump            00C0: 01 00 00 00 B6 00 00 00 00 00 02 00 4C 45 4E 4F  // ............LENO
+acpidump            00D0: 56 4F 54 50 2D 36 38 20 20 20 57 49 4E 44 4F 57  // VOTP-68   WINDOW
+acpidump            00E0: 53 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // S ..............
+acpidump            00F0: 00 00 00 00 00 00 8A 6E 2E C9 36 E6 7F 10 8A EA  // .......n..6.....
+acpidump            0100: 14 AD D2 93 B7 6D 9B 73 AD 83 36 B8 6C A7 A7 EE  // .....m.s..6.l...
+acpidump            0110: 37 47 16 FE F3 FC CD C7 89 84 06 16 91 0B 1E 81  // 7G..............
+acpidump            0120: 11 42 B1 35 52 57 F6 6B BB 5F A5 81 E2 FF 89 8A  // .B.5RW.k._......
+acpidump            0130: 95 C3 4D FC E9 56 4F 4C 34 CC 99 5E 62 E1 90 8A  // ..M..VOL4..^b...
+acpidump            0140: 54 BE 4A 00 5C 9B A0 86 41 46 66 9D E2 F2 E7 36  // T.J.\...AFf....6
+acpidump            0150: 9C 33 91 27 E7 8D 5C A1 D8 F9 A4 61 8A 1C 04 07  // .3.'..\....a....
+acpidump            0160: E3 2A 1E 14 F1 BD 7F 4C 09 FF 19 11 A9 D4 74 CA  // .*.....L......t.
+acpidump            0170: 11 9E DC 54 39 BF                                // ...T9.
 acpidump        
 acpidump        APIC @ bf6dff70 (104 bytes) (loaded from file)
 acpidump        ----
@@ -381,6 +441,13 @@ acpidump        [062h 0098   4]                    Interrupt : 00000009
 acpidump        [066h 0102   2]        Flags (decoded below) : 000D
 acpidump                                            Polarity : 1
 acpidump                                        Trigger Mode : 3
+acpidump            0000: 41 50 49 43 68 00 00 00 01 13 50 54 4C 54 44 20  // APICh.....PTLTD 
+acpidump            0010: 09 20 41 50 49 43 20 20 00 00 04 06 20 4C 54 50  // . APIC  .... LTP
+acpidump            0020: 00 00 00 00 00 00 E0 FE 01 00 00 00 00 08 00 00  // ................
+acpidump            0030: 01 00 00 00 00 08 01 01 01 00 00 00 01 0C 02 00  // ................
+acpidump            0040: 00 00 C0 FE 00 00 00 00 04 06 00 05 00 01 04 06  // ................
+acpidump            0050: 01 05 00 01 02 0A 00 00 02 00 00 00 05 00 02 0A  // ................
+acpidump            0060: 00 09 09 00 00 00 0D 00                          // ........
 acpidump        
 acpidump        SSDT @ bf6d98bd (685 bytes) (loaded from file)
 acpidump        ----
@@ -472,6 +539,16 @@ acpidump        [074h 0116   8]       ACPI Table Address  10 : 00000000BF6D981A
 acpidump        [07Ch 0124   8]       ACPI Table Address  11 : 00000000BF6D8E10
 acpidump        [084h 0132   8]       ACPI Table Address  12 : 00000000BF6D8D6A
 acpidump        [08Ch 0140   8]       ACPI Table Address  13 : 00000000BF6D8884
+acpidump            0000: 58 53 44 54 94 00 00 00 01 C2 4C 45 4E 4F 56 4F  // XSDT......LENOVO
+acpidump            0010: 54 50 2D 36 38 20 20 20 00 00 04 06 20 4C 54 50  // TP-68   .... LTP
+acpidump            0020: 00 00 00 00 D2 FB 6D BF 00 00 00 00 C6 FC 6D BF  // ......m.......m.
+acpidump            0030: 00 00 00 00 2E FD 6D BF 00 00 00 00 66 FD 6D BF  // ......m.....f.m.
+acpidump            0040: 00 00 00 00 A2 FD 6D BF 00 00 00 00 D4 FD 6D BF  // ......m.......m.
+acpidump            0050: 00 00 00 00 FA FD 6D BF 00 00 00 00 70 FF 6D BF  // ......m.....p.m.
+acpidump            0060: 00 00 00 00 D8 FF 6D BF 00 00 00 00 BD 98 6D BF  // ......m.......m.
+acpidump            0070: 00 00 00 00 1A 98 6D BF 00 00 00 00 10 8E 6D BF  // ......m.......m.
+acpidump            0080: 00 00 00 00 6A 8D 6D BF 00 00 00 00 84 88 6D BF  // ....j.m.......m.
+acpidump            0090: 00 00 00 00                                      // ....
 acpidump        
 acpidump        FACP @ bf6dfbd2 (244 bytes) (loaded from file)
 acpidump        ----
@@ -611,6 +688,22 @@ acpidump        [0E9h 0233   1]                    Bit Width : 00
 acpidump        [0EAh 0234   1]                   Bit Offset : 00
 acpidump        [0EBh 0235   1]         Encoded Access Width : 00 [Undefined/Legacy]
 acpidump        [0ECh 0236   8]                      Address : 0000000000000000
+acpidump            0000: 46 41 43 50 F4 00 00 00 03 52 54 4F 53 43 50 4C  // FACP.....RTOSCPL
+acpidump            0010: 43 52 45 53 54 4C 4E 45 00 00 04 06 41 4C 41 4E  // CRESTLNE....ALAN
+acpidump            0020: 01 00 00 00 C0 2F 6E BF 6A 9B 6D BF 00 02 09 00  // ...../n.j.m.....
+acpidump            0030: B2 00 00 00 F0 F1 00 80 00 10 00 00 00 00 00 00  // ................
+acpidump            0040: 04 10 00 00 00 00 00 00 20 10 00 00 08 10 00 00  // ........ .......
+acpidump            0050: 28 10 00 00 00 00 00 00 04 02 01 04 08 00 00 85  // (...............
+acpidump            0060: 01 00 23 00 00 00 00 00 01 03 0D 00 32 00 00 00  // ..#.........2...
+acpidump            0070: A5 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
+acpidump            0080: 00 00 00 00 C0 2F 6E BF 00 00 00 00 6A 9B 6D BF  // ...../n.....j.m.
+acpidump            0090: 00 00 00 00 01 20 00 00 00 10 00 00 00 00 00 00  // ..... ..........
+acpidump            00A0: 00 00 00 00 00 00 00 00 00 00 00 00 01 10 00 00  // ................
+acpidump            00B0: 04 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
+acpidump            00C0: 00 00 00 00 01 08 00 00 20 10 00 00 00 00 00 00  // ........ .......
+acpidump            00D0: 01 20 00 00 08 10 00 00 00 00 00 00 01 40 00 00  // . ...........@..
+acpidump            00E0: 28 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // (...............
+acpidump            00F0: 00 00 00 00                                      // ....
 acpidump        
 acpidump        TCPA @ bf6dfda2 (50 bytes) (loaded from file)
 acpidump        ----
@@ -626,5 +719,9 @@ acpidump        [020h 0032   4]        Asl Compiler Revision : 0000005A
 acpidump        [024h 0036   2]               Platform Class : 0000
 acpidump        [026h 0038   4]         Min Event Log Length : 00010000
 acpidump        [02Ah 0042   8]            Event Log Address : 0000000000000000
+acpidump            0000: 54 43 50 41 32 00 00 00 01 8F 49 6E 74 65 6C 20  // TCPA2.....Intel 
+acpidump            0010: 43 52 45 53 54 4C 4E 45 00 00 04 06 4C 4F 48 52  // CRESTLNE....LOHR
+acpidump            0020: 5A 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  // Z...............
+acpidump            0030: 00 00                                            // ..
 acpidump        
 acpidump        

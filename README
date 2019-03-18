@@ -25,6 +25,7 @@ RHEL Distro ppc64el
 	autoreconf -ivf
 	./configure
 	make
+	sudo make install
 
 To get help:
 

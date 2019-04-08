@@ -35,27 +35,17 @@
  */
 static void init_asl_core(void)
 {
-	int i;
-
 	AcpiOsInitialize();
 	ACPI_DEBUG_INITIALIZE();
 	AcpiGbl_ExternalFileList = NULL;
 	AcpiDbgLevel = 0;
 	PrInitializePreprocessor();
+
+	/* From AslInitialize */
 	AcpiGbl_DmOpt_Verbose = FALSE;
-	AcpiGbl_IntegerBitWidth = 64;
-	AcpiGbl_IntegerNybbleWidth = 16;
-	AcpiGbl_IntegerByteWidth = 8;
-
-	for (i = 0; i < ASL_NUM_FILES; i++) {
-		AslGbl_Files[i].Handle = NULL;
-		AslGbl_Files[i].Filename = NULL;
-	}
-
-	AslGbl_Files[ASL_FILE_STDOUT].Handle   = stdout;
-	AslGbl_Files[ASL_FILE_STDOUT].Filename = "STDOUT";
-	AslGbl_Files[ASL_FILE_STDERR].Handle   = stdout;
-	AslGbl_Files[ASL_FILE_STDERR].Filename = "STDOUT";
+	AcpiGbl_IntegerBitWidth = 32;
+	AcpiGbl_IntegerNybbleWidth = 8;
+	AcpiGbl_IntegerByteWidth = 4;
 
 	AslGbl_LineBufferSize = 1024;
 	AslGbl_CurrentLineBuffer = NULL;
@@ -99,6 +89,7 @@ int fwts_iasl_disassemble_aml(
 		AslGbl_UseDefaultAmlFilename = FALSE;
 		AcpiGbl_CstyleDisassembly = FALSE;
 		AcpiGbl_DmOpt_Verbose = FALSE;
+		AslGbl_ParserErrorDetected = FALSE;
 		UtConvertBackslashes (AslGbl_OutputFilenamePrefix);
 
 		/* Do we need to include external tables in? */
@@ -135,6 +126,7 @@ int fwts_iasl_disassemble_aml(
 			(void)fclose(fpout);
 			_exit(1);
 		}
+		AdInitialize();
 
 		/* ...and do the ACPICA disassambly... */
 		AslDoOneFile((char *)tables[which]);
@@ -231,14 +223,28 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 		(void)close(stderr_fds[0]);
 
 		/* Setup ACPICA compiler globals */
+		AslGbl_WarningLevel = 0;
+		AslGbl_NoErrors = FALSE;
 		AcpiGbl_DisasmFlag = FALSE;
+		AslGbl_DisplayRemarks = TRUE;
+		AslGbl_DisplayWarnings = TRUE;
+		AslGbl_DisplayOptimizations = TRUE;
+		/* AslGbl_CompileTimesFlag = TRUE; */
 		AslGbl_DoCompile = TRUE;
 		AslGbl_PreprocessFlag = TRUE;
 		AslGbl_UseDefaultAmlFilename = FALSE;
 		AslGbl_OutputFilenamePrefix = (char*)source;
-		UtConvertBackslashes (AslGbl_OutputFilenamePrefix);
+		UtConvertBackslashes(AslGbl_OutputFilenamePrefix);
 
-		(void)AslDoOneFile((char *)source);
+		AdInitialize();
+		status = AslDoOneFile((char *)source);
+
+		AslCheckExpectedExceptions();
+		UtFreeLineBuffers();
+		AslParserCleanup();
+		AcpiDmClearExternalFileList();
+		AcpiTerminate();
+		CmCleanupAndExit();
 
 		/*
 		 * We need to flush buffered I/O on IASL stdout
@@ -246,7 +252,6 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 		 */
 		(void)fflush(stdout);
 		(void)fflush(stderr);
-
 		_exit(0);
 		break;
 	default:
@@ -261,6 +266,7 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 			if (fwts_iasl_read_output(stderr_fds[0], stderr_output, &stderr_len, &stderr_eof) < 0)
 				break;
 		}
+
 		(void)waitpid(pid, &status, WUNTRACED | WCONTINUED);
 		(void)close(stdout_fds[0]);
 		(void)close(stderr_fds[0]);

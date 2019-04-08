@@ -488,9 +488,9 @@ static int syntaxcheck_single_table(
 	fwts_log_info(fw, "Checking ACPI table %s (#%d)", info->name, n);
 	fwts_log_nl(fw);
 
-	if (iasl_stdout) {
+	if (iasl_stderr) {
 		/* Scan error text from assembly */
-		fwts_list_foreach(item, iasl_stdout) {
+		fwts_list_foreach(item, iasl_stderr) {
 			int num;
 			char ch;
 			char *line = fwts_text_list_text(item);

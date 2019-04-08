@@ -29,6 +29,19 @@
 #include "acdisasm.h"
 #include "acapps.h"
 
+static void AslInitialize(void)
+{
+	AcpiGbl_DmOpt_Verbose = FALSE;
+
+	/* Default integer width is 32 bits */
+
+	AcpiGbl_IntegerBitWidth = 32;
+	AcpiGbl_IntegerNybbleWidth = 8;
+	AcpiGbl_IntegerByteWidth = 4;
+
+	AdInitialize();
+}
+
 /*
  *  init_asl_core()
  *	initialize iasl
@@ -40,12 +53,7 @@ static void init_asl_core(void)
 	AcpiGbl_ExternalFileList = NULL;
 	AcpiDbgLevel = 0;
 	PrInitializePreprocessor();
-
-	/* From AslInitialize */
-	AcpiGbl_DmOpt_Verbose = FALSE;
-	AcpiGbl_IntegerBitWidth = 32;
-	AcpiGbl_IntegerNybbleWidth = 8;
-	AcpiGbl_IntegerByteWidth = 4;
+	AslInitialize();
 
 	AslGbl_LineBufferSize = 1024;
 	AslGbl_CurrentLineBuffer = NULL;
@@ -153,7 +161,7 @@ int fwts_iasl_disassemble_aml(
  */
 static int fwts_iasl_read_output(const int fd, char **data, size_t *len, bool *eof)
 {
-	char	buffer[8192];
+	char	buffer[4096];
 	ssize_t	n;
 
 	if (*eof)
@@ -190,6 +198,9 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 	size_t	stdout_len = 0, stderr_len = 0;
 	pid_t	pid;
 	bool	stdout_eof = false, stderr_eof = false;
+
+	*stdout_output = NULL;
+	*stderr_output = NULL;
 
 	fflush(stdout);
 	fflush(stderr);
@@ -233,13 +244,16 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 		AslGbl_DoCompile = TRUE;
 		AslGbl_PreprocessFlag = TRUE;
 		AslGbl_UseDefaultAmlFilename = FALSE;
-		AslGbl_OutputFilenamePrefix = (char*)source;
-		UtConvertBackslashes(AslGbl_OutputFilenamePrefix);
 
 		AdInitialize();
-		status = AslDoOneFile((char *)source);
 
-		AslCheckExpectedExceptions();
+		AslGbl_OutputFilenamePrefix = (char*)source;
+		UtConvertBackslashes(AslGbl_OutputFilenamePrefix);
+		status = AslDoOneFile((char *)source);
+		if (!ACPI_FAILURE(status)) {
+			CmDoAslMiddleAndBackEnd();
+			AslCheckExpectedExceptions();
+		}
 		UtFreeLineBuffers();
 		AslParserCleanup();
 		AcpiDmClearExternalFileList();
@@ -261,10 +275,8 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 		(void)close(stderr_fds[1]);
 
 		while (!stdout_eof && !stderr_eof) {
-			if (fwts_iasl_read_output(stdout_fds[0], stdout_output, &stdout_len, &stdout_eof) < 0)
-				break;
-			if (fwts_iasl_read_output(stderr_fds[0], stderr_output, &stderr_len, &stderr_eof) < 0)
-				break;
+			fwts_iasl_read_output(stdout_fds[0], stdout_output, &stdout_len, &stdout_eof);
+			fwts_iasl_read_output(stderr_fds[0], stderr_output, &stderr_len, &stderr_eof);
 		}
 
 		(void)waitpid(pid, &status, WUNTRACED | WCONTINUED);

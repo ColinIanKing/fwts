@@ -5791,42 +5791,6 @@ static void method_test_BCL_return(
 		failed = true;
 	}
 
-	matching_levels = false;
-	for (i = 2; i < obj->Package.Count; i++) {
-		if (obj->Package.Elements[0].Integer.Value ==
-		    obj->Package.Elements[i].Integer.Value) {
-			matching_levels = true;
-			break;
-		}
-	}
-
-	if (!matching_levels) {
-		failed = true;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_BCLFullNotInList",
-			"brightness level on full power (%" PRIu64
-			") is not in brightness levels.",
-			obj->Package.Elements[0].Integer.Value);
-	}
-
-	matching_levels = false;
-	for (i = 2; i < obj->Package.Count; i++) {
-		if (obj->Package.Elements[1].Integer.Value ==
-		    obj->Package.Elements[i].Integer.Value) {
-			matching_levels = true;
-			break;
-		}
-	}
-
-	if (!matching_levels) {
-		failed = true;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_BCLBatteryNotInList",
-			"brightness level on battery (%" PRIu64
-			") is not in brightness levels.",
-			obj->Package.Elements[1].Integer.Value);
-	}
-
 	fwts_log_info(fw, "Brightness levels for %s:" ,name);
 	fwts_log_info_verbatim(fw, "  Level on full power   : %" PRIu64,
 		(uint64_t)obj->Package.Elements[0].Integer.Value);
@@ -5845,6 +5809,44 @@ static void method_test_BCL_return(
 	if (str) {
 		fwts_log_info_verbatim(fw, "  Brightness Levels     : %s", str);
 		free(str);
+	}
+
+	if (!access("/sys/class/backlight/acpi_video0", R_OK)) {
+		matching_levels = false;
+		for (i = 2; i < obj->Package.Count; i++) {
+			if (obj->Package.Elements[0].Integer.Value ==
+			    obj->Package.Elements[i].Integer.Value) {
+				matching_levels = true;
+				break;
+			}
+		}
+
+		if (!matching_levels) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"Method_BCLFullNotInList",
+				"brightness level on full power (%" PRIu64
+				") is not in brightness levels.",
+				obj->Package.Elements[0].Integer.Value);
+		}
+
+		matching_levels = false;
+		for (i = 2; i < obj->Package.Count; i++) {
+			if (obj->Package.Elements[1].Integer.Value ==
+			    obj->Package.Elements[i].Integer.Value) {
+				matching_levels = true;
+				break;
+			}
+		}
+
+		if (!matching_levels) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"Method_BCLBatteryNotInList",
+				"brightness level on battery (%" PRIu64
+				") is not in brightness levels.",
+				obj->Package.Elements[1].Integer.Value);
+		}
 	}
 
 	if (failed)

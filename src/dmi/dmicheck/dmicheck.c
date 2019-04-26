@@ -83,6 +83,13 @@ typedef struct {
 	uint8_t	offset;
 } fwts_dmi_used_by_kernel;
 
+typedef struct {
+	uint8_t type;
+	uint16_t max_version;
+	uint16_t min_version;
+	uint8_t length;
+} fwts_dmi_type_length;
+
 static bool smbios_found = false;
 static bool smbios30_found = false;
 
@@ -259,6 +266,25 @@ static const fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
 	{ 41, FIELD_ANY },
 	/* End */
 	{ TYPE_EOD, 0xff },
+};
+
+#define MAX_VERSION	0xFFFF
+
+static const fwts_dmi_type_length type_info[] = {
+	/* type, max_version, min_version, length */
+	{ 15, 0x201, 0x200, 0x14 },
+	{ 16, 0x207, 0x201, 0xf },
+	{ 16, MAX_VERSION, 0x207, 0x17 },
+	{ 17, 0x203, 0x201, 0x15 },
+	{ 17, 0x206, 0x203, 0x1b },
+	{ 17, 0x207, 0x206, 0x1c },
+	{ 17, 0x208, 0x207, 0x22 },
+	{ 17, 0x302, 0x208, 0x28 },
+	{ 19, 0x207, 0x201, 0xf },
+	{ 19, MAX_VERSION, 0x207, 0x1f },
+	{ 20, 0x207, 0x201, 0x13 },
+	{ 20, MAX_VERSION, 0x207, 0x23 },
+	{ 0, 0, 0, 0 } /* terminator */
 };
 
 static int dmi_load_file(const char* filename, void *buf, size_t size)
@@ -1113,9 +1139,61 @@ static void dmi_uuid_check(fwts_framework *fw,
 	}
 }
 
+static void dmicheck_type_length(
+	fwts_framework *fw,
+	const uint16_t smbios_version,
+	const fwts_dmi_header *hdr)
+{
+	const fwts_dmi_type_length *tbl = type_info;
+	const uint8_t *data = hdr->data;
+	uint8_t length = hdr->length;
+	bool passed = false;
+
+	/* Special cases */
+	switch (hdr->type) {
+		case 15:
+			if (smbios_version >= 0x201 && length >= 17) {
+				length = 0x17 + data[0x15] * data[0x16];
+				if (length == hdr->length)
+					passed = true;
+			}
+			break;
+		case 17:
+			if (smbios_version >= 0x302 && length >= 0x34)
+				passed = true;
+			break;
+		default:
+			passed = true;
+			break;
+	}
+
+	/* general cases */
+	while (tbl->length != 0) {
+		if (hdr->type != tbl->type) {
+				tbl++;
+				continue;
+		}
+		if (smbios_version >= tbl->min_version && smbios_version < tbl->max_version) {
+			if (length == tbl->length) {
+				passed = true;
+			} else
+				passed = false;
+			break;
+		}
+		tbl++;
+	}
+
+	if (!passed)
+		fwts_failed(fw, LOG_LEVEL_HIGH, DMI_BAD_TABLE_LENGTH,
+			"Type %" PRId8 " expects length of 0x%" PRIx8
+			", has incorrect length of 0x%" PRIx8,
+			hdr->type, tbl->length, length);
+}
+
 static void dmicheck_entry(fwts_framework *fw,
 	uint32_t addr,
-	const fwts_dmi_header *hdr)
+	const fwts_dmi_header *hdr,
+	const uint16_t smbios_version)
 {
 	uint8_t *ptr;
 	uint8_t count;
@@ -1128,6 +1206,8 @@ static void dmicheck_entry(fwts_framework *fw,
 	uint32_t failed_count = fw->minor_tests.failed;
 	uint32_t battery_count;
 	int	ret;
+
+	dmicheck_type_length(fw, smbios_version, hdr);
 
 	switch (hdr->type) {
 		case 0: /* 7.1 */
@@ -1892,6 +1972,8 @@ static void dmi_scan_tables(fwts_framework *fw,
 	fwts_smbios_entry *entry,
 	uint8_t  *table)
 {
+	const uint16_t smbios_version = (entry->major_version << 8) +
+					entry->minor_version;
 	uint8_t *entry_data = table;
 	uint16_t table_length;
 	uint16_t struct_count;
@@ -1937,7 +2019,7 @@ static void dmi_scan_tables(fwts_framework *fw,
 		next_entry += 2;
 
 		if ((next_entry - table) <= table_length)
-			dmicheck_entry(fw, addr, &hdr);
+			dmicheck_entry(fw, addr, &hdr, smbios_version);
 
 		i++;
 		entry_data = next_entry;
@@ -2008,6 +2090,8 @@ static void dmi_scan_smbios30_table(fwts_framework *fw,
 	fwts_smbios30_entry *entry,
 	uint8_t  *table)
 {
+	const uint16_t smbios_version = (entry->major_version << 8) +
+					entry->minor_version;
 	uint8_t *entry_data = table;
 	uint16_t table_max_length;
 	int i = 0;
@@ -2054,7 +2138,7 @@ static void dmi_scan_smbios30_table(fwts_framework *fw,
 		next_entry += 2;
 
 		if ((next_entry - table) <= table_max_length) {
-			dmicheck_entry(fw, addr, &hdr);
+			dmicheck_entry(fw, addr, &hdr, smbios_version);
 			if (fw->flags & FWTS_FLAG_TEST_SBBR)
 				sbbr_test_entry_check(&hdr);
 		}

@@ -242,6 +242,8 @@ static const fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
 	{ 1, 6 },
 	{ 1, 7 },
 	{ 1, 8 },
+	{ 1, 25 },
+	{ 1, 26 },
 	/* Type 2, Base Board Information */
 	{ 2, 4 },
 	{ 2, 5 },

@@ -93,7 +93,7 @@ static int apicedge_test1(fwts_framework *fw)
 		if ((irq < 15) && (edge == UNDEFINED))
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"NonLegacyIRQLevelTrig",
-				"Non-Legacy interrupt %i is incorrectly level triggered.", irq);
+				"Non-Legacy interrupt %i is incorrectly undefined.", irq);
 	}
 	(void)fclose(file);
 

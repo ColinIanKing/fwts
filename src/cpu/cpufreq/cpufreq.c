@@ -106,7 +106,7 @@ static int cpu_set_governor(fwts_framework *fw, struct cpu *cpu,
 
 out:
 	if (rc != FWTS_OK)
-		fwts_warning(fw, "Cannot set CPU %d governor to %s.",
+		fwts_log_info(fw, "Cannot set CPU %d governor to %s.",
 				cpu->idx, governor);
 	return rc;
 }
@@ -849,10 +849,10 @@ static int cpufreq_init(fwts_framework *fw)
 		rc = cpu_set_governor(fw, &cpus[i], "userspace");
 
 		if (rc != FWTS_OK) {
-			fwts_log_warning(fw,"Failed to initialize cpufreq "
+			fwts_log_info(fw, "Cannot initialize cpufreq "
 					"to set CPU speed for CPU %d", i);
 			cpufreq_settable = false;
-			return FWTS_ERROR;
+			return FWTS_SKIP;
 		}
 	}
 

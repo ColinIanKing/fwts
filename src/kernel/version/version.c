@@ -26,7 +26,7 @@ static int version_test1(fwts_framework *fw)
 	fwts_release *release;
 
 	release = fwts_release_get();
-        if (release) {
+	if (release) {
 		bool not_ubuntu = strcmp(release->distributor, "Ubuntu");
 
 		fwts_release_free(release);
@@ -35,7 +35,7 @@ static int version_test1(fwts_framework *fw)
 			fwts_skipped(fw, "Information not available with this kernel.");
 			return FWTS_OK;
 		}
-        }
+	}
 
 	if ((str = fwts_get("/proc/version_signature")) == NULL)
 		fwts_skipped(fw,
@@ -55,7 +55,6 @@ static int version_test1(fwts_framework *fw)
 static int version_test2(fwts_framework *fw)
 {
 	char *str;
-
 
 	if ((str = fwts_get("/proc/version")) == NULL)
 		fwts_log_info(fw, "Cannot get version info from /proc/version");
@@ -90,7 +89,7 @@ static int version_test4(fwts_framework *fw)
 {
 	char *str;
 
-        if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
+	if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
 	    ((str = fwts_get("/proc/acpi/info")) == NULL))
 		fwts_log_info(fw,
 			"Cannot get ACPI version info from "
@@ -98,7 +97,7 @@ static int version_test4(fwts_framework *fw)
 			"or /proc/acpi/info, system does not have ACPI.");
 	else {
 		fwts_chop_newline(str);
-		fwts_log_info(fw, "ACPI Version: %s", str);
+		fwts_log_info(fw, "ACPICA Version: %s", str);
 		free(str);
 	}
 	fwts_infoonly(fw);

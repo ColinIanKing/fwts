@@ -214,6 +214,11 @@ int fwts_cpu_is_AMD(bool *is_amd)
 	return fwts_cpu_matches_vendor_id("AuthenticAMD", is_amd);
 }
 
+int fwts_cpu_is_Hygon(bool *is_hygon)
+{
+	return fwts_cpu_matches_vendor_id("HygonGenuine", is_hygon);
+}
+
 /*
  *  fwts_cpu_has_c1e()
  *	check if CPU has C1E bit
@@ -237,8 +242,9 @@ fwts_bool fwts_cpu_has_c1e(void)
 		goto free_info;
 	}
 
-	/* no C1E on AMD */
-        if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL) {
+	/* no C1E on AMD and Hygon */
+	if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL &&
+	    strstr(cpu->vendor_id, "HygonGenuine") == NULL ) {
 		rc = FWTS_FALSE;
 		goto free_info;
 	}

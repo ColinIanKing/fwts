@@ -191,7 +191,7 @@ static int get_default_mtrr(fwts_framework *fw)
 	/* Get the default memory type of memory between 4GB and second top of
 	 * memory (TOM2) - i.e. is it write back (WB)
 	 */
-	if (strstr(fwts_cpuinfo->vendor_id, "AMD")) {
+	if (strstr(fwts_cpuinfo->vendor_id, "AMD") || strstr(fwts_cpuinfo->vendor_id, "Hygon")) {
 		if (fwts_cpu_readmsr(fw, 0, AMD_SYS_CFG_MSR, &amd_sys_conf) == FWTS_OK)
 			if (amd_sys_conf & 0x200000)
 				amd_Tom2ForceMemTypeWB = true;
@@ -633,7 +633,7 @@ static int mtrr_test3(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot get CPU vendor_id");
 		return FWTS_ERROR;
 	}
-	if (strstr(fwts_cpuinfo->vendor_id, "AMD")) {
+	if (strstr(fwts_cpuinfo->vendor_id, "AMD") || strstr(fwts_cpuinfo->vendor_id, "Hygon")) {
 		if (klog != NULL) {
 			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,

@@ -61,6 +61,7 @@ int fwts_cpu_readmsr(fwts_framework *fw, const int cpu, const uint32_t reg, uint
 
 int fwts_cpu_is_Intel(bool *is_intel);
 int fwts_cpu_is_AMD(bool *is_amd);
+int fwts_cpu_is_Hygon(bool *is_hygon);
 
 int fwts_cpu_has_c1e(void);
 fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu);

@@ -27,6 +27,7 @@ typedef void (*msr_callback_check)(fwts_framework *fw, const uint64_t val);
 static int ncpus;
 static bool intel_cpu;
 static bool amd_cpu;
+static bool hygon_cpu;
 static fwts_cpuinfo_x86 *cpuinfo;
 
 static int msr_init(fwts_framework *fw)
@@ -43,6 +44,7 @@ static int msr_init(fwts_framework *fw)
 	}
 	intel_cpu = strstr(cpuinfo->vendor_id, "Intel") != NULL;
 	amd_cpu = strstr(cpuinfo->vendor_id, "AuthenticAMD") != NULL;
+	hygon_cpu = strstr(cpuinfo->vendor_id, "HygonGenuine") != NULL;
 
 	if ((ncpus = fwts_cpu_enumerate()) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot detect the number of CPUs on this machine.");
@@ -708,7 +710,7 @@ static int msr_cpu_generic(fwts_framework *fw)
 {
 	if (intel_cpu)
 		msr_table_check(fw, IA32_MSRs);
-	else if (amd_cpu)
+	else if (amd_cpu || hygon_cpu)
 		msr_table_check(fw, AMD_MSRs);
 	else
 		fwts_skipped(fw, "Not an AMD or Intel CPU, test skipped.");

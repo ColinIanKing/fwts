@@ -73,7 +73,8 @@ static int virt_deinit(fwts_framework *fw)
 
 static int virt_test1(fwts_framework *fw)
 {
-	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD") != NULL) {
+	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD") != NULL ||
+	    strstr(fwts_virt_cpuinfo->vendor_id, "Hygon") != NULL) {
 		virt_check_svm(fw);
 	} else if (strstr(fwts_virt_cpuinfo->vendor_id, "Intel") != NULL) {
 		virt_check_vmx(fw);

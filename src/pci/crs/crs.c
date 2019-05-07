@@ -62,7 +62,7 @@ static int crs_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-        if (fwts_klog_regex_find(fw, klog,
+	if (fwts_klog_regex_find(fw, klog,
 		"PCI: Ignoring host bridge windows from ACPI;") > 0) {
 		if (strstr(cmdline, "pci=nocrs") != NULL) {
 			fwts_skipped(fw, "Kernel was booted with pci=nocrs, Ignoring host bridge windows _CRS settings from ACPI, skipping test.");

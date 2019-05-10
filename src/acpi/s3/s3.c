@@ -32,6 +32,9 @@
 
 #define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
+#define PM_SUPEND_PATH			"/sys/power/mem_sleep"
+
+static char sleep_type[7];
 
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
@@ -51,11 +54,16 @@ static int s3_init(fwts_framework *fw)
 {
 	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
 	if (fwts_wakealarm_test_firing(fw, 1) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3",
-			"Check if wakealarm works reliably for S3 tests.");
+		fwts_log_error(fw, "Cannot automatically wake machine up - aborting Sleep test.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmSleep",
+			"Check if wakealarm works reliably for Sleep tests.");
 		return FWTS_ERROR;
 	}
+
+	if (fwts_get(PM_SUPEND_PATH) != NULL && strstr(fwts_get(PM_SUPEND_PATH), "[s2idle]"))
+		strncpy(sleep_type, "s2idle", strlen("s2idle") + 1);
+	else
+		strncpy(sleep_type, "S3", strlen("S3") + 1);
 
 	return FWTS_OK;
 }
@@ -134,7 +142,7 @@ static int wrap_logind_do_suspend(fwts_pm_method_vars *fwts_settings,
 	fwts_progress_message(fwts_settings->fw, percent, "(Suspending)");
 	/* This blocks by entering a glib mainloop */
 	*duration = fwts_logind_wait_for_resume_from_action(fwts_settings, action, s3_min_delay);
-	fwts_log_info(fwts_settings->fw, "S3 duration = %d.", *duration);
+	fwts_log_info(fwts_settings->fw, "%s duration = %d.", sleep_type, *duration);
 	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
 
 	return *duration > 0 ? 0 : 1;
@@ -281,7 +289,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 
 	fwts_wakealarm_trigger(fw, delay);
 
-	/* Do S3 here */
+	/* Do S3 / S2idle here */
 	status = do_suspend(fwts_settings, percent, &duration, command);
 
 	fwts_log_info(fw, "pm-action returned %d after %d seconds.", status, duration);
@@ -303,30 +311,30 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		fwts_hwinfo_free(&hwinfo2);
 
 		if (differences > 0) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterS3",
-				"Found %d differences in device configuration during S3 cycle.", differences);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterSleep",
+				"Found %d differences in device configuration during %s cycle.", differences, sleep_type);
 			(*hw_errors)++;
 		}
 	}
 
 	if (s3_hook && (s3_hook_exec(fw, s3_hook) != FWTS_OK)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HookScriptFailed",
-			"Error executing hook script '%s', S3 cycles "
-			"will be aborted.", s3_hook);
+			"Error executing hook script '%s', %s cycles "
+			"will be aborted.", s3_hook, sleep_type);
 		(*hook_errors)++;
 	}
 
 	if (duration < delay) {
 		(*pm_errors)++;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspend",
-			"Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
+			"Unexpected: %s slept for %d seconds, less than the expected %d seconds.", sleep_type, duration, delay);
 	}
 	fwts_progress_message(fw, percent, "(Checking for errors)");
 	if (duration > (delay*2)) {
 		int s3_C1E_enabled;
 		(*pm_errors)++;
 		fwts_failed(fw, LOG_LEVEL_HIGH, "LongSuspend",
-			"Unexpected: S3 much longer than expected (%d seconds).", duration);
+			"Unexpected: %s much longer than expected (%d seconds).", sleep_type, duration);
 
 		s3_C1E_enabled = fwts_cpu_has_c1e();
 		if (s3_C1E_enabled == -1)
@@ -343,17 +351,17 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedPreS3",
+		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedPreSleep",
 			"pm-action failed before trying to put the system "
 			"in the requested power saving state.");
 	} else if (status == 128) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionPowerStateS3",
+		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionPowerStateSleep",
 			"pm-action tried to put the machine in the requested "
 			"power state but failed.");
 	} else if (status > 128) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedS3",
+		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedSleep",
 			"pm-action encountered an error and also failed to "
 			"enter the requested power saving state.");
 	}
@@ -506,13 +514,13 @@ static int s3_test_multiple(fwts_framework *fw)
 	(void)fwts_pm_debug_set(1);
 
 	if (s3_multiple == 1)
-		fwts_log_info(fw, "Defaulted to 1 test, use --s3-multiple=N to run more S3 cycles\n");
+		fwts_log_info(fw, "Defaulted to 1 test, use --s3-multiple=N to run more %s cycles\n", sleep_type);
 
 	for (i = 0; i < s3_multiple; i++) {
 		struct timeval tv;
 		int ret, percent = (i * 100) / s3_multiple;
 		fwts_list *klog_pre, *klog_post, *klog_diff;
-		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
+		fwts_log_info(fw, "%s cycle %d of %d\n", sleep_type, i+1, s3_multiple);
 
 		if ((klog_pre = fwts_klog_read()) == NULL)
 			fwts_log_error(fw, "Cannot read kernel log.");
@@ -521,7 +529,7 @@ static int s3_test_multiple(fwts_framework *fw)
 					   &hook_errors, s3_sleep_delay,
 					   percent);
 		if (ret == FWTS_OUT_OF_MEMORY) {
-			fwts_log_error(fw, "S3 cycle %d failed - out of memory error.", i+1);
+			fwts_log_error(fw, "%s cycle %d failed - out of memory error.", sleep_type, i+1);
 			fwts_klog_free(klog_pre);
 			break;
 		}
@@ -567,7 +575,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	if (pm_debug != -1)
 		(void)fwts_pm_debug_set(pm_debug);
 
-	fwts_log_info(fw, "Completed S3 cycle(s)\n");
+	fwts_log_info(fw, "Completed %s cycle(s)\n", sleep_type);
 
 	if (klog_errors > 0)
 		fwts_log_info(fw, "Found %d errors in kernel log.", klog_errors);
@@ -752,12 +760,12 @@ static fwts_option s3_options[] = {
 };
 
 static fwts_framework_minor_test s3_tests[] = {
-	{ s3_test_multiple, "S3 suspend/resume test." },
+	{ s3_test_multiple, "Sleep suspend/resume test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops s3_ops = {
-	.description = "S3 suspend/resume test.",
+	.description = "Sleep suspend/resume test.",
 	.init        = s3_init,
 	.minor_tests = s3_tests,
 	.options     = s3_options,

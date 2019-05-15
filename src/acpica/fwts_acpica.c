@@ -1125,6 +1125,7 @@ int fwts_acpica_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	if (table != NULL) {
 		uint64_t *entries;
+		int j;
 
 		fwts_acpica_XSDT = fwts_low_calloc(1, table->length);
 		if (fwts_acpica_XSDT == NULL) {
@@ -1135,18 +1136,19 @@ int fwts_acpica_init(fwts_framework *fw)
 
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint64_t);
 		entries = (uint64_t*)(table->data + sizeof(ACPI_TABLE_HEADER));
-		for (i = 0; i < n; i++) {
+		for (i = 0, j = 0; i < n; i++) {
 			fwts_acpi_table_info *tbl;
+
 			if (fwts_acpi_find_table_by_addr(fw, entries[i], &tbl) != FWTS_OK)
 				return FWTS_ERROR;
 			if (tbl) {
+				if (strncmp(tbl->name, "RSDP", 4) == 0)
+					continue;
 				if (strncmp(tbl->name, "FACP", 4) == 0) {
-					fwts_acpica_XSDT->TableOffsetEntry[i] = ACPI_PTR_TO_PHYSADDR(fwts_acpica_FADT);
+					fwts_acpica_XSDT->TableOffsetEntry[j++] = ACPI_PTR_TO_PHYSADDR(fwts_acpica_FADT);
 				} else {
-					fwts_acpica_XSDT->TableOffsetEntry[i] = ACPI_PTR_TO_PHYSADDR(tbl->data);
+					fwts_acpica_XSDT->TableOffsetEntry[j++] = ACPI_PTR_TO_PHYSADDR(tbl->data);
 				}
-			} else {
-				fwts_acpica_XSDT->TableOffsetEntry[i] = ACPI_PTR_TO_PHYSADDR(NULL);
 			}
 		}
 		fwts_acpica_XSDT->Header.Checksum = 0;
@@ -1160,6 +1162,7 @@ int fwts_acpica_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	if (table) {
 		uint32_t *entries;
+		int j;
 
 		fwts_acpica_RSDT = fwts_low_calloc(1, table->length);
 		if (fwts_acpica_RSDT == NULL) {
@@ -1170,19 +1173,18 @@ int fwts_acpica_init(fwts_framework *fw)
 
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint32_t);
 		entries = (uint32_t*)(table->data + sizeof(ACPI_TABLE_HEADER));
-		for (i = 0; i < n; i++) {
+		for (i = 0, j = 0; i < n; i++) {
 			fwts_acpi_table_info *tbl;
 			if (fwts_acpi_find_table_by_addr(fw, entries[i], &tbl) != FWTS_OK)
 				return FWTS_ERROR;
 			if (tbl) {
+				if (strncmp(tbl->name, "RSDP", 4) == 0)
+					continue;
 				if (strncmp(tbl->name, "FACP", 4) == 0) {
-					fwts_acpica_RSDT->TableOffsetEntry[i] = ACPI_PTR_TO_PHYSADDR(fwts_acpica_FADT);
+					fwts_acpica_RSDT->TableOffsetEntry[j++] = ACPI_PTR_TO_PHYSADDR(fwts_acpica_FADT);
+				} else {
+					fwts_acpica_RSDT->TableOffsetEntry[j++] = ACPI_PTR_TO_PHYSADDR(tbl->data);
 				}
-				else {
-					fwts_acpica_RSDT->TableOffsetEntry[i] = ACPI_PTR_TO_PHYSADDR(tbl->data);
-				}
-			} else {
-				fwts_acpica_RSDT->TableOffsetEntry[i] = ACPI_PTR_TO_PHYSADDR(NULL);
 			}
 		}
 		fwts_acpica_RSDT->Header.Checksum = 0;

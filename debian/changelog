@@ -1,3 +1,36 @@
+fwts (19.05.00-0ubuntu1) eoan; urgency=medium
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: remove trusty
+  * dmicheck: update supported SMBIOS version
+  * acpi/method: check full and battery power if acpi_video0 exists
+  * dmicheck: checks type length vs. SMBIOS versions
+  * dmicheck: add Type 1's Field 25 & 26 as used by kernel
+  * apic: apicedge: fix typo in error messages
+  * cpufreq: change from abort to skip when cpufreq cannot run
+  * kernel:version: change ACPI version to ACPICA version
+  * pci:crs: fix an indentation error
+  * acpi: s3: check sleep type for output messages
+
+  [Colin Ian King]
+  * snapcraft: update to core18
+  * ACPICA: Update to version 20190329
+  * Add libbsd to travis build file
+  * ACPICA: Update to version 20190405
+  * acpica: re-work fwts / iasl interface to work with latest ACPICA
+  * fwts-test: refresh syntaxcheck test output
+  * ACPICA: Update to version 20190509
+  * fwts-test/syntaxcheck: refresh syntaxcheck test output
+  * fwts_acpica: don't add in RSDP or null table entries to XSDT or RSDT (LP: #1829167)
+
+  [Ivan Hu]
+  * auto-packager:mkpackage.sh: add eoan
+
+  [fanjinke]
+  * Add support for Hygon Dhyana CPU
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 16 May 2019 16:27:44 +0800
+
 fwts (19.03.00-0ubuntu1) disco; urgency=medium
 
   [Alex Hung]

@@ -52,7 +52,12 @@ static char *s3_hook = NULL;		/* Hook to run after each S3 */
 
 static int s3_init(fwts_framework *fw)
 {
-	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
+	char *str;
+
+	/*
+	 *  Pre-init - make sure wakealarm works so that we can
+	 *  wake up after suspend
+	 */
 	if (fwts_wakealarm_test_firing(fw, 1) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting Sleep test.");
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmSleep",
@@ -60,10 +65,13 @@ static int s3_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_get(PM_SUPEND_PATH) != NULL && strstr(fwts_get(PM_SUPEND_PATH), "[s2idle]"))
+	str = fwts_get(PM_SUPEND_PATH);
+	if (str && strstr(str, "[s2idle]")) {
 		strncpy(sleep_type, "s2idle", strlen("s2idle") + 1);
-	else
+		free(str);
+	} else {
 		strncpy(sleep_type, "S3", strlen("S3") + 1);
+	}
 
 	return FWTS_OK;
 }

@@ -495,7 +495,7 @@ static int validate_iomem(fwts_framework *fw)
 
 		if ((type & type_mustnot) != 0) {
 			failed++;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"MTRRIncorrectAttr",
 				"Memory range 0x%" PRIx64 " to 0x%" PRIx64 " (%s) "
 				"has incorrect attribute%s.",

@@ -87,7 +87,7 @@ static void parse_device_properity(fwts_framework *fw, ACPI_OBJECT *pkg)
 			ACPI_OBJECT *sub_pkg = &element->Package.Elements[1];
 			uint32_t j;
 
-			for (j = 0; i < sub_pkg->Package.Count; j++)
+			for (j = 0; j < sub_pkg->Package.Count; j++)
 				print_package_element(fw, &sub_pkg->Package.Elements[j]);
 		} else
 			print_package_element(fw, &element->Package.Elements[1]);

@@ -37,7 +37,7 @@
 /*
  * This test sanity checks apic irq information
  * rule of thumb:
- *   interrupts <16 should be EDGE
+ *   interrupts <16 should be EDGE or LEVEL
  *   interrupts >16 should be LEVEL
  *   acpi interrupt should be LEVEL
  */
@@ -86,10 +86,7 @@ static int apicedge_test1(fwts_framework *fw)
 					"ACPI Interrupt is incorrectly edge triggered.");
 			continue;
 		}
-		if ((irq < 15) && (edge == NOT_EDGE))
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"LegacyIRQLevelTrig",
-				"Legacy interrupt %i is incorrectly level triggered.", irq);
+
 		if ((irq < 15) && (edge == UNDEFINED))
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"NonLegacyIRQLevelTrig",

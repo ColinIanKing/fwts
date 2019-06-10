@@ -171,7 +171,7 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 static int tcpa_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_tcpa *tcpa = (fwts_acpi_table_tcpa*)table->data;
-	bool passed = true;
+	bool passed;
 
 	switch (tcpa->platform_class) {
 	case 0:

@@ -1204,7 +1204,7 @@ static int fwts_acpi_load_tables_from_sysfs(fwts_framework *fw)
  */
 int fwts_acpi_load_tables(fwts_framework *fw)
 {
-	int ret = FWTS_ERROR;
+	int ret;
 	bool require_fixup = false;
 
 	if (fw->acpi_table_path != NULL) {
@@ -1221,8 +1221,9 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 			ret = fwts_acpi_load_tables_from_sysfs(fw);
 			require_fixup = true;
 		}
-	} else
+	} else {
 		ret = FWTS_ERROR_NO_PRIV;
+	}
 
 	if (ret == FWTS_OK) {
 		acpi_tables_loaded = ACPI_TABLES_LOADED_OK;

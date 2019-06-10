@@ -151,7 +151,7 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 
 		found = true;
 
-		if (!strncmp(buffer, "vendor_id", 9)) {
+		if (!cpu->vendor_id && !strncmp(buffer, "vendor_id", 9)) {
 			cpu->vendor_id = strdup(ptr);
 			continue;
 		}
@@ -159,7 +159,7 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 			sscanf(ptr, "%d", &cpu->x86);
 			continue;
 		}
-		if (!strncmp(buffer, "model name", 10)) {
+		if (!cpu->model_name && !strncmp(buffer, "model name", 10)) {
 			cpu->model_name = strdup(ptr);
 			continue;
 		}
@@ -171,7 +171,7 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 			sscanf(ptr, "%d", &cpu->stepping);
 			continue;
 		}
-		if (!strncmp(buffer, "flags", 5)) {
+		if (!cpu->flags && !strncmp(buffer, "flags", 5)) {
 			cpu->flags = strdup(ptr);
 			continue;
 		}

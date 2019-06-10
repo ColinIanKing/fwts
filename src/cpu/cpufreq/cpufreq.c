@@ -279,7 +279,7 @@ static uint64_t get_bios_limit(struct cpu *cpu)
 static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
 		int cpu_idx, int n_online_cpus)
 {
-	uint64_t cpu_top_perf = 0;
+	uint64_t cpu_top_perf = 1;
 	int i;
 
 	for (i = 0; i < cpu->n_freqs; i++) {

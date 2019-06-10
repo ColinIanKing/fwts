@@ -130,6 +130,8 @@ static int fwts_log_print_plaintext(
 	else
 		lines = fwts_format_text(tmpbuf + header_len, log_file->line_width - header_len);
 
+	if (!lines)
+		return 0;
 	len = n;
 
 	fwts_list_foreach(item, lines) {

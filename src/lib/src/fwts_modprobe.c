@@ -131,7 +131,7 @@ int fwts_module_loaded(fwts_framework *fw, const char *module, bool *loaded)
 	while (fgets(buffer, sizeof(buffer) - 1, fp) != NULL) {
 		char *ptr = strchr(buffer, ' ');
 
-		if (*ptr)
+		if (ptr)
 			*ptr = '\0';
 
 		if (!strcmp(buffer, module)) {

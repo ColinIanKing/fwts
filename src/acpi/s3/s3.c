@@ -551,8 +551,9 @@ static int s3_test_multiple(fwts_framework *fw)
 
 		fwts_progress_message(fw, percent, "(Checking logs for errors)");
 		klog_diff = fwts_klog_find_changes(klog_pre, klog_post);
-		s3_check_log(fw, klog_diff, &klog_errors, &klog_oopses, &klog_warn_ons,
-			&suspend_too_long, &resume_too_long);
+		if (klog_diff)
+			s3_check_log(fw, klog_diff, &klog_errors, &klog_oopses, &klog_warn_ons,
+				&suspend_too_long, &resume_too_long);
 
 		fwts_klog_free(klog_pre);
 		fwts_klog_free(klog_post);

@@ -233,6 +233,11 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 		fwts_list_link *item;
 		fwts_list *sorted = fwts_list_new();
 
+		if (!sorted) {
+			fwts_log_error(fw, "Out of memory allocating test summary list");
+			return FWTS_ERROR;
+		}
+
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);
 

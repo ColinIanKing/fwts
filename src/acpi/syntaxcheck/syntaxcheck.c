@@ -495,7 +495,9 @@ static int syntaxcheck_single_table(
 	int errors = 0;
 	int warnings = 0;
 	int remarks = 0;
-	fwts_list *iasl_stdout, *iasl_stderr, *iasl_disassembly;
+	fwts_list *iasl_stdout = NULL,
+		  *iasl_stderr = NULL,
+		  *iasl_disassembly = NULL;
 
 	if (fwts_iasl_reassemble(fw, info,
 		&iasl_disassembly, &iasl_stdout, &iasl_stderr) != FWTS_OK) {

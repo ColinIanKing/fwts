@@ -274,6 +274,8 @@ static void fwts_args_show_option(
 
 	text = fwts_format_text(explanation,
 		width < 0 ? (FWTS_MIN_TTY_WIDTH - FWTS_ARGS_WIDTH-1) : width);
+	if (!text)
+		return;
 
 	fwts_list_foreach(item, text) {
 		printf("%-*.*s %s\n",

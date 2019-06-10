@@ -365,6 +365,8 @@ int fwts_log_check(fwts_framework *fw,
         json_object *log_table;
         fwts_log_pattern *patterns;
 
+	*errors = 0;
+
         /*
          * json_object_from_file() can fail when files aren't readable
          * so check if we can open for read before calling json_object_from_file()

@@ -215,6 +215,11 @@ static int uefirttime_test1(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -244,6 +249,11 @@ static int uefirttime_test_gettime_invalid(
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if (status == EFI_INVALID_PARAMETER) {
 			fwts_passed(fw, "UEFI runtime service GetTime interface test "
 				"passed, returned EFI_INVALID_PARAMETER as expected.");
@@ -291,6 +301,11 @@ static int uefirttime_test4(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -330,6 +345,11 @@ static int uefirttime_test4(fwts_framework *fw)
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, &settime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTime",
 			"Failed to set time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -344,6 +364,11 @@ static int uefirttime_test4(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -385,6 +410,11 @@ static int uefirttime_test4(fwts_framework *fw)
 	status = ~0ULL;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, &settime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTime",
 			"Failed to set time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -408,6 +438,11 @@ static int uefirttime_test_settime_invalid(
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, settime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if (status == EFI_INVALID_PARAMETER) {
 			fwts_passed(fw, "UEFI runtime service SetTime interface test "
 				"passed, returned EFI_INVALID_PARAMETER as expected.");
@@ -440,6 +475,11 @@ static int uefirttime_test_settime_invalid_time(
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get wakeup time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -475,6 +515,11 @@ static int uefirttime_test_settime_invalid_time(
 	settime.status = &status;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, &settime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTime",
 			"Failed to set wakeup time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -628,7 +673,7 @@ static int uefirttime_test18(fwts_framework *fw)
 		if (status == EFI_UNSUPPORTED) {
 			fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
 				"service is not supported on this platform.");
-			return FWTS_OK;
+			return FWTS_SKIP;
 		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 			"Failed to get wakeup time with UEFI runtime service.");
@@ -656,17 +701,19 @@ static int uefirttime_test_getwaketime_invalid(
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, getwakeuptime);
 	if (ioret == -1) {
-		if (status == EFI_INVALID_PARAMETER ||
-		    status == EFI_UNSUPPORTED) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetTimeWakeupTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
+		if (status == EFI_INVALID_PARAMETER) {
 			fwts_passed(fw, "UEFI runtime service GetTimeWakeupTime interface test "
-				"passed, returned EFI_INVALID_PARAMETER or "
-				"EFI_UNSUPPORTED as expected.");
+				"passed, returned EFI_INVALID_PARAMETER as expected.");
 			return FWTS_OK;
 		} else {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 				"Failed to get correct return status from UEFI "
-				"runtime service, expecting EFI_INVALID_PARAMETER "
-				"or EFI_UNSUPPORTED.");
+				"runtime service, expecting EFI_INVALID_PARAMETER.");
 			fwts_uefi_print_status_info(fw, status);
 			return FWTS_ERROR;
 		}
@@ -746,6 +793,11 @@ static int uefirttime_test23(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -763,9 +815,9 @@ static int uefirttime_test23(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, &setwakeuptime);
 	if (ioret == -1) {
 		if (status == EFI_UNSUPPORTED) {
-			fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
+			fwts_skipped(fw, "Skipping test, SetWakeupTime runtime "
 				"service is not supported on this platform.");
-			return FWTS_OK;
+			return FWTS_SKIP;
 		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTime",
 			"Failed to set wakeup time with UEFI runtime service.");
@@ -786,7 +838,7 @@ static int uefirttime_test23(fwts_framework *fw)
 		if (status == EFI_UNSUPPORTED) {
 			fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
 				"service is not supported on this platform.");
-			return FWTS_OK;
+			return FWTS_SKIP;
 		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 			"Failed to get wakeup time with UEFI runtime service.");
@@ -818,6 +870,11 @@ static int uefirttime_test23(fwts_framework *fw)
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, &setwakeuptime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetWakeupTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTime",
 			"Failed to set wakeup time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -832,7 +889,7 @@ static int uefirttime_test23(fwts_framework *fw)
 		if (status == EFI_UNSUPPORTED) {
 			fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
 				"service is not supported on this platform.");
-			return FWTS_OK;
+			return FWTS_SKIP;
 		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 			"Failed to get wakeup time with UEFI runtime service.");
@@ -865,9 +922,9 @@ static int uefirttime_test_setwakeuptime_invalid(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, setwakeuptime);
 	if (ioret == -1) {
 		if (status == EFI_UNSUPPORTED) {
-			fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
+			fwts_skipped(fw, "Skipping test, SetWakeupTime runtime "
 				"service is not supported on this platform.");
-			return FWTS_OK;
+			return FWTS_SKIP;
 		}
 		if (status == EFI_INVALID_PARAMETER) {
 			fwts_passed(fw, "UEFI runtime service SetTimeWakeupTime interface test "
@@ -916,7 +973,7 @@ static int uefirttime_test_setwakeuptime_invalid_time(
 		if (status == EFI_UNSUPPORTED) {
 			fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
 				"service is not supported on this platform.");
-			return FWTS_OK;
+			return FWTS_SKIP;
 		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 			"Failed to get wakeup time with UEFI runtime service.");
@@ -955,6 +1012,11 @@ static int uefirttime_test_setwakeuptime_invalid_time(
 	setwakeuptime.Enabled = true;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, &setwakeuptime);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetWakeupTime runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTime",
 			"Failed to set wakeup time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);

@@ -5739,7 +5739,6 @@ static void method_test_BCL_return(
 	uint32_t i;
 	bool failed = false;
 	bool ascending_levels = false;
-	bool matching_levels;
 	char *str = NULL;
 
 	FWTS_UNUSED(private);
@@ -5812,7 +5811,8 @@ static void method_test_BCL_return(
 	}
 
 	if (!access("/sys/class/backlight/acpi_video0", R_OK)) {
-		matching_levels = false;
+		bool matching_levels = false;
+
 		for (i = 2; i < obj->Package.Count; i++) {
 			if (obj->Package.Elements[0].Integer.Value ==
 			    obj->Package.Elements[i].Integer.Value) {

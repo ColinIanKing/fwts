@@ -401,8 +401,9 @@ static int uefirttime_test_settime_invalid(
 	struct efi_settime *settime)
 {
 	long ioret;
-	uint64_t status = ~0ULL;
+	static uint64_t status;
 
+	status = ~0ULL;
 	settime->status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, settime);
@@ -648,7 +649,9 @@ static int uefirttime_test_getwaketime_invalid(
 	struct efi_getwakeuptime *getwakeuptime)
 {
 	long ioret;
-	uint64_t status = ~0ULL;
+	static uint64_t status;
+
+	status = ~0ULL;
 	getwakeuptime->status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, getwakeuptime);
@@ -854,8 +857,9 @@ static int uefirttime_test_setwakeuptime_invalid(
 )
 {
 	long ioret;
-	uint64_t status = ~0ULL;
+	static uint64_t status;
 
+	status = ~0ULL;
 	setwakeuptime->status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, setwakeuptime);

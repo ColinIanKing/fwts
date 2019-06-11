@@ -89,6 +89,11 @@ static int getnexthighmonotoniccount_test(fwts_framework *fw, uint32_t multitest
 		long ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT, &getnexthighmonotoniccount);
 
 		if (ioret == -1) {
+			if (status == EFI_UNSUPPORTED) {
+				fwts_skipped(fw, "Skipping test, GetNextHighMonotonicCount runtime "
+					"service is not supported on this platform.");
+				return FWTS_SKIP;
+			}
 			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextHighMonotonicCount",
 				"Failed to get high monotonic count with UEFI runtime service.");
 			fwts_uefi_print_status_info(fw, status);
@@ -229,6 +234,11 @@ static int uefirtmisc_test3(fwts_framework *fw)
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT, &getnexthighmonotoniccount);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetNextHighMonotonicCount runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if (status == EFI_INVALID_PARAMETER) {
 			fwts_passed(fw, "Test with invalid NULL parameter returned "
 				"EFI_INVALID_PARAMETER as expected.");

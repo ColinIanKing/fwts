@@ -144,7 +144,6 @@ static int dsddump_test1(fwts_framework *fw)
 			ACPI_OBJECT_LIST arg_list;
 			ACPI_OBJECT *obj;
 			ACPI_BUFFER buf;
-			uint32_t i;
 			int ret;
 
 			arg_list.Count   = 0;
@@ -161,6 +160,7 @@ static int dsddump_test1(fwts_framework *fw)
 			    (obj->Package.Elements[0].Type == ACPI_TYPE_BUFFER) &&
 			    (obj->Package.Elements[0].Buffer.Pointer != NULL) &&
 			    (obj->Package.Elements[0].Buffer.Length == 16)) {
+				uint32_t i;
 
 				fwts_log_info_verbatim(fw, "Name: %s", name);
 				for (i = 0; i < obj->Package.Count; i += 2)

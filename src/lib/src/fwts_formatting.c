@@ -40,9 +40,11 @@ static char *dup_line(const char *start, const char *end, const size_t width)
 	if (maxlen < width)
 		maxlen = width;
 
-	if ((bufptr = buffer = calloc(1, maxlen + 1)) == NULL)
+	buffer = calloc(1, maxlen + 1);
+	if (!buffer)
 		return NULL;
 
+	bufptr = buffer;
 	while (*start && start < end)
 		*bufptr++ = *start++;
 

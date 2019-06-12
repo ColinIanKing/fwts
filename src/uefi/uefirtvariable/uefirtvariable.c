@@ -156,6 +156,11 @@ static int getvariable_test(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if (status == EFI_OUT_OF_RESOURCES) {
 			fwts_uefi_print_status_info(fw, status);
 			fwts_skipped(fw,
@@ -184,6 +189,11 @@ static int getvariable_test(
 		status = ~0ULL;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
 		if (ioret == -1) {
+			if (status == EFI_UNSUPPORTED) {
+				fwts_skipped(fw, "Skipping test, GetVariable runtime "
+					"service is not supported on this platform.");
+				goto err_restore_env;
+			}
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetVariable",
 				"Failed to get variable with UEFI "
@@ -323,6 +333,11 @@ static int getnextvariable_test1(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if (status == EFI_OUT_OF_RESOURCES) {
 			fwts_uefi_print_status_info(fw, status);
 			fwts_skipped(fw,
@@ -362,7 +377,11 @@ static int getnextvariable_test1(fwts_framework *fw)
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
-
+			if (status == EFI_UNSUPPORTED) {
+				fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+					"service is not supported on this platform.");
+				return FWTS_SKIP;
+			}
 			/* no next variable was found*/
 			if (*getnextvariablename.status == EFI_NOT_FOUND)
 				break;
@@ -512,7 +531,11 @@ static int getnextvariable_test2(fwts_framework *fw)
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
-
+			if (status == EFI_UNSUPPORTED) {
+				fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+					"service is not supported on this platform.");
+				return FWTS_SKIP;
+			}
 			/* no next variable was found*/
 			if (*getnextvariablename.status == EFI_NOT_FOUND)
 				break;
@@ -673,7 +696,11 @@ static int getnextvariable_test3(fwts_framework *fw)
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
-
+			if (status == EFI_UNSUPPORTED) {
+				fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+					"service is not supported on this platform.");
+				return FWTS_SKIP;
+			}
 			/* no next variable was found*/
 			if (*getnextvariablename.status == EFI_NOT_FOUND)
 				break;
@@ -789,6 +816,14 @@ static int getnextvariable_test4(fwts_framework *fw)
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
+	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetNextVaiableName runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
+	}
+
 	if (ioret != -1 || status != EFI_INVALID_PARAMETER) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"UEFIRuntimeGetNextVariableName",
@@ -899,6 +934,11 @@ static int setvariable_insertvariable(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if ((status == EFI_INVALID_PARAMETER) &&
 			((attributes & FWTS_UEFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS) ||
 			(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) ||
@@ -966,6 +1006,11 @@ static int setvariable_checkvariable(
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
 			"Failed to get variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -1020,9 +1065,13 @@ static int setvariable_checkvariable_notfound(
 	getvariable.status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
-
 	/* expect the uefi runtime interface return EFI_NOT_FOUND */
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if (*getvariable.status == EFI_NOT_FOUND)
 			return FWTS_OK;
 	}
@@ -1059,6 +1108,13 @@ static int setvariable_invalidattr(
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
+	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
+	}
 	if ((status == EFI_SUCCESS) && (ioret != -1)) {
 		if ((attributes & FWTS_UEFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS) &&
 			(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) &&
@@ -1467,6 +1523,11 @@ static int getnextvariable_multitest(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_SKIP;
+		}
 		if (status == EFI_OUT_OF_RESOURCES) {
 			fwts_uefi_print_status_info(fw, status);
 			fwts_skipped(fw,
@@ -1495,6 +1556,11 @@ static int getnextvariable_multitest(
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
+			if (status == EFI_UNSUPPORTED) {
+				fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+					"service is not supported on this platform.");
+				return FWTS_SKIP;
+			}
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
 				"Failed to get next variable name with "
@@ -1838,7 +1904,13 @@ static void getvariable_test_invalid(
 	*(getvariable->status) = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, getvariable);
+
 	if (ioret == -1) {
+		if (*(getvariable->status) == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, GetVariable runtime "
+				"service is not supported on this platform.");
+			return;
+		}
 		if (*(getvariable->status) == EFI_INVALID_PARAMETER) {
 			fwts_passed(fw, "GetVariable with %s returned error "
 				"EFI_INVALID_PARAMETER as expected.", test);
@@ -1882,7 +1954,13 @@ static int uefirtvariable_test8(fwts_framework *fw)
 	setvariable.status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
 	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Skipping test, SetVariable runtime "
+				"service is not supported on this platform.");
+			return FWTS_OK;
+		}
 		if (status == EFI_OUT_OF_RESOURCES) {
 			fwts_uefi_print_status_info(fw, status);
 			fwts_skipped(fw,

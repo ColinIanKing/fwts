@@ -1,3 +1,38 @@
+fwts (19.06.00-0ubuntu1) eoan; urgency=medium
+
+  [Alex Hung]
+  * acpi/fadt: update latest FADT revision to 6.3
+  * apic: apicedge: remove irq < 16 is edge only
+  * mtrr: set severity to critical for incorrect attributes
+
+  [Colin Ian King]
+  * acpi: s3: fix two memory leaks on fwts_get() calls and minor clean-ups
+  * fwts_summary: check for list creation failure
+  * fwts_modprobe: fix potential null pointer dereference
+  * cpu: cpufreq: avoid division by zero by initializing cpu_top_perf to 1
+  * fwts_args: check for null text pointer
+  * fwts_log_plaintext: check for null pointer
+  * acpi: s3: check for null pointer
+  * lib: fwts_cpu: only assign a string if it has not yet been assigned
+  * acpi: syntaxcheck: nullify pointers to clean up static analysis warnings
+  * lib: fwts_log_scan: ensure accumulated error count is initialized
+  * lib: fwts_acpi_tables: remove redundant initialization of ret
+  * acpi: tcpa: remove redundant initialization of boolean passed
+  * acpi: dscdump: reduce scope of loop counter i
+  * acpi: method: reduce scope of boolean flag matching_levels
+  * lib: fwts_formatting: use simpler style for assigments
+  * uefi: uefirttime: make status static, cleans up cppcheck warnings
+
+  [Erico Nunes]
+  * dsddump: fix Package loop condition
+
+  [Ivan Hu]
+  * uefitime: add checking the EFI_UNSUPPORTED return code
+  * uefirtvariable: add checking the EFI_UNSUPPORTED return code
+  * uefirtmisc: add checking the EFI_UNSUPPORTED return code
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 12 Jun 2019 10:24:53 -0700
+
 fwts (19.05.00-0ubuntu1) eoan; urgency=medium
 
   [Alex Hung]

@@ -18,6 +18,7 @@
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include 		\
+	-I$(top_srcdir)/src/libfwtsiasl			\
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
 	`pkg-config --silence-errors --cflags json`	\
@@ -29,10 +30,10 @@ AM_CPPFLAGS = \
 
 pkglib_LTLIBRARIES = libfwts.la
 
-libfwts_la_LDFLAGS = 			\
-	-lm -lpthread -lbsd		\
-	-version-info 1:0:0 		\
-	-L$(top_builddir)/src/acpica/source/compiler \
+libfwts_la_LDFLAGS = 					\
+	-lm -lpthread -lbsd				\
+	-version-info 1:0:0 				\
+	-L$(top_builddir)/src/libfwtsiasl		\
 	-lfwtsiasl `pkg-config --libs glib-2.0 gio-2.0`
 
 libfwts_la_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT

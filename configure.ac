@@ -101,8 +101,8 @@
 	  AC_CONFIG_FILES([
            Makefile
            src/Makefile
-	   src/acpica/source/compiler/Makefile
-	   src/acpica/Makefile
+	   src/libfwtsiasl/Makefile
+	   src/libfwtsacpica/Makefile
            src/lib/Makefile
            src/lib/src/Makefile
 	   src/utilities/Makefile

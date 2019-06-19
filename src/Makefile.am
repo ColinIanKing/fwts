@@ -4,7 +4,7 @@
 #   3. acpica
 # ... because the libs in this bundled acpica/ depend on lib/ (libfwts.so),
 # but libfwts.so depends on libraries produced by acpica/source/compiler.
-SUBDIRS = acpica/source/compiler lib acpica
+SUBDIRS = libfwtsiasl lib libfwtsacpica
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include			\
@@ -197,7 +197,12 @@ fwts_SOURCES = main.c 				\
 fwts_LDFLAGS = -lm -lbsd `pkg-config --libs glib-2.0 gio-2.0`
 
 fwts_LDADD = \
-	-L$(top_builddir)/src/acpica -lfwtsacpica \
-	-Llib/src -lfwts
+	-L$(top_builddir)/src			\
+	-L$(top_builddir)/src/acpica		\
+	-L$(top_builddir)/src/libfwtsiasl	\
+	-L$(top_builddir)/src/libfwtsacpica	\
+	-L$(top_builddir)/src/lib/src		\
+	-lfwtsacpica 				\
+	-lfwts
 
 man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1

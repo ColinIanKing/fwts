@@ -265,7 +265,10 @@ static const msr_info AMD_MSRs[] = {
 	{ "SYSENTER_ESP",		0x00000175,	0xffffffffffffffffULL, NULL },
 	{ "SYSENTER_EIP",		0x00000176,	0xffffffffffffffffULL, NULL },
 	 */
+	 /*
+	  * MCG_CAP is read-only and can differ from core to core
 	{ "MCG_CAP",			0x00000179,	0x0000000001ff0fffULL, NULL },
+	  */
 	{ "MCG_STATUS",			0x0000017a,	0xffffffffffffffffULL, NULL },
 	{ "MCG_CTL",			0x0000017b,	0xffffffffffffffffULL, NULL },
 	{ "MTRR_PHYSBASE0",		0x00000200,	0xffffffffffffffffULL, NULL },

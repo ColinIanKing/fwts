@@ -22,14 +22,12 @@
 #
 AUTOMAKE_OPTIONS = subdir-objects
 
-ACPICA = $(top_srcdir)/src/acpica/source
-
 AM_CPPFLAGS = -Wall -Wstrict-prototypes		\
 	      -fno-strict-aliasing 		\
 	      -D_LINUX				\
 	      -DACPI_ASL_COMPILER $(CFLAGS)	\
-	      -I$(ACPICA)/include		\
-	      -I$(ACPICA)/compiler
+	      -I../acpica/source/include	\
+	      -I../acpica/source/compiler
 
 AM_YFLAGS = -d
 
@@ -38,27 +36,27 @@ AM_YFLAGS = -d
 #
 AM_LFLAGS = -i
 
-ASL_PARSER = 					\
-	$(ACPICA)/compiler/aslcstyle.y		\
-	$(ACPICA)/compiler/aslhelpers.y		\
-	$(ACPICA)/compiler/aslparser.y		\
-	$(ACPICA)/compiler/aslprimaries.y	\
-	$(ACPICA)/compiler/aslresources.y	\
-	$(ACPICA)/compiler/aslrules.y		\
-	$(ACPICA)/compiler/aslsupport.y		\
-	$(ACPICA)/compiler/asltokens.y		\
-	$(ACPICA)/compiler/asltypes.y
+ASL_PARSER = 						\
+	../acpica/source/compiler/aslcstyle.y		\
+	../acpica/source/compiler/aslhelpers.y		\
+	../acpica/source/compiler/aslparser.y		\
+	../acpica/source/compiler/aslprimaries.y	\
+	../acpica/source/compiler/aslresources.y	\
+	../acpica/source/compiler/aslrules.y		\
+	../acpica/source/compiler/aslsupport.y		\
+	../acpica/source/compiler/asltokens.y		\
+	../acpica/source/compiler/asltypes.y
 
 ASL_LEXER =
-	$(ACPICA)/compiler/aslcompiler.l	\
+	../acpica/source/compiler/aslcompiler.l	\
 	$(srcdir)/aslsupport.l			\
 	$(srcdir)/aslcompiler.y.h
 
 $(srcdir)/aslcompiler.y: $(ASL_PARSER)
-	m4 -P -I$(ACPICA)/compiler $(ACPICA)/compiler/aslparser.y > $@
+	m4 -P -I../acpica/source/compiler ../acpica/source/compiler/aslparser.y > $@
 
 $(srcdir)/aslcompilerlex.c: $(ASL_LEXER)
-	${LEX} ${AM_LFLAGS} -PAslCompiler -o$@ $(ACPICA)/compiler/aslcompiler.l
+	${LEX} ${AM_LFLAGS} -PAslCompiler -o$@ ../acpica/source/compiler/aslcompiler.l
 
 .NOTPARALLEL: $(srcdir)/aslcompiler.c
 $(srcdir)/aslcompiler.c $(srcdir)/aslcompiler.y.h: $(srcdir)/aslcompiler.y
@@ -67,16 +65,16 @@ $(srcdir)/aslcompiler.c $(srcdir)/aslcompiler.y.h: $(srcdir)/aslcompiler.y
 	mv aslcompiler.tab.h aslcompiler.y.h
 
 .NOTPARALLEL: $(srcdir)/dtparserlex.c
-$(srcdir)/dtparserlex.c $(srcdir)/dtparser.c $(srcdir)/dtparser.y.h: $(ACPICA)/compiler/dtparser.l $(ACPICA)/compiler/dtparser.y
+$(srcdir)/dtparserlex.c $(srcdir)/dtparser.c $(srcdir)/dtparser.y.h: ../acpica/source/compiler/dtparser.l ../acpica/source/compiler/dtparser.y
 	${LEX} ${AM_LFLAGS} -PDtParser -o$(srcdir)/dtparserlex.c $<
-	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser $(ACPICA)/compiler/dtparser.y
+	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser ../acpica/source/compiler/dtparser.y
 	mv dtparser.tab.c dtparser.c
 	mv dtparser.tab.h dtparser.y.h
 
 .NOTPARALLEL: $(srcdir)/prparserlex.c
-$(srcdir)/prparserlex.c $(srcdir)/prparser.c $(srcdir)/prparser.y.h: $(ACPICA)/compiler/prparser.l $(ACPICA)/compiler/prparser.y
+$(srcdir)/prparserlex.c $(srcdir)/prparser.c $(srcdir)/prparser.y.h: ../acpica/source/compiler/prparser.l ../acpica/source/compiler/prparser.y
 	${LEX} ${AM_LFLAGS} -PPrParser -o$(srcdir)/prparserlex.c $<
-	${YACC} ${AM_YFLAGS} -bprparser -pPrParser $(ACPICA)/compiler/prparser.y
+	${YACC} ${AM_YFLAGS} -bprparser -pPrParser ../acpica/source/compiler/prparser.y
 	mv prparser.tab.c prparser.c
 	mv prparser.tab.h prparser.y.h
 
@@ -101,212 +99,212 @@ libfwtsiasl_la_LDFLAGS = -export-symbols-regex "fwts_.*" -lpthread -version-info
 CLEANFILES = $(BUILT_SOURCES)
 
 libfwtsiasl_la_CPPFLAGS = $(AM_CPPFLAGS)
-libfwtsiasl_la_SOURCES = 				\
-	fwts_iasl_interface.c 				\
-	aslcompilerlex.c				\
-	aslcompiler.c					\
-	dtparserlex.c					\
-	dtparser.c					\
-	prparserlex.c					\
-	prparser.c					\
-	$(ACPICA)/common/adisasm.c			\
-	$(ACPICA)/common/acfileio.c			\
-	$(ACPICA)/common/adfile.c			\
-	$(ACPICA)/common/adwalk.c			\
-	$(ACPICA)/common/ahids.c			\
-	$(ACPICA)/common/ahpredef.c			\
-	$(ACPICA)/common/ahtable.c			\
-	$(ACPICA)/common/ahuuids.c			\
-	$(ACPICA)/compiler/aslallocate.c		\
-	$(ACPICA)/compiler/aslanalyze.c			\
-	$(ACPICA)/compiler/aslascii.c			\
-	$(ACPICA)/compiler/aslbtypes.c			\
-	$(ACPICA)/compiler/aslcache.c			\
-	$(ACPICA)/compiler/aslcodegen.c			\
-	$(ACPICA)/compiler/aslcompile.c			\
-	$(ACPICA)/compiler/asldebug.c			\
-	$(ACPICA)/compiler/aslerror.c			\
-	$(ACPICA)/compiler/aslexternal.c		\
-	$(ACPICA)/compiler/aslfiles.c			\
-	$(ACPICA)/compiler/aslfileio.c			\
-	$(ACPICA)/compiler/aslfold.c			\
-	$(ACPICA)/compiler/aslhelp.c			\
-	$(ACPICA)/compiler/aslhex.c			\
-	$(ACPICA)/compiler/asllength.c			\
-	$(ACPICA)/compiler/asllisting.c			\
-	$(ACPICA)/compiler/asllistsup.c			\
-	$(ACPICA)/compiler/aslload.c			\
-	$(ACPICA)/compiler/asllookup.c			\
-	$(ACPICA)/compiler/aslmain.c			\
-	$(ACPICA)/compiler/aslmap.c			\
-	$(ACPICA)/compiler/aslmapenter.c		\
-	$(ACPICA)/compiler/aslmapoutput.c		\
-	$(ACPICA)/compiler/aslmaputils.c		\
-	$(ACPICA)/compiler/aslmessages.c		\
-	$(ACPICA)/compiler/aslmethod.c			\
-	$(ACPICA)/compiler/aslnamesp.c			\
-	$(ACPICA)/compiler/asloffset.c			\
-	$(ACPICA)/compiler/aslopcodes.c			\
-	$(ACPICA)/compiler/asloperands.c		\
-	$(ACPICA)/compiler/aslopt.c			\
-	$(ACPICA)/compiler/asloptions.c			\
-	$(ACPICA)/compiler/aslparseop.c			\
-	$(ACPICA)/compiler/aslpredef.c			\
-	$(ACPICA)/compiler/aslprepkg.c			\
-	$(ACPICA)/compiler/aslprintf.c			\
-	$(ACPICA)/compiler/aslprune.c			\
-	$(ACPICA)/compiler/aslresource.c		\
-	$(ACPICA)/compiler/aslrestype1.c		\
-	$(ACPICA)/compiler/aslrestype1i.c		\
-	$(ACPICA)/compiler/aslrestype2.c		\
-	$(ACPICA)/compiler/aslrestype2d.c		\
-	$(ACPICA)/compiler/aslrestype2e.c		\
-	$(ACPICA)/compiler/aslrestype2q.c		\
-	$(ACPICA)/compiler/aslrestype2s.c		\
-	$(ACPICA)/compiler/aslrestype2w.c		\
-	$(ACPICA)/compiler/aslstartup.c			\
-	$(ACPICA)/compiler/aslstubs.c			\
-	$(ACPICA)/compiler/aslpld.c			\
-	$(ACPICA)/compiler/asltransform.c		\
-	$(ACPICA)/compiler/asltree.c			\
-	$(ACPICA)/compiler/aslutils.c			\
-	$(ACPICA)/compiler/asluuid.c			\
-	$(ACPICA)/compiler/aslwalks.c			\
-	$(ACPICA)/compiler/aslxref.c			\
-	$(ACPICA)/compiler/aslxrefout.c			\
-	$(ACPICA)/compiler/cvcompiler.c			\
-	$(ACPICA)/compiler/cvdisasm.c			\
-	$(ACPICA)/compiler/cvparser.c			\
-	$(ACPICA)/common/cmfsize.c			\
-	$(ACPICA)/components/debugger/dbfileio.c	\
-	$(ACPICA)/components/disassembler/dmbuffer.c	\
-	$(ACPICA)/components/disassembler/dmcstyle.c	\
-	$(ACPICA)/components/disassembler/dmdeferred.c	\
-	$(ACPICA)/common/dmextern.c			\
-	$(ACPICA)/components/disassembler/dmnames.c	\
-	$(ACPICA)/components/disassembler/dmopcode.c	\
-	$(ACPICA)/components/disassembler/dmresrc.c	\
-	$(ACPICA)/components/disassembler/dmresrcl.c	\
-	$(ACPICA)/components/disassembler/dmresrcl2.c	\
-	$(ACPICA)/components/disassembler/dmresrcs.c	\
-	$(ACPICA)/common/dmrestag.c			\
-	$(ACPICA)/common/dmswitch.c			\
-	$(ACPICA)/common/dmtable.c			\
-	$(ACPICA)/common/dmtables.c			\
-	$(ACPICA)/common/dmtbdump.c			\
-	$(ACPICA)/common/dmtbdump1.c			\
-	$(ACPICA)/common/dmtbdump2.c			\
-	$(ACPICA)/common/dmtbdump3.c			\
-	$(ACPICA)/common/dmtbinfo.c			\
-	$(ACPICA)/common/dmtbinfo1.c			\
-	$(ACPICA)/common/dmtbinfo2.c			\
-	$(ACPICA)/common/dmtbinfo3.c			\
-	$(ACPICA)/components/disassembler/dmutils.c	\
-	$(ACPICA)/components/disassembler/dmwalk.c	\
-	$(ACPICA)/components/dispatcher/dsargs.c	\
-	$(ACPICA)/components/dispatcher/dscontrol.c	\
-	$(ACPICA)/components/dispatcher/dsfield.c	\
-	$(ACPICA)/components/dispatcher/dsobject.c	\
-	$(ACPICA)/components/dispatcher/dsopcode.c	\
-	$(ACPICA)/components/dispatcher/dspkginit.c	\
-	$(ACPICA)/components/dispatcher/dsutils.c	\
-	$(ACPICA)/components/dispatcher/dswexec.c	\
-	$(ACPICA)/components/dispatcher/dswload.c	\
-	$(ACPICA)/components/dispatcher/dswload2.c	\
-	$(ACPICA)/components/dispatcher/dswscope.c	\
-	$(ACPICA)/components/dispatcher/dswstate.c	\
-	$(ACPICA)/compiler/dtcompile.c			\
-	$(ACPICA)/compiler/dtexpress.c			\
-	$(ACPICA)/compiler/dtfield.c			\
-	$(ACPICA)/compiler/dtio.c			\
-	$(ACPICA)/compiler/dtsubtable.c			\
-	$(ACPICA)/compiler/dttable.c			\
-	$(ACPICA)/compiler/dttable1.c			\
-	$(ACPICA)/compiler/dttable2.c			\
-	$(ACPICA)/compiler/dttemplate.c			\
-	$(ACPICA)/compiler/dtutils.c			\
-	$(ACPICA)/components/executer/exconcat.c	\
-	$(ACPICA)/components/executer/exconvrt.c	\
-	$(ACPICA)/components/executer/excreate.c	\
-	$(ACPICA)/components/executer/exdump.c		\
-	$(ACPICA)/components/executer/exmisc.c		\
-	$(ACPICA)/components/executer/exmutex.c		\
-	$(ACPICA)/components/executer/exnames.c		\
-	$(ACPICA)/components/executer/exoparg1.c	\
-	$(ACPICA)/components/executer/exoparg2.c	\
-	$(ACPICA)/components/executer/exoparg3.c	\
-	$(ACPICA)/components/executer/exoparg6.c	\
-	$(ACPICA)/components/executer/exprep.c		\
-	$(ACPICA)/components/executer/exregion.c	\
-	$(ACPICA)/components/executer/exresnte.c	\
-	$(ACPICA)/components/executer/exresolv.c	\
-	$(ACPICA)/components/executer/exresop.c		\
-	$(ACPICA)/components/executer/exstore.c		\
-	$(ACPICA)/components/executer/exstoren.c	\
-	$(ACPICA)/components/executer/exstorob.c	\
-	$(ACPICA)/components/executer/exsystem.c	\
-	$(ACPICA)/components/executer/exutils.c		\
-	$(ACPICA)/common/getopt.c			\
-	$(ACPICA)/components/namespace/nsaccess.c	\
-	$(ACPICA)/components/namespace/nsalloc.c	\
-	$(ACPICA)/components/namespace/nsdump.c		\
-	$(ACPICA)/components/namespace/nsnames.c	\
-	$(ACPICA)/components/namespace/nsobject.c	\
-	$(ACPICA)/components/namespace/nsparse.c	\
-	$(ACPICA)/components/namespace/nssearch.c	\
-	$(ACPICA)/components/namespace/nsutils.c	\
-	$(ACPICA)/components/namespace/nswalk.c		\
-	$(ACPICA)/components/namespace/nsxfobj.c	\
-	$(ACPICA)/os_specific/service_layers/osunixxf.c	\
-	$(ACPICA)/compiler/prexpress.c			\
-	$(ACPICA)/compiler/prmacros.c			\
-	$(ACPICA)/compiler/prscan.c			\
-	$(ACPICA)/compiler/prutils.c			\
-	$(ACPICA)/components/parser/psargs.c		\
-	$(ACPICA)/components/parser/psloop.c		\
-	$(ACPICA)/components/parser/psobject.c		\
-	$(ACPICA)/components/parser/psopcode.c		\
-	$(ACPICA)/components/parser/psopinfo.c		\
-	$(ACPICA)/components/parser/psparse.c		\
-	$(ACPICA)/components/parser/psscope.c		\
-	$(ACPICA)/components/parser/pstree.c		\
-	$(ACPICA)/components/parser/psutils.c		\
-	$(ACPICA)/components/parser/pswalk.c		\
-	$(ACPICA)/components/tables/tbdata.c		\
-	$(ACPICA)/components/tables/tbfadt.c		\
-	$(ACPICA)/components/tables/tbinstal.c		\
-	$(ACPICA)/components/tables/tbprint.c		\
-	$(ACPICA)/components/tables/tbutils.c		\
-	$(ACPICA)/components/tables/tbxface.c		\
-	$(ACPICA)/components/tables/tbxfload.c		\
-	$(ACPICA)/components/utilities/utaddress.c	\
-	$(ACPICA)/components/utilities/utalloc.c	\
-	$(ACPICA)/components/utilities/utascii.c	\
-	$(ACPICA)/components/utilities/utbuffer.c	\
-	$(ACPICA)/components/utilities/utcache.c	\
-	$(ACPICA)/components/utilities/utcopy.c		\
-	$(ACPICA)/components/utilities/utdebug.c	\
-	$(ACPICA)/components/utilities/utdecode.c	\
-	$(ACPICA)/components/utilities/utdelete.c	\
-	$(ACPICA)/components/utilities/uterror.c	\
-	$(ACPICA)/components/utilities/utexcep.c	\
-	$(ACPICA)/components/utilities/utglobal.c	\
-	$(ACPICA)/components/utilities/uthex.c		\
-	$(ACPICA)/components/utilities/utinit.c		\
-	$(ACPICA)/components/utilities/utlock.c		\
-	$(ACPICA)/components/utilities/utmath.c		\
-	$(ACPICA)/components/utilities/utmisc.c		\
-	$(ACPICA)/components/utilities/utmutex.c	\
-	$(ACPICA)/components/utilities/utnonansi.c	\
-	$(ACPICA)/components/utilities/utobject.c	\
-	$(ACPICA)/components/utilities/utownerid.c	\
-	$(ACPICA)/components/utilities/utpredef.c	\
-	$(ACPICA)/components/utilities/utresdecode.c	\
-	$(ACPICA)/components/utilities/utresrc.c	\
-	$(ACPICA)/components/utilities/utstate.c	\
-	$(ACPICA)/components/utilities/utstrtoul64.c	\
-	$(ACPICA)/components/utilities/utstrsuppt.c	\
-	$(ACPICA)/components/utilities/utstring.c	\
-	$(ACPICA)/components/utilities/utuuid.c		\
-	$(ACPICA)/components/utilities/utxface.c	\
-	$(ACPICA)/components/utilities/utxferror.c
+libfwtsiasl_la_SOURCES = 					\
+	fwts_iasl_interface.c 					\
+	aslcompilerlex.c					\
+	aslcompiler.c						\
+	dtparserlex.c						\
+	dtparser.c						\
+	prparserlex.c						\
+	prparser.c						\
+	../acpica/source/common/adisasm.c			\
+	../acpica/source/common/acfileio.c			\
+	../acpica/source/common/adfile.c			\
+	../acpica/source/common/adwalk.c			\
+	../acpica/source/common/ahids.c				\
+	../acpica/source/common/ahpredef.c			\
+	../acpica/source/common/ahtable.c			\
+	../acpica/source/common/ahuuids.c			\
+	../acpica/source/compiler/aslallocate.c			\
+	../acpica/source/compiler/aslanalyze.c			\
+	../acpica/source/compiler/aslascii.c			\
+	../acpica/source/compiler/aslbtypes.c			\
+	../acpica/source/compiler/aslcache.c			\
+	../acpica/source/compiler/aslcodegen.c			\
+	../acpica/source/compiler/aslcompile.c			\
+	../acpica/source/compiler/asldebug.c			\
+	../acpica/source/compiler/aslerror.c			\
+	../acpica/source/compiler/aslexternal.c			\
+	../acpica/source/compiler/aslfiles.c			\
+	../acpica/source/compiler/aslfileio.c			\
+	../acpica/source/compiler/aslfold.c			\
+	../acpica/source/compiler/aslhelp.c			\
+	../acpica/source/compiler/aslhex.c			\
+	../acpica/source/compiler/asllength.c			\
+	../acpica/source/compiler/asllisting.c			\
+	../acpica/source/compiler/asllistsup.c			\
+	../acpica/source/compiler/aslload.c			\
+	../acpica/source/compiler/asllookup.c			\
+	../acpica/source/compiler/aslmain.c			\
+	../acpica/source/compiler/aslmap.c			\
+	../acpica/source/compiler/aslmapenter.c			\
+	../acpica/source/compiler/aslmapoutput.c		\
+	../acpica/source/compiler/aslmaputils.c			\
+	../acpica/source/compiler/aslmessages.c			\
+	../acpica/source/compiler/aslmethod.c			\
+	../acpica/source/compiler/aslnamesp.c			\
+	../acpica/source/compiler/asloffset.c			\
+	../acpica/source/compiler/aslopcodes.c			\
+	../acpica/source/compiler/asloperands.c			\
+	../acpica/source/compiler/aslopt.c			\
+	../acpica/source/compiler/asloptions.c			\
+	../acpica/source/compiler/aslparseop.c			\
+	../acpica/source/compiler/aslpredef.c			\
+	../acpica/source/compiler/aslprepkg.c			\
+	../acpica/source/compiler/aslprintf.c			\
+	../acpica/source/compiler/aslprune.c			\
+	../acpica/source/compiler/aslresource.c			\
+	../acpica/source/compiler/aslrestype1.c			\
+	../acpica/source/compiler/aslrestype1i.c		\
+	../acpica/source/compiler/aslrestype2.c			\
+	../acpica/source/compiler/aslrestype2d.c		\
+	../acpica/source/compiler/aslrestype2e.c		\
+	../acpica/source/compiler/aslrestype2q.c		\
+	../acpica/source/compiler/aslrestype2s.c		\
+	../acpica/source/compiler/aslrestype2w.c		\
+	../acpica/source/compiler/aslstartup.c			\
+	../acpica/source/compiler/aslstubs.c			\
+	../acpica/source/compiler/aslpld.c			\
+	../acpica/source/compiler/asltransform.c		\
+	../acpica/source/compiler/asltree.c			\
+	../acpica/source/compiler/aslutils.c			\
+	../acpica/source/compiler/asluuid.c			\
+	../acpica/source/compiler/aslwalks.c			\
+	../acpica/source/compiler/aslxref.c			\
+	../acpica/source/compiler/aslxrefout.c			\
+	../acpica/source/compiler/cvcompiler.c			\
+	../acpica/source/compiler/cvdisasm.c			\
+	../acpica/source/compiler/cvparser.c			\
+	../acpica/source/common/cmfsize.c			\
+	../acpica/source/components/debugger/dbfileio.c		\
+	../acpica/source/components/disassembler/dmbuffer.c	\
+	../acpica/source/components/disassembler/dmcstyle.c	\
+	../acpica/source/components/disassembler/dmdeferred.c	\
+	../acpica/source/common/dmextern.c			\
+	../acpica/source/components/disassembler/dmnames.c	\
+	../acpica/source/components/disassembler/dmopcode.c	\
+	../acpica/source/components/disassembler/dmresrc.c	\
+	../acpica/source/components/disassembler/dmresrcl.c	\
+	../acpica/source/components/disassembler/dmresrcl2.c	\
+	../acpica/source/components/disassembler/dmresrcs.c	\
+	../acpica/source/common/dmrestag.c			\
+	../acpica/source/common/dmswitch.c			\
+	../acpica/source/common/dmtable.c			\
+	../acpica/source/common/dmtables.c			\
+	../acpica/source/common/dmtbdump.c			\
+	../acpica/source/common/dmtbdump1.c			\
+	../acpica/source/common/dmtbdump2.c			\
+	../acpica/source/common/dmtbdump3.c			\
+	../acpica/source/common/dmtbinfo.c			\
+	../acpica/source/common/dmtbinfo1.c			\
+	../acpica/source/common/dmtbinfo2.c			\
+	../acpica/source/common/dmtbinfo3.c			\
+	../acpica/source/components/disassembler/dmutils.c	\
+	../acpica/source/components/disassembler/dmwalk.c	\
+	../acpica/source/components/dispatcher/dsargs.c		\
+	../acpica/source/components/dispatcher/dscontrol.c	\
+	../acpica/source/components/dispatcher/dsfield.c	\
+	../acpica/source/components/dispatcher/dsobject.c	\
+	../acpica/source/components/dispatcher/dsopcode.c	\
+	../acpica/source/components/dispatcher/dspkginit.c	\
+	../acpica/source/components/dispatcher/dsutils.c	\
+	../acpica/source/components/dispatcher/dswexec.c	\
+	../acpica/source/components/dispatcher/dswload.c	\
+	../acpica/source/components/dispatcher/dswload2.c	\
+	../acpica/source/components/dispatcher/dswscope.c	\
+	../acpica/source/components/dispatcher/dswstate.c	\
+	../acpica/source/compiler/dtcompile.c			\
+	../acpica/source/compiler/dtexpress.c			\
+	../acpica/source/compiler/dtfield.c			\
+	../acpica/source/compiler/dtio.c			\
+	../acpica/source/compiler/dtsubtable.c			\
+	../acpica/source/compiler/dttable.c			\
+	../acpica/source/compiler/dttable1.c			\
+	../acpica/source/compiler/dttable2.c			\
+	../acpica/source/compiler/dttemplate.c			\
+	../acpica/source/compiler/dtutils.c			\
+	../acpica/source/components/executer/exconcat.c		\
+	../acpica/source/components/executer/exconvrt.c		\
+	../acpica/source/components/executer/excreate.c		\
+	../acpica/source/components/executer/exdump.c		\
+	../acpica/source/components/executer/exmisc.c		\
+	../acpica/source/components/executer/exmutex.c		\
+	../acpica/source/components/executer/exnames.c		\
+	../acpica/source/components/executer/exoparg1.c		\
+	../acpica/source/components/executer/exoparg2.c		\
+	../acpica/source/components/executer/exoparg3.c		\
+	../acpica/source/components/executer/exoparg6.c		\
+	../acpica/source/components/executer/exprep.c		\
+	../acpica/source/components/executer/exregion.c		\
+	../acpica/source/components/executer/exresnte.c		\
+	../acpica/source/components/executer/exresolv.c		\
+	../acpica/source/components/executer/exresop.c		\
+	../acpica/source/components/executer/exstore.c		\
+	../acpica/source/components/executer/exstoren.c		\
+	../acpica/source/components/executer/exstorob.c		\
+	../acpica/source/components/executer/exsystem.c		\
+	../acpica/source/components/executer/exutils.c		\
+	../acpica/source/common/getopt.c			\
+	../acpica/source/components/namespace/nsaccess.c	\
+	../acpica/source/components/namespace/nsalloc.c		\
+	../acpica/source/components/namespace/nsdump.c		\
+	../acpica/source/components/namespace/nsnames.c		\
+	../acpica/source/components/namespace/nsobject.c	\
+	../acpica/source/components/namespace/nsparse.c		\
+	../acpica/source/components/namespace/nssearch.c	\
+	../acpica/source/components/namespace/nsutils.c		\
+	../acpica/source/components/namespace/nswalk.c		\
+	../acpica/source/components/namespace/nsxfobj.c		\
+	../acpica/source/os_specific/service_layers/osunixxf.c	\
+	../acpica/source/compiler/prexpress.c			\
+	../acpica/source/compiler/prmacros.c			\
+	../acpica/source/compiler/prscan.c			\
+	../acpica/source/compiler/prutils.c			\
+	../acpica/source/components/parser/psargs.c		\
+	../acpica/source/components/parser/psloop.c		\
+	../acpica/source/components/parser/psobject.c		\
+	../acpica/source/components/parser/psopcode.c		\
+	../acpica/source/components/parser/psopinfo.c		\
+	../acpica/source/components/parser/psparse.c		\
+	../acpica/source/components/parser/psscope.c		\
+	../acpica/source/components/parser/pstree.c		\
+	../acpica/source/components/parser/psutils.c		\
+	../acpica/source/components/parser/pswalk.c		\
+	../acpica/source/components/tables/tbdata.c		\
+	../acpica/source/components/tables/tbfadt.c		\
+	../acpica/source/components/tables/tbinstal.c		\
+	../acpica/source/components/tables/tbprint.c		\
+	../acpica/source/components/tables/tbutils.c		\
+	../acpica/source/components/tables/tbxface.c		\
+	../acpica/source/components/tables/tbxfload.c		\
+	../acpica/source/components/utilities/utaddress.c	\
+	../acpica/source/components/utilities/utalloc.c		\
+	../acpica/source/components/utilities/utascii.c		\
+	../acpica/source/components/utilities/utbuffer.c	\
+	../acpica/source/components/utilities/utcache.c		\
+	../acpica/source/components/utilities/utcopy.c		\
+	../acpica/source/components/utilities/utdebug.c		\
+	../acpica/source/components/utilities/utdecode.c	\
+	../acpica/source/components/utilities/utdelete.c	\
+	../acpica/source/components/utilities/uterror.c		\
+	../acpica/source/components/utilities/utexcep.c		\
+	../acpica/source/components/utilities/utglobal.c	\
+	../acpica/source/components/utilities/uthex.c		\
+	../acpica/source/components/utilities/utinit.c		\
+	../acpica/source/components/utilities/utlock.c		\
+	../acpica/source/components/utilities/utmath.c		\
+	../acpica/source/components/utilities/utmisc.c		\
+	../acpica/source/components/utilities/utmutex.c		\
+	../acpica/source/components/utilities/utnonansi.c	\
+	../acpica/source/components/utilities/utobject.c	\
+	../acpica/source/components/utilities/utownerid.c	\
+	../acpica/source/components/utilities/utpredef.c	\
+	../acpica/source/components/utilities/utresdecode.c	\
+	../acpica/source/components/utilities/utresrc.c		\
+	../acpica/source/components/utilities/utstate.c		\
+	../acpica/source/components/utilities/utstrtoul64.c	\
+	../acpica/source/components/utilities/utstrsuppt.c	\
+	../acpica/source/components/utilities/utstring.c	\
+	../acpica/source/components/utilities/utuuid.c		\
+	../acpica/source/components/utilities/utxface.c		\
+	../acpica/source/components/utilities/utxferror.c

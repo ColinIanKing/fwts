@@ -18,16 +18,14 @@
 
 # Nb. the top-level Makefile builds source/compiler for us now...
 
-ACPICA = $(top_srcdir)/src/acpica/source
-
 #
 # -DACPI_EXEC_APP is specific to making ACPICA for the fwts method test
 #
 AM_CPPFLAGS = 						\
 	-D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP	\
 	-I$(top_srcdir)/src/lib/include			\
-	-I$(ACPICA)/include				\
-	-I$(ACPICA)/tools/acpiexec			\
+	-I../acpica/source/include			\
+	-I../acpica/source/tools/acpiexec		\
 	`pkg-config --silence-errors --cflags json`	\
 	`pkg-config --silence-errors --cflags json-c`	\
 	-Wall -fno-strict-aliasing			\
@@ -37,7 +35,7 @@ AM_CPPFLAGS = 						\
 #  We rename some of the functions so we can override them in fwts. This
 #  is a hack, I feel dirty now.
 #
-osunixxf_munged.c: $(ACPICA)/os_specific/service_layers/osunixxf.c
+osunixxf_munged.c: ../acpica/source/os_specific/service_layers/osunixxf.c
 	cat  $^ |							\
 	sed 's/^AcpiOsPrintf/__AcpiOsPrintf/' |				\
 	sed 's/^AcpiOsReadPort/__AcpiOsReadPort/' |			\
@@ -56,7 +54,7 @@ osunixxf_munged.c: $(ACPICA)/os_specific/service_layers/osunixxf.c
 #  because we really don't want to wait until the sun turns into
 #  a lump of coal before we complete a blocked operation
 #
-dscontrol_munged.c: $(ACPICA)/components/dispatcher/dscontrol.c
+dscontrol_munged.c: ../acpica/source/components/dispatcher/dscontrol.c
 	cat $^ |					\
 	sed 's/ACPI_MAX_LOOP_ITERATIONS/0x0080/'	\
 	> $@
@@ -66,15 +64,15 @@ BUILT_SOURCES = osunixxf_munged.c dscontrol_munged.c
 #
 #  Source files that are generated on-the fly and need cleaning
 #
-CLEANFILES = osunixxf_munged.c			\
-	dscontrol_munged.c			\
-	$(ACPICA)/compiler/aslcompiler.output	\
-	$(ACPICA)/compiler/dtparser.output	\
-	$(ACPICA)/compiler/dtparser.y.h		\
-	$(ACPICA)/compiler/prparser.output	\
-	$(ACPICA)/compiler/prparser.y.h		\
-	$(ACPICA)/compiler/prparserlex.c	\
-	$(ACPICA)/compiler/prparserparse.c
+CLEANFILES = osunixxf_munged.c				\
+	dscontrol_munged.c				\
+	../acpica/source/compiler/aslcompiler.output	\
+	../acpica/source/compiler/dtparser.output	\
+	../acpica/source/compiler/dtparser.y.h		\
+	../acpica/source/compiler/prparser.output	\
+	../acpica/source/compiler/prparser.y.h		\
+	../acpica/source/compiler/prparserlex.c		\
+	../acpica/source/compiler/prparserparse.c
 
 pkglib_LTLIBRARIES = libfwtsacpica.la
 
@@ -84,205 +82,205 @@ libfwtsacpica_la_CPPFLAGS = $(AM_CPPFLAGS)
 #
 #  fwts acpica library sources
 #
-libfwtsacpica_la_SOURCES =				\
-	fwts_acpica.c					\
-	osunixxf_munged.c				\
-	dscontrol_munged.c				\
-	$(ACPICA)/components/debugger/dbcmds.c		\
-	$(ACPICA)/components/debugger/dbdisply.c	\
-	$(ACPICA)/components/debugger/dbexec.c		\
-	$(ACPICA)/components/debugger/dbfileio.c	\
-	$(ACPICA)/components/debugger/dbhistry.c	\
-	$(ACPICA)/components/debugger/dbinput.c		\
-	$(ACPICA)/components/debugger/dbstats.c		\
-	$(ACPICA)/components/debugger/dbobject.c	\
-	$(ACPICA)/components/debugger/dbutils.c		\
-	$(ACPICA)/components/debugger/dbxface.c		\
-	$(ACPICA)/components/debugger/dbmethod.c	\
-	$(ACPICA)/components/debugger/dbnames.c		\
-	$(ACPICA)/components/debugger/dbconvert.c	\
-	$(ACPICA)/components/debugger/dbtest.c		\
-	$(ACPICA)/components/disassembler/dmbuffer.c	\
-	$(ACPICA)/components/disassembler/dmcstyle.c	\
-	$(ACPICA)/components/disassembler/dmnames.c	\
-	$(ACPICA)/components/disassembler/dmopcode.c	\
-	$(ACPICA)/components/disassembler/dmresrc.c	\
-	$(ACPICA)/components/disassembler/dmresrcl.c	\
-	$(ACPICA)/components/disassembler/dmresrcs.c	\
-	$(ACPICA)/components/disassembler/dmutils.c	\
-	$(ACPICA)/components/disassembler/dmwalk.c	\
-	$(ACPICA)/components/disassembler/dmresrcl2.c	\
-	$(ACPICA)/components/disassembler/dmdeferred.c 	\
-	$(ACPICA)/components/dispatcher/dsdebug.c	\
-	$(ACPICA)/components/dispatcher/dsfield.c	\
-	$(ACPICA)/components/dispatcher/dsinit.c	\
-	$(ACPICA)/components/dispatcher/dsmethod.c	\
-	$(ACPICA)/components/dispatcher/dsmthdat.c	\
-	$(ACPICA)/components/dispatcher/dsobject.c	\
-	$(ACPICA)/components/dispatcher/dspkginit.c	\
-	$(ACPICA)/components/dispatcher/dsutils.c	\
-	$(ACPICA)/components/dispatcher/dswexec.c	\
-	$(ACPICA)/components/dispatcher/dswload.c	\
-	$(ACPICA)/components/dispatcher/dswscope.c	\
-	$(ACPICA)/components/dispatcher/dswstate.c	\
-	$(ACPICA)/components/dispatcher/dsargs.c	\
-	$(ACPICA)/components/dispatcher/dswload2.c	\
-	$(ACPICA)/components/dispatcher/dsopcode.c	\
-	$(ACPICA)/components/events/evevent.c		\
-	$(ACPICA)/components/events/evgpe.c		\
-	$(ACPICA)/components/events/evgpeblk.c		\
-	$(ACPICA)/components/events/evgpeinit.c		\
-	$(ACPICA)/components/events/evgpeutil.c		\
-	$(ACPICA)/components/events/evxfgpe.c		\
-	$(ACPICA)/components/events/evmisc.c		\
-	$(ACPICA)/components/events/evregion.c		\
-	$(ACPICA)/components/events/evrgnini.c		\
-	$(ACPICA)/components/events/evsci.c		\
-	$(ACPICA)/components/events/evxface.c		\
-	$(ACPICA)/components/events/evxfevnt.c		\
-	$(ACPICA)/components/events/evxfregn.c		\
-	$(ACPICA)/components/events/evglock.c		\
-	$(ACPICA)/components/events/evhandler.c		\
-	$(ACPICA)/components/executer/exconcat.c	\
-	$(ACPICA)/components/executer/exfield.c		\
-	$(ACPICA)/components/executer/exfldio.c		\
-	$(ACPICA)/components/executer/exmisc.c		\
-	$(ACPICA)/components/executer/exmutex.c		\
-	$(ACPICA)/components/executer/exnames.c		\
-	$(ACPICA)/components/executer/exoparg1.c	\
-	$(ACPICA)/components/executer/exoparg2.c	\
-	$(ACPICA)/components/executer/exoparg3.c	\
-	$(ACPICA)/components/executer/exoparg6.c	\
-	$(ACPICA)/components/executer/exprep.c		\
-	$(ACPICA)/components/executer/exregion.c	\
-	$(ACPICA)/components/executer/exresnte.c	\
-	$(ACPICA)/components/executer/exresolv.c	\
-	$(ACPICA)/components/executer/exresop.c		\
-	$(ACPICA)/components/executer/exserial.c	\
-	$(ACPICA)/components/executer/exstore.c		\
-	$(ACPICA)/components/executer/exstoren.c	\
-	$(ACPICA)/components/executer/exstorob.c	\
-	$(ACPICA)/components/executer/exsystem.c	\
-	$(ACPICA)/components/executer/extrace.c		\
-	$(ACPICA)/components/executer/exutils.c		\
-	$(ACPICA)/components/executer/exconvrt.c	\
-	$(ACPICA)/components/executer/excreate.c	\
-	$(ACPICA)/components/executer/exdump.c		\
-	$(ACPICA)/components/executer/exdebug.c		\
-	$(ACPICA)/components/executer/exconfig.c	\
-	$(ACPICA)/components/hardware/hwacpi.c		\
-	$(ACPICA)/components/hardware/hwgpe.c		\
-	$(ACPICA)/components/hardware/hwpci.c		\
-	$(ACPICA)/components/hardware/hwregs.c		\
-	$(ACPICA)/components/hardware/hwsleep.c		\
-	$(ACPICA)/components/hardware/hwvalid.c		\
-	$(ACPICA)/components/hardware/hwxface.c		\
-	$(ACPICA)/components/hardware/hwxfsleep.c	\
-	$(ACPICA)/components/hardware/hwesleep.c	\
-	$(ACPICA)/components/namespace/nsaccess.c	\
-	$(ACPICA)/components/namespace/nsalloc.c	\
-	$(ACPICA)/components/namespace/nsdump.c		\
-	$(ACPICA)/components/namespace/nsdumpdv.c	\
-	$(ACPICA)/components/namespace/nseval.c		\
-	$(ACPICA)/components/namespace/nsinit.c		\
-	$(ACPICA)/components/namespace/nsload.c		\
-	$(ACPICA)/components/namespace/nsnames.c	\
-	$(ACPICA)/components/namespace/nsobject.c	\
-	$(ACPICA)/components/namespace/nsparse.c	\
-	$(ACPICA)/components/namespace/nspredef.c	\
-	$(ACPICA)/components/namespace/nsrepair.c	\
-	$(ACPICA)/components/namespace/nsrepair2.c	\
-	$(ACPICA)/components/namespace/nssearch.c	\
-	$(ACPICA)/components/namespace/nsutils.c	\
-	$(ACPICA)/components/namespace/nswalk.c		\
-	$(ACPICA)/components/namespace/nsxfeval.c	\
-	$(ACPICA)/components/namespace/nsxfname.c	\
-	$(ACPICA)/components/namespace/nsxfobj.c	\
-	$(ACPICA)/components/namespace/nsconvert.c	\
-	$(ACPICA)/components/namespace/nsprepkg.c	\
-	$(ACPICA)/components/namespace/nsarguments.c	\
-	$(ACPICA)/components/parser/psargs.c		\
-	$(ACPICA)/components/parser/psloop.c		\
-	$(ACPICA)/components/parser/psopcode.c		\
-	$(ACPICA)/components/parser/psparse.c		\
-	$(ACPICA)/components/parser/psscope.c		\
-	$(ACPICA)/components/parser/pstree.c		\
-	$(ACPICA)/components/parser/psutils.c		\
-	$(ACPICA)/components/parser/pswalk.c		\
-	$(ACPICA)/components/parser/psxface.c		\
-	$(ACPICA)/components/parser/psopinfo.c		\
-	$(ACPICA)/components/parser/psobject.c		\
-	$(ACPICA)/components/resources/rsaddr.c		\
-	$(ACPICA)/components/resources/rscalc.c		\
-	$(ACPICA)/components/resources/rscreate.c	\
-	$(ACPICA)/components/resources/rsdump.c		\
-	$(ACPICA)/components/resources/rsio.c		\
-	$(ACPICA)/components/resources/rsinfo.c		\
-	$(ACPICA)/components/resources/rsirq.c		\
-	$(ACPICA)/components/resources/rslist.c		\
-	$(ACPICA)/components/resources/rsmemory.c	\
-	$(ACPICA)/components/resources/rsmisc.c		\
-	$(ACPICA)/components/resources/rsutils.c	\
-	$(ACPICA)/components/resources/rsxface.c	\
-	$(ACPICA)/components/resources/rsserial.c	\
-	$(ACPICA)/components/resources/rsdumpinfo.c	\
-	$(ACPICA)/components/tables/tbdata.c		\
-	$(ACPICA)/components/tables/tbfadt.c		\
-	$(ACPICA)/components/tables/tbfind.c		\
-	$(ACPICA)/components/tables/tbinstal.c		\
-	$(ACPICA)/components/tables/tbutils.c		\
-	$(ACPICA)/components/tables/tbxface.c		\
-	$(ACPICA)/components/tables/tbxfroot.c		\
-	$(ACPICA)/components/tables/tbxfload.c		\
-	$(ACPICA)/components/tables/tbprint.c		\
-	$(ACPICA)/components/utilities/utaddress.c	\
-	$(ACPICA)/components/utilities/utalloc.c	\
-	$(ACPICA)/components/utilities/utascii.c	\
-	$(ACPICA)/components/utilities/utcache.c	\
-	$(ACPICA)/components/utilities/utcopy.c		\
-	$(ACPICA)/components/utilities/utdebug.c	\
-	$(ACPICA)/components/utilities/utdelete.c	\
-	$(ACPICA)/components/utilities/uteval.c		\
-	$(ACPICA)/components/utilities/utglobal.c	\
-	$(ACPICA)/components/utilities/uthex.c		\
-	$(ACPICA)/components/utilities/utids.c		\
-	$(ACPICA)/components/utilities/utinit.c		\
-	$(ACPICA)/components/utilities/utlock.c		\
-	$(ACPICA)/components/utilities/utmath.c		\
-	$(ACPICA)/components/utilities/utmisc.c		\
-	$(ACPICA)/components/utilities/utmutex.c	\
-	$(ACPICA)/components/utilities/utnonansi.c	\
-	$(ACPICA)/components/utilities/utobject.c	\
-	$(ACPICA)/components/utilities/utresdecode.c	\
-	$(ACPICA)/components/utilities/utresrc.c	\
-	$(ACPICA)/components/utilities/utstate.c	\
-	$(ACPICA)/components/utilities/utstrtoul64.c	\
-	$(ACPICA)/components/utilities/uttrack.c	\
-	$(ACPICA)/components/utilities/utosi.c		\
-	$(ACPICA)/components/utilities/utxferror.c	\
-	$(ACPICA)/components/utilities/utxface.c	\
-	$(ACPICA)/components/utilities/utdecode.c	\
-	$(ACPICA)/components/utilities/utexcep.c	\
-	$(ACPICA)/components/utilities/utpredef.c	\
-	$(ACPICA)/components/utilities/utstring.c	\
-	$(ACPICA)/components/utilities/utstrsuppt.c	\
-	$(ACPICA)/components/utilities/utownerid.c	\
-	$(ACPICA)/components/utilities/utxfinit.c	\
-	$(ACPICA)/components/utilities/uterror.c	\
-	$(ACPICA)/components/utilities/utbuffer.c 	\
-	$(ACPICA)/components/utilities/utuuid.c		\
-	$(ACPICA)/common/acfileio.c			\
-	$(ACPICA)/common/acgetline.c            	\
-	$(ACPICA)/common/ahids.c			\
-	$(ACPICA)/common/cmfsize.c            		\
-	$(ACPICA)/common/ahtable.c			\
-	$(ACPICA)/common/ahuuids.c			\
-	$(ACPICA)/tools/acpiexec/aeinitfile.c		\
-	$(ACPICA)/tools/acpiexec/aehandlers.c		\
-	$(ACPICA)/tools/acpiexec/aeexception.c		\
-	$(ACPICA)/tools/acpiexec/aeregion.c		\
-	$(ACPICA)/tools/acpiexec/aeinstall.c		\
-	$(ACPICA)/os_specific/service_layers/osgendbg.c
+libfwtsacpica_la_SOURCES =					\
+	fwts_acpica.c						\
+	osunixxf_munged.c					\
+	dscontrol_munged.c					\
+	../acpica/source/components/debugger/dbcmds.c		\
+	../acpica/source/components/debugger/dbdisply.c		\
+	../acpica/source/components/debugger/dbexec.c		\
+	../acpica/source/components/debugger/dbfileio.c		\
+	../acpica/source/components/debugger/dbhistry.c		\
+	../acpica/source/components/debugger/dbinput.c		\
+	../acpica/source/components/debugger/dbstats.c		\
+	../acpica/source/components/debugger/dbobject.c		\
+	../acpica/source/components/debugger/dbutils.c		\
+	../acpica/source/components/debugger/dbxface.c		\
+	../acpica/source/components/debugger/dbmethod.c		\
+	../acpica/source/components/debugger/dbnames.c		\
+	../acpica/source/components/debugger/dbconvert.c	\
+	../acpica/source/components/debugger/dbtest.c		\
+	../acpica/source/components/disassembler/dmbuffer.c	\
+	../acpica/source/components/disassembler/dmcstyle.c	\
+	../acpica/source/components/disassembler/dmnames.c	\
+	../acpica/source/components/disassembler/dmopcode.c	\
+	../acpica/source/components/disassembler/dmresrc.c	\
+	../acpica/source/components/disassembler/dmresrcl.c	\
+	../acpica/source/components/disassembler/dmresrcs.c	\
+	../acpica/source/components/disassembler/dmutils.c	\
+	../acpica/source/components/disassembler/dmwalk.c	\
+	../acpica/source/components/disassembler/dmresrcl2.c	\
+	../acpica/source/components/disassembler/dmdeferred.c 	\
+	../acpica/source/components/dispatcher/dsdebug.c	\
+	../acpica/source/components/dispatcher/dsfield.c	\
+	../acpica/source/components/dispatcher/dsinit.c		\
+	../acpica/source/components/dispatcher/dsmethod.c	\
+	../acpica/source/components/dispatcher/dsmthdat.c	\
+	../acpica/source/components/dispatcher/dsobject.c	\
+	../acpica/source/components/dispatcher/dspkginit.c	\
+	../acpica/source/components/dispatcher/dsutils.c	\
+	../acpica/source/components/dispatcher/dswexec.c	\
+	../acpica/source/components/dispatcher/dswload.c	\
+	../acpica/source/components/dispatcher/dswscope.c	\
+	../acpica/source/components/dispatcher/dswstate.c	\
+	../acpica/source/components/dispatcher/dsargs.c		\
+	../acpica/source/components/dispatcher/dswload2.c	\
+	../acpica/source/components/dispatcher/dsopcode.c	\
+	../acpica/source/components/events/evevent.c		\
+	../acpica/source/components/events/evgpe.c		\
+	../acpica/source/components/events/evgpeblk.c		\
+	../acpica/source/components/events/evgpeinit.c		\
+	../acpica/source/components/events/evgpeutil.c		\
+	../acpica/source/components/events/evxfgpe.c		\
+	../acpica/source/components/events/evmisc.c		\
+	../acpica/source/components/events/evregion.c		\
+	../acpica/source/components/events/evrgnini.c		\
+	../acpica/source/components/events/evsci.c		\
+	../acpica/source/components/events/evxface.c		\
+	../acpica/source/components/events/evxfevnt.c		\
+	../acpica/source/components/events/evxfregn.c		\
+	../acpica/source/components/events/evglock.c		\
+	../acpica/source/components/events/evhandler.c		\
+	../acpica/source/components/executer/exconcat.c		\
+	../acpica/source/components/executer/exfield.c		\
+	../acpica/source/components/executer/exfldio.c		\
+	../acpica/source/components/executer/exmisc.c		\
+	../acpica/source/components/executer/exmutex.c		\
+	../acpica/source/components/executer/exnames.c		\
+	../acpica/source/components/executer/exoparg1.c		\
+	../acpica/source/components/executer/exoparg2.c		\
+	../acpica/source/components/executer/exoparg3.c		\
+	../acpica/source/components/executer/exoparg6.c		\
+	../acpica/source/components/executer/exprep.c		\
+	../acpica/source/components/executer/exregion.c		\
+	../acpica/source/components/executer/exresnte.c		\
+	../acpica/source/components/executer/exresolv.c		\
+	../acpica/source/components/executer/exresop.c		\
+	../acpica/source/components/executer/exserial.c		\
+	../acpica/source/components/executer/exstore.c		\
+	../acpica/source/components/executer/exstoren.c		\
+	../acpica/source/components/executer/exstorob.c		\
+	../acpica/source/components/executer/exsystem.c		\
+	../acpica/source/components/executer/extrace.c		\
+	../acpica/source/components/executer/exutils.c		\
+	../acpica/source/components/executer/exconvrt.c		\
+	../acpica/source/components/executer/excreate.c		\
+	../acpica/source/components/executer/exdump.c		\
+	../acpica/source/components/executer/exdebug.c		\
+	../acpica/source/components/executer/exconfig.c		\
+	../acpica/source/components/hardware/hwacpi.c		\
+	../acpica/source/components/hardware/hwgpe.c		\
+	../acpica/source/components/hardware/hwpci.c		\
+	../acpica/source/components/hardware/hwregs.c		\
+	../acpica/source/components/hardware/hwsleep.c		\
+	../acpica/source/components/hardware/hwvalid.c		\
+	../acpica/source/components/hardware/hwxface.c		\
+	../acpica/source/components/hardware/hwxfsleep.c	\
+	../acpica/source/components/hardware/hwesleep.c		\
+	../acpica/source/components/namespace/nsaccess.c	\
+	../acpica/source/components/namespace/nsalloc.c		\
+	../acpica/source/components/namespace/nsdump.c		\
+	../acpica/source/components/namespace/nsdumpdv.c	\
+	../acpica/source/components/namespace/nseval.c		\
+	../acpica/source/components/namespace/nsinit.c		\
+	../acpica/source/components/namespace/nsload.c		\
+	../acpica/source/components/namespace/nsnames.c		\
+	../acpica/source/components/namespace/nsobject.c	\
+	../acpica/source/components/namespace/nsparse.c		\
+	../acpica/source/components/namespace/nspredef.c	\
+	../acpica/source/components/namespace/nsrepair.c	\
+	../acpica/source/components/namespace/nsrepair2.c	\
+	../acpica/source/components/namespace/nssearch.c	\
+	../acpica/source/components/namespace/nsutils.c		\
+	../acpica/source/components/namespace/nswalk.c		\
+	../acpica/source/components/namespace/nsxfeval.c	\
+	../acpica/source/components/namespace/nsxfname.c	\
+	../acpica/source/components/namespace/nsxfobj.c		\
+	../acpica/source/components/namespace/nsconvert.c	\
+	../acpica/source/components/namespace/nsprepkg.c	\
+	../acpica/source/components/namespace/nsarguments.c	\
+	../acpica/source/components/parser/psargs.c		\
+	../acpica/source/components/parser/psloop.c		\
+	../acpica/source/components/parser/psopcode.c		\
+	../acpica/source/components/parser/psparse.c		\
+	../acpica/source/components/parser/psscope.c		\
+	../acpica/source/components/parser/pstree.c		\
+	../acpica/source/components/parser/psutils.c		\
+	../acpica/source/components/parser/pswalk.c		\
+	../acpica/source/components/parser/psxface.c		\
+	../acpica/source/components/parser/psopinfo.c		\
+	../acpica/source/components/parser/psobject.c		\
+	../acpica/source/components/resources/rsaddr.c		\
+	../acpica/source/components/resources/rscalc.c		\
+	../acpica/source/components/resources/rscreate.c	\
+	../acpica/source/components/resources/rsdump.c		\
+	../acpica/source/components/resources/rsio.c		\
+	../acpica/source/components/resources/rsinfo.c		\
+	../acpica/source/components/resources/rsirq.c		\
+	../acpica/source/components/resources/rslist.c		\
+	../acpica/source/components/resources/rsmemory.c	\
+	../acpica/source/components/resources/rsmisc.c		\
+	../acpica/source/components/resources/rsutils.c		\
+	../acpica/source/components/resources/rsxface.c		\
+	../acpica/source/components/resources/rsserial.c	\
+	../acpica/source/components/resources/rsdumpinfo.c	\
+	../acpica/source/components/tables/tbdata.c		\
+	../acpica/source/components/tables/tbfadt.c		\
+	../acpica/source/components/tables/tbfind.c		\
+	../acpica/source/components/tables/tbinstal.c		\
+	../acpica/source/components/tables/tbutils.c		\
+	../acpica/source/components/tables/tbxface.c		\
+	../acpica/source/components/tables/tbxfroot.c		\
+	../acpica/source/components/tables/tbxfload.c		\
+	../acpica/source/components/tables/tbprint.c		\
+	../acpica/source/components/utilities/utaddress.c	\
+	../acpica/source/components/utilities/utalloc.c		\
+	../acpica/source/components/utilities/utascii.c		\
+	../acpica/source/components/utilities/utcache.c		\
+	../acpica/source/components/utilities/utcopy.c		\
+	../acpica/source/components/utilities/utdebug.c		\
+	../acpica/source/components/utilities/utdelete.c	\
+	../acpica/source/components/utilities/uteval.c		\
+	../acpica/source/components/utilities/utglobal.c	\
+	../acpica/source/components/utilities/uthex.c		\
+	../acpica/source/components/utilities/utids.c		\
+	../acpica/source/components/utilities/utinit.c		\
+	../acpica/source/components/utilities/utlock.c		\
+	../acpica/source/components/utilities/utmath.c		\
+	../acpica/source/components/utilities/utmisc.c		\
+	../acpica/source/components/utilities/utmutex.c		\
+	../acpica/source/components/utilities/utnonansi.c	\
+	../acpica/source/components/utilities/utobject.c	\
+	../acpica/source/components/utilities/utresdecode.c	\
+	../acpica/source/components/utilities/utresrc.c		\
+	../acpica/source/components/utilities/utstate.c		\
+	../acpica/source/components/utilities/utstrtoul64.c	\
+	../acpica/source/components/utilities/uttrack.c		\
+	../acpica/source/components/utilities/utosi.c		\
+	../acpica/source/components/utilities/utxferror.c	\
+	../acpica/source/components/utilities/utxface.c		\
+	../acpica/source/components/utilities/utdecode.c	\
+	../acpica/source/components/utilities/utexcep.c		\
+	../acpica/source/components/utilities/utpredef.c	\
+	../acpica/source/components/utilities/utstring.c	\
+	../acpica/source/components/utilities/utstrsuppt.c	\
+	../acpica/source/components/utilities/utownerid.c	\
+	../acpica/source/components/utilities/utxfinit.c	\
+	../acpica/source/components/utilities/uterror.c		\
+	../acpica/source/components/utilities/utbuffer.c 	\
+	../acpica/source/components/utilities/utuuid.c		\
+	../acpica/source/common/acfileio.c			\
+	../acpica/source/common/acgetline.c            		\
+	../acpica/source/common/ahids.c				\
+	../acpica/source/common/cmfsize.c            		\
+	../acpica/source/common/ahtable.c			\
+	../acpica/source/common/ahuuids.c			\
+	../acpica/source/tools/acpiexec/aeinitfile.c		\
+	../acpica/source/tools/acpiexec/aehandlers.c		\
+	../acpica/source/tools/acpiexec/aeexception.c		\
+	../acpica/source/tools/acpiexec/aeregion.c		\
+	../acpica/source/tools/acpiexec/aeinstall.c		\
+	../acpica/source/os_specific/service_layers/osgendbg.c
 
 libfwtsacpica_la_LIBADD = \
 	-L$(top_builddir)/src/lib/src -lfwts -lrt

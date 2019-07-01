@@ -55,6 +55,9 @@ static void print_package_element(fwts_framework *fw, ACPI_OBJECT *obj)
 	ACPI_STATUS status;
 	ACPI_BUFFER buffer;
 
+	buffer.Length = sizeof(full_name);
+	buffer.Pointer = full_name;
+
 	switch (obj->Type) {
 		case ACPI_TYPE_INTEGER:
 			fwts_log_info_verbatim(fw, "    Value: 0x%8.8" PRIx64, obj->Integer.Value);

@@ -1633,6 +1633,7 @@ tidy_close:
 	free(fw->olog);
 	free(fw->json_data_path);
 	free(fw->json_data_file);
+	free(fw->fdt);
 
 	fwts_list_free_items(&fw->errors_filter_discard, NULL);
 	fwts_list_free_items(&fw->errors_filter_keep, NULL);

@@ -234,6 +234,7 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 				buf);
 			ok = false;
 		}
+		free(buf);
 
 		if (skip)
 			continue;

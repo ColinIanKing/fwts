@@ -33,7 +33,7 @@ if [ $ret -eq 0 ]; then
 else
 	echo FAILED: $TEST, $NAME
 fi
-stty cols 80 2> /dev/null
+stty cols $cols 2> /dev/null
 tset 2> /dev/null
 
 rm $TMPLOG ${TMPLOG}.orig

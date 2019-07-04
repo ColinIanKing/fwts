@@ -2538,12 +2538,12 @@ static void method_test_PTC_return(
 		return;
 
 	for (i = 0; i < obj->Package.Count; i++) {
-		ACPI_RESOURCE *resource;
+		ACPI_RESOURCE *resource = NULL;
 		ACPI_STATUS   status;
 		ACPI_OBJECT *element_buf = &obj->Package.Elements[i];
 
 		status = AcpiBufferToResource(element_buf->Buffer.Pointer, element_buf->Buffer.Length, &resource);
-		if (ACPI_FAILURE(status)) {
+		if (ACPI_FAILURE(status) || !resource) {
 			failed = true;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"Method_PTCBadElement",

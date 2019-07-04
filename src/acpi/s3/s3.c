@@ -473,7 +473,7 @@ static int s3_check_log(
 	int *suspend_too_long,
 	int *resume_too_long)
 {
-	int error;
+	int error = 0;
 	int oops;
 	int warn_on;
 

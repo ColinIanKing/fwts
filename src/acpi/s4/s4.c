@@ -68,7 +68,7 @@ static int s4_init(fwts_framework *fw)
 static void s4_check_log(fwts_framework *fw,
 	fwts_list *klog, int *errors, int *oopses, int *warn_ons)
 {
-	int error;
+	int error = 0;
 	int oops;
 	int warn_on;
 

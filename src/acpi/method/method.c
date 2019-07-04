@@ -620,7 +620,7 @@ static void method_test_EVT_return (
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	ACPI_RESOURCE *resource;
+	ACPI_RESOURCE *resource = NULL;
 	ACPI_STATUS   status;
 
 	FWTS_UNUSED(private);
@@ -629,7 +629,7 @@ static void method_test_EVT_return (
 		return;
 
 	status = AcpiBufferToResource(obj->Buffer.Pointer, obj->Buffer.Length, &resource);
-	if (ACPI_FAILURE(status))
+	if (ACPI_FAILURE(status) || !resource)
 		return;
 
 	do {
@@ -643,7 +643,7 @@ static void method_test_EVT_return (
 				check_evt_event(fw, &resource->Data.Gpio);
 
 		resource = ACPI_NEXT_RESOURCE(resource);
-	} while (resource->Type != ACPI_RESOURCE_TYPE_END_TAG);
+	} while (resource && resource->Type != ACPI_RESOURCE_TYPE_END_TAG);
 }
 
 static int method_test_EVT(fwts_framework *fw)

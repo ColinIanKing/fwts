@@ -161,6 +161,8 @@ int fwts_pipe_readwrite(
 
 	*out_len = 0;
 
+	memset(&pollfds, 0, sizeof(pollfds));
+
 	pollfds[0].fd = out_fd;
 	pollfds[0].events = POLLIN;
 	pollfds[1].fd = in_fd;

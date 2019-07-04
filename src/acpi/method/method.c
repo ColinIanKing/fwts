@@ -410,10 +410,12 @@ static int method_evaluate_method(fwts_framework *fw,
 				status = AcpiGetHandle (NULL, method_name, &method_handle);
 				if (ACPI_FAILURE(status)) {
 					fwts_warning(fw, "Failed to get handle for object %s.", name);
+					continue;
 				}
 				status = AcpiGetType(method_handle, &type);
 				if (ACPI_FAILURE(status)) {
 					fwts_warning(fw, "Failed to get object type for %s.",name);
+					continue;
 				}
 
 				if (type == ACPI_TYPE_LOCAL_SCOPE)

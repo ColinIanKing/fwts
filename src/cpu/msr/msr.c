@@ -728,6 +728,10 @@ typedef struct {
 	const msr_info *const info;
 } cpu_to_msr;
 
+/*
+ * Intel's CPU-specific MSRs can be found in
+ * Intel® 64 and IA-32 ArchitecturesSoftware Developer’s Manual Volume 4
+ */
 static const cpu_to_msr cpu_msr_map[] = {
 	{ "Pentium",			0x05, 0x01,	NULL },
 	{ "Pentium",			0x05, 0x02,	NULL },

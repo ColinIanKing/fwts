@@ -347,6 +347,7 @@ static const msr_info IA32_MSRs[] = {
 	{ "FEATURE_CONTROL",		0x0000003a,	0x000000000016ff07ULL, NULL },
 	{ "TSC_ADJUST",		0x0000003b,	0xffffffffffffffffULL, NULL },
 	{ "BIOS_SIGN_ID",		0x0000008b,	0xffffffff00000000ULL, NULL },
+	{ "SMM_MONITOR_CTL",            0x0000009b,     0x00000000fffff005ULL, NULL },
 	{ "MTRRCAP",			0x000000fe,	0x0000000000000fffULL, NULL },
 	/*
 	 * LP#1582005 - Do not check sysenter MSRs, they will be different on

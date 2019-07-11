@@ -343,7 +343,6 @@ static const msr_info IA32_MSRs[] = {
 	{ "MONITOR_FILTER_SIZE",	0x00000006,	0xffffffffffffffffULL, NULL },
 	//{ "TIME_STAMP_COUNTER",	0x00000010,	0xffffffffffffffffULL, NULL },
 	{ "PLATFORM_ID",		0x00000017,	0x001c000000000000ULL, NULL },
-	{ "EBL_CR_POWERON",		0x0000002a,	0xffffffffffffffffULL, NULL },
 	{ "APIC_BASE",			0x0000001b,	0xfffffffffffffeffULL, NULL },
 	{ "FEATURE_CONTROL",		0x0000003a,	0x000000000000ff07ULL, NULL },
 	{ "BIOS_SIGN_ID",		0x0000008b,	0xffffffff00000000ULL, NULL },

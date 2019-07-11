@@ -473,11 +473,8 @@ static const msr_info IA32_MSRs[] = {
 
 static const msr_info IA32_atom_MSRs[] = {
 	{ "BIOS_UPDT_TRIG",		0x00000079,	0xffffffffffffffffULL, NULL },
-	{ "BIOS_SIGN_ID",		0x0000008b,	0xffffffffffffffffULL, NULL },
 	{ "MSR_FSB_FREQ",		0x000000cd,	0x0000000000000007ULL, NULL },
 	{ "MSR_BBL_CR_CTL3",		0x0000011e,	0x0000000000800101ULL, NULL },
-	{ "PERFEVTSEL0",		0x00000186,	0xffffffffffffffffULL, NULL },
-	{ "PERFEVTSEL1",		0x00000187,	0xffffffffffffffffULL, NULL },
 	{ "MSR_THERM2_CTL",		0x0000019d,	0x0000000000010000ULL, NULL },
 	{ "MC0_CTL",			0x00000400,	0xffffffffffffffffULL, NULL },
 	{ "MC0_STATUS",			0x00000401,	0xffffffffffffffffULL, NULL },
@@ -516,7 +513,6 @@ static const msr_info IA32_nehalem_MSRs[] = {
 
 static const msr_info IA32_sandybridge_MSRs[] = {
 	{ "BIOS_UPDT_TRIG",		0x00000079,	0xffffffffffffffffULL, NULL },
-	{ "BIOS_SIGN_ID",		0x0000008b,	0xffffffffffffffffULL, NULL },
 	{ "MSR_PLATFORM_INFO",		0x000000ce,	0x0000ff003001ff00ULL, NULL },
 	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0x0000000007008407ULL, NULL },
 	{ "MSR_PMG_IO_CAPTURE_BASE",	0x000000e4,	0x000000000007ffffULL, NULL },
@@ -657,10 +653,6 @@ static const msr_info IA32_ivybridge_ep_MSRs[] = {
 
 static const msr_info IA32_haswell_MSRs[] = {
 	{ "MSR_PLATFORM_INFO",		0x000000ce,	0x00ffff073000ff00ULL, NULL },
-	{ "IA32_PERFEVTSEL0",		0x00000186,	0x00000000ffffffffULL, NULL },
-	{ "IA32_PERFEVTSEL1",		0x00000187,	0x00000000ffffffffULL, NULL },
-	{ "IA32_PERFEVTSEL2",		0x00000188,	0x00000000ffffffffULL, NULL },
-	{ "IA32_PERFEVTSEL3",		0x00000189,	0x00000000ffffffffULL, NULL },
 	//{ "IA32_VMX_FMFUNC",		0x00000491,	0x0000000000000000ULL, NULL },
 	{ "MSR_CONFIG_TDP_NOMINAL",	0x00000648,	0x00000000000000ffULL, NULL },
 	{ "MSR_CONFIG_TDP_LEVEL1",	0x00000649,	0x7fff7fff00ff7fffULL, NULL },

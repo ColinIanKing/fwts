@@ -345,6 +345,7 @@ static const msr_info IA32_MSRs[] = {
 	{ "PLATFORM_ID",		0x00000017,	0x001c000000000000ULL, NULL },
 	{ "APIC_BASE",			0x0000001b,	0xfffffffffffffeffULL, NULL },
 	{ "FEATURE_CONTROL",		0x0000003a,	0x000000000016ff07ULL, NULL },
+	{ "TSC_ADJUST",		0x0000003b,	0xffffffffffffffffULL, NULL },
 	{ "BIOS_SIGN_ID",		0x0000008b,	0xffffffff00000000ULL, NULL },
 	{ "MTRRCAP",			0x000000fe,	0x0000000000000fffULL, NULL },
 	/*
@@ -644,7 +645,6 @@ static const msr_info IA32_ivybridge_ep_MSRs[] = {
 
 static const msr_info IA32_haswell_MSRs[] = {
 	{ "MSR_PLATFORM_INFO",		0x000000ce,	0x00ffff073000ff00ULL, NULL },
-	{ "IA32_TSC_ADJUST",		0x0000003b,	0xffffffffffffffffULL, NULL },
 	{ "IA32_PERFEVTSEL0",		0x00000186,	0x00000000ffffffffULL, NULL },
 	{ "IA32_PERFEVTSEL1",		0x00000187,	0x00000000ffffffffULL, NULL },
 	{ "IA32_PERFEVTSEL2",		0x00000188,	0x00000000ffffffffULL, NULL },

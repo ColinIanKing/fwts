@@ -453,6 +453,7 @@ static const msr_info IA32_MSRs[] = {
 	{ "VMX_TRUE_PROCBASED_CTLS",	0x0000048e,	0xffffffffffffffffULL, NULL },
 	{ "VMX_TRUE_EXIT_CTLS",		0x0000048f,	0xffffffffffffffffULL, NULL },
 	{ "VMX_TRUE_ENTRY_CTLS",	0x00000490,	0xffffffffffffffffULL, NULL },
+	{ "VMX_VMFUNC",	0x00000491,	0xffffffffffffffffULL, NULL },
 	{ "A_PMC4",			0x000004c5,	0xffffffffffffffffULL, NULL },
 	{ "A_PMC5",			0x000004c6,	0xffffffffffffffffULL, NULL },
 	{ "A_PMC6",			0x000004c7,	0xffffffffffffffffULL, NULL },

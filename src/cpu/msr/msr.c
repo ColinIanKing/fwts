@@ -483,6 +483,7 @@ static const msr_info IA32_atom_MSRs[] = {
 static const msr_info IA32_silvermont_MSRs[] = {
 	{ "MSR_PMG_IO_CAPTURE_BASE",	0x000000e4,	0x000000000007ffffULL, NULL },
 	{ "MSR_FEATURE_CONFIG",		0x0000013c,	0x0000000000000003ULL, NULL },
+	{ "MSR_TEMPERATURE_TARGET",	0x000001a2,	0x000000003fff0000ULL, NULL },
 	{ NULL,				0x00000000,	0, NULL },
 };
 

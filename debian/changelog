@@ -1,3 +1,46 @@
+fwts (19.07.00-0ubuntu1) eoan; urgency=medium
+
+  [Alex Hung]
+  * cpu/msr: skip read-only MCG_CAP MSR
+  * cpu/msr: add document info the cpu_msr_map table
+  * cpu/msr: add 3 more CPU IDs for IA32_silvermont_MSRs
+  * cpu/msr: remove EBL_CR_POWERON (2ah) from IA32_MSRs
+  * cpu/msr: check SGX & LMCE in IA32_FEATURE_CONTROL (3ah)
+  * cpu/msr: move TSC_ADJUST (3bh) to IA32_MSRs
+  * cpu/msr: add SMM_MONITOR_CTL (9bh) to IA32_MSRs
+  * cpu/msr: update MTRRCAP MSR register
+  * cpu/msr: update PAT MSR PA0[2:0]
+  * cpu/msr: add MC*_CTL2 MSR registers
+  * cpu/msr: update fields for MTRR_DEF_TYPE MSR
+  * cpu/msr: add VMX_VMFUNC MSR register
+  * cpu/msr: remove same MSR registers in IA32_MSRs
+  * cpu/msr: add MISC_ENABLE MSR to IA32_atom_MSRs
+  * cpu/msr: remove MSR for Error-Reporting Register Banks
+  * cpu/msr: add MSR_PMG_IO_CAPTURE_BASE to IA32_silvermont_MSRs
+  * cpu/msr: add MSR_FEATURE_CONFIG to IA32_silvermont_MSRs
+  * cpu/msr: add MSR_TEMPERATURE_TARGET to IA32_silvermont_MSRs
+  * cpu/msr: add MSR_BBL_CR_CTL3 to IA32_silvermont_MSRs
+  * cpu/msr: update THERM_INTERRUPT MSR masks
+  * cpu/msr: update MISC_ENABLE to IA32_silvermont_MSRs
+
+  [Colin Ian King]
+  * Move libfwtsacpica and libfwtsiasl into their own directories
+  * Makefiles: hard code paths to workaround autotool bug
+  * ACPICA: Update to version 20190703
+  * fwts-test: arg-help-0001: reset tty width to original setting
+  * lib: fwts_framework: fix memory leak on fw->fdt
+  * fwts: opal: fix memory leak of 'buf'.
+  * acpi: method: skip over bad method_handle and failed message type
+  * acpi: method: add null pointer sanity checks on resource
+  * acpi: method: add more null pointer sanity checks on resource
+  * acpi: s3/s4: initialize error to zero
+  * lib: fwts_pipeio: zero pollfds to squish a static analysis warning
+
+  [Erico Nunes]
+  * dsddump: fix segfault on type ACPI_TYPE_LOCAL_REFERENCE
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 25 Jul 2019 10:48:59 -0600
+
 fwts (19.06.00-0ubuntu1) eoan; urgency=medium
 
   [Alex Hung]

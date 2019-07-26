@@ -20,6 +20,10 @@ RHEL Distro ppc64el
 	pcre2-utf16 pcre2-utf32 glib2 glib2-devel pciutils pciutils-devel zlib-devel
 	make libbsd-devel
 
+Ubuntu Distro ARM64
+	autoconf automake libglib2.0-dev libtool libpcre3-dev
+	libjson-c-dev flex bison dkms libfdt-dev libbsd-dev
+
 2) To build and install (only if building from source)
 
 	autoreconf -ivf

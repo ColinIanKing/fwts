@@ -17,6 +17,7 @@
 #
 
 KVER ?= `uname -r`
+KBUILD_MODPOST_WARN=y
 obj-m += efi_runtime.o
 all:
 	make -C /lib/modules/$(KVER)/build M=`pwd` modules

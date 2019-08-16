@@ -20,6 +20,34 @@ syntaxcheck     00243|             {
 syntaxcheck     00244|                 If (_OSI ("Linux"))
 syntaxcheck     00245|                 {
 syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 661
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00658| 
+syntaxcheck     00659|     Scope (_PR)
+syntaxcheck     00660|     {
+syntaxcheck     00661|         Processor (CPU0, 0x00, 0x00001010, 0x06){}
+syntaxcheck          |                      ^
+syntaxcheck          | Warning 3168: Legacy Processor() keyword detected. Use Device() keyword instead.
+syntaxcheck     00662|         Processor (CPU1, 0x01, 0x00001010, 0x06){}
+syntaxcheck     00663|         Method (RPPC, 0, NotSerialized)
+syntaxcheck     00664|         {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 662
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00659|     Scope (_PR)
+syntaxcheck     00660|     {
+syntaxcheck     00661|         Processor (CPU0, 0x00, 0x00001010, 0x06){}
+syntaxcheck     00662|         Processor (CPU1, 0x01, 0x00001010, 0x06){}
+syntaxcheck          |                      ^
+syntaxcheck          | Warning 3168: Legacy Processor() keyword detected. Use Device() keyword instead.
+syntaxcheck     00663|         Method (RPPC, 0, NotSerialized)
+syntaxcheck     00664|         {
+syntaxcheck     00665|             If (LEqual (OSYS, 0x07D2))
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_LOCAL_NOT_USED: Test 1,
 syntaxcheck     Assembler warning in line 692
 syntaxcheck     Line | AML source
@@ -427,7 +455,7 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 5 warnings, 17
+syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 7 warnings, 17
 syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
@@ -798,6 +826,6 @@ syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     ==========================================================
-syntaxcheck     2 passed, 45 failed, 0 warning, 0 aborted, 0 skipped, 0
+syntaxcheck     2 passed, 47 failed, 0 warning, 0 aborted, 0 skipped, 0
 syntaxcheck     info only.
 syntaxcheck     ==========================================================

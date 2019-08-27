@@ -1,3 +1,18 @@
+fwts (19.08.00-0ubuntu1) eoan; urgency=medium
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: remove cosmic
+
+  [Colin Ian King]
+  * efi_runtime: enable KBUILD_MODPOST_WARN=y to workaround build failures
+  * ACPICA: Update to version 20190816
+  * fwtstest: syntaxcheck-0001: update to keep in sync with ACPICA features
+
+  [Naresh Bhat]
+  * README: Add package dependency notes for ARM64
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 27 Aug 2019 12:54:13 +0800
+
 fwts (19.07.00-0ubuntu1) eoan; urgency=medium
 
   [Alex Hung]

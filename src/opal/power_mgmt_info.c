@@ -152,6 +152,7 @@ static int pstate_limits_test(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
+	memset(pstates, 0, sizeof(pstates));
 	ret = fwts_dt_property_read_u32_arr(fw->fdt, offset, "ibm,pstate-ids",
 					pstates, &len);
 	if (ret != FWTS_OK) {
@@ -179,18 +180,24 @@ static int pstate_limits_test(fwts_framework *fw)
 
 	if (proc_gen == proc_gen_p8 && nr_pstates > 128)
 		fwts_log_warning(fw,
-				"More than 128 pstates found,nr_pstates = %d",
+				"More than 128 pstates found, nr_pstates = %d",
 				 nr_pstates);
 
 	if (proc_gen == proc_gen_p9 && nr_pstates > 255)
 		fwts_log_warning(fw,
-				"More than 255 pstates found,nr_pstates = %d",
+				"More than 255 pstates found, nr_pstates = %d",
 				 nr_pstates);
 
 	if (len != nr_pstates)
 		fwts_log_warning(fw, "Wrong number of pstates."
 				"Expected %d pstates, found %d pstates",
 				nr_pstates, len);
+
+	/* Avoid reads outside of pstates[] */
+	if (nr_pstates > MAX_PSTATES) {
+		nr_pstates = MAX_PSTATES;
+		fwts_log_warning(fw, "Truncating to %d pstates\n", nr_pstates);
+	}
 
 	for (i = 0; i < nr_pstates; i++) {
 		if (cmp_pstates(pstate_max, pstates[i]) < 0) {

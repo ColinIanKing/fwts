@@ -32,7 +32,7 @@
 
 #define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
-#define PM_SUPEND_PATH			"/sys/power/mem_sleep"
+#define PM_SUSPEND_PATH			"/sys/power/mem_sleep"
 
 static char sleep_type[7];
 
@@ -65,7 +65,7 @@ static int s3_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	str = fwts_get(PM_SUPEND_PATH);
+	str = fwts_get(PM_SUSPEND_PATH);
 	if (str && strstr(str, "[s2idle]")) {
 		strncpy(sleep_type, "s2idle", strlen("s2idle") + 1);
 		free(str);

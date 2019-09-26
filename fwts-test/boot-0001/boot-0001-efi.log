@@ -1,0 +1,8 @@
+boot            boot: BOOT Table test.
+boot            ----------------------------------------------------------
+boot            ACPI BOOT table is depreciated on UEFI firmware, skipping
+boot            test
+boot            ==========================================================
+boot            0 passed, 0 failed, 0 warning, 0 aborted, 1 skipped, 0
+boot            info only.
+boot            ==========================================================

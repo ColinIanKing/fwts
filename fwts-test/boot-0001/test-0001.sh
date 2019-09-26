@@ -10,8 +10,15 @@ if [ $? -eq 1 ]; then
 	exit 77
 fi
 
+if [ -d /sys/firmware/efi ]; then
+        FILE=boot-0001-efi.log
+else
+	FILE=boot-0001.log
+fi
+
+
 $FWTS --log-format="%line %owner " -w 80 --dumpfile=$FWTSTESTDIR/boot-0001/acpidump-0001.log boot - | cut -c7- | grep "^boot" > $TMPLOG
-diff $TMPLOG $FWTSTESTDIR/boot-0001/boot-0001.log >> $FAILURE_LOG
+diff $TMPLOG $FWTSTESTDIR/boot-0001/$FILE >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then
 	echo PASSED: $TEST, $NAME

@@ -1,3 +1,17 @@
+fwts (19.09.00-0ubuntu1) eoan; urgency=medium
+
+  [Alex Hung]
+  * acpi/boot: skip ACPI BOOT test on UEFI systems.
+  * acpi: s3: fix typo from 6b94bb6a4b13e
+
+  [Colin Ian King]
+  * opal: add more bounds checking and zero pstates array
+
+  [Ivan Hu]
+  * fwtstest: boot-0001: sync with boot table check on efi firmware
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 26 Sep 2019 21:53:07 +0800
+
 fwts (19.08.00-0ubuntu1) eoan; urgency=medium
 
   [Alex Hung]

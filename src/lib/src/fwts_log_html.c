@@ -441,7 +441,7 @@ static void fwts_log_open_html(fwts_log_file *log_file)
 		".style_subtest { background-color: lightgray; }\n"
 		".style_info { }\n"
 		".style_code { font-family: \"courier\",\"mono\"; font-size:0.75em; overflow:auto; "
-		"width:90%; line-height:0.82em; font-stretch:extra-condensed; word-wrap:normal }\n");
+		"width:90%; line-height:1.08em; font-stretch:extra-condensed; word-wrap:normal }\n");
 	fwts_log_html(log_file, "</STYLE>\n");
 	fflush(log_file->fp);
 

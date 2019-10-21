@@ -250,6 +250,31 @@ the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\nPress Enter to continu
 }
 
 #
+#  Check & run OEM customised tests in /fwts/oem-tests.lst
+#
+check_run_oem_tests()
+{
+	if [ -f /fwts/oem-tests.lst ]; then
+		cd $WORK_DIR >& /dev/null
+		OEM_TESTS=$(echo $(grep TESTS /fwts/oem-tests.lst) | cut -d '=' -f 2)
+		do_test "${OEM_TESTS}" 'Running OEM Specified Tests'
+		fwts --dump > /dev/null
+		POST_ACTION=$(echo $(grep POST /fwts/oem-tests.lst) | cut -d '=' -f 2)
+		if [ $POST_ACTION == "poweroff" ]; then
+			dialog --backtitle "$FWTS" --infobox "Shutting down and powering off..." 5 80
+		elif [ $POST_ACTION == "reboot" ]; then
+			dialog --backtitle "$FWTS" --infobox "Restarting system..." 5 80
+		else
+			dialog --backtitle "$FWTS" --infobox "Exiting to terminal..." 5 80
+			POST_ACTION=""
+		fi
+		sleep 2
+		$POST_ACTION
+		exit 0
+	fi
+}
+
+#
 #  Here we go..
 #
 mkdir -p $WORK_DIR >& /dev/null
@@ -263,6 +288,8 @@ UNAME_PLATFORM=`(uname -m) 2>/dev/null` || UNAME_PLATFORM=unknown
 
 while true
 do
+
+	check_run_oem_tests
 
 	case "${UNAME_PLATFORM}" in
 		ppc*)

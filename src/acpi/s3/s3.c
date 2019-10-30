@@ -411,6 +411,13 @@ static int s3_scan_times(
 			s3_suspend_start = ts;
 			continue;
 		}
+
+		/* Update log time if this is available */
+		if (strstr(txt, "PM: suspend entry")) {
+			s3_suspend_start = ts;
+			continue;
+		}
+
 		if (strstr(txt, FWTS_RESUME)) {
 			s3_resume_finish = ts;
 			continue;

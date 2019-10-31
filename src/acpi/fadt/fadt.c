@@ -962,11 +962,11 @@ static void acpi_table_check_fadt_pm1a_evt_blk(fwts_framework *fw)
 			    "non-zero.  However, they are at least equal so "
 			    "the kernel will at least have a usable value.");
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1aEvtBlkNotSet",
-			    "FADT PM1A_EVT_BLK is a required field and must "
-			    "have either a 32-bit or 64-bit address set.");
-		if (!both_zero)
+		if (fwts_get_acpi_version(fw) <= FWTS_ACPI_VERSION_61) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm1aEvtBlkNotSet",
+				    "FADT PM1A_EVT_BLK is a required field and must "
+				    "have either a 32-bit or 64-bit address set.");
 			fwts_advice(fw,
 				    "Both FADT 32- and 64-bit PM1A_EVT_BLK "
 				    "fields are being used, but only one "
@@ -974,6 +974,9 @@ static void acpi_table_check_fadt_pm1a_evt_blk(fwts_framework *fw)
 				    "value are not equal the kernel cannot "
 				    "unambiguously determine which value "
 				    "is the correct one.");
+		}
+		fwts_passed(fw, "FADT 64-bit X_PM1A_EVT_BLK field is set "
+			    "and 32-bit PM1A_EVT_BLK will be ignored.");
 	}
 }
 
@@ -1005,16 +1008,20 @@ static void acpi_table_check_fadt_pm1b_evt_blk(fwts_framework *fw)
 			    "non-zero.  However, they are at least equal so "
 			    "the kernel will at least have a usable value.");
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1bEvtBlkNotSet",
-			    "FADT PM1A_EVT_BLK is a required field and must "
-			    "have either a 32-bit or 64-bit address set.");
-		fwts_advice(fw,
-			    "Both FADT 32- and 64-bit PM1B_EVT_BLK "
-			    "fields are being used, but only one should be "
-			    "non-zero.  Since the fields value are not equal "
-			    "the kernel cannot unambiguously determine which "
-			    "value is the correct one.");
+		if (fwts_get_acpi_version(fw) <= FWTS_ACPI_VERSION_61) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm1bEvtBlkNotSet",
+				    "FADT PM1B_EVT_BLK is a required field and must "
+				    "have either a 32-bit or 64-bit address set.");
+			fwts_advice(fw,
+				    "Both FADT 32- and 64-bit PM1B_EVT_BLK "
+				    "fields are being used, but only one should be "
+				    "non-zero.  Since the fields value are not equal "
+				    "the kernel cannot unambiguously determine which "
+				    "value is the correct one.");
+		}
+		fwts_passed(fw, "FADT 64-bit X_PM1B_EVT_BLK field is set "
+			    "and 32-bit PM1B_EVT_BLK will be ignored.");
 	}
 }
 
@@ -1060,16 +1067,20 @@ static void acpi_table_check_fadt_pm1a_cnt_blk(fwts_framework *fw)
 			    "non-zero.  However, they are at least equal so "
 			    "the kernel will at least have a usable value.");
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1aCntBlkNotSet",
-			    "FADT PM1A_CNT_BLK is a required field and must "
-			    "have either a 32-bit or 64-bit address set.");
-		fwts_advice(fw,
-			    "Both FADT 32- and 64-bit PM1A_CNT_BLK "
-			    "fields are being used, but only one should be "
-			    "non-zero.  Since the fields value are not equal "
-			    "the kernel cannot unambiguously determine which "
-			    "value is the correct one.");
+		if (fwts_get_acpi_version(fw) <= FWTS_ACPI_VERSION_61) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm1aCntBlkNotSet",
+				    "FADT PM1A_CNT_BLK is a required field and must "
+				    "have either a 32-bit or 64-bit address set.");
+			fwts_advice(fw,
+				    "Both FADT 32- and 64-bit PM1A_CNT_BLK "
+				    "fields are being used, but only one should be "
+				    "non-zero.  Since the fields value are not equal "
+				    "the kernel cannot unambiguously determine which "
+				    "value is the correct one.");
+		}
+		fwts_passed(fw, "FADT 64-bit X_PM1A_CNT_BLK field is set "
+			    "and 32-bit PM1A_CNT_BLK will be ignored.");
 	}
 }
 
@@ -1101,16 +1112,20 @@ static void acpi_table_check_fadt_pm1b_cnt_blk(fwts_framework *fw)
 			    "non-zero.  However, they are at least equal so "
 			    "the kernel will at least have a usable value.");
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1bCntBlkNotSet",
-			    "FADT PM1A_CNT_BLK is a required field and must "
-			    "have either a 32-bit or 64-bit address set.");
-		fwts_advice(fw,
-			    "Both FADT 32- and 64-bit PM1B_CNT_BLK "
-			    "fields are being used, but only one should be "
-			    "non-zero.  Since the fields value are not equal "
-			    "the kernel cannot unambiguously determine which "
-			    "value is the correct one.");
+		if (fwts_get_acpi_version(fw) <= FWTS_ACPI_VERSION_61) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm1bCntBlkNotSet",
+				    "FADT PM1B_CNT_BLK is a required field and must "
+				    "have either a 32-bit or 64-bit address set.");
+			fwts_advice(fw,
+				    "Both FADT 32- and 64-bit PM1B_CNT_BLK "
+				    "fields are being used, but only one should be "
+				    "non-zero.  Since the fields value are not equal "
+				    "the kernel cannot unambiguously determine which "
+				    "value is the correct one.");
+		}
+		fwts_passed(fw, "FADT 64-bit X_PM1B_CNT_BLK field is set "
+			    "and 32-bit PM1B_CNT_BLK will be ignored.");
 	}
 }
 
@@ -1142,16 +1157,20 @@ static void acpi_table_check_fadt_pm2_cnt_blk(fwts_framework *fw)
 			    "non-zero.  However, they are at least equal so "
 			    "the kernel will at least have a usable value.");
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm2CntBlkNotSet",
-			    "FADT PM2_CNT_BLK is a required field and must "
-			    "have either a 32-bit or 64-bit address set.");
-		fwts_advice(fw,
-			    "Both FADT 32- and 64-bit PM2_CNT_BLK "
-			    "fields are being used, but only one should be "
-			    "non-zero.  Since the fields value are not equal "
-			    "the kernel cannot unambiguously determine which "
-			    "value is the correct one.");
+		if (fwts_get_acpi_version(fw) <= FWTS_ACPI_VERSION_61) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm2CntBlkNotSet",
+				    "FADT PM2_CNT_BLK is a required field and must "
+				    "have either a 32-bit or 64-bit address set.");
+			fwts_advice(fw,
+				    "Both FADT 32- and 64-bit PM2_CNT_BLK "
+				    "fields are being used, but only one should be "
+				    "non-zero.  Since the fields value are not equal "
+				    "the kernel cannot unambiguously determine which "
+				    "value is the correct one.");
+		}
+		fwts_passed(fw, "FADT 64-bit X_PM2_CNT_BLK field is set "
+			    "and 32-bit PM2_CNT_BLK will be ignored.");
 	}
 }
 
@@ -1183,16 +1202,20 @@ static void acpi_table_check_fadt_pm_tmr_blk(fwts_framework *fw)
 			    "non-zero.  However, they are at least equal so "
 			    "the kernel will at least have a usable value.");
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm2CntBlkNotSet",
-			    "FADT PM1A_CNT_BLK is a required field and must "
-			    "have either a 32-bit or 64-bit address set.");
-		fwts_advice(fw,
-			    "Both FADT 32- and 64-bit PM_TMR_BLK "
-			    "fields are being used, but only one should be "
-			    "non-zero.  Since the fields value are not equal "
-			    "the kernel cannot unambiguously determine which "
-			    "value is the correct one.");
+		if (fwts_get_acpi_version(fw) <= FWTS_ACPI_VERSION_61) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm2CntBlkNotSet",
+				    "FADT PM1A_CNT_BLK is a required field and must "
+				    "have either a 32-bit or 64-bit address set.");
+			fwts_advice(fw,
+				    "Both FADT 32- and 64-bit PM_TMR_BLK "
+				    "fields are being used, but only one should be "
+				    "non-zero.  Since the fields value are not equal "
+				    "the kernel cannot unambiguously determine which "
+				    "value is the correct one.");
+		}
+		fwts_passed(fw, "FADT 64-bit X_PM_TMR_BLK field is set "
+			    "and 32-bit PM_TMR_BLK will be ignored.");
 	}
 }
 

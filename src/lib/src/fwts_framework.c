@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <getopt.h>
+#include <bsd/string.h>
 #include <sys/utsname.h>
 #include <sys/time.h>
 
@@ -373,9 +374,9 @@ static void fwts_framework_show_tests(fwts_framework *fw, const bool full)
 static void fwts_framework_strtrunc(char *dest, const char *src, size_t max)
 {
 	if (src) {
-		strncpy(dest, src, max);
+		strlcpy(dest, src, max);
 		if ((max > 3) && (strlen(src) > max)) {
-			dest[max-1] = 0;
+			dest[max-1] = '\0';
 			dest[max-2] = '.';
 			dest[max-3] = '.';
 		}

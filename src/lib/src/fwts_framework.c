@@ -57,7 +57,8 @@ typedef struct {
 	 FWTS_FLAG_TEST_UEFI |			\
 	 FWTS_FLAG_TEST_ACPI |			\
 	 FWTS_FLAG_TEST_COMPLIANCE_ACPI |	\
-	 FWTS_FLAG_TEST_SBBR)
+	 FWTS_FLAG_TEST_SBBR |			\
+	 FWTS_FLAG_TEST_EBBR)
 
 static const fwts_categories categories[] = {
 	{ "ACPI",			FWTS_FLAG_TEST_ACPI },
@@ -136,6 +137,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "sbbr",		"",   0, "Run ARM SBBR tests." },
 	{ "ifv",		"",   0, "Run tests in firmware-vendor modes." },
 	{ "clog",		"",   1, "Specify a coreboot logfile dump" },
+	{ "ebbr",		"",   0, "Run ARM EBBR tests." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1338,7 +1340,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 48: /* --coreboot-log */
 			fwts_framework_strdup(&fw->clog, optarg);
-
+			break;
+		case 49: /* --ebbr */
+			fw->flags |= FWTS_FLAG_TEST_EBBR;
+			break;
 		}
 		break;
 	case 'a': /* --all */

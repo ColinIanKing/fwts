@@ -53,12 +53,6 @@ typedef struct _EFI_SIGNATURE_LIST {
 #define VAR_AUDITMODE_FOUND	(1 << 4)
 #define VAR_DEPLOYEDMODE_FOUND	(1 << 5)
 
-#define EFI_GLOBAL_VARIABLE \
-{ \
-	0x8BE4DF61, 0x93CA, 0x11d2, { 0xAA, 0x0D, 0x00, \
-						0xE0, 0x98, 0x03, 0x2B, 0x8C} \
-}
-
 #define EFI_IMAGE_SECURITY_DATABASE_GUID \
 { \
 	0xd719b2cb, 0x3d3a, 0x4596, { 0xa3, 0xbc, 0xda, \

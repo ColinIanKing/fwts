@@ -2030,6 +2030,269 @@ static int uefirtvariable_test8(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirtvariable_test9(fwts_framework *fw)
+{
+	long ioret;
+
+	bool getvar_supported;
+	uint32_t var_runtimeservicessupported;
+
+	struct efi_getvariable getvariable;
+	struct efi_setvariable setvariable;
+	struct efi_getnextvariablename getnextvariablename;
+	struct efi_queryvariableinfo queryvariableinfo;
+
+	EFI_GUID guid;
+	uint64_t status = ~0ULL;
+	uint8_t data = 1;
+	uint64_t datasize = 1;
+	uint64_t variablenamesize = MAX_DATA_LENGTH;
+	uint16_t *variablename;
+	uint64_t remvarstoragesize;
+	uint64_t maxvariablesize;
+	uint64_t maxvarstoragesize;
+	uint8_t testdata[MAX_DATA_LENGTH];
+	uint64_t getdatasize = sizeof(testdata);
+	uint32_t attr;
+
+	fwts_uefi_rt_support_status_get(fd, &getvar_supported,
+			&var_runtimeservicessupported);
+
+	if (!getvar_supported || (var_runtimeservicessupported == 0xFFFF)) {
+		fwts_skipped(fw, "Cannot get the RuntimeServicesSupported "
+				"variable, maybe the runtime service "
+				"GetVariable is not supported or "
+				"RuntimeServicesSupported not provided by "
+				"firmware.");
+		return FWTS_SKIP;
+	}
+
+	setvariable.VariableName = variablenametest;
+	setvariable.VendorGuid = &gtestguid1;
+	setvariable.Attributes = attributes;
+	setvariable.DataSize = datasize;
+	setvariable.Data = &data;
+	setvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)
+				|| (var_runtimeservicessupported == 0)) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+					"Get the Setvariable runtime service supported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is not supported by firmware.");
+			} else {
+				fwts_passed(fw, "UEFI SetVariable runtime service "
+					"supported status test passed.");
+			}
+		} else {
+			if (status == ~0ULL) {
+				fwts_skipped(fw, "Unknown error occurred, skip test.");
+				return FWTS_SKIP;
+			}
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE) ||
+				(var_runtimeservicessupported == 0)) {
+				fwts_passed(fw, "UEFI SetVariable runtime service "
+					"supported status test passed.");
+			} else {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+					"Get the SetVariable runtime service unsupported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is supported by firmware.");
+			}
+		}
+	} else {
+		if (status != EFI_SUCCESS ) {
+			fwts_skipped(fw, "Unknown error occurred, skip test.");
+			return FWTS_SKIP;
+		}
+		if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE) ||
+			(var_runtimeservicessupported == 0)) {
+			fwts_passed(fw, "UEFI SetVariable runtime service "
+				"supported status test passed.");
+		} else {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+				"Get the SetVariable runtime service unsupported "
+				"via RuntimeServicesSupported variable. "
+				"But actually is supported by firmware.");
+		}
+	}
+
+	getvariable.VariableName = variablenametest;
+	getvariable.VendorGuid = &gtestguid1;
+	getvariable.Attributes = &attr;
+	getvariable.DataSize = &getdatasize;
+	getvariable.Data = testdata;
+	getvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
+	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE)
+				|| (var_runtimeservicessupported == 0)) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
+					"Get the GetVariable runtime service supported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is not supported by firmware.");
+			} else {
+				fwts_passed(fw, "UEFI GetVariable runtime service "
+					"supported status test passed.");
+			}
+		} else {
+			if (status == ~0ULL) {
+				fwts_skipped(fw, "Unknown error occurred, skip test.");
+				return FWTS_SKIP;
+			}
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE) ||
+				(var_runtimeservicessupported == 0)) {
+				fwts_passed(fw, "UEFI GetVariable runtime service "
+					"supported status test passed.");
+			} else {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
+					"Get the GetVariable runtime service unsupported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is supported by firmware.");
+			}
+		}
+	} else {
+		if (status != EFI_SUCCESS ) {
+			fwts_skipped(fw, "Unknown error occurred, skip test.");
+			return FWTS_SKIP;
+		}
+		if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE) ||
+			(var_runtimeservicessupported == 0)) {
+			fwts_passed(fw, "UEFI GetVariable runtime service "
+				"supported status test passed.");
+		} else {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
+				"Get the GetVariable runtime service unsupported "
+				"via RuntimeServicesSupported variable. "
+				"But actually is supported by firmware.");
+		}
+	}
+
+	/* delete the variable which was set */
+	setvariable.DataSize = 0;
+	status = ~0ULL;
+	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	variablename = malloc(sizeof(uint16_t) * variablenamesize);
+	if (!variablename) {
+		fwts_skipped(fw, "Unable to alloc memory for variable name");
+		return FWTS_SKIP;
+	}
+	getnextvariablename.VariableNameSize = &variablenamesize;
+	getnextvariablename.VariableName = variablename;
+	getnextvariablename.VendorGuid = &guid;
+	getnextvariablename.status = &status;
+
+	variablename[0] = '\0';
+	status = ~0ULL;
+	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)
+				|| (var_runtimeservicessupported == 0)) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVarName",
+					"Get the GetNextVarName runtime service supported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is not supported by firmware.");
+			} else {
+				fwts_passed(fw, "UEFI GetNextVarName runtime service "
+					"supported status test passed.");
+			}
+		} else {
+			if (status == ~0ULL) {
+				fwts_skipped(fw, "Unknown error occurred, skip test.");
+				return FWTS_SKIP;
+			}
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)
+				|| (var_runtimeservicessupported == 0)) {
+				fwts_passed(fw, "UEFI GetNextVarName runtime service "
+					"supported status test passed.");
+			} else {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVarName",
+					"Get the GetNextVarName runtime service unsupported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is supported by firmware.");
+			}
+		}
+	} else {
+		if (status != EFI_SUCCESS ) {
+			fwts_skipped(fw, "Unknown error occurred, skip test.");
+			return FWTS_SKIP;
+		}
+		if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)
+			|| (var_runtimeservicessupported == 0)) {
+			fwts_passed(fw, "UEFI GetNextVarName runtime service "
+				"supported status test passed.");
+		} else {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVarName",
+				"Get the GetNextVarName runtime service unsupported "
+				"via RuntimeServicesSupported variable. "
+				"But actually is supported by firmware.");
+		}
+	}
+
+	queryvariableinfo.Attributes = attributes;
+	queryvariableinfo.MaximumVariableStorageSize = &maxvarstoragesize;
+	queryvariableinfo.RemainingVariableStorageSize = &remvarstoragesize;
+	queryvariableinfo.MaximumVariableSize = &maxvariablesize;
+	queryvariableinfo.status = &status;
+	status = ~0ULL;
+
+	ioret = ioctl(fd, EFI_RUNTIME_QUERY_VARIABLEINFO, &queryvariableinfo);
+	if (ioret == -1) {
+		if (status == EFI_UNSUPPORTED) {
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)
+				|| (var_runtimeservicessupported == 0)) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeQueryVarInfo",
+					"Get the QueryVarInfo runtime service supported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is not supported by firmware.");
+			} else {
+				fwts_passed(fw, "UEFI QueryVarInfo runtime service "
+					"supported status test passed.");
+			}
+		} else {
+			if (status == ~0ULL) {
+				fwts_skipped(fw, "Unknown error occurred, skip test.");
+				return FWTS_SKIP;
+			}
+			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)
+				|| (var_runtimeservicessupported == 0)) {
+				fwts_passed(fw, "UEFI QueryVarInfo runtime service "
+					"supported status test passed.");
+			} else {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeQueryVarInfo",
+					"Get the QueryVarInfo runtime service unsupported "
+					"via RuntimeServicesSupported variable. "
+					"But actually is supported by firmware.");
+			}
+		}
+	} else {
+		if (status != EFI_SUCCESS ) {
+			fwts_skipped(fw, "Unknown error occurred, skip test.");
+			return FWTS_SKIP;
+		}
+		if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)
+			|| (var_runtimeservicessupported == 0)) {
+			fwts_passed(fw, "UEFI QueryVarInfo runtime service "
+				"supported status test passed.");
+		} else {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeQueryVarInfo",
+				"Get the QueryVarInfo runtime service unsupported "
+				"via RuntimeServicesSupported variable. "
+				"But actually is supported by firmware.");
+		}
+	}
+
+	return FWTS_OK;
+
+}
+
 static int options_check(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
@@ -2101,6 +2364,7 @@ static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test6, "Test UEFI RT service set variable interface stress test." },
 	{ uefirtvariable_test7, "Test UEFI RT service query variable info interface stress test." },
 	{ uefirtvariable_test8, "Test UEFI RT service get variable interface, invalid parameters." },
+	{ uefirtvariable_test9, "Test UEFI RT variable services supported status." },
 	{ NULL, NULL }
 };
 

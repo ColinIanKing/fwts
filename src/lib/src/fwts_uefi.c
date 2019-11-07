@@ -29,9 +29,11 @@
 #include <inttypes.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/ioctl.h>
 
 #include "fwts.h"
 #include "fwts_uefi.h"
+#include "fwts_efi_runtime.h"
 
 /* Old sysfs uefi packed binary blob variables */
 typedef struct {
@@ -534,5 +536,50 @@ bool fwts_uefi_efivars_iface_exist(void)
 	char *path;
 
 	return (fwts_uefi_get_interface(&path) == UEFI_IFACE_EFIVARS);
+
+}
+
+/*
+ *  fwts_uefi_rt_support_status_get()
+ *	get the status of runtime service support and the value of
+ *	the RuntimeServicesSupported variable
+ */
+void fwts_uefi_rt_support_status_get(int fd, bool *getvar_supported, uint32_t *var_rtsupported)
+{
+	long ioret;
+	struct efi_getvariable getvariable;
+	uint64_t status = ~0ULL;
+	uint8_t data[512];
+	uint64_t getdatasize = sizeof(data);
+	*var_rtsupported = 0xFFFF;
+
+	uint32_t attributes = FWTS_UEFI_VAR_NON_VOLATILE |
+				FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
+				FWTS_UEFI_VAR_RUNTIME_ACCESS;
+	static uint16_t varname[] = {'R', 'u', 'n', 't', 'i', 'm', 'e', 'S', 'e',
+				'r', 'v', 'i', 'c', 'e', 's', 'S', 'u', 'p',
+				'p', 'o', 'r', 't', 'e', 'd', '\0'};
+	EFI_GUID global_var_guid = EFI_GLOBAL_VARIABLE;
+	getvariable.VariableName = varname;
+	getvariable.VendorGuid = &global_var_guid;
+	getvariable.Attributes = &attributes;
+	getvariable.DataSize = &getdatasize;
+	getvariable.Data = data;
+	getvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
+	if (ioret == -1) {
+		if (status == EFI_NOT_FOUND) {
+			*getvar_supported = true;
+		} else {
+			*getvar_supported = false;
+		}
+		return;
+	}
+
+	*getvar_supported = true;
+	*var_rtsupported = data[0] | data[1] << 8;
+
+	return;
 
 }

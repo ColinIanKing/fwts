@@ -122,6 +122,21 @@ enum {
 #define LAST_ATTEMPT_STATUS_ERR_PWR_EVT_AC		0x00000006
 #define LAST_ATTEMPT_STATUS_ERR_PWR_EVT_BATT		0x00000007
 
+#define EFI_RT_SUPPORTED_GET_TIME			0x0001
+#define EFI_RT_SUPPORTED_SET_TIME			0x0002
+#define EFI_RT_SUPPORTED_GET_WAKEUP_TIME		0x0004
+#define EFI_RT_SUPPORTED_SET_WAKEUP_TIME		0x0008
+#define EFI_RT_SUPPORTED_GET_VARIABLE			0x0010
+#define EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME		0x0020
+#define EFI_RT_SUPPORTED_SET_VARIABLE			0x0040
+#define EFI_RT_SUPPORTED_SET_VIRTUAL_ADDRESS_MAP	0x0080
+#define EFI_RT_SUPPORTED_CONVERT_POINTER		0x0100
+#define EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT	0x0200
+#define EFI_RT_SUPPORTED_RESET_SYSTEM			0x0400
+#define EFI_RT_SUPPORTED_UPDATE_CAPSULE			0x0800
+#define EFI_RT_SUPPORTED_QUERY_CAPSULE_CAPABILITIES	0x1000
+#define EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO		0x2000
+
 #define EFI_CERT_SHA256_GUID \
 { 0xc1c41626, 0x504c, 0x4092, { 0xac, 0xa9, 0x41, 0xf9, 0x36, 0x93, 0x43, 0x28 }}
 
@@ -664,6 +679,8 @@ void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status);
 char *fwts_uefi_attribute_info(uint32_t attr);
 
 bool fwts_uefi_efivars_iface_exist(void);
+
+void fwts_uefi_rt_support_status_get(int fd, bool *getvar_supported, uint32_t *var_rtsupported);
 
 PRAGMA_POP
 

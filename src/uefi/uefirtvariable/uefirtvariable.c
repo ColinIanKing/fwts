@@ -2378,6 +2378,6 @@ static fwts_framework_ops uefirtvariable_ops = {
 	.options_check   = options_check,
 };
 
-FWTS_REGISTER("uefirtvariable", &uefirtvariable_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_EBBR)
+FWTS_REGISTER("uefirtvariable", &uefirtvariable_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_XBBR)
 
 #endif

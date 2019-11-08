@@ -1441,6 +1441,6 @@ static fwts_framework_ops uefirttime_ops = {
 	.minor_tests = uefirttime_tests
 };
 
-FWTS_REGISTER("uefirttime", &uefirttime_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_EBBR)
+FWTS_REGISTER("uefirttime", &uefirttime_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_XBBR)
 
 #endif

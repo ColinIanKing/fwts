@@ -1,3 +1,37 @@
+fwts (19.11.00-0ubuntu1) focal; urgency=medium
+
+  [Alex Hung]
+  * lib: fwts_log_html: tweak line-height
+  * auto-packager:mkpackage.sh: add focal
+  * acpi/s3: fine-tune measure of suspend time
+  * lib: fwts_log_html: set max-width for line wrap
+  * live-image: overwrite pre-defined tests by oem-tests.lst
+  * acpi/s3: fix no suspend & resume time for s2idle
+  * acpi/fadt: check no-zero failures for X_PM* for 6.1 and before
+  * sbbr: add uefi tests to ARM's SBBR
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20191018
+  * iASL: fix memory leak of LocalityBuffer on error return path
+  * lib: fwts_framework: use strlcpy instead of strncpy, fixes gcc-10 build
+    errors
+
+  [Ivan Hu]
+  * ebbr: add EBBR option for ARM embedded systems
+  * fwts-tests: sync up with --ebbr option
+  * lib: move the global variable guid to lib header
+  * lib: add function for check the RuntimeServicesSupported variable
+  * uefirttime: add unsupported checking with RuntimeServicesSupported variable
+  * uefirtvariable: add unsupported checking with RuntimeServicesSupported
+    variable
+  * uefirtmisc: add unsupported checking with RuntimeServicesSupported variable
+  * doc: add --ebbr option for man page
+
+  [Robert Moore]
+  * iASL: Use ACPI_COMPARE_NAMESEG instead of strcmp
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 13 Nov 2019 22:06:27 -0700
+
 fwts (19.09.00-0ubuntu1) eoan; urgency=medium
 
   [Alex Hung]

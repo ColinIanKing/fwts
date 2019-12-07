@@ -200,8 +200,7 @@ static int microcode_test1(fwts_framework *fw)
 
 	/* Scan and check */
 	while ((entry = readdir(dir)) != NULL) {
-	        if (entry &&
-		    (strlen(entry->d_name) > 3) &&
+	        if ((strlen(entry->d_name) > 3) &&
 		    (strncmp(entry->d_name,"cpu", 3) == 0) &&
 		    (isdigit(entry->d_name[3]))) {
 			char path[PATH_MAX];

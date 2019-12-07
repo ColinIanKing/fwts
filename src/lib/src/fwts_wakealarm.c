@@ -79,17 +79,6 @@ int fwts_wakealarm_set(fwts_framework *fw, struct rtc_time *rtc_tm)
 }
 
 /*
- *  fwts_wakealarm_exits()
- *	check that a RTC exists that supports minimal RTC alarm ioctl
- */
-int fwts_wakealarm_exits(fwts_framework *fw)
-{
-	struct rtc_time rtc_tm;
-
-	return fwts_wakealarm_get(fw, &rtc_tm);
-}
-
-/*
  *  fwts_wakealarm_trigger()
  *	trigger the RTC wakealarm to fire in 'seconds' seconds from now.
  */

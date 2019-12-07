@@ -24,7 +24,6 @@
 
 #include "fwts_framework.h"
 
-int fwts_wakealarm_exits(fwts_framework *fw);
 int fwts_wakealarm_test_firing(fwts_framework *fw, const uint32_t sleep);
 int fwts_wakealarm_trigger(fwts_framework *fw, const uint32_t seconds);
 int fwts_wakealarm_cancel(fwts_framework *fw);

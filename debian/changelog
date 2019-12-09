@@ -1,3 +1,19 @@
+fwts (19.12.00-0ubuntu1) focal; urgency=medium
+
+  [Colin Ian King]
+  * efi_runtime: don't build dkms module for kernels 4.8.0 and above
+    (LP: #1853090)
+  * debian/tests: only run dkms test when dkms module is run
+  * debugger: check for memory allocation failure on object Elements
+  * debugger: fix spelling mistake "adress" -> "address"
+  * cpu: microcode: remove redundant check on pointer entry
+  * fwts_wakealarm: remove unused function fwts_wakealarm_exits
+
+  [Erik Schmauss]
+  * iASL: remove unneeded NULL checks
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Sun, 08 Dec 2019 22:01:38 -0700
+
 fwts (19.11.00-0ubuntu1) focal; urgency=medium
 
   [Alex Hung]

@@ -1606,6 +1606,10 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 17: /* 7.18 */
 			table = "Memory Device (Type 17)";
+
+			/* skip if memory module is not installed (size = 0) */
+			if (GET_UINT16(data + 0xc) == 0)
+				break;
 			if (hdr->length < 0x15)
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0xf);

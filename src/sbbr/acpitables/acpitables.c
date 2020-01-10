@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2010-2019 Canonical
- * Copyright (C) 2017-2019 ARM Ltd
+ * Copyright (C) 2010-2020 Canonical
+ * Copyright (C) 2017-2020 ARM Ltd
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

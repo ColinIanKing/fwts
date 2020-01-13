@@ -1177,10 +1177,10 @@ static int setvariable_test1(
 	return FWTS_OK;
 
 err_restore_env:
-	setvariable_insertvariable(fw, attributes, 0, varname,
+	(void)setvariable_insertvariable(fw, attributes, 0, varname,
 		&gtestguid1, datadiff_g1);
 err_restore_env1:
-	setvariable_insertvariable(fw, attributes, 0, varname,
+	(void)setvariable_insertvariable(fw, attributes, 0, varname,
 		&gtestguid2, datadiff_g2);
 
 	return ret;
@@ -1242,17 +1242,17 @@ static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
 	return FWTS_OK;
 
 err_restore_env1:
-	setvariable_insertvariable(fw, attributes, 0,
+	(void)setvariable_insertvariable(fw, attributes, 0,
 		varname, &gtestguid1, datadiff1);
 	return ret;
 
 err_restore_env2:
-	setvariable_insertvariable(fw, attributes, 0,
+	(void)setvariable_insertvariable(fw, attributes, 0,
 		varname, &gtestguid1, datadiff2);
 	return ret;
 
 err_restore_env3:
-	setvariable_insertvariable(fw, attributes, 0,
+	(void)setvariable_insertvariable(fw, attributes, 0,
 		varname, &gtestguid1, datadiff3);
 	return ret;
 }
@@ -1311,13 +1311,13 @@ static int setvariable_test3(fwts_framework *fw)
 	return FWTS_OK;
 
 err_restore_env:
-	setvariable_insertvariable(fw, attributes, 0,
+	(void)setvariable_insertvariable(fw, attributes, 0,
 		variablenametest, &gtestguid1, datadiff1);
 err_restore_env1:
-	setvariable_insertvariable(fw, attributes, 0,
+	(void)setvariable_insertvariable(fw, attributes, 0,
 		variablenametest3, &gtestguid1, datadiff3);
 err_restore_env2:
-	setvariable_insertvariable(fw, attributes, 0,
+	(void)setvariable_insertvariable(fw, attributes, 0,
 		variablenametest2, &gtestguid1, datadiff2);
 
 	return ret;
@@ -1388,7 +1388,7 @@ static int setvariable_test6(fwts_framework *fw)
 			/* successfully set variable with invalid attributes, test fail */
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",
 				"Successfully set variable with invalid attribute, expected fail.");
-			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+			(void)setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
 			return FWTS_ERROR;
 		}
 
@@ -1400,7 +1400,7 @@ static int setvariable_test6(fwts_framework *fw)
 				PRIu32 " after ExitBootServices() is "
 				"performed, test failed.",
 				attributesarray[index]);
-			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+			(void)setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
 			return FWTS_ERROR;
 		}
 	}
@@ -1421,7 +1421,7 @@ static int setvariable_test7(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",
 			"Successfully set variable with both authenticated (EFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS "
 			"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) attributes are set, expected fail.");
-		setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+		(void)setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
 		return FWTS_ERROR;
 	}
 
@@ -1432,7 +1432,7 @@ static int setvariable_test7(fwts_framework *fw)
 			"authenticated (EFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS "
 			"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) "
 			"attributes are set %" PRIu32 " , test failed.", attr);
-		setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+		(void)setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -1773,7 +1773,7 @@ static int uefirtvariable_test6(fwts_framework *fw)
 			variablenametest, &gtestguid1, datadiff);
 		if (ret != FWTS_OK) {
 			if (i > 0)
-				setvariable_insertvariable(fw, attributes, 0, variablenametest,
+				(void)setvariable_insertvariable(fw, attributes, 0, variablenametest,
 										&gtestguid1, datadiff);
 			return ret;
 		}

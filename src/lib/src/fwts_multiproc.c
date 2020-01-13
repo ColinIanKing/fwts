@@ -39,6 +39,8 @@
 #define BIOS_START      (0x000e0000)            /* Start of BIOS memory */
 #define BIOS_END        (0x000fffff)            /* End of BIOS memory */
 
+#define MAX_SIZE(x)	(1UL << (sizeof(x) * 8))
+
 /*
  *  fwts_mp_get_address()
  *	scan for _MP_ floating pointer, set phys_addr if found.
@@ -111,6 +113,7 @@ int fwts_mp_data_get(fwts_mp_data *data)
 	void *mem;
 	uint8_t *tmp;
 	fwts_mp_config_table_header *header;
+	int max_data_size;
 
 	if (data == NULL)
 		return FWTS_ERROR;
@@ -130,6 +133,10 @@ int fwts_mp_data_get(fwts_mp_data *data)
 
 	data->size = header->base_table_length +
 		((header->spec_rev == 1) ? 0 : header->extended_table_length);
+	max_data_size = MAX_SIZE(header->base_table_length) +
+			MAX_SIZE(header->extended_table_length);
+	if (data->size < 0 || data->size > max_data_size)
+		return FWTS_ERROR;
 
 	/* Remap with full header and table now we know how big it is */
 	(void)fwts_munmap(mem, sizeof(fwts_mp_config_table_header));

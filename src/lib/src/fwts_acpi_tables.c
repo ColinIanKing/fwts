@@ -970,7 +970,7 @@ void fwts_acpi_fixup_addr_from_fadt(
 static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 {
 	int i, j, count;
-	char *oem_tbl_id = "FWTSIDXX";
+	char *oem_tbl_id;
 	fwts_acpi_table_info *table;
 	fwts_acpi_table_rsdp *rsdp = NULL;
 	fwts_acpi_table_fadt *fadt = NULL;

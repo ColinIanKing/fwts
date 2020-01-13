@@ -310,7 +310,13 @@ fwts_list *fwts_memory_map_table_load(fwts_framework *fw)
 
 	while ((directory = readdir(dir)) != NULL) {
 		if (strncmp(directory->d_name, ".", 1)) {
-			fwts_memory_map_entry *entry = fwts_memory_map_table_read_entry(directory->d_name);
+			fwts_memory_map_entry *entry;
+
+			entry = fwts_memory_map_table_read_entry(directory->d_name);
+			if (!entry) {
+				fwts_memory_map_table_free(memory_map_list);
+				return NULL;
+			}
 			fwts_list_add_ordered(memory_map_list, entry, fwts_fwts_memory_map_entry_compare);
 		}
 	}

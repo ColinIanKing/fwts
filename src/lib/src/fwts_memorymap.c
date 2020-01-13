@@ -315,6 +315,7 @@ fwts_list *fwts_memory_map_table_load(fwts_framework *fw)
 			entry = fwts_memory_map_table_read_entry(directory->d_name);
 			if (!entry) {
 				fwts_memory_map_table_free(memory_map_list);
+				(void)closedir(dir);
 				return NULL;
 			}
 			fwts_list_add_ordered(memory_map_list, entry, fwts_fwts_memory_map_entry_compare);

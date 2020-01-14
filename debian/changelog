@@ -1,3 +1,20 @@
+fwts (20.01.00-0ubuntu1) focal; urgency=medium
+
+  [Alex Hung]
+  * dmicheck: skip type 17 test if no memory module
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20191213
+  * Update copyright year to 2020
+  * ACPICA: Update to version 20200110
+  * lib: fwts_memorymap: check for memory allocation failure on object entry
+  * lib: fwts_multiproc: add sanity check to data->size to clean up static analysis warning
+  * lib: fwts_acpi_tables: remove redundant initialization to oem_tbl_id
+  * uefirtvariable: indicate that return from setvariable_insertvariable is ignored
+  * lib: fwts_memorymap: fix resource leak on dir on error return path
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 14 Jan 2020 15:32:20 +0800
+
 fwts (19.12.00-0ubuntu1) focal; urgency=medium
 
   [Colin Ian King]

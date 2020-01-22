@@ -44,6 +44,7 @@
 #define FWTS_HWINFO_SYS_NET		"/sys/class/net"
 #define FWTS_HWINFO_SYS_INPUT		"/sys/class/input"
 #define FWTS_HWINFO_SYS_BLUETOOTH	"/sys/class/bluetooth"
+#define FWTS_HWINFO_SYS_TYPEC		"/sys/class/typec"
 
 typedef struct {
 	char name[NAME_MAX + 1];	/* PCI name */
@@ -70,6 +71,14 @@ typedef struct {
 	char *bus;			/* Bus device is on */
 	char *type;			/* Type info */
 } fwts_bluetooth_config;
+
+typedef struct {
+	char *name;
+	char *data_role;
+	char *port_type;
+	char *power_role;
+	char *power_operation_mode;
+} fwts_typec_config;
 
 /* compare H/W info */
 typedef int (*hwinfo_cmp)(void *data1, void *data2);
@@ -561,6 +570,106 @@ static void fwts_hwinfo_pci_dump(fwts_framework *fw, fwts_list *configs)
 	}
 }
 
+/*
+ *  fwts_hwinfo_typec_free()
+ *	free Type-C data
+ */
+static void fwts_hwinfo_typec_free(void *data)
+{
+	fwts_typec_config *config = (fwts_typec_config *)data;
+
+	free(config->name);
+	free(config->data_role);
+	free(config->port_type);
+	free(config->power_role);
+	free(config->power_operation_mode);
+	free(config);
+}
+
+/*
+ *  fwts_hwinfo_typec_cmp()
+ *	compare Type-C config data
+ */
+static int fwts_hwinfo_typec_config_cmp(void *data1, void *data2)
+{
+
+	fwts_typec_config *config1 = (fwts_typec_config *)data1;
+	fwts_typec_config *config2 = (fwts_typec_config *)data2;
+
+	return strcmp(config1->name, config2->name) ||
+	       strcmp(config1->data_role, config2->data_role) ||
+	       strcmp(config1->port_type, config2->port_type) ||
+	       strcmp(config1->power_role, config2->power_role) ||
+	       strcmp(config1->power_operation_mode, config2->power_operation_mode);
+}
+
+/*
+ *  fwts_hwinfo_typec_get()
+ * 	read a specific Type-C device config
+ */
+static int fwts_hwinfo_typec_get(
+	fwts_framework *fw,
+	fwts_list *devices)
+{
+	DIR *dp;
+	struct dirent *d;
+
+	fwts_list_init(devices);
+	if ((dp = opendir(FWTS_HWINFO_SYS_TYPEC)) == NULL) {
+		fwts_log_error(fw, "Cannot open %s to scan Type-C devices.", FWTS_HWINFO_SYS_TYPEC);
+		return FWTS_ERROR;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		fwts_typec_config *typec_config;
+
+		if (d->d_name[0] == '.')
+			continue;
+
+		if ((typec_config = calloc(1, sizeof(*typec_config))) == NULL) {
+			fwts_log_error(fw, "Cannot allocate Type-C config data.");
+			break;
+		}
+		typec_config->name = strdup(d->d_name);
+		typec_config->data_role = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_TYPEC, d->d_name, "data_role");
+		typec_config->port_type = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_TYPEC, d->d_name, "port_type");
+		typec_config->power_role = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_TYPEC, d->d_name, "power_role");
+		typec_config->power_operation_mode = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_TYPEC, d->d_name, "power_operation_mode");
+
+		if (typec_config->name == NULL ||
+		    typec_config->data_role == NULL ||
+		    typec_config->port_type == NULL ||
+		    typec_config->power_role == NULL ||
+		    typec_config->power_operation_mode == NULL) {
+			fwts_log_error(fw, "Cannot allocate Type-C device attributes.");
+			fwts_hwinfo_typec_free(typec_config);
+			break;
+		}
+		fwts_list_append(devices, typec_config);
+	}
+	(void)closedir(dp);
+
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_hwinfo_typec_dump()
+ *	simple Type-C config dump
+ */
+static void fwts_hwinfo_typec_dump(fwts_framework *fw, fwts_list *devices)
+{
+	fwts_list_link *item;
+	fwts_list_foreach(item, devices) {
+		fwts_typec_config *typec_config = fwts_list_data(fwts_typec_config *, item);
+
+		fwts_log_info_verbatim(fw, "  Name:       %s", typec_config->name);
+		fwts_log_info_verbatim(fw, "  Data Role:  %s", typec_config->data_role);
+		fwts_log_info_verbatim(fw, "  Port Type:  %s", typec_config->port_type);
+		fwts_log_info_verbatim(fw, "  Power Role: %s", typec_config->power_role);
+		fwts_log_info_verbatim(fw, "  Power Mode: %s", typec_config->power_operation_mode);
+		fwts_log_nl(fw);
+	}
+}
 
 /*
  *  fwts_hwinfo_lists_dump()
@@ -664,6 +773,8 @@ int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 	fwts_hwinfo_input_get(fw, &hwinfo->input);
 	/* Bluetooth devices */
 	fwts_hwinfo_bluetooth_get(fw, &hwinfo->bluetooth);
+	/* Type-C devices */
+	fwts_hwinfo_typec_get(fw, &hwinfo->typec);
 
 	return FWTS_OK;
 }
@@ -690,6 +801,10 @@ void fwts_hwinfo_compare(fwts_framework *fw, fwts_hwinfo *hwinfo1, fwts_hwinfo *
 	/* Bluetooth devices */
 	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_bluetooth_config_cmp, fwts_hwinfo_bluetooth_dump,
 		&hwinfo1->bluetooth, &hwinfo2->bluetooth, "Bluetooth Device", differences);
+	/* Type-C devices */
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_typec_config_cmp, fwts_hwinfo_typec_dump,
+		&hwinfo1->typec, &hwinfo2->typec, "Type-C Device", differences);
+
 }
 
 /*
@@ -710,6 +825,8 @@ int fwts_hwinfo_free(fwts_hwinfo *hwinfo)
 	fwts_list_free_items(&hwinfo->input, fwts_hwinfo_input_free);
 	/* Bluetooth devices */
 	fwts_list_free_items(&hwinfo->bluetooth, fwts_hwinfo_bluetooth_free);
+	/* Type-C devices */
+	fwts_list_free_items(&hwinfo->typec, fwts_hwinfo_typec_free);
 
 	return FWTS_OK;
 }

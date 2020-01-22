@@ -146,7 +146,7 @@ static int fwts_hwinfo_bluetooth_config_cmp(void *data1, void *data2)
 
 /*
  *  fwts_hwinfo_bluetooth_get()
- * 	read a specific input device config
+ * 	read a specific bluetooth device config
  */
 static int fwts_hwinfo_bluetooth_get(
 	fwts_framework *fw,
@@ -157,7 +157,7 @@ static int fwts_hwinfo_bluetooth_get(
 
 	fwts_list_init(devices);
 	if ((dp = opendir(FWTS_HWINFO_SYS_BLUETOOTH)) == NULL) {
-		fwts_log_error(fw, "Cannot open %s to scan network devices.", FWTS_HWINFO_SYS_BLUETOOTH);
+		fwts_log_error(fw, "Cannot open %s to scan bluetooth devices.", FWTS_HWINFO_SYS_BLUETOOTH);
 		return FWTS_ERROR;
 	}
 
@@ -265,7 +265,7 @@ static int fwts_hwinfo_input_get(
 
 	fwts_list_init(devices);
 	if ((dp = opendir(FWTS_HWINFO_SYS_INPUT)) == NULL) {
-		fwts_log_error(fw, "Cannot open %s to scan network devices.", FWTS_HWINFO_SYS_INPUT);
+		fwts_log_error(fw, "Cannot open %s to scan input devices.", FWTS_HWINFO_SYS_INPUT);
 		return FWTS_ERROR;
 	}
 
@@ -739,7 +739,7 @@ static int fwts_hwinfo_lists_differ(
 }
 
 /*
- *  fwts_hwinfo_compare()
+ *  fwts_hwinfo_lists_compare()
  *	check for differences in a list and if any found, dump out both lists
  */
 static void fwts_hwinfo_lists_compare(

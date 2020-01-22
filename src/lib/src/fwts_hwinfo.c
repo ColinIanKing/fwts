@@ -45,6 +45,7 @@
 #define FWTS_HWINFO_SYS_INPUT		"/sys/class/input"
 #define FWTS_HWINFO_SYS_BLUETOOTH	"/sys/class/bluetooth"
 #define FWTS_HWINFO_SYS_TYPEC		"/sys/class/typec"
+#define FWTS_HWINFO_SYS_SCSI_DISK	"/sys/class/scsi_disk"
 
 typedef struct {
 	char name[NAME_MAX + 1];	/* PCI name */
@@ -79,6 +80,13 @@ typedef struct {
 	char *power_role;
 	char *power_operation_mode;
 } fwts_typec_config;
+
+typedef struct {
+	char *name;
+	char *model;
+	char *state;
+	char *vendor;
+} fwts_scsi_disk_config;
 
 /* compare H/W info */
 typedef int (*hwinfo_cmp)(void *data1, void *data2);
@@ -672,6 +680,102 @@ static void fwts_hwinfo_typec_dump(fwts_framework *fw, fwts_list *devices)
 }
 
 /*
+ *  fwts_hwinfo_scsi_disk_free()
+ *	free SCSI disk data
+ */
+static void fwts_hwinfo_scsi_disk_free(void *data)
+{
+	fwts_scsi_disk_config *config = (fwts_scsi_disk_config *)data;
+
+	free(config->name);
+	free(config->model);
+	free(config->state);
+	free(config->vendor);
+	free(config);
+}
+
+/*
+ *  fwts_hwinfo_scsi_disk_cmp()
+ *	compare SCSI disk config data
+ */
+static int fwts_hwinfo_scsi_disk_config_cmp(void *data1, void *data2)
+{
+
+	fwts_scsi_disk_config *config1 = (fwts_scsi_disk_config *)data1;
+	fwts_scsi_disk_config *config2 = (fwts_scsi_disk_config *)data2;
+
+	return strcmp(config1->name, config2->name) ||
+	       strcmp(config1->model, config2->model) ||
+	       strcmp(config1->state, config2->state) ||
+	       strcmp(config1->vendor, config2->vendor);
+}
+
+/*
+ *  fwts_hwinfo_scsi_disk_get()
+ * 	read a specific SCSI disk device config
+ */
+static int fwts_hwinfo_scsi_disk_get(
+	fwts_framework *fw,
+	fwts_list *devices)
+{
+	DIR *dp;
+	struct dirent *d;
+
+	fwts_list_init(devices);
+	if ((dp = opendir(FWTS_HWINFO_SYS_SCSI_DISK)) == NULL) {
+		fwts_log_error(fw, "Cannot open %s to scan SCSI disk devices.", FWTS_HWINFO_SYS_SCSI_DISK);
+		return FWTS_ERROR;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		fwts_scsi_disk_config *scsi_disk_config;
+
+		if (d->d_name[0] == '.')
+			continue;
+
+		if ((scsi_disk_config = calloc(1, sizeof(*scsi_disk_config))) == NULL) {
+			fwts_log_error(fw, "Cannot allocate SCSI disk config data.");
+			break;
+		}
+		scsi_disk_config->name = strdup(d->d_name);
+		scsi_disk_config->model = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_SCSI_DISK, d->d_name, "device/model");
+		scsi_disk_config->state = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_SCSI_DISK, d->d_name, "device/state");
+		scsi_disk_config->vendor = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_SCSI_DISK, d->d_name, "device/vendor");
+
+		if (scsi_disk_config->name == NULL ||
+		    scsi_disk_config->model == NULL ||
+		    scsi_disk_config->state == NULL ||
+		    scsi_disk_config->vendor == NULL) {
+			fwts_log_error(fw, "Cannot allocate SCSI disk device attributes.");
+			fwts_hwinfo_scsi_disk_free(scsi_disk_config);
+			break;
+		}
+		fwts_list_append(devices, scsi_disk_config);
+	}
+	(void)closedir(dp);
+
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_hwinfo_scsi_disk_dump()
+ *	simple SCSI disk config dump
+ */
+static void fwts_hwinfo_scsi_disk_dump(fwts_framework *fw, fwts_list *devices)
+{
+	fwts_list_link *item;
+	fwts_list_foreach(item, devices) {
+		fwts_scsi_disk_config *scsi_disk_config = fwts_list_data(fwts_scsi_disk_config *, item);
+
+		fwts_log_info_verbatim(fw, "  Name:       %s", scsi_disk_config->name);
+		fwts_log_info_verbatim(fw, "  Vendor:     %s", scsi_disk_config->vendor);
+		fwts_log_info_verbatim(fw, "  Model:      %s", scsi_disk_config->model);
+		fwts_log_info_verbatim(fw, "  State:      %s", scsi_disk_config->state);
+		fwts_log_nl(fw);
+	}
+}
+
+/*
  *  fwts_hwinfo_lists_dump()
  *	dump out contents of two different lists
  */
@@ -775,6 +879,8 @@ int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 	fwts_hwinfo_bluetooth_get(fw, &hwinfo->bluetooth);
 	/* Type-C devices */
 	fwts_hwinfo_typec_get(fw, &hwinfo->typec);
+	/* SCSI disk devices */
+	fwts_hwinfo_scsi_disk_get(fw, &hwinfo->scsi_disk);
 
 	return FWTS_OK;
 }
@@ -804,6 +910,9 @@ void fwts_hwinfo_compare(fwts_framework *fw, fwts_hwinfo *hwinfo1, fwts_hwinfo *
 	/* Type-C devices */
 	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_typec_config_cmp, fwts_hwinfo_typec_dump,
 		&hwinfo1->typec, &hwinfo2->typec, "Type-C Device", differences);
+	/* SCSI disk devices */
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_scsi_disk_config_cmp, fwts_hwinfo_scsi_disk_dump,
+		&hwinfo1->scsi_disk, &hwinfo2->scsi_disk, "SCSI Disk Device", differences);
 
 }
 
@@ -827,6 +936,8 @@ int fwts_hwinfo_free(fwts_hwinfo *hwinfo)
 	fwts_list_free_items(&hwinfo->bluetooth, fwts_hwinfo_bluetooth_free);
 	/* Type-C devices */
 	fwts_list_free_items(&hwinfo->typec, fwts_hwinfo_typec_free);
+	/* SCSI disk devices */
+	fwts_list_free_items(&hwinfo->scsi_disk, fwts_hwinfo_scsi_disk_free);
 
 	return FWTS_OK;
 }

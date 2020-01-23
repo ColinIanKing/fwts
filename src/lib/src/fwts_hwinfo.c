@@ -46,6 +46,7 @@
 #define FWTS_HWINFO_SYS_BLUETOOTH	"/sys/class/bluetooth"
 #define FWTS_HWINFO_SYS_TYPEC		"/sys/class/typec"
 #define FWTS_HWINFO_SYS_SCSI_DISK	"/sys/class/scsi_disk"
+#define FWTS_HWINFO_SYS_DRM		"/sys/class/drm"
 
 typedef struct {
 	char name[NAME_MAX + 1];	/* PCI name */
@@ -87,6 +88,12 @@ typedef struct {
 	char *state;
 	char *vendor;
 } fwts_scsi_disk_config;
+
+typedef struct {
+	char *name;
+	char *status;
+	char *enabled;
+} fwts_drm_config;
 
 /* compare H/W info */
 typedef int (*hwinfo_cmp)(void *data1, void *data2);
@@ -776,6 +783,100 @@ static void fwts_hwinfo_scsi_disk_dump(fwts_framework *fw, fwts_list *devices)
 }
 
 /*
+ *  fwts_hwinfo_drm_free()
+ *	free DRM data
+ */
+static void fwts_hwinfo_drm_free(void *data)
+{
+	fwts_drm_config *config = (fwts_drm_config *)data;
+
+	free(config->name);
+	free(config->status);
+	free(config->enabled);
+	free(config);
+}
+
+/*
+ *  fwts_hwinfo_drm_cmp()
+ *	compare DRM config data
+ */
+static int fwts_hwinfo_drm_config_cmp(void *data1, void *data2)
+{
+
+	fwts_drm_config *config1 = (fwts_drm_config *)data1;
+	fwts_drm_config *config2 = (fwts_drm_config *)data2;
+
+	return strcmp(config1->name, config2->name) ||
+	       strcmp(config1->status, config2->status) ||
+	       strcmp(config1->enabled, config2->enabled);
+}
+
+/*
+ *  fwts_hwinfo_drm_get()
+ * 	read a specific DRM device config
+ */
+static int fwts_hwinfo_drm_get(
+	fwts_framework *fw,
+	fwts_list *devices)
+{
+	DIR *dp;
+	struct dirent *d;
+
+	fwts_list_init(devices);
+	if ((dp = opendir(FWTS_HWINFO_SYS_DRM)) == NULL) {
+		fwts_log_error(fw, "Cannot open %s to scan DRM devices.", FWTS_HWINFO_SYS_DRM);
+		return FWTS_ERROR;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		fwts_drm_config *drm_config;
+
+		if (d->d_name[0] == '.')
+			continue;
+
+		if (strncmp(d->d_name, "card", strlen("card")) != 0)
+			continue;
+
+		if ((drm_config = calloc(1, sizeof(*drm_config))) == NULL) {
+			fwts_log_error(fw, "Cannot allocate DRM config data.");
+			break;
+		}
+		drm_config->name = strdup(d->d_name);
+		drm_config->status = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_DRM, d->d_name, "status");
+		drm_config->enabled = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_DRM, d->d_name, "enabled");
+
+		if (drm_config->name == NULL ||
+		    drm_config->status == NULL ||
+		    drm_config->enabled == NULL) {
+			fwts_log_error(fw, "Cannot allocate DRM device attributes.");
+			fwts_hwinfo_drm_free(drm_config);
+			break;
+		}
+		fwts_list_append(devices, drm_config);
+	}
+	(void)closedir(dp);
+
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_hwinfo_drm_dump()
+ *	simple SCSI disk config dump
+ */
+static void fwts_hwinfo_drm_dump(fwts_framework *fw, fwts_list *devices)
+{
+	fwts_list_link *item;
+	fwts_list_foreach(item, devices) {
+		fwts_drm_config *drm_config = fwts_list_data(fwts_drm_config *, item);
+
+		fwts_log_info_verbatim(fw, "  Name:       %s", drm_config->name);
+		fwts_log_info_verbatim(fw, "  Status:     %s", drm_config->status);
+		fwts_log_info_verbatim(fw, "  Enabled:    %s", drm_config->enabled);
+		fwts_log_nl(fw);
+	}
+}
+
+/*
  *  fwts_hwinfo_lists_dump()
  *	dump out contents of two different lists
  */
@@ -881,6 +982,8 @@ int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 	fwts_hwinfo_typec_get(fw, &hwinfo->typec);
 	/* SCSI disk devices */
 	fwts_hwinfo_scsi_disk_get(fw, &hwinfo->scsi_disk);
+	/* DRM devices */
+	fwts_hwinfo_drm_get(fw, &hwinfo->drm);
 
 	return FWTS_OK;
 }
@@ -913,6 +1016,9 @@ void fwts_hwinfo_compare(fwts_framework *fw, fwts_hwinfo *hwinfo1, fwts_hwinfo *
 	/* SCSI disk devices */
 	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_scsi_disk_config_cmp, fwts_hwinfo_scsi_disk_dump,
 		&hwinfo1->scsi_disk, &hwinfo2->scsi_disk, "SCSI Disk Device", differences);
+	/* DRM devices */
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_drm_config_cmp, fwts_hwinfo_drm_dump,
+		&hwinfo1->drm, &hwinfo2->drm, "DRM Device", differences);
 
 }
 
@@ -938,6 +1044,8 @@ int fwts_hwinfo_free(fwts_hwinfo *hwinfo)
 	fwts_list_free_items(&hwinfo->typec, fwts_hwinfo_typec_free);
 	/* SCSI disk devices */
 	fwts_list_free_items(&hwinfo->scsi_disk, fwts_hwinfo_scsi_disk_free);
+	/* DRM devices */
+	fwts_list_free_items(&hwinfo->drm, fwts_hwinfo_drm_free);
 
 	return FWTS_OK;
 }

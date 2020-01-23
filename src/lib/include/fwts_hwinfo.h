@@ -30,6 +30,7 @@ typedef struct {
 	fwts_list bluetooth;	/* Bluetooth config */
 	fwts_list typec;	/* USB type c config */
 	fwts_list scsi_disk;	/* SCSI disk config */
+	fwts_list drm;		/* DRM config */
 } fwts_hwinfo;
 
 int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo);

@@ -20,6 +20,7 @@
 FWTS="Firmware Test Suite"
 OPTIONS="/tmp/options.$$"
 DIALOG_CMD="/tmp/fwts.cmd.$$"
+OEM_TESTS_FILE="/fwts/oem-tests.lst"
 export DIALOGRC="/usr/share/fwts/fwts-live-dialogrc"
 
 FWTS_DATE=`date +%d%m%Y`
@@ -254,12 +255,12 @@ the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\nPress Enter to continu
 #
 check_run_oem_tests()
 {
-	if [ -f /fwts/oem-tests.lst ]; then
+	if [ -f $OEM_TESTS_FILE ]; then
 		cd $WORK_DIR >& /dev/null
-		OEM_TESTS=$(echo $(grep TESTS /fwts/oem-tests.lst) | cut -d '=' -f 2)
+		OEM_TESTS=$(echo $(grep TESTS $OEM_TESTS_FILE) | cut -d '=' -f 2)
 		do_test "${OEM_TESTS}" 'Running OEM Specified Tests'
 		fwts --dump > /dev/null
-		POST_ACTION=$(echo $(grep POST /fwts/oem-tests.lst) | cut -d '=' -f 2)
+		POST_ACTION=$(echo $(grep POST $OEM_TESTS_FILE) | cut -d '=' -f 2)
 		if [ $POST_ACTION == "poweroff" ]; then
 			dialog --backtitle "$FWTS" --infobox "Shutting down and powering off..." 5 80
 		elif [ $POST_ACTION == "reboot" ]; then

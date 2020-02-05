@@ -155,6 +155,76 @@ select_tests()
 }
 
 #
+#  Get user choices to create oem-tests.lst
+#
+select_oem_automation()
+{
+	while true
+	do
+		declare -a tests
+		x=0
+		#
+		#  Discover available tests
+		#
+		fwts --batch --batch-experimental --uefitests --unsafe --show-tests | grep "^ "| sort | uniq > $OPTIONS
+		while read test text
+		do
+			((x++))
+			tests[$x]=$test
+			txt="${txt} ${x} \"${text}\" off"
+		done < $OPTIONS
+		rm $OPTIONS
+
+		#
+		# Construct and run dialog
+		#
+		echo dialog --backtitle '"$FWTS"' --title '"Select Tests for Automation"' --help-button  --checklist '"Select from the list below the test(s) for oem-tests.lst. Use up/down cursor keys, space to select and enter to start:"' 20 70 $x $txt > $DIALOG_CMD
+		. $DIALOG_CMD 2> $OPTIONS
+		ret=$?
+		rm $DIALOG_CMD
+
+		#
+		# Scan return selections and build fwts test scenarios
+		#
+		x=0
+		for i in `cat $OPTIONS`
+		do
+			((x++))
+			i=${i#\"}
+			i=${i%\"}
+			run_tests="$run_tests ${tests[$i]}"
+		done
+
+		#
+		# Handle dialog exit states:
+		#
+		case $ret in
+		0)
+			if [ $x -eq 0 ]; then
+				dialog --backtitle "$FWTS" --title "No Tests Selected!" --msgbox \
+			"   You did not select any tests to be run." 5 50
+			else
+				# remove leading space and output to oem-tests.lst
+				echo "TESTS=$(echo $run_tests)" > $OEM_TESTS_FILE
+				echo "POST=poweroff" >> $OEM_TESTS_FILE
+				dialog --backtitle "$FWTS" --title "Auto-tests Saved!" --msgbox \
+					" Auto-tests are saved to $OEM_TESTS_FILE" 5 50
+				finish
+			fi
+			;;
+		1)
+			return
+			;;
+		2)
+			do_help
+			;;
+		255)
+			no_tests_finish
+			;;
+		esac
+	done
+}
+#
 #  View the results log
 #
 view_results()
@@ -314,6 +384,7 @@ do
 			"Recommended" "Recommended Tests" off \
 			"Recommended for IFV" "Recommended Tests for F/W Vendors" off \
 			"Selected" "Select Individual Tests" off \
+			"Automated" "Create Auto-Tests" off \
 			"Abort" "Abort Testing" off \
 			2> $OPTIONS
 			;;
@@ -368,6 +439,9 @@ do
 			;;
 		'Selected')
 			select_tests
+			;;
+		'Automated')
+			select_oem_automation
 			;;
 		'Abort')
 			no_tests_finish

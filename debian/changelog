@@ -1,3 +1,22 @@
+fwts (20.02.00-0ubuntu1) focal; urgency=medium
+
+  [Alex Hung]
+  * fwts_hwinfo: add device check for Type-C
+  * fwts_hwinfo: fix copy & paste typos
+  * fwts_hwinfo: add device check for disks
+  * fwts_hwinfo: add device check for attached monitors
+  * live-image: replace hard-coded "oem-tests.lst" by a variable
+  * live-image: add an option for creating oem-tests.lst
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20200214
+  * fwts-test/syntaxcheck: sync regression log with latest ACPICA output
+
+  [Ivan Hu]
+  * auto-packager: mkpackage.sh: remove disco
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 26 Feb 2020 09:39:35 +0800
+
 fwts (20.01.00-0ubuntu1) focal; urgency=medium
 
   [Alex Hung]

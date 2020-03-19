@@ -429,7 +429,7 @@ PRAGMA_POP
 
 static int madt_checksum(fwts_framework *fw)
 {
-	const uint8_t *data = mtable->data;
+	uint8_t *data = mtable->data;
 	ssize_t length = mtable->length;
 	uint8_t checksum = 0;
 
@@ -577,7 +577,7 @@ static void check_madt_apic_flags(fwts_framework *fw, uint8_t type, uint32_t fla
 
 static int madt_local_apic(fwts_framework *fw,
 			   fwts_acpi_madt_sub_table_header *hdr,
-			   const uint8_t *data)
+			   uint8_t *data)
 {
 	/* specific checks for subtable type 0: Processor Local APIC */
 	fwts_acpi_madt_processor_local_apic *lapic =
@@ -600,7 +600,7 @@ out:
 static unsigned char madt_io_apics[MAX_IO_APIC_ID];
 static int madt_io_apic(fwts_framework *fw,
 			fwts_acpi_madt_sub_table_header *hdr,
-			const uint8_t *data)
+			uint8_t *data)
 {
 	/* specific checks for subtable type 1: I/O APIC */
 	fwts_acpi_madt_io_apic *ioapic = (fwts_acpi_madt_io_apic *)data;
@@ -638,7 +638,7 @@ static int madt_io_apic(fwts_framework *fw,
 
 static int madt_interrupt_override(fwts_framework *fw,
 				   fwts_acpi_madt_sub_table_header *hdr,
-				   const uint8_t *data)
+				   uint8_t *data)
 {
 	/* specific checks for subtable type 2: Interrupt Source Override */
 	fwts_acpi_madt_interrupt_override *int_override =
@@ -671,7 +671,7 @@ static int madt_interrupt_override(fwts_framework *fw,
 
 static int madt_nmi_source(fwts_framework *fw,
 			   fwts_acpi_madt_sub_table_header *hdr,
-			   const uint8_t *data)
+			   uint8_t *data)
 {
 	/* specific checks for subtable type 3: NMI Source */
 	fwts_acpi_madt_nmi *nmi = (fwts_acpi_madt_nmi *)data;
@@ -693,7 +693,7 @@ static int madt_nmi_source(fwts_framework *fw,
 
 static int madt_local_apic_nmi(fwts_framework *fw,
 			       fwts_acpi_madt_sub_table_header *hdr,
-			       const uint8_t *data)
+			       uint8_t *data)
 {
 	/* specific checks for subtable type 4: Local APIC NMI */
 	fwts_acpi_madt_local_apic_nmi *nmi =
@@ -718,7 +718,7 @@ static int madt_local_apic_nmi(fwts_framework *fw,
 
 static int madt_lapic_addr_override(fwts_framework *fw,
 				    fwts_acpi_madt_sub_table_header *hdr,
-				    const uint8_t *data)
+				    uint8_t *data)
 {
 	/* specific checks for subtable type 5: Local APIC Address Override */
 	static int count;
@@ -759,7 +759,7 @@ static int madt_lapic_addr_override(fwts_framework *fw,
 static unsigned char madt_io_sapics[MAX_IO_APIC_ID];
 static int madt_io_sapic(fwts_framework *fw,
 			 fwts_acpi_madt_sub_table_header *hdr,
-			 const uint8_t *data)
+			 uint8_t *data)
 {
 	/* specific checks for subtable type 6: I/O SAPIC */
 	fwts_acpi_madt_io_sapic *sapic = (fwts_acpi_madt_io_sapic *)data;
@@ -798,7 +798,7 @@ static int madt_io_sapic(fwts_framework *fw,
 
 static int madt_local_sapic(fwts_framework *fw,
 			    fwts_acpi_madt_sub_table_header *hdr,
-			    const uint8_t *data)
+			    uint8_t *data)
 {
 	/* specific checks for subtable type 7: Processor Local SAPIC */
 	fwts_acpi_madt_local_sapic *lsapic = (fwts_acpi_madt_local_sapic *)data;
@@ -914,7 +914,7 @@ out:
 
 static int madt_platform_int_source(fwts_framework *fw,
 				    fwts_acpi_madt_sub_table_header *hdr,
-				    const uint8_t *data)
+				    uint8_t *data)
 {
 	/* specific checks for subtable type 8: Platform Interrupt Sources */
 	fwts_acpi_madt_platform_int_source *src =
@@ -977,7 +977,7 @@ static int madt_platform_int_source(fwts_framework *fw,
 
 static int madt_local_x2apic(fwts_framework *fw,
 			     fwts_acpi_madt_sub_table_header *hdr,
-			     const uint8_t *data)
+			     uint8_t *data)
 {
 	/* specific checks for subtable type 9: Processor Local x2APIC */
 	fwts_acpi_madt_local_x2apic *lx2apic =
@@ -1012,7 +1012,7 @@ out:
 
 static int madt_local_x2apic_nmi(fwts_framework *fw,
 				 fwts_acpi_madt_sub_table_header *hdr,
-				 const uint8_t *data)
+				 uint8_t *data)
 {
 	/* specific checks for subtable type 0xa: Local x2APIC NMI */
 	fwts_acpi_madt_local_x2apic_nmi *nmi =
@@ -1035,7 +1035,7 @@ static int madt_local_x2apic_nmi(fwts_framework *fw,
 
 static int madt_gicc(fwts_framework *fw,
 		     fwts_acpi_madt_sub_table_header *hdr,
-		     const uint8_t *data)
+		     uint8_t *data)
 {
 	/* specific checks for subtable type 0xb: GICC */
 	fwts_acpi_madt_gic *gic = (fwts_acpi_madt_gic *)data;
@@ -1123,7 +1123,7 @@ static int madt_gicc(fwts_framework *fw,
 
 static int madt_gicd(fwts_framework *fw,
 		     fwts_acpi_madt_sub_table_header *hdr,
-		     const uint8_t *data)
+		     uint8_t *data)
 {
 	/* specific checks for subtable type 0xc: GIC Distributor */
 	fwts_acpi_madt_gicd *gicd = (fwts_acpi_madt_gicd *)data;
@@ -1184,7 +1184,7 @@ static int madt_gicd(fwts_framework *fw,
 
 static int madt_gic_msi_frame(fwts_framework *fw,
 			      fwts_acpi_madt_sub_table_header *hdr,
-			      const uint8_t *data)
+			      uint8_t *data)
 {
 	/* specific checks for subtable type 0xd: GIC MSI Frame */
 	fwts_acpi_madt_gic_msi *gic_msi = (fwts_acpi_madt_gic_msi *)data;
@@ -1264,7 +1264,7 @@ static int madt_gic_msi_frame(fwts_framework *fw,
 
 static int madt_gicr(fwts_framework *fw,
 		     fwts_acpi_madt_sub_table_header *hdr,
-		     const uint8_t *data)
+		     uint8_t *data)
 {
 	/* specific checks for subtable type 0xe: GICR */
 	fwts_acpi_madt_gicr *gicr = (fwts_acpi_madt_gicr *)data;
@@ -1307,7 +1307,7 @@ static int madt_gicr(fwts_framework *fw,
 
 static int madt_gic_its(fwts_framework *fw,
 			     fwts_acpi_madt_sub_table_header *hdr,
-			     const uint8_t *data)
+			     uint8_t *data)
 {
 	/* specific checks for subtable type 0xf: GIC ITS */
 	fwts_acpi_madt_gic_its *gic_its = (fwts_acpi_madt_gic_its *)data;
@@ -1423,7 +1423,7 @@ static int madt_subtables(fwts_framework *fw)
 	fwts_acpi_madt_sub_table_header *hdr;
 	fwts_acpi_madt_local_sapic *lsapic;
 	struct acpi_madt_subtable_lengths *ms = spec_data;
-	const uint8_t *data = mtable->data;
+	uint8_t *data = mtable->data;
 	ssize_t length = mtable->length;
 	int ii = 0;
 	int proper_len;

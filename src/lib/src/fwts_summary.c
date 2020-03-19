@@ -246,12 +246,12 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 		fwts_list_foreach(item, sorted) {
 			fwts_framework_test *test = fwts_list_data(fwts_framework_test*,item);
 			if (test->was_run) {
-				char passed[6];
-				char failed[6];
-				char aborted[6];
-				char warning[6];
-				char skipped[6];
-				char infoonly[6];
+				char passed[16];
+				char failed[16];
+				char aborted[16];
+				char warning[16];
+				char skipped[16];
+				char infoonly[16];
 
 				fwts_summary_format_field(passed, sizeof(passed), test->results.passed);
 				fwts_summary_format_field(failed, sizeof(failed), test->results.failed);

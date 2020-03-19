@@ -124,7 +124,7 @@ static int msdm_test1(fwts_framework *fw)
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"MSDMDataTypeInvalid",
-			"MSDM Data Type field should be 0x00000001, got 0x8.8%" PRIx32
+			"MSDM Data Type field should be 0x00000001, got 0x%8.8" PRIx32
 			" instead",
 			msdm->data_type);
 		break;

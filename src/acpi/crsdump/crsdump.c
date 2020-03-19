@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <inttypes.h>
 #include "fwts_acpi_object_eval.h"
+#include "crsdump.h"
 
 typedef struct {
 	const char *label;				/* Field label */
@@ -854,8 +855,6 @@ static void crsdump_large_resource_items(
 
 	fwts_log_nl(fw);
 }
-
-
 
 int resource_dump(fwts_framework *fw, const char *objname)
 {

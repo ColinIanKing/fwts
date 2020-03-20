@@ -15,7 +15,12 @@ AM_CPPFLAGS = \
 	`pkg-config --silence-errors --cflags json-c`	\
 	-pthread `pkg-config --cflags glib-2.0 gio-2.0` \
 	-Wall -Werror -Wextra				\
-	-Wno-address-of-packed-member
+	-Wno-address-of-packed-member			\
+	-Wfloat-equal -Wmissing-declarations		\
+	-Wno-long-long -Wredundant-decls -Wshadow	\
+	-Wno-missing-field-initializers 		\
+	-Wno-missing-braces -Wno-sign-compare 		\
+	-Wno-multichar -Wcast-qual
 
 bin_PROGRAMS = fwts
 

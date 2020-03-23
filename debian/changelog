@@ -1,3 +1,18 @@
+fwts (20.03.00-0ubuntu1) focal; urgency=medium
+
+  [Colin Ian King]
+  * ACPI: crsdump: include crsdump.h in crsdump.h, rename guard macro
+  * acpi: madt: unconstify data argument
+  * lib: fwts_summary: fix build warning with gcc-10
+  * Makfile: add more warning flags to ensure we catch more issues
+
+  [Ivan Hu]
+  * acpi: msdm: fix print typo
+  * lib: add kernel lockdown check
+  * uefi: check the kernel lockdown for uefi tests
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Mon, 23 Mar 2020 12:42:11 -0600
+
 fwts (20.02.00-0ubuntu1) focal; urgency=medium
 
   [Alex Hung]

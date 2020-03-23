@@ -100,6 +100,10 @@ static int uefirtvariable_init(fwts_framework *fw)
 		return FWTS_ABORTED;
 	}
 
+	if (fwts_lib_efi_runtime_kernel_lockdown(fw) == FWTS_ABORTED) {
+		return FWTS_ABORTED;
+	}
+
 	if (fwts_lib_efi_runtime_load_module(fw) != FWTS_OK) {
 		fwts_log_info(fw, "Cannot load efi_runtime module. Aborted.");
 		return FWTS_ABORTED;

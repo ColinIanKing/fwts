@@ -188,16 +188,20 @@ int fwts_lib_efi_runtime_close(int fd)
  *  fwts_lib_efi_runtime_kernel_lockdown()
  *  check if the kernel has been lockdown
  */
-bool fwts_lib_efi_runtime_kernel_lockdown(void)
+int fwts_lib_efi_runtime_kernel_lockdown(fwts_framework *fw)
 {
 	char *data;
 
 	if ((data = fwts_get("/sys/kernel/security/lockdown")) != NULL) {
 		if (strstr(data, "[none]") == NULL) {
 			free(data);
-			return true;
+			fwts_log_info(fw, "Kernel is in lockdown mode. Aborted.");
+			fwts_log_info(fw, "Please unlock the kernel before you test the UEFI tests.");
+			fwts_log_info(fw, "Make sure you disable secureboot and disable "
+					"the kernel lockdown, (by kernel parameter lockdown=None).");
+			return FWTS_ABORTED;
 		}
 	}
 	free(data);
-	return false;
+	return FWTS_OK;
 }

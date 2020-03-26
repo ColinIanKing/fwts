@@ -205,3 +205,34 @@ int fwts_lib_efi_runtime_kernel_lockdown(fwts_framework *fw)
 	free(data);
 	return FWTS_OK;
 }
+
+/*
+ *  fwts_lib_efi_runtime_module_init()
+ *  check the EFI firmware support and load efi_test driver
+ *  also check if the kernel is in lockdown mode.
+ */
+int fwts_lib_efi_runtime_module_init(fwts_framework *fw, int *fd)
+{
+
+	if (fwts_firmware_detect() != FWTS_FIRMWARE_UEFI) {
+		fwts_log_info(fw, "Cannot detect any UEFI firmware. Aborted.");
+		return FWTS_ABORTED;
+	}
+
+	if (fwts_lib_efi_runtime_kernel_lockdown(fw) == FWTS_ABORTED) {
+		return FWTS_ABORTED;
+	}
+
+	if (fwts_lib_efi_runtime_load_module(fw) != FWTS_OK) {
+		fwts_log_info(fw, "Cannot load efi_runtime module. Aborted.");
+		return FWTS_ABORTED;
+	}
+
+	*fd = fwts_lib_efi_runtime_open();
+	if (*fd == -1) {
+		fwts_log_info(fw, "Cannot open EFI test driver. Aborted.");
+		return FWTS_ABORTED;
+	}
+
+	return FWTS_OK;
+}

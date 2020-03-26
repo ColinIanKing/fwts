@@ -169,25 +169,8 @@ static void addonehour(EFI_TIME *time)
 
 static int uefirttime_init(fwts_framework *fw)
 {
-	if (fwts_firmware_detect() != FWTS_FIRMWARE_UEFI) {
-		fwts_log_info(fw, "Cannot detect any UEFI firmware. Aborted.");
+	if (fwts_lib_efi_runtime_module_init(fw, &fd) == FWTS_ABORTED)
 		return FWTS_ABORTED;
-	}
-
-	if (fwts_lib_efi_runtime_kernel_lockdown(fw) == FWTS_ABORTED) {
-		return FWTS_ABORTED;
-	}
-
-	if (fwts_lib_efi_runtime_load_module(fw) != FWTS_OK) {
-		fwts_log_info(fw, "Cannot load efi_runtime module. Aborted.");
-		return FWTS_ABORTED;
-	}
-
-	fd = fwts_lib_efi_runtime_open();
-	if (fd == -1) {
-		fwts_log_info(fw, "Cannot open EFI test driver. Aborted.");
-		return FWTS_ABORTED;
-	}
 
 	return FWTS_OK;
 }

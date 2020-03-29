@@ -269,7 +269,7 @@ Resources
 
 fwts git repository:
 	git://kernel.ubuntu.com/hwe/fwts.git
-	http://kernel.ubuntu.com/git/hwe/fwts.git/
+	https://kernel.ubuntu.com/git/hwe/fwts.git/
 
 fwts reference guide:
 	https://wiki.ubuntu.com/FirmwareTestSuite/Reference

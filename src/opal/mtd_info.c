@@ -126,6 +126,7 @@ static int mtd_dev_query(fwts_framework *fw, char *mtd_devnode)
 		return FWTS_ERROR;
 	}
 
+	(void)memset(&mtd_info, 0, sizeof(mtd_info));
 	if (ioctl(fd, MEMGETINFO, &mtd_info)) {
 		(void)close(fd);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "OPAL MTD Info",

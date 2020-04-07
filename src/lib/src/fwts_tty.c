@@ -18,6 +18,7 @@
  */
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <string.h>
 
 /*
  *  fwts_tty_width()
@@ -29,6 +30,8 @@ int fwts_tty_width(const int fd, const int default_width)
 #ifdef TIOCGWINSZ
 	struct winsize ws;
 
+	/* Zero'ing ws keeps static analyzers happy */
+	(void)memset(&ws, 0, sizeof(ws));
 	/* if tty and we can get a sane width, return it */
 	if (isatty(fd) &&
 	    (ioctl(fd, TIOCGWINSZ, &ws) != -1) &&

@@ -1586,10 +1586,10 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x0f)
 				break;
 			if (!(((data[0x4] >= 0x01) && (data[0x4] <= 0x0a)) ||
-			      ((data[0x4] >= 0xa0) && (data[0x4] <= 0xa3))))
+			      ((data[0x4] >= 0xa0) && (data[0x4] <= 0xa4))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x01..0x0a, 0xa0..0xa3) "
+					"(range allowed 0x01..0x0a, 0xa0..0xa4) "
 					"while accessing entry '%s' @ "
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x4], table, addr, "Location", 0x4);

@@ -449,12 +449,11 @@ err_restore_env:
 	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
-
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to delete variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
-		return FWTS_ERROR;
+		ret = FWTS_ERROR;
 	}
 
 	if (variablename)

@@ -41,6 +41,7 @@ int fwts_wakealarm_get(fwts_framework *fw, struct rtc_time *rtc_tm)
 	int fd;
 	int ret = FWTS_OK;
 
+	(void)memset(rtc_tm, 0, sizeof(*rtc_tm));
 	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
 		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
 		return FWTS_ERROR;
@@ -92,6 +93,7 @@ int fwts_wakealarm_trigger(fwts_framework *fw, const uint32_t seconds)
 		return FWTS_ERROR;
 	}
 
+	(void)memset(&rtc_tm, 0, sizeof(rtc_tm));
 	if (ioctl(fd, RTC_RD_TIME, &rtc_tm) < 0) {
 		fwts_log_error(fw, "Cannot read Real Time Clock with ioctl RTC_RD_TIME %s.", fwts_rtc);
 		ret = FWTS_ERROR;

@@ -1304,37 +1304,60 @@ static void method_test_CRS_mif_maf(
 			fwts_advice(fw, "%s", mif_maf_advice);
 			*passed = false;
 		}
-		if ((mif == 1) && (min % (granularity + 1) != 0)) {
-			snprintf(tmp, sizeof(tmp), "Method%s%sMinNotMultipleOfGran", objname, tag);
-			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+
+		if (mif == 1) {
+			const uint64_t tmpgran = granularity + 1;
+
+			if (tmpgran == 0) {
+				/* Avoid min % tmp division by zero, flag an error */
+				snprintf(tmp, sizeof(tmp), "Method%s%sGranTooLarge", objname, tag);
 				fwts_warning(fw, tmp,
-					"%s %s _MIN address is not a multiple "
-					"of the granularity when _MIF is 1.",
-					name, type);
-			else
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					tmp,
-					"%s %s _MIN address is not a multiple "
-					"of the granularity when _MIF is 1.",
-					name, type);
-			fwts_advice(fw, "%s", mif_maf_advice);
-			*passed = false;
+					"%s %s granularity 0x%" PRIx64 " is too large when _MIF is 1.",
+					name, type, granularity);
+				*passed = false;
+			} else if (min % tmpgran != 0) {
+				snprintf(tmp, sizeof(tmp), "Method%s%sMinNotMultipleOfGran", objname, tag);
+				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+					fwts_warning(fw, tmp,
+						"%s %s _MIN address is not a multiple "
+						"of the granularity when _MIF is 1.",
+						name, type);
+				else
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						tmp,
+						"%s %s _MIN address is not a multiple "
+						"of the granularity when _MIF is 1.",
+						name, type);
+				fwts_advice(fw, "%s", mif_maf_advice);
+				*passed = false;
+			}
 		}
-		if ((maf == 1) && (max % (granularity - 1) != 0)) {
-			snprintf(tmp, sizeof(tmp), "Method%s%sMaxNotMultipleOfGran", objname, tag);
-			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		if (maf == 1) {
+			const uint64_t tmpgran = granularity - 1;
+
+			if (tmpgran == 0) {
+				/* Avoid max % tmp division by zero, flag an error */
+				snprintf(tmp, sizeof(tmp), "Method%s%sGranTooSmall", objname, tag);
 				fwts_warning(fw, tmp,
-					"%s %s _MAX address is not a multiple "
-					"of the granularity when _MAF is 1.",
-					name, type);
-			else
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					tmp,
-					"%s %s _MAX address is not a multiple "
-					"of the granularity when _MAF is 1.",
-					name, type);
-			fwts_advice(fw, "%s", mif_maf_advice);
-			*passed = false;
+					"%s %s granularity 0x%" PRIx64 " is too small when _MAF is 1.",
+					name, type, granularity);
+				*passed = false;
+			} else if (max % tmpgran != 0) {
+				snprintf(tmp, sizeof(tmp), "Method%s%sMaxNotMultipleOfGran", objname, tag);
+				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+					fwts_warning(fw, tmp,
+						"%s %s _MAX address is not a multiple "
+						"of the granularity when _MAF is 1.",
+						name, type);
+				else
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						tmp,
+						"%s %s _MAX address is not a multiple "
+						"of the granularity when _MAF is 1.",
+						name, type);
+				fwts_advice(fw, "%s", mif_maf_advice);
+				*passed = false;
+			}
 		}
 	} else {
 		if ((mif == 0) && (maf == 0) &&

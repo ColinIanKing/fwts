@@ -1939,10 +1939,16 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_reserved_bits_check(fw, table, addr, "Characteristics", hdr, sizeof(uint64_t), 0x13, 6, 63);
 			break;
 
-		case 126: /* 7.45 */
+		case 44: /* 7.45 */
+			table = "Processor Additional Information (Type 44)";
+			if (hdr->length < 0x6)
+				break;
+			break;
+
+		case 126: /* 7.46 */
 			table = "Inactive (Type 126)";
 			break;
-		case SMBIOS_END_OF_TABLE: /* 7.46 */
+		case SMBIOS_END_OF_TABLE: /* 7.47 */
 			table = "End of Table (Type 127)";
 			break;
 		default:

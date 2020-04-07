@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <bsd/string.h>
 #include <limits.h>
 #include <dirent.h>
 #include <inttypes.h>
@@ -221,7 +222,8 @@ static int fwts_battery_get_count_proc_fs(DIR *dir, uint32_t *count)
 static int fwts_battery_get_name_sys_fs(
 	DIR *dir,
 	const uint32_t index,
-	char *name)
+	char *name,
+	const size_t name_len)
 {
 	struct dirent *entry;
 	char path[PATH_MAX];
@@ -247,7 +249,7 @@ static int fwts_battery_get_name_sys_fs(
 			if (!match)
 				continue;
 
-			strcpy(name, entry->d_name);
+			strlcpy(name, entry->d_name, name_len);
 			return FWTS_OK;
 		}
 	} while (entry);
@@ -258,7 +260,8 @@ static int fwts_battery_get_name_sys_fs(
 static int fwts_battery_get_name_proc_fs(
 	DIR *dir,
 	const uint32_t index,
-	char *name)
+	char *name,
+	const size_t name_len)
 {
 	struct dirent *entry;
 	uint32_t i = 0;
@@ -271,7 +274,7 @@ static int fwts_battery_get_name_proc_fs(
 			if (!match)
 				continue;
 
-			strcpy(name, entry->d_name);
+			strlcpy(name, entry->d_name, name_len);
 			return FWTS_OK;
 		}
 	} while (entry);
@@ -639,18 +642,21 @@ int fwts_battery_get_cycle_count(
 int fwts_battery_get_name(
 	fwts_framework *fw,
 	const uint32_t index,
-	char *name)
+	char *name,
+	const size_t name_len)
 {
 	int ret;
 	DIR *dir;
 
 	FWTS_UNUSED(fw);
 
+	(void)memset(name, 0, name_len);
+
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
-		ret = fwts_battery_get_name_sys_fs(dir, index, name);
+		ret = fwts_battery_get_name_sys_fs(dir, index, name, name_len);
 		(void)closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
-		ret = fwts_battery_get_name_proc_fs(dir, index, name);
+		ret = fwts_battery_get_name_proc_fs(dir, index, name, name_len);
 		(void)closedir(dir);
 	} else {
 		return FWTS_ERROR;

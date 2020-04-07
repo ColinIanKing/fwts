@@ -256,7 +256,8 @@ static void do_battery_test(fwts_framework *fw, const uint32_t index)
 
 	*state = '\0';
 
-	fwts_battery_get_name(fw, index, name);
+	if (fwts_battery_get_name(fw, index, name, sizeof(name)) != FWTS_OK)
+		fwts_log_info(fw, "Cannot find batter name: cannot test.");
 
 	fwts_log_info(fw, "Test battery '%s'.", name);
 

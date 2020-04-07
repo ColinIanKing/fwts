@@ -34,6 +34,6 @@ int fwts_battery_set_trip_point(fwts_framework *fw, const uint32_t index, const 
 int fwts_battery_get_trip_point(fwts_framework *fw, const uint32_t index, uint32_t *trip_point);
 int fwts_battery_get_capacity(fwts_framework *fw, const fwts_battery_type type,
 	const uint32_t index, uint32_t *capacity_mAh, uint32_t *capacity_mWh);
-int fwts_battery_get_name(fwts_framework *fw, const uint32_t index, char *name);
+int fwts_battery_get_name(fwts_framework *fw, const uint32_t index, char *name, const size_t name_len);
 
 #endif

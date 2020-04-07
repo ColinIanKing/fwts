@@ -85,6 +85,9 @@ static void gpu_dump_gpes(
 				n++;
 			snprintf(buf, sizeof(buf), "notifies %" PRIu32 " devices", n);
 			break;
+		default:
+			strncpy(buf, "unknown", sizeof(buf));
+			break;
 		}
 		fwts_log_info_verbatim(fw, "      GPE 0x%2.2" PRIx8 ":",
 			gpe_block_info->BlockBaseNumber + gpe);

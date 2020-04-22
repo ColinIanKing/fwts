@@ -31,4 +31,17 @@
 #define FWTS_JSON_ERROR(ptr) \
 	( (ptr == NULL) || ((const json_object *)ptr == __FWTS_JSON_ERR_PTR__) )
 
+/*
+ * json-c 0.13.99 does not define TRUE/FALSE anymore
+ * the json-c maintainers replaced them with pure 1/0
+ * https://github.com/json-c/json-c/commit/0992aac61f8b
+ */
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE  1
+#endif
+
 #endif

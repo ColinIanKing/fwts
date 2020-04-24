@@ -1157,8 +1157,10 @@ static int fwts_framework_an_parse(fwts_framework *fw, const char *arg)
 {
 	fw->target_arch = fwts_arch_get_arch(arg);
 	if (fw->target_arch == FWTS_ARCH_OTHER) {
-		fprintf(stderr, "--arch can be one of: %s\n",
-			fwts_arch_names());
+		char *names = fwts_arch_names();
+
+		fprintf(stderr, "--arch can be one of: %s\n", names ? names : "<unknown>");
+		free(names);
 		return FWTS_ERROR;
 	}
 

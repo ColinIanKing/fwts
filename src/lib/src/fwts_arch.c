@@ -69,7 +69,7 @@ fwts_architecture fwts_arch_get_arch(const char *name)
 	return __fwts_arch_get_arch(name);
 }
 
-const char *fwts_arch_names(void)
+char *fwts_arch_names(void)
 {
 	const struct fwts_arch_info *ptr;
 	size_t len;

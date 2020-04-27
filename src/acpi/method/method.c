@@ -1535,34 +1535,43 @@ static int method_test_PRW(fwts_framework *fw)
 		"_PRW", NULL, 0, method_test_PRW_return, NULL);
 }
 
+static void method_test_PS0_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	ACPI_HANDLE handle;
+	ACPI_STATUS status;
+	char *ps3path;
+
+	/* Check _PS3 according to ACPI spec:
+	 * If any ACPI Object that controls power (_PSx or _PRx, where x = 0, 1, 2,
+	 * or 3) exists, then methods to set the device into D0 and D3 device
+	 * states (at least) must be present.
+	 */
+	ps3path = (char*) strdup(name);
+	if (ps3path) {
+		strcpy(ps3path, name);
+		ps3path[strlen(name) - 1] = '3';
+
+		status = AcpiGetHandle(NULL, ps3path, &handle);
+		if (status == AE_NOT_FOUND) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Method_PS0",
+			"%s requires _PS3 control methods but "
+			"it was not found.", name);
+		}
+		free(ps3path);
+	}
+
+	fwts_method_test_NULL_return(fw, name, buf, obj, private);
+}
+
 static int method_test_PS0(fwts_framework *fw)
 {
-	/*
-	 *  iASL (ACPICA commit 6922796cfdfca041fdb96dc9e3918cbc7f43d830)
-	 *  checks that one of _PS1, _PS2, _PS3 must exist if _PS0 exists.
-	 */
-	if (fwts_acpi_object_exists("_PS0") != NULL) {
-		bool ok = false;
-		int i;
-
-		for (i = 1; i < 4; i++) {
-			char name[6];
-
-			snprintf(name, sizeof(name), "_PS%1d", i);
-			if (fwts_acpi_object_exists(name) != NULL) {
-				ok = true;
-				break;
-			}
-		}
-		if (!ok) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "Method_PS0",
-				"_PS0 requires that one of the _PS1, _PS2, _PS3 "
-				"control methods must also exist, however, "
-				"none were found.");
-		}
-	}
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PS0",
-		 NULL, 0, fwts_method_test_NULL_return, "_PS0");
+		NULL, 0, method_test_PS0_return, NULL);
 }
 
 static int method_test_PS1(fwts_framework *fw)

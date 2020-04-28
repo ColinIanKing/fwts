@@ -2699,6 +2699,13 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
   },
   {
     "compare_mode": "string",
+    "log_level": "LOG_LEVEL_MEDIUM",
+    "pattern": "Unable to read/write to IOMMU perf counter",
+    "advice": "AMD IOMMU performance counter is inaccessible and public specifications do not have information on how it should be supported",
+    "label": "KlogAmdIommuPCNotSupported"
+  },
+  {
+    "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Needed [Buffer/String/Package/Reference], found",
     "advice": "An error occurred in resolving operands, required an Integer, String, Package or Reference type (normally for a size_of operator), got a different type instead.",

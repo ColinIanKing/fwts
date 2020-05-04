@@ -3363,7 +3363,7 @@ static int method_test_UPD(fwts_framework *fw)
 static int method_test_UPP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_UPP", NULL, 0, fwts_method_test_integer_return, NULL);
+		"_UPP", NULL, 0, fwts_method_test_polling_return, NULL);
 }
 
 /*

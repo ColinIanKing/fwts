@@ -4377,31 +4377,10 @@ static int method_test_BTP(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void method_test_PCL_return(fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(fw);
-	FWTS_UNUSED(name);
-	FWTS_UNUSED(buf);
-	FWTS_UNUSED(obj);
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_PCL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
-		return;
-
-	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
-}
-
 static int method_test_PCL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_MOBILE,
-		"_PCL", NULL, 0, method_test_PCL_return, "_PCL");
+		"_PCL", NULL, 0, fwts_method_test_all_reference_package_return, "_PCL");
 }
 
 static int method_test_BTH(fwts_framework *fw)

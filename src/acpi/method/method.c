@@ -1230,10 +1230,36 @@ static int method_test_STA(fwts_framework *fw)
 /*
  * Section 6.5 Other Objects and Controls
  */
+static void method_test_BBN_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if ((obj->Integer.Value & 0xffffff00)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BBNIllegalReserved",
+			"%s returned value 0x%8.8" PRIx64 " and some of the "
+			"reserved bits are set when they should be zero.",
+			name, (uint64_t)obj->Integer.Value);
+			failed = true;
+	}
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "integer");
+}
+
 static int method_test_BBN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BBN",
-		NULL, 0, fwts_method_test_integer_return, "_BBN");
+		NULL, 0, method_test_BBN_return, NULL);
 }
 
 static int method_test_BDN(fwts_framework *fw)

@@ -802,6 +802,29 @@ void fwts_method_test_buffer_return(
 }
 
 /*
+ *  fwts_method_test_all_reference_package_return
+ *	check if all elements are references in a package
+ */
+void fwts_method_test_all_reference_package_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	char *objname = (char *)private;
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_all_type(fw, name, objname, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+		return;
+
+	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
+}
+
+
+/*
  *  fwts_method_test_passed_failed_return
  *	check if 0 or 1 (false/true) integer is returned
  */

@@ -5297,6 +5297,21 @@ static int method_test_ACx(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int method_test_ALx(fwts_framework *fw)
+{
+	int i;
+
+	for (i = 0; i < 10; i++) {
+		char buffer[6];
+
+		snprintf(buffer, sizeof(buffer), "_AL%1d", i);
+		method_evaluate_method(fw, METHOD_OPTIONAL,
+			buffer, NULL, 0, fwts_method_test_all_reference_package_return, buffer);
+		fwts_log_nl(fw);
+	}
+	return FWTS_OK;
+}
+
 static int method_test_DTI(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[1];
@@ -6283,7 +6298,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	{ method_test_ACx, "Test _ACx (Active Cooling)." },
 	{ method_test_ART, "Test _ART (Active Cooling Relationship Table)." },
-	/* { method_test_ALx, "Test _ALx (Active List)". }, */
+	{ method_test_ALx, "Test _ALx (Active List)." },
 	{ method_test_CRT, "Test _CRT (Critical Trip Point)." },
 	{ method_test_CR3, "Test _CR3 (Warm/Standby Temperature)." },
 	{ method_test_DTI, "Test _DTI (Device Temperature Indication)." },

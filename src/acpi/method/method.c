@@ -1136,29 +1136,10 @@ static int method_test_CCA(fwts_framework *fw)
 /*
  * Section 6.3 Device Insertion, Removal and Status Objects
  */
-static void method_test_EDL_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_EDL",
-		obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_EDL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_EDL", NULL, 0, method_test_EDL_return, NULL);
+		"_EDL", NULL, 0, fwts_method_test_all_reference_package_return, "_EDL");
 }
 
 static int method_test_EJD(fwts_framework *fw)
@@ -1261,28 +1242,10 @@ static int method_test_BDN(fwts_framework *fw)
 		NULL, 0, fwts_method_test_integer_return, "_BDN");
 }
 
-static void method_test_DEP_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_DEP", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_DEP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DEP", NULL, 0, method_test_DEP_return, NULL);
+		"_DEP", NULL, 0, fwts_method_test_all_reference_package_return, "_DEP");
 }
 
 static int method_test_FIT(fwts_framework *fw)
@@ -4467,28 +4430,10 @@ static int method_test_BMC(fwts_framework *fw)
 /*
  * Section 10.3 AC Adapters and Power Sources Objects
  */
-static void method_test_PRL_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_PRL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_PRL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PRL", NULL, 0, method_test_PRL_return, NULL);
+		"_PRL", NULL, 0, fwts_method_test_all_reference_package_return, "_PRL");
 }
 
 static void method_test_PSR_return(
@@ -4673,28 +4618,10 @@ static int method_test_PMC(fwts_framework *fw)
 		"_PMC", NULL, 0, method_test_PMC_return, NULL);
 }
 
-static void method_test_PMD_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_PMD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_PMD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PMD", NULL, 0, method_test_PMD_return, NULL);
+		"_PMD", NULL, 0, fwts_method_test_all_reference_package_return, "_PMD");
 }
 
 static int method_test_PMM(fwts_framework *fw)
@@ -5120,28 +5047,10 @@ static int method_test_ART(fwts_framework *fw)
 		"_ART", NULL, 0, method_test_ART_return, "_ART");
 }
 
-static void method_test_PSL_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_PSL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_PSL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PSL", NULL, 0, method_test_PSL_return, "_PSL");
+		"_PSL", NULL, 0, fwts_method_test_all_reference_package_return, "_PSL");
 }
 
 static void method_test_TRT_return(
@@ -5365,28 +5274,10 @@ static int method_test_TPT(fwts_framework *fw)
 		"_TPT", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
-static void method_test_TZD_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_TZD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
-		return;
-
-	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
-}
-
 static int method_test_TZD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TZD", NULL, 0, method_test_TZD_return, "_TZD");
+		"_TZD", NULL, 0, fwts_method_test_all_reference_package_return, "_TZD");
 }
 
 static int method_test_TZM(fwts_framework *fw)

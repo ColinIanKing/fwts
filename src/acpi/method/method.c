@@ -4354,7 +4354,7 @@ static int method_test_BTP(fwts_framework *fw)
 	static const int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
@@ -4394,7 +4394,7 @@ static int method_test_BTM(fwts_framework *fw)
 	static const int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
-	for (i = 0 ; i < 5; i++) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
@@ -4440,7 +4440,7 @@ static int method_test_BMC(fwts_framework *fw)
 	static const int values[] = { 0, 1, 2, 4 };
 	int i;
 
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];

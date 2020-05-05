@@ -545,7 +545,7 @@ static int method_test_BTP(fwts_framework *fw)
 	ACPI_STATUS status;
 	uint8_t i;
 
-	for (i = 0; i < sizeof(values) / sizeof(int); i++) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
@@ -626,7 +626,7 @@ static int method_test_BTM(fwts_framework *fw)
 	ACPI_STATUS status;
 	uint8_t i;
 
-	for (i = 0; i < sizeof(values) / sizeof(int); i++) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
@@ -686,7 +686,7 @@ static int method_test_BMC(fwts_framework *fw)
 	ACPI_STATUS status;
 	uint8_t i;
 
-	for (i = 0; i < sizeof(values) / sizeof(int); i++) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];

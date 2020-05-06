@@ -705,8 +705,8 @@ method          SKIPPED: Test 106, Skipping test for non-existent object
 method          _ALR.
 method          
 method          Test 107 of 201: Test _LID (Lid Status).
-method          PASSED: Test 107, \_SB_.LID0._LID correctly returned sane
-method          looking value 0x00000000.
+method          PASSED: Test 107, \_SB_.LID0._LID correctly returned an
+method          integer.
 method          
 method          Test 108 of 201: Test _GTF (Get Task File).
 method          PASSED: Test 108, \_SB_.PCI0.PATA.PRID.P_D0._GTF correctly

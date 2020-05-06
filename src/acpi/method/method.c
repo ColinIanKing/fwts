@@ -1230,36 +1230,11 @@ static int method_test_STA(fwts_framework *fw)
 /*
  * Section 6.5 Other Objects and Controls
  */
-static void method_test_BBN_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	bool failed = false;
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	if ((obj->Integer.Value & 0xffffff00)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_BBNIllegalReserved",
-			"%s returned value 0x%8.8" PRIx64 " and some of the "
-			"reserved bits are set when they should be zero.",
-			name, (uint64_t)obj->Integer.Value);
-			failed = true;
-	}
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "integer");
-}
-
 static int method_test_BBN(fwts_framework *fw)
 {
+	uint64_t mask = ~0xff;
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BBN",
-		NULL, 0, method_test_BBN_return, NULL);
+		NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static int method_test_BDN(fwts_framework *fw)
@@ -1326,33 +1301,11 @@ static int method_test_INI(fwts_framework *fw)
 		"_INI", NULL, 0, fwts_method_test_NULL_return, NULL);
 }
 
-static void method_test_SEG_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	if ((obj->Integer.Value & 0xffff0000)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_SEGIllegalReserved",
-			"%s returned value 0x%8.8" PRIx64 " and some of the "
-			"upper 16 reserved bits are set when they "
-			"should in fact be zero.",
-			name, (uint64_t)obj->Integer.Value);
-	} else
-		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
-}
-
 static int method_test_SEG(fwts_framework *fw)
 {
+	uint64_t mask = ~0xffff;
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_SEG",
-		NULL, 0, method_test_SEG_return, "_SEG");
+		NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static void method_test_GLK_return(
@@ -3345,33 +3298,11 @@ static int method_test_UPP(fwts_framework *fw)
 /*
  * Section 9.18 Wake Alarm Device
  */
-static void method_test_GCP_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	if (obj->Integer.Value & ~0x1ff)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_GCPReturn",
-			"%s returned %" PRId64 ", should be between 0 and 0x1ff, "
-			"one or more of the reserved bits 9..31 seem "
-			"to be set.",
-			name, (uint64_t)obj->Integer.Value);
-	else
-		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
-}
-
 static int method_test_GCP(fwts_framework *fw)
 {
+	uint64_t mask = ~0x1ff;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GCP", NULL, 0, method_test_GCP_return, "_GCP");
+		"_GCP", NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static void method_test_GRT_return(
@@ -3430,38 +3361,16 @@ static int method_test_SRT(fwts_framework *fw)
 		"_SRT", &arg0, 1, fwts_method_test_integer_return, NULL);
 }
 
-static void method_test_GWS_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	if (obj->Integer.Value & ~0x3)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_GWSReturn",
-			"%s returned %" PRIu64 ", should be between 0 and 3, "
-			"one or more of the reserved bits 2..31 seem "
-			"to be set.",
-			name, (uint64_t)obj->Integer.Value);
-	else
-		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
-}
-
 static int method_test_GWS(fwts_framework *fw)
 {
+	uint64_t mask = ~0x3;
 	ACPI_OBJECT arg[1];
 
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GWS", arg, 1, method_test_GWS_return, "_GWS");
+		"_GWS", arg, 1, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static void method_test_CWS_return(
@@ -5563,8 +5472,9 @@ static int method_test_ROM(fwts_framework *fw)
 
 static int method_test_GPD(fwts_framework *fw)
 {
+	uint64_t mask = ~0x3;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GPD", NULL, 0, fwts_method_test_integer_return, NULL);
+		"_GPD", NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static int method_test_SPD(fwts_framework *fw)
@@ -5585,8 +5495,9 @@ static int method_test_SPD(fwts_framework *fw)
 
 static int method_test_VPO(fwts_framework *fw)
 {
+	uint64_t mask = ~0xf;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_VPO", NULL, 0, fwts_method_test_integer_return, NULL);
+		"_VPO", NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static int method_test_ADR(fwts_framework *fw)
@@ -5825,14 +5736,16 @@ static int method_test_DDC(fwts_framework *fw)
 
 static int method_test_DCS(fwts_framework *fw)
 {
+	uint64_t mask = ~0x1f;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DCS", NULL, 0, fwts_method_test_integer_return, NULL);
+		"_DCS", NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static int method_test_DGS(fwts_framework *fw)
 {
+	uint64_t mask = ~0x1;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DGS", NULL, 0, fwts_method_test_integer_return, NULL);
+		"_DGS", NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static int method_test_DSS(fwts_framework *fw)

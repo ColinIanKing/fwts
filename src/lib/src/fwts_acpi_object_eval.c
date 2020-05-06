@@ -823,6 +823,34 @@ void fwts_method_test_all_reference_package_return(
 	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
 }
 
+/*
+ *  fwts_method_test_integer_reserved_bits_return
+ *	check if reserved bits are zero'ed in a returned integer
+ */
+void fwts_method_test_integer_reserved_bits_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint64_t *mask = (uint64_t *) private;
+	bool failed = false;
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value & *mask) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodIllegalReserved",
+			"%s returned value 0x%8.8" PRIx64 " and some of the "
+			"reserved bits are set when they should be zero.",
+			name, (uint64_t) obj->Integer.Value);
+	}
+
+	if (!failed)
+		fwts_passed(fw, "%s correctly returned an integer.", name);
+}
 
 /*
  *  fwts_method_test_passed_failed_return

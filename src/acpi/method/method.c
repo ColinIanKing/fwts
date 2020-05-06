@@ -3171,23 +3171,10 @@ static int method_test_ALP(fwts_framework *fw)
 /*
  * Section 9.4 Lid control
  */
-static void method_test_LID_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
-}
-
 static int method_test_LID(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_MOBILE,
-		"_LID", NULL, 0, method_test_LID_return, NULL);
+		"_LID", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 
@@ -3421,21 +3408,6 @@ static int method_test_GRT(fwts_framework *fw)
 		"_GRT", NULL, 0, method_test_GRT_return, NULL);
 }
 
-static void method_test_SRT_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
-}
-
 static int method_test_SRT(fwts_framework *fw)
 {
 	uint32_t time_size = sizeof(fwts_acpi_time_buffer);
@@ -3455,7 +3427,7 @@ static int method_test_SRT(fwts_framework *fw)
 	arg0.Buffer.Pointer = (void *)&real_time;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_SRT", &arg0, 1, method_test_SRT_return, NULL);
+		"_SRT", &arg0, 1, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_GWS_return(
@@ -5167,27 +5139,16 @@ static int method_test_TSP(fwts_framework *fw)
 		"_TSP", NULL, 0, fwts_method_test_polling_return, "_TSP");
 }
 
-static void method_test_TCx_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_method_passed_sane_uint64(fw, (char*)private, obj->Integer.Value);
-}
-
 static int method_test_TC1(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TC1", NULL, 0, method_test_TCx_return, "_TC1");
+		"_TC1", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_TC2(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TC2", NULL, 0, method_test_TCx_return, "_TC1");
+		"_TC2", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_TFP(fwts_framework *fw)
@@ -5271,23 +5232,10 @@ static int method_test_SCP(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void method_test_RTV_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
-}
-
 static int method_test_RTV(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_RTV", NULL, 0, method_test_RTV_return, "_RTV");
+		"_RTV", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_TPT(fwts_framework *fw)

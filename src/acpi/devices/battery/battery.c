@@ -449,7 +449,7 @@ static int method_test_BMA(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
-		"_BMA", arg, 1, fwts_method_test_integer_return, NULL);
+		"_BMA", arg, 1, fwts_method_test_passed_failed_return, "_BMA");
 }
 
 static int method_test_BMS(fwts_framework *fw)
@@ -459,7 +459,7 @@ static int method_test_BMS(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
-		"_BMS", arg, 1, fwts_method_test_integer_return, NULL);
+		"_BMS", arg, 1, fwts_method_test_passed_failed_return, "_BMS");
 }
 
 static void method_test_BST_return(

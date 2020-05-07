@@ -1127,10 +1127,10 @@ static int method_test_CCA(fwts_framework *fw)
 {
 	if (fw->flags & FWTS_FLAG_TEST_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
-			"_CCA", NULL, 0, fwts_method_test_integer_return, NULL);
+			"_CCA", NULL, 0, fwts_method_test_passed_failed_return, "_CCA");
 	else
 		return method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_CCA", NULL, 0, fwts_method_test_integer_return, NULL);
+			"_CCA", NULL, 0, fwts_method_test_passed_failed_return, "_CCA");
 }
 
 /*
@@ -4157,7 +4157,7 @@ static int method_test_BMA(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return method_evaluate_method(fw, METHOD_MOBILE,
-		"_BMA", arg, 1, fwts_method_test_integer_return, NULL);
+		"_BMA", arg, 1, fwts_method_test_passed_failed_return, "_BMA");
 }
 
 static int method_test_BMS(fwts_framework *fw)
@@ -4167,7 +4167,7 @@ static int method_test_BMS(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return method_evaluate_method(fw, METHOD_MOBILE,
-		"_BMS", arg, 1, fwts_method_test_integer_return, NULL);
+		"_BMS", arg, 1, fwts_method_test_passed_failed_return, "_BMS");
 }
 
 static void method_test_BST_return(

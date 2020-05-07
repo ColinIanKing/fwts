@@ -853,6 +853,35 @@ void fwts_method_test_integer_reserved_bits_return(
 }
 
 /*
+ *  fwts_method_test_integer_max_return
+ *	check if returned integer is less than a max value
+ */
+void fwts_method_test_integer_max_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint64_t *max = (uint64_t *) private;
+	bool failed = false;
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value > *max) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_HIGH, "MethodOutOfRangeValue",
+			"%s returned value %" PRId64 " but range allowed "
+			"is 0..%" PRId64 " .",
+			name, (uint64_t) obj->Integer.Value, *max);
+	}
+
+	if (!failed)
+		fwts_passed(fw, "%s correctly returned an integer.", name);
+}
+
+/*
  *  fwts_method_test_passed_failed_return
  *	check if 0 or 1 (false/true) integer is returned
  */

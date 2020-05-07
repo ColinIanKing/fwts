@@ -1533,8 +1533,9 @@ static int method_test_PS3(fwts_framework *fw)
 
 static int method_test_PSC(fwts_framework *fw)
 {
+	uint64_t max = 3;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PSC", NULL, 0, fwts_method_test_integer_return, NULL);
+		"_PSC", NULL, 0, fwts_method_test_integer_max_return, &max);
 }
 
 static int method_test_PSE(fwts_framework *fw)
@@ -1596,8 +1597,9 @@ static int method_test_PSW(fwts_framework *fw)
 #define method_test_SxD(name)						\
 static int method_test ## name(fwts_framework *fw)			\
 {									\
+	uint64_t max = 3;						\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
-		# name, NULL, 0, fwts_method_test_integer_return, # name);	\
+		# name, NULL, 0, fwts_method_test_integer_max_return, &max);	\
 }
 
 method_test_SxD(_S1D)
@@ -1608,8 +1610,9 @@ method_test_SxD(_S4D)
 #define method_test_SxW(name)						\
 static int method_test ## name(fwts_framework *fw)			\
 {									\
+	uint64_t max = 3;						\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
-		# name, NULL, 0, fwts_method_test_integer_return, # name);	\
+		# name, NULL, 0, fwts_method_test_integer_max_return, &max);	\
 }
 
 method_test_SxW(_S0W)

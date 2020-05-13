@@ -1893,7 +1893,7 @@ static void method_test_CPC_return(
 	} else {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"Method_CPCBadRevision",
-			"_CPC's _REV is incorrect, "
+			"_CPC's revision is incorrect, "
 			"expecting 1 ,2 or 3, got 0x%" PRIx8 , revision);
 
 		return;

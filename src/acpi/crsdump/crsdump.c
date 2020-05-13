@@ -318,7 +318,7 @@ static const char *crs_irq_map(const uint64_t val)
 		unsigned int i;
 
 		for (i = 0; i < 32; i++) {
-			if (val & (1 << i)) {
+			if (val & (1UL << i)) {
 				char tmp[5];
 
 				snprintf(tmp, sizeof(tmp), " %u", i);

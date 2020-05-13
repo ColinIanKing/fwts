@@ -270,7 +270,7 @@ static int method_test_STP(fwts_framework *fw)
 	arg[1].Integer.Value = 0;	/* wake up instantly */
 
 	return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
-		"_STP", arg, 2, fwts_method_test_passed_failed_return, NULL);
+		"_STP", arg, 2, fwts_method_test_passed_failed_return, "_STP");
 }
 
 static int method_test_STV(fwts_framework *fw)
@@ -283,7 +283,7 @@ static int method_test_STV(fwts_framework *fw)
 	arg[1].Integer.Value = 100;	/* timer value */
 
 	return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
-		"_STV", arg, 2, fwts_method_test_passed_failed_return, NULL);
+		"_STV", arg, 2, fwts_method_test_passed_failed_return, "_STV");
 }
 
 static int method_test_TIP(fwts_framework *fw)

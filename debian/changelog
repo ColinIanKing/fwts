@@ -1,3 +1,54 @@
+fwts (20.05.00-0ubuntu1) groovy; urgency=medium
+
+  [Alex Hung]
+  * dmicheck: update system slot type (type 9)
+  * dmicheck: update Memory Device type (type 17)
+  * dmicheck: add Type 44 (Processor Additional Information)
+  * dmicheck: update Memory Array Location (type 16)
+  * acpi/method: check _PS3 exists when _PS0 is present
+  * klog.json: add a "Unable ... IOMMU perf counter" message
+  * acpi/method: checks _UPP's return as polling
+  * acpi/method: add tests for _ALx method
+  * fwts-test: sync up with _ALx control method
+  * acpi/method: reuse common function for _PCL method
+  * acpi/method: refactor with fwts_method_test_all_reference_package_return
+  * acpi/method: check reserved bits from _BBN return
+  * acpi/method/battery: replace hardcoded array length by FWTS_ARRAY_SIZE
+  * acpi/method: remove duplicated code for returned integers
+  * fwts-test: sync up with method tests
+  * lib: fwts_acpi_object_eval: add a function to check reserved bits
+  * acpi/method: check integer returns with bit definitions
+  * acpi/method/battery: check method returning integer 0 & 1
+  * lib: fwts_acpi_object_eval: add a function to check max returned integers
+  * acpi/method: check _PSC, _SxD and _SxW for max returned integers
+  * auto-packager:mkpackage.sh: add groovy
+  * acpi/method: revise _CPC's error messages
+  * acpi/time: fix passing method name instead of NULL
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20200326
+  * lib: fwts_tty: memset a ws struct to keep static analyzers happy
+  * acpi: battery: pass string length to avoid any string overflows
+  * opal: mtd_info: memset a mtd_info struct to keep static analyzers happy
+  * lib: fwts_wakealarm: memset a rtc_tm struct to keep static analyzers happy
+  * acpi: gpedump: ensure buf is set on default case
+  * uefi: uefirtvariable: fix a memory leak of variablename
+  * lib: fwts_acpi_object_eval: avoid any division by zero
+  * lib: fwts_json.h: define TRUE and FALSE for newer versions of json-c
+    (LP: #1874224)
+  * Manual: update names of contributors
+  * fwts_framework: ensure the string returned from fwts_arch_names is free'd
+  * ACPICA: Update to version 20200430
+  * acpi: crsdump: fix portability warning from cppcheck
+
+  [Ivan Hu]
+  * uefi: add helper function for efi test module init
+
+  [Paul Menzel]
+  * README: Use HTTPS URL https://kernel.ubuntu.org
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 14 May 2020 12:08:10 -0600
+
 fwts (20.03.00-0ubuntu1) focal; urgency=medium
 
   [Colin Ian King]

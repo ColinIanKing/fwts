@@ -5249,20 +5249,6 @@ static int method_test_DOD(fwts_framework *fw)
 		"_DOD", NULL, 0, method_test_DOD_return, NULL);
 }
 
-static void method_test_ROM_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(obj);
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
-		fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_ROM(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[2];
@@ -5273,7 +5259,7 @@ static int method_test_ROM(fwts_framework *fw)
 	arg[1].Integer.Value = 4096;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_ROM", arg, 2, method_test_ROM_return, NULL);
+		"_ROM", arg, 2, fwts_method_test_buffer_return, NULL);
 }
 
 static int method_test_GPD(fwts_framework *fw)

@@ -132,7 +132,7 @@
  * _LSI 	 Y
  * _LSR 	 N
  * _LSW 	 N
- * _MAT 	 N
+ * _MAT 	 Y
  * _MBM 	 Y
  * _MLS 	 Y
  * _MSG 	 Y
@@ -872,6 +872,12 @@ static int method_test_CRS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_MANDATORY,
 		"_CRS", NULL, 0, method_test_CRS_return, "_CRS");
+}
+
+static int method_test_MAT(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_MAT", NULL, 0, fwts_method_test_buffer_return, NULL);
 }
 
 static int method_test_PRS(fwts_framework *fw)
@@ -5627,7 +5633,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_GSB, "Test _GSB (Global System Interrupt Base)." },
 	{ method_test_HPP, "Test _HPP (Hot Plug Parameters)." },
 	/* { method_test_HPX, "Test _HPX (Hot Plug Extensions)." }, */
-	/* { method_test_MAT, "Test _MAT (Multiple APIC Table Entry)." }, */
+	{ method_test_MAT, "Test _MAT (Multiple APIC Table Entry)." },
 	{ method_test_PRS, "Test _PRS (Possible Resource Settings)." },
 	{ method_test_PRT, "Test _PRT (PCI Routing Table)." },
 	{ method_test_PXM, "Test _PXM (Proximity)." },

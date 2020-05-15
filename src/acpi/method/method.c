@@ -4212,32 +4212,10 @@ static int method_test_PRL(fwts_framework *fw)
 		"_PRL", NULL, 0, fwts_method_test_all_reference_package_return, "_PRL");
 }
 
-static void method_test_PSR_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	if (obj->Integer.Value > 2) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_PSRZeroOrOne",
-			"%s returned 0x%8.8" PRIx64 ", expected 0 "
-			"(offline) or 1 (online)",
-			name, (uint64_t)obj->Integer.Value);
-	} else
-		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
-}
-
 static int method_test_PSR(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PSR", NULL, 0, method_test_PSR_return, NULL);
+		"_PSR", NULL, 0, fwts_method_test_passed_failed_return, "_PSR");
 }
 
 static void method_test_PIF_return(

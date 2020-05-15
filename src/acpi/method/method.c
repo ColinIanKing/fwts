@@ -1609,13 +1609,8 @@ static void method_test_PRR_return(
 	if (fwts_method_package_count_equal(fw, name, "_PRR", obj, 1) != FWTS_OK)
 		return;
 
-	if (obj->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_PRRElementType",
-			"%s returned a package that does not contain "
-			"a reference.", name);
+	if (fwts_method_package_elements_all_type(fw, name, "_PRR", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
-	}
 
 	fwts_method_passed_sane(fw, name, "package");
 }

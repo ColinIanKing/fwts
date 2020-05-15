@@ -3137,11 +3137,7 @@ static void method_test_GTM_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != (5 * sizeof(uint32_t)))
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_GTMBadBufferSize",
-			"%s should return a buffer with size of 20.",
-			name);
-	else
+	if (fwts_method_buffer_size(fw, name, obj, 20) == FWTS_OK)
 		fwts_method_passed_sane(fw, name, "buffer");
 }
 
@@ -3248,14 +3244,8 @@ static void method_test_GRT_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != 16) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_GRTBadBufferSize",
-			"%s should return a buffer of 16 bytes, but "
-			"instead just returned %" PRIu32,
-			name, obj->Buffer.Length);
+	if (fwts_method_buffer_size(fw, name, obj, 16) != FWTS_OK)
 		return;
-	}
 
 	/*
 	 * Should sanity check this, but we can't read the
@@ -3440,14 +3430,8 @@ static void method_test_NBS_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != 64) {
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
 		failed = true;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_NBSBadBufferSize",
-			"%s should return a buffer of 64 bytes, but "
-			"instead just returned %" PRIu32,
-			name, obj->Buffer.Length);
-	}
 
 	ret = (nbs_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);
@@ -3479,14 +3463,8 @@ static void method_test_NCH_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != 64) {
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
 		failed = true;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_NCHBadBufferSize",
-			"%s should return a buffer of 64 bytes, but "
-			"instead just returned %" PRIu32,
-			name, obj->Buffer.Length);
-	}
 
 	ret = (nch_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);
@@ -3525,14 +3503,8 @@ static void method_test_NIC_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != 64) {
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
 		failed = true;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_NICBadBufferSize",
-			"%s should return a buffer of 64 bytes, but "
-			"instead just returned %" PRIu32,
-			name, obj->Buffer.Length);
-	}
 
 	ret = (nic_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);
@@ -3570,14 +3542,8 @@ static void method_test_NIH_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != 64) {
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
 		failed = true;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_NIHBadBufferSize",
-			"%s should return a buffer of 64 bytes, but "
-			"instead just returned %" PRIu32,
-			name, obj->Buffer.Length);
-	}
 
 	ret = (nih_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);
@@ -3635,14 +3601,8 @@ static void method_test_NIG_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != 64) {
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
 		failed = true;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_NIGBadBufferSize",
-			"%s should return a buffer of 64 bytes, but "
-			"instead just returned %" PRIu32,
-			name, obj->Buffer.Length);
-	}
 
 	ret = (nig_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);

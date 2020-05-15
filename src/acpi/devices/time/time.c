@@ -121,14 +121,8 @@ static void method_test_GRT_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (obj->Buffer.Length != 16) {
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_GRTBadBufferSize",
-			"%s should return a buffer of 16 bytes, but "
-			"instead just returned %" PRIu32,
-			name, obj->Buffer.Length);
+	if (fwts_method_buffer_size(fw, name, obj, 16) != FWTS_OK)
 		return;
-	}
 
 	/*
 	 * Should sanity check this, but we can't read the

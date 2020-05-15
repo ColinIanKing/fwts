@@ -1989,31 +1989,11 @@ int fwts_method_test_CID(fwts_framework *fw, ACPI_HANDLE *device)
 		"_CID", NULL, 0, fwts_method_test_CID_return, NULL);
 }
 
-void fwts_method_test_CLS_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_count_equal(fw, name, "_CLS", obj, 3) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_CLS", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 int fwts_method_test_CLS(fwts_framework *fw, ACPI_HANDLE *device)
 {
+	uint32_t element_size = 3;
 	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
-		"_CLS", NULL, 0, fwts_method_test_CLS_return, NULL);
+		"_CLS", NULL, 0, fwts_method_test_package_integer_return, &element_size);
 }
 
 int fwts_method_test_DDN(fwts_framework *fw, ACPI_HANDLE *device)

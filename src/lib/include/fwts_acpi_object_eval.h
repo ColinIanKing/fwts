@@ -158,7 +158,6 @@ int fwts_method_test_UID(fwts_framework *fw, ACPI_HANDLE *device);
 
 void fwts_method_valid_CID_Type(fwts_framework *fw, char *name, ACPI_OBJECT *obj);
 void fwts_method_test_CID_return(fwts_framework *fw, char *name,ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
-void fwts_method_test_CLS_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_HID_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_MLS_return( fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_PLD_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);

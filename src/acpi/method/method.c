@@ -750,14 +750,14 @@ static int method_test_PIC(fwts_framework *fw)
 	return ret;
 }
 
-
 /*
  * Section 6.1 Device Identification Objects
  */
 static int method_test_CLS(fwts_framework *fw)
 {
+	uint32_t element_size = 3;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_CLS", NULL, 0, fwts_method_test_CLS_return, NULL);
+		"_CLS", NULL, 0, fwts_method_test_package_integer_return, &element_size);
 }
 
 static int method_test_DDN(fwts_framework *fw)
@@ -1087,33 +1087,11 @@ static int method_test_GSB(fwts_framework *fw)
 		"_GSB", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
-static void method_test_HPP_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	/* Must be 4 elements in the package */
-	if (fwts_method_package_count_equal(fw, name, "_HPP", obj, 4) != FWTS_OK)
-		return;
-
-	/* All 4 elements in the package must be integers */
-	if (fwts_method_package_elements_all_type(fw, name, "_HPP", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_HPP(fwts_framework *fw)
 {
+	uint32_t element_size = 4;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_HPP", NULL, 0, method_test_HPP_return, NULL);
+		"_HPP", NULL, 0, fwts_method_test_package_integer_return, &element_size);
 }
 
 static int method_test_PXM(fwts_framework *fw)
@@ -1255,28 +1233,11 @@ static int method_test_FIT(fwts_framework *fw)
 		"_FIT", NULL, 0, fwts_method_test_buffer_return, NULL);
 }
 
-static void method_test_LSI_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_LSI", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_LSI(fwts_framework *fw)
 {
+	uint32_t element_size = 3;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_LSI", NULL, 0, method_test_LSI_return, NULL);
+		"_LSI", NULL, 0, fwts_method_test_package_integer_return, &element_size);
 }
 
 static int method_test_DCK(fwts_framework *fw)
@@ -3193,44 +3154,11 @@ static int method_test_GTM(fwts_framework *fw)
 /*
  * Section 9.12 Memory Devices
  */
-
-static void method_test_MBM_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	static const fwts_package_element elements[] = {
-		{ ACPI_TYPE_INTEGER,	"Revision" },
-		{ ACPI_TYPE_INTEGER,	"Window Size" },
-		{ ACPI_TYPE_INTEGER,	"Sampling Interval" },
-		{ ACPI_TYPE_INTEGER,	"Maximum Bandwidth" },
-		{ ACPI_TYPE_INTEGER,	"Average Bandwidth" },
-		{ ACPI_TYPE_INTEGER,	"Low Bandwidth" },
-		{ ACPI_TYPE_INTEGER,	"Low Notification Threshold" },
-		{ ACPI_TYPE_INTEGER,	"High Notification Threshold" },
-	};
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_count_equal(fw, name, "_MBM", obj, 8) != FWTS_OK)
-		return;
-
-	/* For now, just check types */
-	if (fwts_method_package_elements_type(fw, name, "_MBM", obj, elements, 8) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_MBM(fwts_framework *fw)
 {
+	uint32_t element_size = 8;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_MBM", NULL, 0, method_test_MBM_return, NULL);
+		"_MBM", NULL, 0, fwts_method_test_package_integer_return, &element_size);
 }
 
 /*
@@ -4579,42 +4507,11 @@ static int method_test_WPP(fwts_framework *fw)
 /*
  * Section 11.3 Fan Devices
  */
-static void method_test_FIF_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_count_equal(fw, name, "_FIF", obj, 4) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_FIF",
-		obj, ACPI_TYPE_INTEGER) != FWTS_OK) {
-		fwts_advice(fw,
-			"%s is not returning the correct "
-			"fan information. It may be worth "
-			"running the firmware test suite "
-			"interactive 'fan' test to see if "
-			"this affects the control and "
-			"operation of the fan.", name);
-		return;
-	}
-
-	fwts_acpi_object_dump(fw, obj);
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_FIF(fwts_framework *fw)
 {
+	uint32_t element_size = 4;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_FIF", NULL, 0, method_test_FIF_return, NULL);
+		"_FIF", NULL, 0, fwts_method_test_package_integer_return, &element_size);
 }
 
 static void method_test_FPS_return(
@@ -4713,42 +4610,11 @@ static int method_test_FSL(fwts_framework *fw)
 		"_FSL", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
-static void method_test_FST_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_count_equal(fw, name, "_FST", obj, 3) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_FST",
-		obj, ACPI_TYPE_INTEGER) != FWTS_OK) {
-		fwts_advice(fw,
-			"%s is not returning the correct "
-			"fan status information. It may be "
-			"worth running the firmware test "
-			"suite interactive 'fan' test to see "
-			"if this affects the control and "
-			"operation of the fan.", name);
-		return;
-	}
-
-	fwts_acpi_object_dump(fw, obj);
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_FST(fwts_framework *fw)
 {
+	uint32_t element_size = 3;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_FST", NULL, 0, method_test_FST_return, NULL);
+		"_FST", NULL, 0, fwts_method_test_package_integer_return, &element_size);
 }
 
 

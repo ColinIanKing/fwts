@@ -653,31 +653,10 @@ static int method_test_BCT(fwts_framework *fw)
 		"_BCT", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
-static void method_test_BMD_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_count_equal(fw, name, "_BMD", obj, 5) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, "_BMD", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_BMD(fwts_framework *fw)
 {
 	return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
-		"_BMD", NULL, 0, method_test_BMD_return, NULL);
+		"_BMD", NULL, 0, fwts_method_test_BMD_return, NULL);
 }
 
 static int method_test_BMC(fwts_framework *fw)

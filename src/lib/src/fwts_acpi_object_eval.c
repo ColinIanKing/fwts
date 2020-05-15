@@ -2259,4 +2259,34 @@ int fwts_method_test_UID(fwts_framework *fw, ACPI_HANDLE *device)
 		"_UID", NULL, 0, fwts_method_test_UID_return, NULL);
 }
 
+void fwts_method_test_BMD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_count_equal(fw, name, "_BMD", obj, 5) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_all_type(fw, name, "_BMD", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	fwts_acpi_reserved_bits_check(fw, "_BMD", "Status Flags",
+		obj->Package.Elements[0].Integer.Value, sizeof(uint32_t), 5, 31, &failed);
+
+	fwts_acpi_reserved_bits_check(fw, "_BMD", "Capability Flags",
+		obj->Package.Elements[1].Integer.Value, sizeof(uint32_t), 5, 31, &failed);
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "package");
+}
+
 #endif

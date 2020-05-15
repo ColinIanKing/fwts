@@ -115,6 +115,7 @@ void fwts_method_passed_sane(fwts_framework *fw, const char *name, const char *t
 void fwts_method_passed_sane_uint64(fwts_framework *fw, const char *name, const uint64_t value);
 void fwts_method_failed_null_object(fwts_framework *fw, const char *name, const char *type);
 bool fwts_method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2);
+int fwts_method_buffer_size(fwts_framework *fw, const char *name, ACPI_OBJECT *obj, size_t buf_size);
 int fwts_method_package_count_min(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const uint32_t min);
 int fwts_method_package_count_equal(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const uint32_t count);
 int fwts_method_package_elements_all_type(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const ACPI_OBJECT_TYPE type);

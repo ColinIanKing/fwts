@@ -575,7 +575,28 @@ bool fwts_method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2)
 }
 
 /*
- *  method_package_count_min()
+ *  fwts_method_buffer_size()
+ *	check whether buffer size is matched
+ */
+int fwts_method_buffer_size(
+	fwts_framework *fw,
+	const char *name,
+	ACPI_OBJECT *obj,
+	size_t buf_size)
+{
+	if (obj->Buffer.Length != buf_size) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"MethodBadBufferSize",
+			"%s should return a buffer of %" PRIu64 " bytes, "
+			"but instead returned %" PRIu32 " bytes.",
+			name, buf_size, obj->Buffer.Length);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_method_package_count_min()
  *	check that an ACPI package has at least 'min' elements
  */
 int fwts_method_package_count_min(

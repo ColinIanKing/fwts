@@ -1106,6 +1106,12 @@ static int method_test_PXM(fwts_framework *fw)
 		"_PXM", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
+static int method_test_SLI(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_SLI", NULL, 0, fwts_method_test_buffer_return, NULL);
+}
+
 /* Section 6.2.17 _CCA */
 static int method_test_CCA(fwts_framework *fw)
 {
@@ -5610,7 +5616,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PRS, "Test _PRS (Possible Resource Settings)." },
 	{ method_test_PRT, "Test _PRT (PCI Routing Table)." },
 	{ method_test_PXM, "Test _PXM (Proximity)." },
-	/* { method_test_SLI, "Test _SLI (System Locality Information)." }, */
+	{ method_test_SLI, "Test _SLI (System Locality Information)." },
 	/* { method_test_SRS, "Test _SRS (Set Resource Settings)." }, */
 	{ method_test_CCA, "Test _CCA (Cache Coherency Attribute)." },
 

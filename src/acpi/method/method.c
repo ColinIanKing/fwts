@@ -41,7 +41,7 @@
  * _ALP 	 Y
  * _ALR 	 Y
  * _ALT 	 Y
- * _ALx 	 N
+ * _ALx 	 Y
  * _ART 	 Y
  * _BBN 	 Y
  * _BCL 	 Y
@@ -215,7 +215,7 @@
  * _SDD 	 n/a
  * _SEG 	 Y
  * _SHL 	 n/a
- * _SLI 	 N
+ * _SLI 	 Y
  * _SPD 	 Y
  * _SRS 	 n/a
  * _SRT 	 Y

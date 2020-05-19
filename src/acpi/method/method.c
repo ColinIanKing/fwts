@@ -4423,7 +4423,7 @@ static int method_test_WPC(fwts_framework *fw)
 static int method_test_WPP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_WPP", NULL, 0, fwts_method_test_integer_return, NULL);
+		"_WPP", NULL, 0, fwts_method_test_polling_return, NULL);
 }
 
 /*

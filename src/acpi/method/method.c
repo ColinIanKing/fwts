@@ -3443,7 +3443,8 @@ static void method_test_NBS_return(
 	ret = (nbs_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);
 	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NBS", "Validation Flags", ret->validation_flags, sizeof(uint16_t), 1, 15, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NBS", "Validation Flags",
+		ret->validation_flags, sizeof(uint16_t), 1, 15, &failed);
 
 	if (!failed)
 		fwts_method_passed_sane(fw, name, "buffer");
@@ -3476,14 +3477,19 @@ static void method_test_NCH_return(
 	ret = (nch_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);
 	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Validation Flags", ret->extended_status, sizeof(uint16_t), 2, 15, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Validation Flags",
+		ret->extended_status, sizeof(uint16_t), 2, 15, &failed);
 
 	/* Health Status Flags [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags", ret->health_status_flags, sizeof(uint32_t), 2, 7, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags", ret->health_status_flags, sizeof(uint32_t), 11, 15, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags", ret->health_status_flags, sizeof(uint32_t), 19, 31, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
+		ret->health_status_flags, sizeof(uint32_t), 2, 7, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
+		ret->health_status_flags, sizeof(uint32_t), 11, 15, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
+		ret->health_status_flags, sizeof(uint32_t), 19, 31, &failed);
 
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Attributes", ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Attributes",
+		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
 
 	if (!failed)
 		fwts_method_passed_sane(fw, name, "buffer");
@@ -3518,11 +3524,15 @@ static void method_test_NIC_return(
 	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &failed);
 
 	/* Health Error Injection Capabilities [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities", ret->health_error_injection, sizeof(uint32_t), 2, 7, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities", ret->health_error_injection, sizeof(uint32_t), 11, 15, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities", ret->health_error_injection, sizeof(uint32_t), 19, 31, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
+		ret->health_error_injection, sizeof(uint32_t), 2, 7, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
+		ret->health_error_injection, sizeof(uint32_t), 11, 15, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
+		ret->health_error_injection, sizeof(uint32_t), 19, 31, &failed);
 
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Status Attributes Capabilities", ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Status Attributes Capabilities",
+		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
 
 	if (!failed)
 		fwts_method_passed_sane(fw, name, "buffer");
@@ -3614,14 +3624,19 @@ static void method_test_NIG_return(
 	ret = (nig_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &failed);
 	check_nvdimm_extended_status(fw, name,  ret->extended_status, 0, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Validation Flags", ret->validation_flags, sizeof(uint16_t), 2, 15, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Validation Flags",
+		ret->validation_flags, sizeof(uint16_t), 2, 15, &failed);
 
 	/* Injected Health Status Errors [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors", ret->health_status_errors, sizeof(uint32_t), 2, 7, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors", ret->health_status_errors, sizeof(uint32_t), 11, 15, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors", ret->health_status_errors, sizeof(uint32_t), 19, 31, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
+		ret->health_status_errors, sizeof(uint32_t), 2, 7, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
+		ret->health_status_errors, sizeof(uint32_t), 11, 15, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
+		ret->health_status_errors, sizeof(uint32_t), 19, 31, &failed);
 
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Health Status Attributes of Injected Errors", ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Health Status Attributes of Injected Errors",
+		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
 
 	if (!failed)
 		fwts_method_passed_sane(fw, name, "buffer");
@@ -5902,6 +5917,7 @@ static fwts_framework_ops method_ops = {
 	.minor_tests = method_tests
 };
 
-FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME,
+	       FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
 
 #endif

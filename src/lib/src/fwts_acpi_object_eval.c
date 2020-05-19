@@ -2191,7 +2191,7 @@ void fwts_method_test_SUB_return(
 	FWTS_UNUSED(private);
 
 	if (obj == NULL) {
-		fwts_method_failed_null_object(fw, name, "a buffer or integer");
+		fwts_method_failed_null_object(fw, name, "a buffer");
 		return;
 	}
 
@@ -2216,7 +2216,7 @@ void fwts_method_test_SUB_return(
 		}
 	else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SUBBadReturnType",
-			"Method _SUB did not return a string or an integer.");
+			"Method _SUB did not return a string.");
 	}
 }
 

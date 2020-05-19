@@ -953,11 +953,11 @@ void fwts_method_test_passed_failed_return(
 		else {
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"MethodReturnZeroOrOne",
-				"%s returned 0x%8.8" PRIx32 ", should return 1 "
-				"(success) or 0 (failed).", method, val);
+				"%s returned 0x%8.8" PRIx32 ", should return 0 "
+				"or 1.", method, val);
 			fwts_advice(fw,
 				"Method %s should be returning the correct "
-				"1/0 success/failed return values. "
+				"0 or 1 return values. "
 				"Unexpected behaviour may occur becauses of "
 				"this error, the AML code does not conform to "
 				"the ACPI specification and should be fixed.",

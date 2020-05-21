@@ -1606,7 +1606,7 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			if (hdr->length < 0x15)
 				break;
-			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0xf);
+			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0x10);
 			dmi_str_check(fw, table, addr, "Locator", hdr, 0x10);
 			dmi_str_check(fw, table, addr, "Bank Locator", hdr, 0x11);
 			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x21);
@@ -1622,10 +1622,15 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x20)
 				break;
 			dmi_reserved_bits_check(fw, table, addr, "Extended Size", hdr, sizeof(uint32_t), 0x1c, 31, 31);
-			if (hdr->length < 0x3c)
+			if (hdr->length < 0x4c)
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Memory Technology", hdr, 0x28, 0x1, 0x7);
 			dmi_reserved_bits_check(fw, table, addr, "Memory Operating Mode Cap", hdr, sizeof(uint16_t), 0x29, 6, 15);
+			dmi_str_check(fw, table, addr, "Firmware Version", hdr, 0x2b);
+			if (hdr->length < 0x54)
+				break;
+			dmi_reserved_bits_check(fw, table, addr, "Extended Speed", hdr, sizeof(uint32_t), 0x54, 31, 31);
+			dmi_reserved_bits_check(fw, table, addr, "Extended Configured Memory Speed", hdr, sizeof(uint32_t), 0x58, 31, 31);
 
 			break;
 

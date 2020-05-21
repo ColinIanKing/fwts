@@ -1401,7 +1401,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					"(range allowed 0x00..0x23, 0xa0..0xa4, 0xff) "
 					"while accessing entry '%s' @ "
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					data[0x7], table, addr, "Internal Connector Type", 0x7);
+					data[0x7], table, addr, "External Connector Type", 0x7);
 
 			if (!((data[0x8] <= 0x23) ||
 			      (data[0x8] == 0xff) ||

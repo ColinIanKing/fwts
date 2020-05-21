@@ -1960,6 +1960,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x1b)
 				break;
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x12);
+			dmi_reserved_bits_check(fw, table, addr, "Characteristics", hdr, sizeof(uint64_t), 0x13, 0, 1);
 			dmi_reserved_bits_check(fw, table, addr, "Characteristics", hdr, sizeof(uint64_t), 0x13, 6, 63);
 			break;
 

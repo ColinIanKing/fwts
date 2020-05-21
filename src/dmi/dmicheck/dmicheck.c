@@ -1330,7 +1330,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Part Number", hdr, 0x22);
 			if (hdr->length < 0x28)
 				break;
-			dmi_reserved_bits_check(fw, table, addr, "Processor Characteristics", hdr, sizeof(uint16_t), 0x26, 8, 15);
+			dmi_reserved_bits_check(fw, table, addr, "Processor Characteristics", hdr, sizeof(uint16_t), 0x26, 9, 15);
 			if (hdr->length < 0x30)
 				break;
 			dmi_min_max_uint16_check(fw, table, addr, "Core Count 2", hdr, 0x2a, 0, 0xfffe);

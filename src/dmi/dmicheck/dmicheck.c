@@ -1260,6 +1260,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Asset Tag", hdr, 0x8);
 			if (hdr->length < 0x0f)
 				break;
+			dmi_reserved_bits_check(fw, table, addr, "Feature Flags", hdr, sizeof(uint8_t), 0x9, 5, 7);
 			dmi_str_check(fw, table, addr, "Location In Chassis", hdr, 0xa);
 			dmi_min_max_uint8_check(fw, table, addr, "Type", hdr, 0xd, 0x1, 0xd);
 			break;

@@ -1420,6 +1420,7 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_str_check(fw, table, addr, "Slot Designation", hdr, 0x4);
 			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x23)) ||
+			      (data[0x5] == 0x30) ||
 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xbd))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "

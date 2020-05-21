@@ -1369,6 +1369,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					table, addr, "Cache Location", 0x5);
 
 			dmi_reserved_bits_check(fw, table, addr, "Cache Location", hdr, sizeof(uint16_t), 0x05, 10, 15);
+			dmi_reserved_bits_check(fw, table, addr, "Supported SRAM Type", hdr, sizeof(uint16_t), 0x0b, 7, 15);
 			dmi_reserved_bits_check(fw, table, addr, "Current SRAM Type", hdr, sizeof(uint16_t), 0x0d, 7, 15);
 			if (hdr->length < 0x13)
 				break;

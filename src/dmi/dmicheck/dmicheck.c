@@ -1501,7 +1501,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_reserved_bits_check(fw, table, addr, "Flags", hdr, sizeof(uint8_t), 0x5, 1, 7);
 			if (hdr->length < 0x15)
 				break;
-			for (i = 0x6; i < 0x15; i++)
+			for (i = 0x6; i < 15; i++)
 				dmi_reserved_uint8_check(fw, table, addr, "Reserved", hdr, i);
 			if (hdr->length < 0x16)
 				break;

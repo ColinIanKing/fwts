@@ -1767,6 +1767,13 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Location (bits 0..4)", hdr, 0x5, 0x1, 0xb, 0, 0x1f);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Status (bits 5..7)", hdr, 0x5, 0x1, 0x6, 5, 0x7);
+			dmi_min_max_uint16_check(fw, table, addr, "Maximum Value", hdr, 0x6, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Minimum Value", hdr, 0x8, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Resolution", hdr, 0xa, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Tolerance", hdr, 0xc, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Accuracy", hdr, 0xe, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Nominal Value", hdr, 0x14, 0, 0x8000);
+
 			break;
 
 		case 27: /* 7.28 */
@@ -1786,6 +1793,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Status (bits 5..7)", hdr, 0x6, 0x1, 0x6, 5, 0x7);
 			if (hdr->length < 0x0f)
 				break;
+			dmi_min_max_uint16_check(fw, table, addr, "Nominal Speed", hdr, 0xc, 0, 0x8000);
 			dmi_str_check(fw, table, addr, "Description", hdr, 0xe);
 			break;
 
@@ -1796,6 +1804,12 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Location (bits 0..4)", hdr, 0x5, 0x1, 0xf, 0, 0x1f);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Status (bits 5..7)", hdr, 0x5, 0x1, 0x6, 5, 0x7);
+			dmi_min_max_uint16_check(fw, table, addr, "Maximum Value", hdr, 0x6, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Minimum Value", hdr, 0x8, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Resolution", hdr, 0xa, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Tolerance", hdr, 0xc, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Accuracy", hdr, 0xe, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Nominal Value", hdr, 0x14, 0, 0x8000);
 			break;
 
 		case 29: /* 7.30 */
@@ -1805,6 +1819,12 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Location (bits 0..4)", hdr, 0x5, 0x1, 0xb, 0, 0x1f);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Status (bits 5..7)", hdr, 0x5, 0x1, 0x6, 5, 0x7);
+			dmi_min_max_uint16_check(fw, table, addr, "Maximum Value", hdr, 0x6, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Minimum Value", hdr, 0x8, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Resolution", hdr, 0xa, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Tolerance", hdr, 0xc, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Accuracy", hdr, 0xe, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Nominal Value", hdr, 0x14, 0, 0x8000);
 			break;
 
 		case 30: /* 7.31 */
@@ -1865,10 +1885,14 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 36: /* 7.37 */
 			table = "Management Device Threshold Data (Type 36)";
-			/*
 			if (hdr->length < 0x10)
 				break;
-			*/
+			dmi_min_max_uint16_check(fw, table, addr, "Lower Threshold - Non-critical", hdr, 0x4, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Upper Threshold - Non-critical", hdr, 0x6, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Lower Threshold - Critical", hdr, 0x8, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Upper Threshold - Critical", hdr, 0xa, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Lower Threshold - Non-recoverable", hdr, 0xc, 0, 0x8000);
+			dmi_min_max_uint16_check(fw, table, addr, "Upper Threshold - Non-recoverable", hdr, 0xe, 0, 0x8000);
 			break;
 
 		case 37: /* 7.38 */
@@ -1900,6 +1924,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Asset Tag", hdr, 0x9);
 			dmi_str_check(fw, table, addr, "Model Part Number", hdr, 0xa);
 			dmi_str_check(fw, table, addr, "Revision Level", hdr, 0xb);
+			dmi_min_max_uint16_check(fw, table, addr, "Max Power Capacity", hdr, 0xc, 0, 0x8000);
 			dmi_reserved_bits_check(fw, table, addr, "Power Supply Characteristics", hdr, sizeof(uint16_t), 0xe, 14, 15);
 			break;
 

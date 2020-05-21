@@ -1270,16 +1270,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x09)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x4);
-			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x24, 0x0, 0x7f);
-
-			if ((data[5] & ~0x80) >= FWTS_SMBIOS_CHASSIS_MAX) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
-					"Incorrect Chassis Type "
-					"SMBIOS Type 3 reports 0x%" PRIx8,
-					(data[5] & ~0x80));
-				break;
-			}
-
+			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, FWTS_SMBIOS_CHASSIS_MAX - 1, 0x0, 0x7f);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Lock", hdr, 0x5, 0x0, 0x1, 0x7, 0x1);
 			dmi_str_check(fw, table, addr, "Version", hdr, 0x6);
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x7);

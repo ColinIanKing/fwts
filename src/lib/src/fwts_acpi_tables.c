@@ -1618,7 +1618,7 @@ uint32_t fwts_get_acpi_version(fwts_framework *fw)
 	}
 
 	fadt = (fwts_acpi_table_fadt *) table->data;
-	acpi_version = (fadt->header.revision << 8) + fadt->minor_version;
+	acpi_version = (fadt->header.revision << 8) + (fadt->minor_version << 4);
 
 	/* check FACP returns an invalid value */
 	if (acpi_version > FWTS_ACPI_VERSION_NEXT ||

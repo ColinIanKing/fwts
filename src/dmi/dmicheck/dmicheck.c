@@ -90,6 +90,11 @@ typedef struct {
 	uint8_t length;
 } fwts_dmi_type_length;
 
+typedef struct {
+	uint16_t min;
+	uint16_t max;
+} fwts_dmi_value_range;
+
 static bool smbios_found = false;
 static bool smbios30_found = false;
 
@@ -906,6 +911,32 @@ static void dmi_reserved_uint8_check(fwts_framework *fw,
 	}
 }
 
+static void dmi_ranges_uint8_check(fwts_framework *fw,
+	const char *table,
+	uint32_t addr,
+	const char *field,
+	const fwts_dmi_header *hdr,
+	uint8_t offset,
+	fwts_dmi_value_range* ranges,
+	uint32_t range_size)
+{
+	uint16_t i;
+	uint8_t val = hdr->data[offset];
+
+	for (i = 0; i < range_size / sizeof(fwts_dmi_value_range); i++) {
+		fwts_dmi_value_range *range = ranges + i;
+		if ((val >= range->min) && (val <= range->max))
+			return;
+	}
+
+	fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
+		"Out of range value 0x%2.2" PRIx8 " "
+		"while accessing entry '%s' @ 0x%8.8" PRIx32
+		", field '%s', offset 0x%2.2" PRIx8,
+		val, table, addr, field, offset);
+		dmi_out_of_range_advice(fw, hdr->type, offset);
+}
+
 static void dmi_min_max_uint32_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
@@ -1383,35 +1414,12 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x09)
 				break;
 			dmi_str_check(fw, table, addr, "Internal Reference Designator", hdr, 0x4);
-			if (!((data[0x5] <= 0x23) ||
-			      (data[0x5] == 0xff) ||
-			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xa4))))
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x23, 0xa0..0xa4, 0xff) "
-					"while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					data[0x5], table, addr, "Internal Connector Type", 0x5);
+			fwts_dmi_value_range t8_ranges1[] = {{0, 0x23}, {0xa0, 0xa4}, {0xff, 0xff}};
+			dmi_ranges_uint8_check(fw, table, addr, "Internal Connector Type", hdr, 0x5, t8_ranges1, sizeof(t8_ranges1));
 			dmi_str_check(fw, table, addr, "External Reference Designator", hdr, 0x6);
-			if (!((data[0x7] <= 0x23) ||
-			      (data[0x7] == 0xff) ||
-			      ((data[0x7] >= 0xa0) && (data[0x7] <= 0xa4))))
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x23, 0xa0..0xa4, 0xff) "
-					"while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					data[0x7], table, addr, "External Connector Type", 0x7);
-
-			if (!((data[0x8] <= 0x23) ||
-			      (data[0x8] == 0xff) ||
-			      ((data[0x8] >= 0xa0) && (data[0x8] <= 0xa1))))
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x23, 0xa0..0xa1, 0xff) "
-					"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
-					"field '%s', offset 0x%2.2x",
-					data[0x8], table, addr, "Port Type", 0x8);
+			dmi_ranges_uint8_check(fw, table, addr, "External Connector Type", hdr, 0x7, t8_ranges1, sizeof(t8_ranges1));
+			fwts_dmi_value_range t8_ranges2[] = {{0, 0x23}, {0xa0, 0xa1}, {0xff, 0xff}};
+			dmi_ranges_uint8_check(fw, table, addr, "Port Type", hdr, 0x8, t8_ranges2, sizeof(t8_ranges2));
 			break;
 
 		case 9: /* 7.10 */
@@ -1419,15 +1427,8 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x0c)
 				break;
 			dmi_str_check(fw, table, addr, "Slot Designation", hdr, 0x4);
-			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x23)) ||
-			      (data[0x5] == 0x30) ||
-			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xbd))))
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x01..0x23, 0xa0..0xbd) "
-					"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
-					"field '%s', offset 0x%2.2x",
-					data[0x5], table, addr, "Slot Type", 0x5);
+			fwts_dmi_value_range t9_ranges[] = {{1, 0x23}, {0x30, 0x30}, {0xa0, 0xbd}};
+			dmi_ranges_uint8_check(fw, table, addr, "Slot Type", hdr, 0x5, t9_ranges, sizeof(t9_ranges));
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Data Bus Width", hdr, 0x6, 0x1, 0xe);
 			dmi_min_max_uint8_check(fw, table, addr, "Current Usage", hdr, 0x7, 0x1, 0x5);
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Length", hdr, 0x8, 0x1, 0x6);
@@ -1523,27 +1524,13 @@ static void dmicheck_entry(fwts_framework *fw,
 			table = "System Event Log (Type 15)";
 			if (hdr->length < 0x14)
 				break;
-			val = hdr->data[0x0a];
-			if (!((val <= 0x04) || (val >= 0x80))) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x04, "
-					"0x80..0xff) while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					val, table, addr, "Access Method", 0x0a);
-			}
+			fwts_dmi_value_range t15_ranges1[] = {{0, 0x4}, {0x80, 0xff}};
+			dmi_ranges_uint8_check(fw, table, addr, "Access Method", hdr, 0xa, t15_ranges1, sizeof(t15_ranges1));
 			dmi_reserved_bits_check(fw, table, addr, "Log Status", hdr, sizeof(uint8_t), 0xb, 2, 7);
 			if (hdr->length < 0x17)
 				break;
-			val = hdr->data[0x14];
-			if (!((val <= 0x01) || (val >= 0x80))) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x01, "
-					"0x80..0xff) while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					val, table, addr, "Log Header Format", 0x14);
-			}
+			fwts_dmi_value_range t15_ranges2[] = {{0, 0x1}, {0x80, 0xff}};
+			dmi_ranges_uint8_check(fw, table, addr, "Log Header Format", hdr, 0x14, t15_ranges2, sizeof(t15_ranges2));
 			if (hdr->length < 0x17 + data[0x15] * data[0x16])
 				break;
 			if (data[0x16] >= 0x02) {
@@ -1579,14 +1566,8 @@ static void dmicheck_entry(fwts_framework *fw,
 			table = "Physical Memory Array (Type 16)";
 			if (hdr->length < 0x0f)
 				break;
-			if (!(((data[0x4] >= 0x01) && (data[0x4] <= 0x0a)) ||
-			      ((data[0x4] >= 0xa0) && (data[0x4] <= 0xa4))))
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x01..0x0a, 0xa0..0xa4) "
-					"while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					data[0x4], table, addr, "Location", 0x4);
+			fwts_dmi_value_range t16_ranges[] = {{0x1, 0xa}, {0xa0, 0xa4}};
+			dmi_ranges_uint8_check(fw, table, addr, "Location", hdr, 0x4, t16_ranges, sizeof(t16_ranges));
 			dmi_min_max_uint8_check(fw, table, addr, "Use", hdr, 0x5, 0x1, 0x7);
 			dmi_min_max_uint8_check(fw, table, addr, "Error Corrrection Type", hdr, 0x6, 0x1, 0x7);
 			dmi_min_max_uint32_check(fw, table, addr, "Maximum Capacity", hdr, 0x7, 0, 0x80000000);
@@ -1698,14 +1679,8 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x07)
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Type", hdr, 0x4, 0x1, 0x9);
-			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x08)) ||
-			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xa2)))) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x01..0x08, 0xa0..0xa2) "
-					"while accessing '%s', field '%s', offset 0x%2.2x",
-					data[0x5], table, "Interface", 0x5);
-			}
+			fwts_dmi_value_range t21_ranges[] = {{0x1, 0x8}, {0xa0, 0xa2}};
+			dmi_ranges_uint8_check(fw, table, addr, "Interface", hdr, 0x5, t21_ranges, sizeof(t21_ranges));
 			break;
 
 		case 22: /* 7.23 */
@@ -1849,13 +1824,8 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			for (i = 4; i <= 9; i++)
 				dmi_reserved_uint8_check(fw, table, addr, "Reserved", hdr, i);
-			if ((data[0xa] > 0x8) && (data[0xa] < 128))
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x08, 0x80..0xff) "
-					"while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					data[0xa], table, addr, "Boot Status", 0xa);
+			fwts_dmi_value_range t32_ranges[] = {{0, 0x8}, {0x80, 0xff}};
+			dmi_ranges_uint8_check(fw, table, addr, "Boot Status", hdr, 0xa, t32_ranges, sizeof(t32_ranges));
 			break;
 
 		case 33: /* 7.34 */

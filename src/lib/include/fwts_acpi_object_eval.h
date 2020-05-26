@@ -128,6 +128,7 @@ void fwts_method_test_buffer_return(fwts_framework *fw, char *name, ACPI_BUFFER 
 void fwts_method_test_all_reference_package_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_integer_reserved_bits_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_integer_max_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_package_integer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_passed_failed_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_polling_return( fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 

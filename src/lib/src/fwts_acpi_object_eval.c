@@ -882,6 +882,38 @@ void fwts_method_test_integer_max_return(
 }
 
 /*
+ *  fwts_method_test_package_integer_return
+ *	check if all integers in a returned package
+ */
+void fwts_method_test_package_integer_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	char method[5];
+	uint32_t *element_size = (uint32_t *) private;
+
+	if (strlen(name) < 4)
+		return;
+
+	memcpy(method, name + strlen(name) - 4, 4);
+	method[4] = '\0';
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_count_equal(fw, name, method, obj, *element_size) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_all_type(fw, name, method, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	fwts_method_passed_sane(fw, name, "package");
+}
+
+/*
  *  fwts_method_test_passed_failed_return
  *	check if 0 or 1 (false/true) integer is returned
  */

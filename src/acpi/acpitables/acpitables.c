@@ -27,6 +27,11 @@
 #include <unistd.h>
 #include <inttypes.h>
 
+typedef struct {
+	const char *name;
+	const uint8_t revision;
+} fwts_acpi_table_rev;
+
 static bool acpi_table_check_field(const char *field, const size_t len)
 {
 	size_t i;
@@ -117,8 +122,160 @@ static int acpi_table_check_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/* Supported ACPI tables (see Table 5-30 in ACPI spec)
+ * Note: OEMx (N/A) and PSDT (deleted) aren't included.
+ */
+static const fwts_acpi_table_rev acpi_61_rev[] = {
+	{"APIC", 4},
+	{"BERT", 1},
+	{"BGRT", 1},
+	{"CPEP", 1},
+	{"DSDT", 2},
+	{"ECDT", 1},
+	{"EINJ", 1},
+	{"ERST", 1},
+	{"FACP", 6},
+	{"FPDT", 1},
+	{"GTDT", 2},
+	{"HEST", 1},
+	{"MSCT", 1},
+	{"MPST", 1},
+	{"NFIT", 1},
+	{"PCCT", 1},
+	{"PMTT", 1},
+	{"RASF", 1},
+	{"RSDT", 1},
+	{"SBST", 1},
+	{"SLIT", 1},
+	{"SRAT", 3},
+	{"SSDT", 2},
+	{"XSDT", 1},
+	{NULL, 0xff}	// end of table
+};
+
+static const fwts_acpi_table_rev acpi_62_rev[] = {
+	{"APIC", 4},
+	{"BERT", 1},
+	{"BGRT", 1},
+	{"CPEP", 1},
+	{"DSDT", 2},
+	{"ECDT", 1},
+	{"EINJ", 1},
+	{"ERST", 1},
+	{"FACP", 6},
+	{"FPDT", 1},
+	{"GTDT", 2},
+	{"HEST", 1},
+	{"MSCT", 1},
+	{"MPST", 1},
+	{"NFIT", 1},
+	{"PCCT", 1},
+	{"PMTT", 1},
+	{"RASF", 1},
+	{"RSDT", 1},
+	{"SBST", 1},
+	{"SLIT", 1},
+	{"SRAT", 3},
+	{"SSDT", 2},
+	{"XSDT", 1},
+	{NULL, 0xff}	// end of table
+};
+
+static const fwts_acpi_table_rev acpi_63_rev[] = {
+	{"APIC", 5},
+	{"BERT", 1},
+	{"BGRT", 1},
+	{"CPEP", 1},
+	{"DSDT", 2},
+	{"ECDT", 1},
+	{"EINJ", 1},
+	{"ERST", 1},
+	{"FACP", 6},
+	{"FPDT", 1},
+	{"GTDT", 3},
+	{"HEST", 1},
+	{"MSCT", 1},
+	{"MPST", 1},
+	{"NFIT", 1},
+	{"PCCT", 2},
+	{"PMTT", 1},
+	{"RASF", 1},
+	{"RSDT", 1},
+	{"SBST", 1},
+	{"SDEV", 1},
+	{"SLIT", 1},
+	{"SRAT", 3},
+	{"SSDT", 2},
+	{"XSDT", 1},
+	{NULL, 0xff}	// end of table
+};
+
+static int acpi_table_check_test2(fwts_framework *fw)
+{
+	const fwts_acpi_table_rev *tables_rev;
+	bool failed = false;
+	uint32_t version;
+	int i;
+
+	version = fwts_get_acpi_version(fw);
+	fwts_log_info_verbatim(fw, "System supports ACPI %4.4" PRIx32,  version);
+
+	switch (version) {
+		case FWTS_ACPI_VERSION_61:
+			tables_rev = acpi_61_rev;
+			break;
+		case FWTS_ACPI_VERSION_62:
+			tables_rev = acpi_62_rev;
+			break;
+		case FWTS_ACPI_VERSION_63:
+			tables_rev = acpi_63_rev;
+			break;
+		default:
+			fwts_log_info_verbatim(fw, "This test does not support ACPI %4.4" PRIx32 ".",  version);
+			return FWTS_SKIP;
+	}
+
+	for (i = 0; ; i++) {
+		const fwts_acpi_table_rev *table_rev;
+		fwts_acpi_table_header *hdr;
+		fwts_acpi_table_info *info;
+
+		if (fwts_acpi_get_table(fw, i, &info) != FWTS_OK)
+			break;
+		if (info == NULL)
+			continue;
+
+		if (!strcmp(info->name, "FACP") ||
+		    !strcmp(info->name, "FACS") ||
+				!strcmp(info->name, "RSDP"))
+			continue;
+
+		hdr = (fwts_acpi_table_header *) info->data;
+		for (table_rev = tables_rev; ; table_rev++) {
+
+			if (!table_rev->name)
+				break;
+
+			if (!strncmp(info->name, table_rev->name, 4) &&
+			    table_rev->revision != hdr->revision) {
+				failed = true;
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPITableBadRevision",
+					"ACPI Table %s revision was expected to be %" PRIu8
+					", got %" PRIu8 ".", info->name, table_rev->revision,
+					hdr->revision);
+			}
+		}
+	}
+
+	if (!failed)
+		fwts_passed(fw, "ACPI spec %4.4" PRIx32 " has matched table revisions.", version);
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test acpi_table_check_tests[] = {
 	{ acpi_table_check_test1, "Test ACPI headers." },
+	{ acpi_table_check_test2, "Test ACPI spec versus table revisions." },
 	{ NULL, NULL }
 };
 
@@ -127,6 +284,7 @@ static fwts_framework_ops acpi_table_check_ops = {
 	.minor_tests = acpi_table_check_tests
 };
 
-FWTS_REGISTER("acpitables", &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("acpitables", &acpi_table_check_ops, FWTS_TEST_ANYTIME,
+	      FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
 
 #endif

@@ -27,7 +27,8 @@
 #include <inttypes.h>
 #include <string.h>
 
-#define FWTS_ACPI_BATTERY_HID "PNP0C0A"
+#define FWTS_ACPI_DEVICE_HID "PNP0C0A"
+#define FWTS_ACPI_DEVICE "battery"
 
 static ACPI_HANDLE device;
 
@@ -49,14 +50,14 @@ static int acpi_battery_init(fwts_framework *fw)
 	if (fwts_acpica_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
-	status = AcpiGetDevices(FWTS_ACPI_BATTERY_HID, get_device_handle, NULL, NULL);
+	status = AcpiGetDevices(FWTS_ACPI_DEVICE_HID, get_device_handle, NULL, NULL);
 	if (ACPI_FAILURE(status)) {
 		fwts_log_error(fw, "Cannot find the ACPI device");
 		return FWTS_ERROR;
 	}
 
 	if (!device) {
-		fwts_log_error(fw, "ACPI Battery device does not exist, skipping test");
+		fwts_log_error(fw, "ACPI %s device does not exist, skipping test", FWTS_ACPI_DEVICE);
 		fwts_acpica_deinit();
 		return FWTS_SKIP;
 	} else {
@@ -68,7 +69,7 @@ static int acpi_battery_init(fwts_framework *fw)
 
 		status = AcpiGetName(device, ACPI_FULL_PATHNAME, &buffer);
 		if (ACPI_SUCCESS(status)) {
-			fwts_log_info_verbatim(fw, "ACPI Battery Device: %s", full_name);
+			fwts_log_info_verbatim(fw, "ACPI %s device: %s", FWTS_ACPI_DEVICE, full_name);
 			fwts_log_nl(fw);
 		}
 	}

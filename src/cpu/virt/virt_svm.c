@@ -37,7 +37,6 @@
 #include <limits.h>
 #include <errno.h>
 
-#define CPUID_FAM_REV 0x1
 #define MSR_FEATURE_CONTROL	0xC0000080
 
 extern fwts_cpuinfo_x86 *fwts_virt_cpuinfo;

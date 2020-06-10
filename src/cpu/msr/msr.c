@@ -454,10 +454,13 @@ static const msr_info IA32_MSRs[] = {
 	{ "VMX_TRUE_EXIT_CTLS",		0x0000048f,	0xffffffffffffffffULL, NULL },
 	{ "VMX_TRUE_ENTRY_CTLS",	0x00000490,	0xffffffffffffffffULL, NULL },
 	{ "VMX_VMFUNC",	0x00000491,	0xffffffffffffffffULL, NULL },
+	/* Do not check syscall MSRs, they will be different on
+	 * each CPU, so checking them across CPUs is incorrect
 	{ "A_PMC4",			0x000004c5,	0xffffffffffffffffULL, NULL },
 	{ "A_PMC5",			0x000004c6,	0xffffffffffffffffULL, NULL },
 	{ "A_PMC6",			0x000004c7,	0xffffffffffffffffULL, NULL },
 	{ "A_PMC7",			0x000004c8,	0xffffffffffffffffULL, NULL },
+	*/
 	{ "EFER",			0xc0000080,	0x0000000000000d01ULL, NULL },
 	/* Do not check syscall MSRs, they will be different on
 	 * each CPU, so checking them across CPUs is incorrect

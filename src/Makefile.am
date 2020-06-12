@@ -80,6 +80,7 @@ fwts_SOURCES = main.c 				\
 	acpi/devices/buttons/power_button.c	\
 	acpi/devices/buttons/sleep_button.c	\
 	acpi/devices/lid/lid.c			\
+	acpi/devices/nvdimm/nvdimm.c 			\
 	acpi/devices/sensor/als.c		\
 	acpi/devices/time/time.c		\
 	acpi/devices/wpc/wpc.c			\

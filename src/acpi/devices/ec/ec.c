@@ -181,7 +181,7 @@ static int method_test_CRS(fwts_framework *fw)
 		"_CRS", NULL, 0, method_test_CRS_return, NULL);
 }
 
-/* EvaluateD evice Identification Objects - all are optional */
+/* Evaluate Device Identification Objects - all are optional */
 static int method_test_ADR(fwts_framework *fw)
 {
 	return fwts_method_test_ADR(fw, &device);

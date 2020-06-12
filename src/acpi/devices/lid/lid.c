@@ -190,7 +190,7 @@ static int method_test_PSW(fwts_framework *fw)
 		&device, "_PSW", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
-/* EvaluateD evice Identification Objects - all are optional */
+/* Evaluate Device Identification Objects - all are optional */
 static int method_test_ADR(fwts_framework *fw)
 {
 	return fwts_method_test_ADR(fw, &device);

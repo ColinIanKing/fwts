@@ -82,7 +82,7 @@ static int method_test_HID(fwts_framework *fw)
 	return fwts_method_test_HID(fw, &device);
 }
 
-/* EvaluateD evice Identification Objects - all are optional */
+/* Evaluate Device Identification Objects - all are optional */
 static int method_test_ADR(fwts_framework *fw)
 {
 	return fwts_method_test_ADR(fw, &device);

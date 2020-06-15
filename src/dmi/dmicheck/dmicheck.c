@@ -241,6 +241,8 @@ static const fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
 	{ 0, 4 },
 	{ 0, 5 },
 	{ 0, 8 },
+	{ 0, 21 },
+	{ 0, 23 },
 	/* Type 1, System Information */
 	{ 1, 4 },
 	{ 1, 5 },

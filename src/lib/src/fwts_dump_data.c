@@ -39,11 +39,16 @@ void fwts_dump_raw_data(
 	int n = 0;
 	int nbytes_max = nbytes > 16 ? 16 : nbytes;
 
-	n = snprintf(buffer, len, "  %4.4x: ", addr);
+	if (addr >= 0x100000)
+		n = snprintf(buffer, len, "%6.6X: ", addr);
+	else if (addr >= 0x10000)
+		n = snprintf(buffer, len, " %5.5X: ", addr);
+	else
+		n = snprintf(buffer, len, "  %4.4X: ", addr);
 
 	/* Hex dump */
         for (i = 0; i < nbytes_max; i++)
-                n += snprintf(buffer + n, len - n, "%2.2x ", data[i]);
+                n += snprintf(buffer + n, len - n, "%2.2X ", data[i]);
 
 	/* Padding */
         for (; i < 16; i++)

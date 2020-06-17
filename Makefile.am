@@ -26,6 +26,18 @@ MAINTAINERCLEANFILES = \
 MOSTLYCLEANFILES = \
 	results.log
 
+GITIGNOREFILES = \
+	debian/*.debhelper \
+	debian/*.debhelper.log \
+	debian/*.substvars \
+	`cat debian/control |$(GREP) ^Package|$(AWK) '{print "debian/" $$2}'` \
+	debian/autoreconf.after \
+	debian/autoreconf.before \
+	debian/files \
+	debian/tmp \
+	fedora/fwts.spec \
+	fedora/rpm
+
 SUBDIRS = src data src/utilities scripts/bash-completion
 
 ACLOCAL_AMFLAGS = -I m4

@@ -22,6 +22,10 @@ MAINTAINERCLEANFILES = \
 	$(GITIGNORE_MAINTAINERCLEANFILES_M4_GETTEXT) \
 	$(GITIGNORE_MAINTAINERCLEANFILES_M4_LIBTOOL)
 
+# results.log: created by `src/fwts` when executed with no `-r` option.
+MOSTLYCLEANFILES = \
+	results.log
+
 SUBDIRS = src data src/utilities scripts/bash-completion
 
 ACLOCAL_AMFLAGS = -I m4

@@ -285,3 +285,5 @@ libfwtsacpica_la_SOURCES =					\
 libfwtsacpica_la_LIBADD = \
 	-L$(top_builddir)/src/lib/src -lfwts -lrt
 
+
+-include $(top_srcdir)/git.mk

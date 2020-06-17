@@ -320,3 +320,5 @@ libfwtsiasl_la_SOURCES = 					\
 	../acpica/source/components/utilities/utuuid.c		\
 	../acpica/source/components/utilities/utxface.c		\
 	../acpica/source/components/utilities/utxferror.c
+
+-include $(top_srcdir)/git.mk

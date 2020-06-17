@@ -113,3 +113,5 @@ libfwts_la_SOURCES = 		\
 	fwts_safe_mem.c		\
 	fwts_pm_debug.c		\
 	$(dt_sources)
+
+-include $(top_srcdir)/git.mk

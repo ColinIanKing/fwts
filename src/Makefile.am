@@ -212,3 +212,5 @@ fwts_LDADD = \
 	-lfwts
 
 man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1
+
+-include $(top_srcdir)/git.mk

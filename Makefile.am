@@ -16,6 +16,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 
+MAINTAINERCLEANFILES = \
+	$(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_MAKEFILE_IN) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_M4_GETTEXT) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_M4_LIBTOOL)
+
 SUBDIRS = src data src/utilities scripts/bash-completion
 
 ACLOCAL_AMFLAGS = -I m4
@@ -174,3 +180,5 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/xenv-0001/test-0001.sh \
 	fwts-test/xenv-0001/test-0002.sh \
 	fwts-test/xsdt-0001/test-0001.sh
+
+-include $(top_srcdir)/git.mk

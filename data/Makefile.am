@@ -18,3 +18,5 @@
 
 fwtsdatadir = $(pkgdatadir)
 fwtsdata_DATA = clog.json klog.json syntaxcheck.json olog.json
+
+-include $(top_srcdir)/git.mk

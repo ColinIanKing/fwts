@@ -256,13 +256,15 @@ static int acpi_table_check_test2(fwts_framework *fw)
 			if (!table_rev->name)
 				break;
 
-			if (!strncmp(info->name, table_rev->name, 4) &&
-			    table_rev->revision != hdr->revision) {
-				failed = true;
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPITableBadRevision",
-					"ACPI Table %s revision was expected to be %" PRIu8
-					", got %" PRIu8 ".", info->name, table_rev->revision,
-					hdr->revision);
+			if (!strncmp(info->name, table_rev->name, 4)) {
+				if (table_rev->revision != hdr->revision) {
+					failed = true;
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPITableBadRevision",
+						"ACPI Table %s revision was expected to be %" PRIu8
+						", got %" PRIu8 ".", info->name, table_rev->revision,
+						hdr->revision);
+				} else
+					fwts_log_info(fw, "Table %s has a matched revision.", info->name);
 			}
 		}
 	}

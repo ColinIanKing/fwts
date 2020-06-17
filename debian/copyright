@@ -154,6 +154,11 @@ License: other
    other governmental approval, or letter of assurance, without first obtaining
    such license, approval or letter.
 
+Files: git.mk
+Copyright: 2010 - 2013, Behdad Esfahbod
+           2009, Red Hat, Inc.
+License: Public-Domain
+
 License: GPL-2
  On Debian systems, the complete text of the GNU General Public
  License can be found in `/usr/share/common-licenses/GPL-2'.

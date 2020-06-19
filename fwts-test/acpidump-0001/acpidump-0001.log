@@ -314,9 +314,9 @@ acpidump        [018h 0024   4]                 Oem Revision : 06040000
 acpidump        [01Ch 0028   4]              Asl Compiler ID : "PTL "
 acpidump        [020h 0032   4]        Asl Compiler Revision : 00000003
 acpidump        
-acpidump          0000: 54 4d 4f 52 26 00 00 00 01 eb 50 54 4c 54 44 20  TMOR&.....PTLTD 
-acpidump          0010: 20 20 20 20 20 20 20 20 00 00 04 06 50 54 4c 20          ....PTL 
-acpidump          0020: 03 00 00 00 f3 f4                                ......
+acpidump          0000: 54 4D 4F 52 26 00 00 00 01 EB 50 54 4C 54 44 20  TMOR&.....PTLTD 
+acpidump          0010: 20 20 20 20 20 20 20 20 00 00 04 06 50 54 4C 20          ....PTL 
+acpidump          0020: 03 00 00 00 F3 F4                                ......
 acpidump        
 acpidump        SLIC @ bf6dfdfa (374 bytes) (loaded from file)
 acpidump        ----

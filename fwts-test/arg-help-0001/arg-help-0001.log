@@ -22,6 +22,9 @@
 -d, --dump                   Dump out dmesg,
                              dmidecode, lspci,
                              ACPI tables to logs.
+--dump-acpi-from-sysfs       Specify dumping acpi
+                             table log default
+                             from sysfs.
 --dumpfile                   Load ACPI tables
                              using file generated
                              by acpidump, e.g.

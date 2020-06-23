@@ -587,7 +587,7 @@ int fwts_method_buffer_size(
 	if (obj->Buffer.Length != buf_size) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 			"MethodBadBufferSize",
-			"%s should return a buffer of %" PRIu64 " bytes, "
+			"%s should return a buffer of %zd bytes, "
 			"but instead returned %" PRIu32 " bytes.",
 			name, buf_size, obj->Buffer.Length);
 		return FWTS_ERROR;

@@ -1,3 +1,67 @@
+fwts (20.06.01-0ubuntu1) groovy; urgency=medium
+
+  [Alex Hung]
+  * fwts_acpi_object_eval: add a function to check package
+  * acpi/method: remove duplicated code by a common function
+  * acpi: refactor method_test_BMD to a common function
+  * fwts_acpi_object_eval: add a function to check buffer size
+  * acpi/method/time: replace buffer size checks with function calls
+  * method: fix typo for ROM test return
+  * acpi/method: add tests for _MAT method
+  * fwts-test: sync up with _MAT method tests
+  * method: replace duplicated code by util function in _PRR test
+  * acpi/method: remove duplicated code in _PSR test
+  * acpi/method: add tests for _SLI method
+  * fwts-test: sync up with _SLI method tests
+  * acpi/method: fix incorrect error messages for _SUB tests
+  * acpi/method: check _WPP returns by fwts_method_test_polling_return
+  * acpi/method: update tested method comments for _ALx and _SLI
+  * acpi/method: line wrap long statements
+  * dmicheck: update supported DMI version to 3.3
+  * fwts_acpi_object_eval: revise fwts_method_test_passed_failed_return
+  * dmicheck: test feature flags in type 2
+  * dmicheck: remove duplicated chassis type test in type 3
+  * dmicheck: update Processor Characteristics test in type 4
+  * dmicheck: add Supported SRAM test in type 4
+  * dmicheck: fix typo in type 8
+  * dmicheck: add CXL Flexbus 1.0 to slot type in type 9
+  * dmicheck: fix wrong length for reserved fields in type 13
+  * dmicheck: update tests in type 17
+  * dmicheck: check fields that has max 0x8000
+  * dmicheck: check reserved bits in Characteristics in type 43
+  * dmicheck: refactor code to check mutliple valid ranges
+  * fwts_acpi_tables: fix fwts_get_acpi_version helper
+  * acpitables: test ACPI versions vs. ACPI table revisions
+  * fwts-test: sync up with acpitables tests
+  * gitignore: update ignore list
+  * cpu: virt: remove unused marco "CPUID_FAM_REV"
+  * acpi/nvdimm: add tests for nvdimm devices
+  * acpi/devices: refactor devices' HIDs and names
+  * cpu/msr: remove General Performance Counters
+  * acpi/devices: fix typos in comments
+  * dmicheck: add type 0's fields used by kernel
+  * acpitables: add table name outputs to revision tests
+  * fwts-collect: depreciate ebda collection
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20200528
+
+  [Ivan Hu]
+  * lib: fwts_acpi_tables: add option for dump acpi table from sysfs
+  * lib: fwts_dump_data: make the dumping data the same format as acpidump
+  * doc: add new --dump-acpi-from-sysfs option
+  * fwts-test: sync up with new --dump-acpi-from-sysfs option and acpidump changes
+  * lib: fwts_acpi_object_eval: fix build error on i386
+
+  [You-Sheng Yang]
+  * gitignore: add git.mk
+  * debian: update copyright info for git.mk
+  * gitignore: enable git.mk usage
+  * gitignore: add results.log
+  * gitignore: add packaging specific files
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 23 Jun 2020 16:37:55 +0800
+
 fwts (20.05.00-0ubuntu1) groovy; urgency=medium
 
   [Alex Hung]

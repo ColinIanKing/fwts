@@ -47,7 +47,8 @@ static int mpst_test1(fwts_framework *fw)
 	bool passed = true;
 	uint32_t reserved;
 	uint32_t node_offset;
-	uint16_t i, j;
+	uint32_t j;
+	uint16_t i;
 
 	reserved = (uint32_t) mpst->reserved[0] +
 		   ((uint32_t) mpst->reserved[1] << 8) +

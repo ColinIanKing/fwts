@@ -3590,7 +3590,7 @@ fwts (0.26.02-1) raring; urgency=low
   * data: klog.json: Add support for the ACPI device power handler
   * data: klog.json: Add support for the ACPI PCI root handler
   * data: klog.json: Add support for the ACPI initialisation error messages
-  * data: klog.json: Add support for the ACPI blacklisting messages
+  * data: klog.json: Add support for the ACPI blocklisting messages
   * data: klog.json: Add support for the ACPI osl messages
   * data: klog.json: Add support for the ACPI memory hotplug messages
   * data: klog.json: Add support for the ACPI glue code

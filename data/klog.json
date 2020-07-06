@@ -1616,7 +1616,7 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "acpi=force override",
-   "advice": "The kernel has been forced to enabled ACPI. This is sometimes required because ACPI support has been disabled because the firmware is too old or was blacklisted because it has known ACPI issues.",
+   "advice": "The kernel has been forced to enabled ACPI. This is sometimes required because ACPI support has been disabled because the firmware is too old or was blocklisted because it has known ACPI issues.",
    "label": "KlogAcpiForceOverride"
   },
   {

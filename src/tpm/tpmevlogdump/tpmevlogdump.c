@@ -431,7 +431,8 @@ static int tpmevlogdump_test1(fwts_framework *fw)
 				tpm_logfile_found = true;
 				if (data == NULL) {
 					fwts_log_info(fw, "Cannot load the tpm event logs. Aborted.");
-					closedir(dir);
+					(void)closedir(dir);
+					(void)close(fd);
 					return FWTS_ABORTED;
 				} else {
 					/* check if the TPM2 eventlog */
@@ -440,23 +441,23 @@ static int tpmevlogdump_test1(fwts_framework *fw)
 					else {
 						fwts_log_info(fw, "Cannot find the tpm2 event log. Aborted.");
 						free(data);
-						closedir(dir);
+						(void)closedir(dir);
+						(void)close(fd);
 						return FWTS_ABORTED;
 					}
 					free(data);
 				}
-				close(fd);
+				(void)close(fd);
 			}
 		}
 	} while (tpmdir);
 
+	(void)closedir(dir);
+
 	if (!tpm_logfile_found) {
 		fwts_log_info(fw, "Cannot find the tpm event log. Aborted.");
-		closedir(dir);
 		return FWTS_ABORTED;
 	}
-
-	closedir(dir);
 	return FWTS_OK;
 }
 

@@ -183,6 +183,7 @@ fwts_SOURCES = main.c 				\
 	pci/aspm/aspm.c 			\
 	pci/crs/crs.c 				\
 	pci/maxreadreq/maxreadreq.c 		\
+	tpm/tpmevlogdump/tpmevlogdump.c		\
 	uefi/csm/csm.c 				\
 	uefi/uefidump/uefidump.c 		\
 	uefi/uefirttime/uefirttime.c		\

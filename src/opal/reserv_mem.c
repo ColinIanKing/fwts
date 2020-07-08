@@ -143,6 +143,11 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 	/* Get the number of memory reserved regions */
 	nr_regions = fwts_dt_stringlist_count(fw, fw->fdt, offset,
 				"reserved-names");
+	if (nr_regions < 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DTNoRegions",
+			"DT No regions");
+		return FWTS_ERROR;
+	}
 
 	/* Check for the reservd-names property */
 	region_names = (const char *)fdt_getprop(fw->fdt, offset,

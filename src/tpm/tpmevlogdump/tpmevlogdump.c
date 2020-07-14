@@ -198,6 +198,60 @@ static uint8_t tpmevlogdump_get_hash_size (TPM2_ALG_ID hash)
 	return sz;
 }
 
+static char *tpmevlogdump_pcrindex_to_string (uint32_t pcr)
+{
+
+	char *str;
+
+	switch (pcr) {
+	case 0:
+		str = "SRTM, BIOS, Host Platform Extensions, Embedded Option ROMs and PI Drivers";
+		break;
+	case 1:
+		str = "Host Platform Configuration";
+		break;
+	case 2:
+		str = "UEFI driver and application Code";
+		break;
+	case 3:
+		str = "UEFI driver and application Configuration and Data";
+		break;
+	case 4:
+		str = "UEFI Boot Manager Code and Boot Attempts";
+		break;
+	case 5:
+		str = "Boot Manager Code Configuration and Data and GPT/Partition Table";
+		break;
+	case 6:
+		str = "Host Platform Manufacturer Specific";
+		break;
+	case 7:
+		str = "Secure Boot Policy";
+		break;
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+		str = "Defined for use by the Static OS";
+		break;
+	case 16:
+		str = "Debug";
+		break;
+	case 23:
+		str = "Application Support";
+		break;
+	default:
+		str = "Unknown";
+		break;
+	}
+
+	return str;
+}
+
 static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, size_t len)
 {
 
@@ -212,7 +266,8 @@ static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, 
 		return 0;
 	}
 	fwts_pc_client_pcr_event *pc_event = (fwts_pc_client_pcr_event *)pdata;
-	fwts_log_info_verbatim(fw, "PCRIndex:                    0x%8.8" PRIx32, pc_event->pcr_index);
+	str_info = tpmevlogdump_pcrindex_to_string(pc_event->pcr_index);
+	fwts_log_info_verbatim(fw, "PCRIndex:                    0x%8.8" PRIx32 "(%s)", pc_event->pcr_index, str_info);
 	str_info = tpmevlogdump_evtype_to_string(pc_event->event_type);
 	fwts_log_info_verbatim(fw, "EventType:                   0x%8.8" PRIx32 "(%s)", pc_event->event_type, str_info);
 	tpmevlogdump_data_hexdump(fw, pc_event->digest, sizeof(pc_event->digest), "Digest");
@@ -283,7 +338,8 @@ static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size
 		return 0;
 	}
 	fwts_tcg_pcr_event2 *pcr_event2 = (fwts_tcg_pcr_event2 *)pdata;
-	fwts_log_info_verbatim(fw, "PCRIndex:           0x%8.8" PRIx32, pcr_event2->pcr_index);
+	str_info = tpmevlogdump_pcrindex_to_string(pcr_event2->pcr_index);
+	fwts_log_info_verbatim(fw, "PCRIndex:           0x%8.8" PRIx32 "(%s)", pcr_event2->pcr_index, str_info);
 	str_info = tpmevlogdump_evtype_to_string(pcr_event2->event_type);
 	fwts_log_info_verbatim(fw, "EventType:          0x%8.8" PRIx32 "(%s)", pcr_event2->event_type, str_info);
 	fwts_log_info_verbatim(fw, "Digests Count :     0x%8.8" PRIx32, pcr_event2->digests_count);

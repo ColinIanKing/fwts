@@ -324,7 +324,7 @@
 
 #if defined(__ia64__)    || (defined(__x86_64__) && !defined(__ILP32__)) ||\
     defined(__aarch64__) || defined(__PPC64__) ||\
-    defined(__s390x__)
+    defined(__s390x__) || (defined(__riscv) && (__INTPTR_WIDTH__ == 64))
 #define ACPI_MACHINE_WIDTH          64
 #define COMPILER_DEPENDENT_INT64    long
 #define COMPILER_DEPENDENT_UINT64   unsigned long

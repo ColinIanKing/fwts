@@ -118,6 +118,13 @@
 #define FWTS_USE_DEVMEM 1
 #endif
 
+#if defined(__riscv)
+#define FWTS_ARCH_RISCV	1
+#define FWTS_HAS_ACPI	1
+#define FWTS_HAS_UEFI	1
+#define FWTS_USE_DEVMEM 1
+#endif
+
 /* verision 3-tuple into integer */
 #define _VER_(major, minor, patchlevel)                 \
 	((major * 10000) + (minor * 100) + patchlevel)

@@ -7,7 +7,7 @@ Standards-Version: 3.9.8
 Build-Depends: debhelper (>= 7.0.50~), autoconf, automake, libtool, libjson0-dev | libjson-c-dev (>= 0.9), flex, bison, dh-autoreconf, dkms, libglib2.0-dev, pkg-config, libfdt-dev, libbsd-dev
 
 Package: fwts
-Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x
+Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x riscv64
 Depends: libfwtsiasl1 (= ${binary:Version}), libfwtsacpica1 (= ${binary:Version}), libfwts1 (= ${binary:Version}), fwts-efi-runtime-dkms (= ${binary:Version}) [amd64] , ${shlibs:Depends}, ${misc:Depends}, pciutils, device-tree-compiler [ppc64el powerpc]
 Suggests: dmidecode
 Description: FirmWare Test Suite
@@ -18,7 +18,7 @@ Description: FirmWare Test Suite
  be a Linux-centric firmware troubleshooting tool.
 
 Package: libfwtsiasl1
-Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x
+Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x riscv64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: FirmWare Test Suite ACPICA core built for iasl functionality
  The firmware test suite requires the ACPICA core engine to be built in
@@ -28,7 +28,7 @@ Description: FirmWare Test Suite ACPICA core built for iasl functionality
  interface with fwts.
 
 Package: libfwtsacpica1
-Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x
+Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x riscv64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: FirmWare Test Suite ACPICA core built for acpiexec functionality
  The firmware test suite requires the ACPICA core engine to be built in
@@ -37,7 +37,7 @@ Description: FirmWare Test Suite ACPICA core built for acpiexec functionality
  contains this code with a thin fwts specific API to interface with fwts.
 
 Package: libfwts1
-Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x
+Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x riscv64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: FirmWare Test Suite core support library
  This is the fwts core library. It contains a top level test framework
@@ -45,7 +45,7 @@ Description: FirmWare Test Suite core support library
  various fwts tests.
 
 Package: fwts-frontend
-Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x
+Architecture: i386 amd64 armel armhf arm64 ppc64 ppc64el s390x riscv64
 Priority: optional
 Depends: ${misc:Depends}, dialog, fwts
 Description: Firmware Test Suite frontend interface

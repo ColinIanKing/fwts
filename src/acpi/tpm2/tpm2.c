@@ -72,22 +72,25 @@ static int tpm2_test1(fwts_framework *fw)
 			tpm2->start_method);
 	}
 
-	if (tpm2->start_method == 2 && table->length != sizeof(fwts_acpi_table_tpm2) + 4) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TPM2BadPlatformParameters",
-			"Table length must be 0x%" PRIx32 " if Start method equals 2, got 0x%" PRIx32,
-			(uint32_t) sizeof(fwts_acpi_table_tpm2) + 4,
-			(uint32_t) table->length);
-	}
+	/* When TPM2 includes fields "LAML" & "LASA", table size will be fixed to 76. */
+	if (table->length != 76) {
+		if (tpm2->start_method == 2 && table->length != sizeof(fwts_acpi_table_tpm2) + 4) {
+			passed = false;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"TPM2BadPlatformParameters",
+				"Table length must be 0x%" PRIx32 " if Start Method equals 2, "
+				"got 0x%" PRIx32, (uint32_t) sizeof(fwts_acpi_table_tpm2) + 4,
+				(uint32_t) table->length);
+		}
 
-	if (tpm2->start_method == 11 && table->length < sizeof(fwts_acpi_table_tpm2) + 12) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TPM2BadPlatformParameters",
-			"Table length must be atleast 0x%" PRIx32 " if Start method equals 11, got 0x%" PRIx32,
-			(uint32_t) sizeof(fwts_acpi_table_tpm2) + 12,
-			(uint32_t) table->length);
+		if (tpm2->start_method == 11 && table->length < sizeof(fwts_acpi_table_tpm2) + 12) {
+			passed = false;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"TPM2BadPlatformParameters",
+				"Table length must be at least 0x%" PRIx32 " if Start Method equals 11, "
+				"got 0x%" PRIx32, (uint32_t) sizeof(fwts_acpi_table_tpm2) + 12,
+				(uint32_t) table->length);
+		}
 	}
 
 	if (passed)

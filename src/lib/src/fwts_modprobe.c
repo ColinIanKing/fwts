@@ -28,8 +28,35 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/utsname.h>
+#include <bsd/string.h>
 
 #include "fwts.h"
+
+/*
+ *  fwts_module_path()
+ *	build a new path based on basename path and
+ *	the new filename (or directory name)
+ */
+static void fwts_module_path(
+	char *newpath,
+	const size_t newpath_len,
+	const char *basepath,
+	const char *filename)
+{
+	char *ptr = newpath;
+	size_t n = newpath_len, len;
+
+	(void)strlcpy(ptr, basepath, n);
+	len = strlen(basepath);
+	ptr += len;
+	n -= len;
+
+	(void)strlcpy(ptr, "/", n);
+	ptr++;
+	n--;
+
+	(void)strlcpy(ptr, filename, n);
+}
 
 /*
  *  fwts_module_find()
@@ -59,8 +86,7 @@ static bool fwts_module_find(
 
 		switch (de->d_type) {
 		case DT_DIR:
-			(void)snprintf(newpath, sizeof(newpath), "%s/%s",
-				basepath, de->d_name);
+			fwts_module_path(newpath, sizeof(newpath), basepath, de->d_name);
 			if (fwts_module_find(module, newpath, path, path_len)) {
 				(void)closedir(dir);
 				return true;
@@ -68,7 +94,7 @@ static bool fwts_module_find(
 			break;
 		case DT_REG:
 			if (!strcmp(de->d_name, module)) {
-				(void)snprintf(path, path_len, "%s/%s", basepath, module);
+				fwts_module_path(path, path_len, basepath, module);
 				(void)closedir(dir);
 				return true;
 			}

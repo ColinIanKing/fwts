@@ -62,28 +62,28 @@ $(srcdir)/aslcompilerlex.c: $(ASL_LEXER)
 $(srcdir)/aslcompiler.c $(srcdir)/aslcompiler.y.h: $(srcdir)/aslcompiler.y
 	${YACC} ${AM_YFLAGS} -d -baslcompiler -pAslCompiler $^
 	mv aslcompiler.tab.c aslcompiler.c
-	mv aslcompiler.tab.h aslcompiler.y.h
+	cp aslcompiler.tab.h aslcompiler.y.h
 
 .NOTPARALLEL: $(srcdir)/dtcompilerparserlex.c
 $(srcdir)/dtcompilerparserlex.c $(srcdir)/dtcompilerparser.c $(srcdir)/dtcompilerparser.y.h: ../acpica/source/compiler/dtcompilerparser.l ../acpica/source/compiler/dtcompilerparser.y
 	${LEX} ${AM_LFLAGS} -PDtCompilerParser -o$(srcdir)/dtcompilerparserlex.c $<
 	${YACC} ${AM_YFLAGS} -bdtcompilerparser -pDtCompilerParser ../acpica/source/compiler/dtcompilerparser.y
 	mv dtcompilerparser.tab.c dtcompilerparser.c
-	mv dtcompilerparser.tab.h dtcompilerparser.y.h
+	cp dtcompilerparser.tab.h dtcompilerparser.y.h
 
 .NOTPARALLEL: $(srcdir)/dtparserlex.c
 $(srcdir)/dtparserlex.c $(srcdir)/dtparser.c $(srcdir)/dtparser.y.h: ../acpica/source/compiler/dtparser.l ../acpica/source/compiler/dtparser.y
 	${LEX} ${AM_LFLAGS} -PDtParser -o$(srcdir)/dtparserlex.c $<
 	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser ../acpica/source/compiler/dtparser.y
 	mv dtparser.tab.c dtparser.c
-	mv dtparser.tab.h dtparser.y.h
+	cp dtparser.tab.h dtparser.y.h
 
 .NOTPARALLEL: $(srcdir)/prparserlex.c
 $(srcdir)/prparserlex.c $(srcdir)/prparser.c $(srcdir)/prparser.y.h: ../acpica/source/compiler/prparser.l ../acpica/source/compiler/prparser.y
 	${LEX} ${AM_LFLAGS} -PPrParser -o$(srcdir)/prparserlex.c $<
 	${YACC} ${AM_YFLAGS} -bprparser -pPrParser ../acpica/source/compiler/prparser.y
 	mv prparser.tab.c prparser.c
-	mv prparser.tab.h prparser.y.h
+	cp prparser.tab.h prparser.y.h
 
 pkglib_LTLIBRARIES = libfwtsiasl.la
 

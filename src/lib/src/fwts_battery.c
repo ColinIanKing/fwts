@@ -187,6 +187,19 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	return FWTS_OK;
 }
 
+static inline void fwts_battery_path(
+	char *path,
+	const size_t path_len,
+	const char *power_supply,
+	const char *name)
+{
+	(void)strlcpy(path, power_supply, path_len);
+	(void)strlcat(path, "/", path_len);
+	(void)strlcat(path, name, path_len);
+	(void)strlcat(path, "/", path_len);
+	(void)strlcat(path, "type", path_len);
+}
+
 static int fwts_battery_get_count_sys_fs(DIR *dir, uint32_t *count)
 {
 	struct dirent *entry;
@@ -197,7 +210,7 @@ static int fwts_battery_get_count_sys_fs(DIR *dir, uint32_t *count)
 		entry = readdir(dir);
 		if (entry && strlen(entry->d_name) > 2) {
 			/* Check that type field matches the expected type */
-			snprintf(path, sizeof(path), "%s/%s/type", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
+			fwts_battery_path(path, sizeof(path), FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
 			if ((data = fwts_get(path)) != NULL) {
 				if (strstr(data, "Battery") != NULL)
 					(*count)++;

@@ -26,8 +26,23 @@
 #include <string.h>
 #include <limits.h>
 #include <dirent.h>
+#include <bsd/string.h>
 
 #define FWTS_PROC_ACPI_BUTTON	"/proc/acpi/button"
+
+static inline void fwts_button_path(
+	char *path,
+	const size_t path_len,
+	const char *button_dir,
+	const char *name,
+	const char *str)
+{
+	(void)strlcpy(path, button_dir, path_len);
+	(void)strlcat(path, "/", path_len);
+	(void)strlcat(path, name, path_len);
+	(void)strlcat(path, "/", path_len);
+	(void)strlcat(path, str, path_len);
+}
 
 /*
  *  fwts_button_match_state_proc()
@@ -80,7 +95,8 @@ static int fwts_button_match_state_proc(
 			char path[PATH_MAX];
 			char *data;
 
-			snprintf(path, sizeof(path),  "%s/%s/%s", button_dir, entry->d_name, field);
+			fwts_button_path(path, sizeof(path), button_dir, entry->d_name, field);
+
 			if ((data = fwts_get(path)) != NULL) {
 				if (strstr(data, match))
 					(*matched)++;

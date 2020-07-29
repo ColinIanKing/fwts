@@ -1,3 +1,29 @@
+fwts (20.07.00-0ubuntu1) groovy; urgency=medium
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: remove eoan
+  * travis: update dist to focal
+  * tpm2: table size can be 76 when "LAML" & "LASA" are used
+
+  [Colin Ian King]
+  * replace inaccurate and offsensive language
+  * acpi: mpst: fix potential infinite loop on 16 bit counter j
+  * tpmevlogdump: fix leak of fd on error return paths, voidify close returns
+  * opal: add check for the number of regions
+  * ACPICA: Update to version 20200717
+  * Add riscv64 architecture to fwts
+  * lib: fwts_modprobe: add helper to build module path name
+  * lib: fwts_battery: add helper to build battery path name
+
+  [Ivan Hu]
+  * tpmevlogdump: add function for dumping tpm event log
+  * tpmevlogdump: add pcr_index usage
+  * libfwtsiasl: fix build error on groovy
+  * lib: fwts_battery: fix build error on armhf
+  * lib: fwts_buttion: add helper function to build button path
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 29 Jul 2020 15:30:01 +0800
+
 fwts (20.06.01-0ubuntu1) groovy; urgency=medium
 
   [Alex Hung]

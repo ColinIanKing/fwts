@@ -367,6 +367,8 @@ $(srcdir)/.gitignore: Makefile.am $(top_srcdir)/git.mk $(top_srcdir)/configure.a
 			"*~" \
 			".*.sw[nop]" \
 			".dirstamp" \
+			"*.tab.h" \
+			"*.patch" \
 		; do echo "/$$x"; done; \
 		for x in \
 			"*.$(OBJEXT)" \

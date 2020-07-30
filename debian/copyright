@@ -158,6 +158,9 @@ Files: git.mk
 Copyright: 2010 - 2013, Behdad Esfahbod
            2009, Red Hat, Inc.
 License: Public-Domain
+ Copying and distribution of this file, with or without modification,
+ is permitted in any medium without royalty provided the copyright
+ notice and this notice are preserved.
 
 License: GPL-2
  On Debian systems, the complete text of the GNU General Public

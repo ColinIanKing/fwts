@@ -1519,6 +1519,32 @@ static void acpi_table_check_fadt_p_lvl3_lat(fwts_framework *fw, uint64_t pblk)
 	return;
 }
 
+static void acpi_table_check_fadt_x_gpex_blk(fwts_framework *fw) {
+
+	if (fwts_acpi_is_reduced_hardware(fadt))
+		return;
+
+	if (fadt->x_gpe0_blk.access_width == 1)
+		fwts_passed(fw, "FADT X_GPE0_BLK has correct byte access width.");
+	else {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"X_GPE0_BLKBadAccessWidth",
+			"FADT X_GPE0_BLK Access width 0x%2.2" PRIx8
+			" but it should be 1 (byte access).",
+			fadt->x_gpe0_blk.access_width);
+	}
+
+	if (fadt->x_gpe1_blk.access_width == 1)
+		fwts_passed(fw, "FADT X_GPE1_BLK has correct byte access width.");
+	else {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"X_GPE1_BLKBadAccessWidth",
+			"FADT X_GPE1_BLK Access width 0x%2.2" PRIx8
+			" but it should be 1 (byte access).",
+			fadt->x_gpe1_blk.access_width);
+	}
+}
+
 static void acpi_table_check_fadt_sleep_control_reg(fwts_framework *fw)
 {
 	if (fwts_acpi_is_reduced_hardware(fadt)) {
@@ -1643,6 +1669,7 @@ static int fadt_test1(fwts_framework *fw)
 		fwts_log_info(fw, "FADT CENTURY is %" PRIu8, fadt->century);
 	}
 
+	acpi_table_check_fadt_x_gpex_blk(fw);
 	acpi_table_check_fadt_sleep_control_reg(fw);
 	acpi_table_check_fadt_sleep_status_reg(fw);
 

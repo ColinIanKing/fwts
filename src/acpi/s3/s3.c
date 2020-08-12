@@ -33,6 +33,7 @@
 #define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
 #define PM_SUSPEND_PATH			"/sys/power/mem_sleep"
+#define PM_S2IDLE_SLP_S0		"/sys/kernel/debug/pmc_core/slp_s0_residency_usec"
 
 static char sleep_type[7];
 
@@ -209,6 +210,8 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	int *hw_errors,
 	int *pm_errors,
 	int *hook_errors,
+	int *s2idle_errors,
+	uint32_t *s2idle_residency,
 	int delay,
 	int percent)
 {
@@ -330,6 +333,18 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 			"Error executing hook script '%s', %s cycles "
 			"will be aborted.", s3_hook, sleep_type);
 		(*hook_errors)++;
+	}
+
+	if (!strncmp(sleep_type, "s2idle", strlen("s2idle"))) {
+		uint32_t residency = atoi(fwts_get(PM_S2IDLE_SLP_S0));
+		bool intel;
+		if (fwts_cpu_is_Intel(&intel) == FWTS_OK && intel && residency <= *s2idle_residency) {
+			(*s2idle_errors)++;
+			fwts_failed(fw, LOG_LEVEL_HIGH, "S2idleNotDeepest",
+				"Expected %s to increase from %" PRIu32 ", got %" PRIu32 ".",
+				PM_S2IDLE_SLP_S0, residency, *s2idle_residency);
+		}
+		*s2idle_residency = residency;
 	}
 
 	if (duration < delay) {
@@ -525,10 +540,12 @@ static int s3_test_multiple(fwts_framework *fw)
 	int hook_errors = 0;
 	int klog_oopses = 0;
 	int klog_warn_ons = 0;
+	int s2idle_errors = 0;
 	int suspend_too_long = 0;
 	int resume_too_long = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
+	uint32_t s2idle_residency = atoi(fwts_get(PM_S2IDLE_SLP_S0));
 	int pm_debug;
 
 #if FWTS_ENABLE_LOGIND
@@ -553,9 +570,9 @@ static int s3_test_multiple(fwts_framework *fw)
 		if ((klog_pre = fwts_klog_read()) == NULL)
 			fwts_log_error(fw, "Cannot read kernel log.");
 
-		ret = s3_do_suspend_resume(fw, &hw_errors, &pm_errors,
-					   &hook_errors, s3_sleep_delay,
-					   percent);
+		ret = s3_do_suspend_resume(fw, &hw_errors, &pm_errors, &hook_errors,
+					   &s2idle_errors, &s2idle_residency,
+					   s3_sleep_delay, percent);
 		if (ret == FWTS_OUT_OF_MEMORY) {
 			fwts_log_error(fw, "%s cycle %d failed - out of memory error.", sleep_type, i+1);
 			fwts_klog_free(klog_pre);
@@ -630,6 +647,11 @@ static int s3_test_multiple(fwts_framework *fw)
 		fwts_log_info(fw, "Found %d kernel WARN_ON warnings.", klog_warn_ons);
 	else
 		fwts_passed(fw, "No kernel WARN_ON warnings detected.");
+
+	if (s2idle_errors > 0)
+		fwts_log_info(fw, "Found %d s2idle errors.", s2idle_errors);
+	else
+		fwts_passed(fw, "No s2idle errors detected.");
 
 	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {
 		fwts_log_info(fw, "Found %d errors and %d oopses doing %d suspend/resume cycle(s).",

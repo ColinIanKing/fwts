@@ -197,8 +197,7 @@ static int fwts_cpu_matches_vendor_id(const char *vendor_id, bool *matches)
 		return FWTS_ERROR;
 	}
 
-        *matches = (strstr(cpu->vendor_id, vendor_id) != NULL);
-
+	*matches = (strstr(cpu->vendor_id, vendor_id) != NULL);
 	fwts_cpu_free_info(cpu);
 
 	return FWTS_OK;

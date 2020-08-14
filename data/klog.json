@@ -859,8 +859,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "No PCC subspace found for CPPC",
-   "advice": "The PCC mailbox controller could not parse the ACPI Pl
-atform Communications Channel Table (PCCT) and find the PCC subspace communication region. The CPU freq driver cannot control CPU performance via the _CPC ACPI tables.",
+   "advice": "The PCC mailbox controller could not parse the ACPI Platform Communications Channel Table (PCCT) and find the PCC subspace communication region. The CPU freq driver cannot control CPU performance via the _CPC ACPI tables.",
    "label": "KlogAcpiPccNoSubspace"
   },
   {

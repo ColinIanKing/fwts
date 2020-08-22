@@ -20,7 +20,6 @@ parts:
             - autoconf
             - automake
             - libtool
-            - libjson-c-dev
             - flex
             - bison
             - dh-autoreconf

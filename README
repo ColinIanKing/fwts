@@ -7,22 +7,22 @@ Quick Start Guide
 1) Dependencies:
 
 Ubuntu Distro x86_64
-	autoconf automake libglib2.0-dev libtool libpcre3-dev libjson0-dev
-	libjson-c-dev flex bison dkms libfdt-dev libbsd-dev
+	autoconf automake libglib2.0-dev libtool libpcre3-dev
+	flex bison dkms libfdt-dev libbsd-dev
 
 Ubuntu Distro ppc64el
-	autoconf automake libglib2.0-dev libtool libpcre3-dev libjson-c-dev
+	autoconf automake libglib2.0-dev libtool libpcre3-dev
 	flex bison dkms libfdt-dev device-tree-compiler libpci-dev libbsd-dev
 
 RHEL Distro ppc64el
 	autoconf automake kernel-devel libtool flex flex-devel bison dkms
-	libfdt libfdt-devel dtc json-c json-c-devel pcre-devel pcre2 pcre2-devel
+	libfdt libfdt-devel dtc pcre-devel pcre2 pcre2-devel
 	pcre2-utf16 pcre2-utf32 glib2 glib2-devel pciutils pciutils-devel zlib-devel
 	make libbsd-devel
 
 Ubuntu Distro ARM64
 	autoconf automake libglib2.0-dev libtool libpcre3-dev
-	libjson-c-dev flex bison dkms libfdt-dev libbsd-dev
+	flex bison dkms libfdt-dev libbsd-dev
 
 2) To build and install (only if building from source)
 

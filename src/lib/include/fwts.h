@@ -153,6 +153,8 @@
 
 #define FWTS_JSON_DATA_PATH	DATAROOTDIR "/fwts"
 
+#include <inttypes.h>
+
 #include "fwts_version.h"
 #include "fwts_backtrace.h"
 #include "fwts_types.h"

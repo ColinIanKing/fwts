@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Canonical
+ * Copyright (C) 2010-2020 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,26 +16,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-
 #ifndef __FWTS_JSON_H__
 #define __FWTS_JSON_H__
 
-#include <json.h>
-
-#define __FWTS_JSON_ERR_PTR__ ((json_object*) -1)
 /*
- *  Older versions of json-c may return an error in an
- *  object as a ((json_object*)-1), where as newer
- *  versions return NULL, so check for these. Sigh.
+ *  Minimal subset of json for fwts
  */
-#define FWTS_JSON_ERROR(ptr) \
-	( (ptr == NULL) || ((const json_object *)ptr == __FWTS_JSON_ERR_PTR__) )
 
-/*
- * json-c 0.13.99 does not define TRUE/FALSE anymore
- * the json-c maintainers replaced them with pure 1/0
- * https://github.com/json-c/json-c/commit/0992aac61f8b
- */
+#define FWTS_JSON_ERROR(ptr) 	(!ptr)
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -43,5 +32,47 @@
 #ifndef TRUE
 #define TRUE  1
 #endif
+
+/*
+ *  json types supported
+ */
+typedef enum {
+	type_null,
+	type_int,
+	type_string,
+	type_object,
+	type_array,
+} json_type;
+
+/*
+ *  json object information
+ */
+typedef struct json_object {
+	char *key;		/* Null if undefined */
+	int length;		/* Length of a collection of objects */
+	json_type type;		/* Object type */
+        union {
+                void *ptr;	/* string or object array pointer */
+                int  intval;	/* integer value */
+        } u;
+} json_object;
+
+/*
+ *  minimal json c library functions as required by fwts
+ */
+json_object *json_object_from_file(const char *filename);
+json_object *json_object_object_get(json_object *obj, const char *key);
+int json_object_array_length(json_object *obj);
+json_object *json_object_array_get_idx(json_object *obj, int index);
+const char *json_object_get_string(json_object *obj);
+json_object *json_object_new_int(int);
+void json_object_object_add(json_object *obj, const char *key, json_object *value);
+
+json_object *json_object_new_object(void);
+json_object *json_object_new_array(void);
+char *json_object_to_json_string(json_object *obj);
+void json_object_put(json_object *obj);
+json_object *json_object_new_string(const char *str);
+int json_object_array_add(json_object *obj, json_object *item);
 
 #endif

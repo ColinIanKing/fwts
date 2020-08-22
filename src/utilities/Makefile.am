@@ -18,10 +18,11 @@
 
 AM_CPPFLAGS = -Wall -Werror -Wextra -DDATAROOTDIR=\"$(datarootdir)\" \
 	`pkg-config --silence-errors --cflags json` \
-	`pkg-config --silence-errors --cflags json-c`
+	`pkg-config --silence-errors --cflags json-c` \
+	-I../lib/include
 
 bin_PROGRAMS = kernelscan
-kernelscan_SOURCES = kernelscan.c
+kernelscan_SOURCES = kernelscan.c ../lib/src/fwts_json.c
 
 
 -include $(top_srcdir)/git.mk

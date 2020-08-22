@@ -21,11 +21,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <regex.h>
-#include <json.h>
+#include "fwts_json.h"
 
 #include "config.h"
 

@@ -9,8 +9,6 @@
 	  AC_PROG_LIBTOOL
 	  AC_C_INLINE
 	  AM_PROG_CC_C_O
-	  AC_SEARCH_LIBS([json_object_from_file], [json json-c], [], [ AC_MSG_ERROR([no available json library]) ])
-	  AC_SEARCH_LIBS([json_object_object_get_ex], [json json-c], [ AC_DEFINE([JSON_HAS_GET_EX], [1], [Define if we have json_object_object_get_ex])], [])
   	  AC_CHECK_FUNCS([localtime_r])
 	  AC_CHECK_FUNCS([dup2])
 	  AC_CHECK_FUNCS([getcwd])
@@ -61,7 +59,6 @@
 	  AC_CHECK_HEADERS([time.h])
 	  AC_CHECK_HEADERS([sys/ioctl.h])
 	  AC_CHECK_HEADERS([sys/time.h])
-	  AC_CHECK_HEADERS([json/json.h])
 	  AC_CHECK_HEADERS([glib.h])
 	  AC_CHECK_HEADERS([gio/gio.h])
 	  AC_CHECK_HEADERS([asm/opal-prd.h])

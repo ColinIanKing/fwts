@@ -211,7 +211,7 @@ static void fwts_log_open_json(fwts_log_file *log_file)
 
 static void fwts_log_close_json(fwts_log_file *log_file)
 {
-	const char *str;
+	char *str;
 
 	fwts_log_section_end_json(log_file);
 
@@ -233,6 +233,7 @@ static void fwts_log_close_json(fwts_log_file *log_file)
 		log_file->line_number++;
 	}
 	json_object_put(json_stack[0].obj);
+	free(str);
 }
 
 fwts_log_ops fwts_log_json_ops = {

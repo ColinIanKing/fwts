@@ -832,8 +832,10 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 			for (i = 0; i < obj->length; i++) {
 				char *obj_str = json_object_to_json_string_indent(obj_ptr[i], indent + 1);
 
-				if (!obj_str)
+				if (!obj_str) {
+					free(str);
 					return NULL;
+				}
 				str = str_append(str, obj_str);
 				if (!str)
 					return NULL;

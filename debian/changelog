@@ -1,3 +1,23 @@
+fwts (20.08.00-0ubuntu1) groovy; urgency=medium
+
+  [Alex Hung]
+  * gitignore: update ignore files
+  * acpi/fadt: checks X_GPE0/1 have byte access width
+  * s3: check slp_s0_residency_usec for s2idle
+
+  [Colin Ian King]
+  * Debian: update compat level and standards version to match Xenial
+  * Debian/copyright fix lintian warning
+  * Debian: add riscv64 lintian overrides
+  * data: klog.json: fix unintential newline in a literal string
+  * dmicheck: update Memory Device type 17 size/version check (LP: #1892479)
+  * Replace json-c library with minimal replacement
+  * Remove all libjson references
+  * lib: fwts_json: fix memory leak on error return path
+  * lib: fwts_log_json: fix memory leak
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Mon, 24 Aug 2020 21:53:07 -0600
+
 fwts (20.07.00-0ubuntu1) groovy; urgency=medium
 
   [Alex Hung]

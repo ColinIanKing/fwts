@@ -206,6 +206,25 @@ static int wrap_pmutils_do_suspend(fwts_pm_method_vars *fwts_settings,
 	return status;
 }
 
+/*
+ *  get_s2_idle_residency()
+ *	read PM_S2IDLE_SLP_S0, return 0 if it is not available
+ */
+static uint32_t get_s2_idle_residency(void)
+{
+	char *str;
+	uint32_t val;
+
+	str = fwts_get(PM_S2IDLE_SLP_S0);
+	if (!str)
+		return 0;
+
+	val = atoi(str);
+	free(str);
+
+	return val;
+}
+
 static int s3_do_suspend_resume(fwts_framework *fw,
 	int *hw_errors,
 	int *pm_errors,
@@ -336,7 +355,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	}
 
 	if (!strncmp(sleep_type, "s2idle", strlen("s2idle"))) {
-		uint32_t residency = atoi(fwts_get(PM_S2IDLE_SLP_S0));
+		uint32_t residency = get_s2_idle_residency();
 		bool intel;
 		if (fwts_cpu_is_Intel(&intel) == FWTS_OK && intel && residency <= *s2idle_residency) {
 			(*s2idle_errors)++;
@@ -545,7 +564,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	int resume_too_long = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
-	uint32_t s2idle_residency = atoi(fwts_get(PM_S2IDLE_SLP_S0));
+	uint32_t s2idle_residency = get_s2_idle_residency();
 	int pm_debug;
 
 #if FWTS_ENABLE_LOGIND

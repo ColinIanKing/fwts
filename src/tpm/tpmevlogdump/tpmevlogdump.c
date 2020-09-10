@@ -411,6 +411,42 @@ static void tpmevlogdump_parser(fwts_framework *fw, uint8_t *data, size_t len)
 	return;
 }
 
+static void tpmevlogdump_event_dump(fwts_framework *fw, uint8_t *data, size_t len)
+{
+
+	uint8_t *pdata = data;
+	char *str_info;
+	fwts_pc_client_pcr_event *pc_event = NULL;
+
+	while (len > 0) {
+		/* check the data length for dumping */
+		if (len < sizeof(fwts_pc_client_pcr_event)) {
+			fwts_log_info(fw,
+				"Log event data is too small (%zd bytes) "
+				"than a TCG PC Client PCR event structure "
+				"(%zd bytes).",
+				len, sizeof(fwts_pc_client_pcr_event));
+			return;
+		}
+
+		pc_event = (fwts_pc_client_pcr_event *)pdata;
+
+		str_info = tpmevlogdump_pcrindex_to_string(pc_event->pcr_index);
+		fwts_log_info_verbatim(fw, "PCRIndex:	0x%8.8" PRIx32 "(%s)", pc_event->pcr_index, str_info);
+		str_info = tpmevlogdump_evtype_to_string(pc_event->event_type);
+		fwts_log_info_verbatim(fw, "EventType:	0x%8.8" PRIx32 "(%s)", pc_event->event_type, str_info);
+		tpmevlogdump_data_hexdump(fw, pc_event->digest, sizeof(pc_event->digest), "Digest");
+		fwts_log_info_verbatim(fw, "EventSize:	0x%8.8" PRIx32, pc_event->event_data_size);
+		if (pc_event->event_data_size > 0)
+			tpmevlogdump_data_hexdump(fw, pc_event->event, pc_event->event_data_size, "Event");
+		pdata += (sizeof(fwts_pc_client_pcr_event) + pc_event->event_data_size);
+		len -= (sizeof(fwts_pc_client_pcr_event) + pc_event->event_data_size);
+	}
+	return;
+
+}
+
+
 static uint8_t *tpmevlogdump_load_file(const int fd, size_t *length)
 {
 	uint8_t *ptr = NULL, *tmp;
@@ -495,11 +531,7 @@ static int tpmevlogdump_test1(fwts_framework *fw)
 					if (strstr((char *)(data + sizeof(fwts_pc_client_pcr_event)), FWTS_TPM_EVENTLOG_V2_SIGNATURE))
 						tpmevlogdump_parser(fw, data, length);
 					else {
-						fwts_log_info(fw, "Cannot find the tpm2 event log. Aborted.");
-						free(data);
-						(void)closedir(dir);
-						(void)close(fd);
-						return FWTS_ABORTED;
+						(void)tpmevlogdump_event_dump(fw, data, length);
 					}
 					free(data);
 				}

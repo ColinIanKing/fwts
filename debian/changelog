@@ -1,3 +1,18 @@
+fwts (20.09.00-0ubuntu1) groovy; urgency=medium
+
+  [Alex Hung]
+  * s0idle: add a test to verify lower power s0 idle is enabled
+  * fwts-test: sync up with new s0idle tests
+
+  [Colin Ian King]
+  * s3: fix segmentation fault when PM_S2IDLE_SLP_S0 is not available
+    (LP: #1894229)
+
+  [Ivan Hu]
+  * tpmevlogdump: add dumping sha1 log format event log
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 17 Sep 2020 12:07:19 -0600
+
 fwts (20.08.00-0ubuntu1) groovy; urgency=medium
 
   [Alex Hung]

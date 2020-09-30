@@ -93,6 +93,14 @@ static void method_test_GPE_return(
 	FWTS_UNUSED(buf);
 	bool failed = false;
 
+	if (fwts_acpi_is_reduced_hardware(fw)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"MethodGPEExist",
+			"%s is not required for Hardware-reduced ACPI platforms",
+			name);
+		return;
+	}
+
 	switch (obj->Type) {
 	case ACPI_TYPE_INTEGER:
 		if (obj->Integer.Value <= 255)

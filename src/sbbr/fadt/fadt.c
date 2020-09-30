@@ -92,7 +92,7 @@ static int fadt_sbbr_reduced_hw_test2(fwts_framework *fw)
 	static const fwts_acpi_gas null_gas;
 	uint32_t flag_mask;
 
-	rhw = fwts_acpi_is_reduced_hardware(fadt);
+	rhw = fwts_acpi_is_reduced_hardware(fw);
 	if (rhw == 0)
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "fadt_reduced_hw:", "FADT indicates ACPI is not in reduced hardware mode.");
 	else

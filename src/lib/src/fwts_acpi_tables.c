@@ -283,10 +283,23 @@ int fwts_acpi_free_tables(void)
  *  fwts_acpi_is_reduced_hardware()
  *	Check the ACPI tables for HW_REDUCED_ACPI bit in flag field.
  */
-fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt)
+fwts_bool fwts_acpi_is_reduced_hardware(fwts_framework *fw)
 {
+	fwts_acpi_table_info *table;
+	const fwts_acpi_table_fadt *fadt;
+
+	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read ACPI table FACP.");
+		return FWTS_ERROR;
+	}
+	if (table == NULL) {
+		fwts_log_error(fw, "ACPI table FACP does not exist!");
+		return FWTS_ERROR;
+	}
+	fadt = (const fwts_acpi_table_fadt *) table->data;
+
 	if ((fadt->header.revision >= 5) &&
-			(fadt->header.length >= 116)&&
+			(fadt->header.length >= 116) &&
 			(fadt->flags & FWTS_ACPI_FADT_FLAGS_HW_REDUCED_ACPI)) {
 		return FWTS_TRUE;
 	}
@@ -402,7 +415,7 @@ PRAGMA_PACK_WARN_OFF
 PRAGMA_POP
 	if (result != FWTS_OK) {
 		if ((result == FWTS_NULL_POINTER) &&
-				fwts_acpi_is_reduced_hardware(fadt)) {
+				fwts_acpi_is_reduced_hardware(fw)) {
 			fwts_log_info(fw, "Ignore the missing FACS. "
 					"It is optional in hardware-reduced mode");
 		} else {

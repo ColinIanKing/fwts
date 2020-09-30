@@ -51,7 +51,7 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
 int fwts_acpi_get_table(fwts_framework *fw, const uint32_t index, fwts_acpi_table_info **info);
 bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name);
 
-fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt);
+fwts_bool fwts_acpi_is_reduced_hardware(fwts_framework *fw);
 
 void fwts_acpi_reserved_zero_check(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, bool *passed);
 void fwts_acpi_reserved_zero_array_check(fwts_framework *fw, const char *table, const char *field, uint8_t* data, uint8_t length, bool *passed);

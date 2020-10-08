@@ -1,11 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20170531 (64-bit version)
- * Copyright (c) 2000 - 2017 Intel Corporation
+ * AML/ASL+ Disassembler version 20200925 (64-bit version)
+ * Copyright (c) 2000 - 2020 Intel Corporation
  * 
  * Disassembling to non-symbolic legacy ASL operators
  *
- * Disassembly of /tmp/fwts_tmp_table_11901_SSDT_16.dsl, Thu Jun  1 11:20:40 2017
+ * Disassembly of /tmp/fwts_tmp_table_134815_SSDT_16.dsl, Thu Oct  8 17:07:40 2020
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -64,7 +64,7 @@ DefinitionBlock ("", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
                  0x00, 0x00, 0x00, 0x00                           // ....
             })
             Concatenate (STS0, TEMP, Local2)
-            _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953"), REVS, SIZE, Local2)
+            _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */, REVS, SIZE, Local2)
         }
 
         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
@@ -75,7 +75,7 @@ DefinitionBlock ("", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
             CreateDWordField (Arg0, 0x04, IID1)
             CreateDWordField (Arg0, 0x08, IID2)
             CreateDWordField (Arg0, 0x0C, IID3)
-            Name (UID0, ToUUID ("4077a616-290c-47be-9ebd-d87058713953"))
+            Name (UID0, ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */)
             CreateDWordField (UID0, 0x00, EID0)
             CreateDWordField (UID0, 0x04, EID1)
             CreateDWordField (UID0, 0x08, EID2)
@@ -137,7 +137,7 @@ DefinitionBlock ("", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
                  0x00, 0x00, 0x00, 0x00                           // ....
             })
             Concatenate (STS1, TEMP, Local2)
-            _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953"), REVS, SIZE, Local2)
+            _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */, REVS, SIZE, Local2)
         }
 
         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
@@ -148,7 +148,7 @@ DefinitionBlock ("", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
             CreateDWordField (Arg0, 0x04, IID1)
             CreateDWordField (Arg0, 0x08, IID2)
             CreateDWordField (Arg0, 0x0C, IID3)
-            Name (UID1, ToUUID ("4077a616-290c-47be-9ebd-d87058713953"))
+            Name (UID1, ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */)
             CreateDWordField (UID1, 0x00, EID0)
             CreateDWordField (UID1, 0x04, EID1)
             CreateDWordField (UID1, 0x08, EID2)

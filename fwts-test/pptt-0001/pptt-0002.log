@@ -59,6 +59,7 @@ pptt            field must be zero, got 0x0004 instead
 pptt            FAILED [HIGH] PPTTReservedBitsNonZero: Test 1, PPTT Flags
 pptt            Bits [31..7] must be zero, got 0x000000ff instead
 pptt            
+pptt            PPTT type 2 is depreciated since ACPI 6.3 Errata A.
 pptt              ID structure (Type 2):
 pptt                Type:                           0x02
 pptt                Length:                         0x1e

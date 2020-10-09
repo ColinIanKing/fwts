@@ -270,7 +270,9 @@ static const msr_info AMD_MSRs[] = {
 	{ "MCG_CAP",			0x00000179,	0x0000000001ff0fffULL, NULL },
 	  */
 	{ "MCG_STATUS",			0x0000017a,	0xffffffffffffffffULL, NULL },
+	/* MCG_CTL differs in Ryzen 4000 series and probably later series
 	{ "MCG_CTL",			0x0000017b,	0xffffffffffffffffULL, NULL },
+	*/
 	{ "MTRR_PHYSBASE0",		0x00000200,	0xffffffffffffffffULL, NULL },
 	{ "MTRR_PHYSMASK0",		0x00000201,	0xffffffffffffffffULL, NULL },
 	{ "MTRR_PHYSBASE1",		0x00000202,	0xffffffffffffffffULL, NULL },

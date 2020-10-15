@@ -24,7 +24,15 @@ Ubuntu Distro ARM64
 	autoconf automake libglib2.0-dev libtool libpcre3-dev
 	flex bison dkms libfdt-dev libbsd-dev
 
-2) To build and install (only if building from source)
+2) Kernel configuration
+
+Some tests depend on special Linux kernel configuration settings. These include:
+
+* CONFIG_CGROUP_FREEZER=y
+* CONFIG_DMI_SYSFS=y
+* CONFIG_EFI_TEST=m
+
+3) To build and install (only if building from source)
 
 	autoreconf -ivf
 	./configure

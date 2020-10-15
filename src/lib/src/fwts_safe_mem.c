@@ -48,12 +48,15 @@ static void sig_handler(int dummy)
  */
 int OPTIMIZE0 fwts_safe_memcpy(void *dst, const void *src, const size_t n)
 {
+	size_t i;
+
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
 	fwts_sig_handler_set(SIGSEGV, sig_handler, &old_segv_action);
 	fwts_sig_handler_set(SIGBUS, sig_handler, &old_bus_action);
-	memcpy(dst, src, n);
+	for (i = n; i; --i)
+		*(char *)dst++ = *(char *)src++;
 	fwts_sig_handler_restore(SIGSEGV, &old_segv_action);
 	fwts_sig_handler_restore(SIGBUS, &old_bus_action);
 

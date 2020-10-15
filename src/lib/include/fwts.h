@@ -105,6 +105,7 @@
 #define FWTS_ARCH_AARCH64	1
 #define FWTS_HAS_ACPI	1
 #define FWTS_HAS_UEFI	1
+#define FWTS_USE_DEVMEM 1
 #endif
 
 #if defined(__s390x__)

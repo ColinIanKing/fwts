@@ -26,22 +26,7 @@
 
 #include "fwts_tpm.h"
 
-#define FWTS_TPM_LOG_DIR_PATH		"/sys/kernel/security"
-
-
-static void tpmevlogdump_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size, char *str)
-{
-	size_t i;
-
-	fwts_log_info_verbatim(fw, "%s: ", str);
-	for (i = 0; i < size; i += 16) {
-		char buffer[128];
-		size_t left = size - i;
-
-		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
-		fwts_log_info_verbatim(fw, "%s", buffer + 2);
-	}
-}
+#define FWTS_TPM_LOG_DIR_PATH	"/sys/kernel/security"
 
 static char *tpmevlogdump_evtype_to_string (fwts_tpmlog_event_type event_type)
 {
@@ -172,32 +157,6 @@ static char *tpmevlogdump_hash_to_string (TPM2_ALG_ID hash)
 
 	return str;
 }
-
-static uint8_t tpmevlogdump_get_hash_size (TPM2_ALG_ID hash)
-{
-	uint8_t sz;
-
-	switch (hash) {
-	case TPM2_ALG_SHA1:
-		sz = TPM2_SHA1_DIGEST_SIZE;
-		break;
-	case TPM2_ALG_SHA256:
-		sz = TPM2_SHA256_DIGEST_SIZE;
-		break;
-	case TPM2_ALG_SHA384:
-		sz = TPM2_SHA384_DIGEST_SIZE;
-		break;
-	case TPM2_ALG_SHA512:
-		sz = TPM2_SHA512_DIGEST_SIZE;
-		break;
-	default:
-		sz = 0;
-		break;
-	}
-
-	return sz;
-}
-
 static char *tpmevlogdump_pcrindex_to_string (uint32_t pcr)
 {
 
@@ -270,7 +229,7 @@ static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, 
 	fwts_log_info_verbatim(fw, "PCRIndex:                    0x%8.8" PRIx32 "(%s)", pc_event->pcr_index, str_info);
 	str_info = tpmevlogdump_evtype_to_string(pc_event->event_type);
 	fwts_log_info_verbatim(fw, "EventType:                   0x%8.8" PRIx32 "(%s)", pc_event->event_type, str_info);
-	tpmevlogdump_data_hexdump(fw, pc_event->digest, sizeof(pc_event->digest), "Digest");
+	fwts_tpm_data_hexdump(fw, pc_event->digest, sizeof(pc_event->digest), "Digest");
 	fwts_log_info_verbatim(fw, "EventSize:                   0x%8.8" PRIx32, pc_event->event_data_size);
 
 	pdata += sizeof(fwts_pc_client_pcr_event);
@@ -318,7 +277,7 @@ static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, 
 			fwts_log_info(fw, "Cannot get enough length for dumping data.");
 			return 0;
 		}
-		tpmevlogdump_data_hexdump(fw, pdata, vendor_info_size, "  vendorInfo");
+		fwts_tpm_data_hexdump(fw, pdata, vendor_info_size, "  vendorInfo");
 		len_remain -= vendor_info_size;
 	}
 
@@ -357,7 +316,7 @@ static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size
 		}
 		str_info = tpmevlogdump_hash_to_string(alg_id);
 		fwts_log_info_verbatim(fw, "  Digests[%d].AlgId: 0x%4.4" PRIx16 "(%s)", i, alg_id, str_info);
-		hash_size = tpmevlogdump_get_hash_size(alg_id);
+		hash_size = fwts_tpm_get_hash_size(alg_id);
 		if (!hash_size) {
 			fwts_log_info(fw, "Unknown hash algorithm. Aborted.");
 			return 0;
@@ -369,7 +328,7 @@ static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size
 			fwts_log_info(fw, "Cannot get enough length for dumping data.");
 			return 0;
 		}
-		tpmevlogdump_data_hexdump(fw, pdata, hash_size, "  Digest");
+		fwts_tpm_data_hexdump(fw, pdata, hash_size, "  Digest");
 		pdata += hash_size;
 		len_remain -= hash_size;
 	}
@@ -386,7 +345,7 @@ static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size
 
 	fwts_log_info_verbatim(fw, "  EventSize:        %" PRIu32, event_size);
 	if (event_size > 0) {
-		tpmevlogdump_data_hexdump(fw, pdata, event_size, "  Event");
+		fwts_tpm_data_hexdump(fw, pdata, event_size, "  Event");
 		len_remain -= event_size;
 	}
 
@@ -435,10 +394,10 @@ static void tpmevlogdump_event_dump(fwts_framework *fw, uint8_t *data, size_t le
 		fwts_log_info_verbatim(fw, "PCRIndex:	0x%8.8" PRIx32 "(%s)", pc_event->pcr_index, str_info);
 		str_info = tpmevlogdump_evtype_to_string(pc_event->event_type);
 		fwts_log_info_verbatim(fw, "EventType:	0x%8.8" PRIx32 "(%s)", pc_event->event_type, str_info);
-		tpmevlogdump_data_hexdump(fw, pc_event->digest, sizeof(pc_event->digest), "Digest");
+		fwts_tpm_data_hexdump(fw, pc_event->digest, sizeof(pc_event->digest), "Digest");
 		fwts_log_info_verbatim(fw, "EventSize:	0x%8.8" PRIx32, pc_event->event_data_size);
 		if (pc_event->event_data_size > 0)
-			tpmevlogdump_data_hexdump(fw, pc_event->event, pc_event->event_data_size, "Event");
+			fwts_tpm_data_hexdump(fw, pc_event->event, pc_event->event_data_size, "Event");
 		pdata += (sizeof(fwts_pc_client_pcr_event) + pc_event->event_data_size);
 		len -= (sizeof(fwts_pc_client_pcr_event) + pc_event->event_data_size);
 	}

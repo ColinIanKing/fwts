@@ -167,6 +167,9 @@ typedef struct {
 */
 } __attribute__ ((packed)) fwts_tcg_pcr_event2;
 
+void fwts_tpm_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size, char *str);
+uint8_t fwts_tpm_get_hash_size(TPM2_ALG_ID hash);
+
 PRAGMA_POP
 
 #endif

@@ -755,6 +755,44 @@ static char *str_indent(char *str, int indent)
 	return str_append(str, buf);
 }
 
+static bool char_escape(const int ch)
+{
+	switch (ch) {
+	case '"':
+	case '\b':
+	case '\f':
+	case '\n':
+	case '\r':
+	case '\t':
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+
+static char *str_escape(char *oldstr)
+{
+	char *oldptr, *newstr, *newptr;
+	ssize_t n;
+
+	for (n = 0, oldptr = oldstr; *oldptr; oldptr++, n++)
+		if (char_escape(*oldptr))
+			n++;
+
+	newstr = malloc(n + 1);
+	if (!newstr)
+		return NULL;
+
+	for (oldptr = oldstr, newptr = newstr; *oldptr; oldptr++, newptr++) {
+		if (char_escape(*oldptr))
+			*(newptr++) = '\\';
+		*newptr = *oldptr;
+	}
+	*newptr = '\0';
+	return newstr;
+}
+
 /*
  *  json_object_to_json_string_indent()
  *	turn a simplified fwts json object into a C string, returns
@@ -766,6 +804,7 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 	int i;
 	json_object **obj_ptr;
 	char *str = NULL;
+	char *tmp;
 	char buf[64];
 
 	if (!obj)
@@ -773,9 +812,6 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 
 	if (obj->type == type_object) {
 		str = str_indent(str, indent);
-		if (!str)
-			return NULL;
-		str = str_append(str, "{\n");
 		if (!str)
 			return NULL;
 	}
@@ -797,15 +833,33 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 
 	switch (obj->type) {
 	case type_array:
-		str = str_append(str, "[\n");
+		str = str_append(str, "\n");
+		if (!str)
+			return NULL;
+		str = str_indent(str, indent);
+		if (!str)
+			return NULL;
+		str = str_append(str, "[");
 		if (!str)
 			return NULL;
 
 		obj_ptr = (json_object **)obj->u.ptr;
 		if (obj_ptr) {
 			for (i = 0; i < obj->length; i++) {
-				char *obj_str = json_object_to_json_string_indent(obj_ptr[i], indent + 1);
+				char *obj_str;
 
+				if (i) {
+					str = str_append(str, "\n");
+					if (!str)
+						return NULL;
+					str = str_indent(str, indent + 1);
+					if (!str)
+						return NULL;
+					str = str_append(str, ",");
+					if (!str)
+						return NULL;
+				}
+				obj_str = json_object_to_json_string_indent(obj_ptr[i], indent + 1);
 				if (!obj_str) {
 					free(str);
 					return NULL;
@@ -821,17 +875,30 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 		str = str_indent(str, indent);
 		if (!str)
 			return NULL;
-		str = str_append(str, "]\n");
+		str = str_append(str, "]");
 		if (!str)
 			return NULL;
 		break;
 
 	case type_object:
+		str = str_append(str, "\n");
+		if (!str)
+			return NULL;
+		str = str_indent(str, indent);
+		if (!str)
+			return NULL;
+		str = str_append(str, "{");
+		if (!str)
+			return NULL;
 		obj_ptr = (json_object **)obj->u.ptr;
 		if (obj_ptr) {
 			for (i = 0; i < obj->length; i++) {
-				char *obj_str = json_object_to_json_string_indent(obj_ptr[i], indent + 1);
+				char *obj_str;
 
+				str = str_append(str, (i == 0) ? "\n" : ",\n");
+				if (!str)
+					return NULL;
+				obj_str = json_object_to_json_string_indent(obj_ptr[i], indent + 1);
 				if (!obj_str) {
 					free(str);
 					return NULL;
@@ -841,6 +908,13 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 					return NULL;
 			}
 		}
+		str = str_append(str, "\n");
+		if (!str)
+			return NULL;
+		str = str_indent(str, indent);
+		if (!str)
+			return NULL;
+		str = str_append(str, "}");
 		if (!str)
 			return NULL;
 		break;
@@ -849,22 +923,25 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 		str = str_append(str, "\"");
 		if (!str)
 			return NULL;
-		str = str_append(str, (char *)obj->u.ptr);
+		tmp = str_escape((char *)obj->u.ptr);
+		if (!tmp)
+			return NULL;
+		str = str_append(str, tmp);
 		if (!str)
 			return NULL;
-		str = str_append(str, "\",\n");
+		str = str_append(str, "\"");
 		if (!str)
 			return NULL;
 		break;
 
 	case type_null:
-		str = str_append(str, "(null)\n");
+		str = str_append(str, "(null)");
 		if (!str)
 			return NULL;
 		break;
 
 	case type_int:
-		snprintf(buf, sizeof(buf), "%d,\n", obj->u.intval);
+		snprintf(buf, sizeof(buf), "%d", obj->u.intval);
 		str = str_append(str, buf);
 		if (!str)
 			return NULL;
@@ -875,9 +952,6 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 
 	if (obj->type == type_object) {
 		str = str_indent(str, indent);
-		if (!str)
-			return NULL;
-		str = str_append(str, "},\n");
 		if (!str)
 			return NULL;
 	}

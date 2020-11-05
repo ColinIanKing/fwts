@@ -5966,6 +5966,13 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Could not resolve symbol.*, AE_NOT_FOUND",
+   "advice": "While evaluating one object, ACPI could not find another object that was being referenced. This indicates a bug in the DSDT or the SSDTs.",
+   "label": "KlogAcpiNamespaceLookupFailure"
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI Error.+psparse",
    "advice": "The ACPI engine has failed to execute some AML. The error message above lists the method that caused this error.",

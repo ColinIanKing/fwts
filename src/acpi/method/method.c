@@ -1583,7 +1583,7 @@ method_test_SxD(_S4D)
 #define method_test_SxW(name)						\
 static int method_test ## name(fwts_framework *fw)			\
 {									\
-	uint64_t max = 3;						\
+	uint64_t max = 4;						\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
 		# name, NULL, 0, fwts_method_test_integer_max_return, &max);	\
 }

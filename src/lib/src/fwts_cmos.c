@@ -47,7 +47,6 @@ int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 		goto tidy0x80;
 	}
 
-	asm("cli");
 	/* specify offset to read */
 	if (fwts_outb(offset, 0x70) != FWTS_OK) {
 		ret = FWTS_ERROR;
@@ -64,7 +63,6 @@ int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 	if (fwts_inb(0x71, value) != FWTS_OK)
 		ret = FWTS_ERROR;
 tidy:
-	asm("sti");
 	(void)iopl(0);
 tidy0x80:
 	(void)ioperm(0x80, 1, 0);

@@ -5961,7 +5961,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI Error.*Namespace lookup failure, AE_NOT_FOUND",
-   "advice": "The kernel has detected an error trying to execute an Method and it cannot find an object. This is indicates a bug in the DSDT or SSDT AML code.",
+   "advice": "The kernel has detected an error trying to execute a method and it cannot find an object. This indicates a bug in the DSDT or SSDT AML code.",
    "label": "KlogAcpiNamespaceLookupFailure"
   },
   {

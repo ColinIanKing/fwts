@@ -951,6 +951,20 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 67
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00064|                  0x00, 0x00, 0x00, 0x00                           // ....
+syntaxcheck     00065|             })
+syntaxcheck     00066|             Concatenate (STS0, TEMP, Local2)
+syntaxcheck     00067|             _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */, REVS, SIZE, Local2)
+syntaxcheck          |                                                               ^
+syntaxcheck          | Remark 2184: Unknown UUID string  
+syntaxcheck     00068|         }
+syntaxcheck     00069| 
+syntaxcheck     00070|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 70
 syntaxcheck     Line | AML source
@@ -973,6 +987,20 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 78
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00075|             CreateDWordField (Arg0, 0x04, IID1)
+syntaxcheck     00076|             CreateDWordField (Arg0, 0x08, IID2)
+syntaxcheck     00077|             CreateDWordField (Arg0, 0x0C, IID3)
+syntaxcheck     00078|             Name (UID0, ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */)
+syntaxcheck          |                                                                     ^
+syntaxcheck          | Remark 2184: Unknown UUID string  
+syntaxcheck     00079|             CreateDWordField (UID0, 0x00, EID0)
+syntaxcheck     00080|             CreateDWordField (UID0, 0x04, EID1)
+syntaxcheck     00081|             CreateDWordField (UID0, 0x08, EID2)
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
 syntaxcheck     line 78
 syntaxcheck     Line | AML source
@@ -1037,6 +1065,20 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 140
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00137|                  0x00, 0x00, 0x00, 0x00                           // ....
+syntaxcheck     00138|             })
+syntaxcheck     00139|             Concatenate (STS1, TEMP, Local2)
+syntaxcheck     00140|             _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */, REVS, SIZE, Local2)
+syntaxcheck          |                                                               ^
+syntaxcheck          | Remark 2184: Unknown UUID string  
+syntaxcheck     00141|         }
+syntaxcheck     00142| 
+syntaxcheck     00143|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 143
 syntaxcheck     Line | AML source
@@ -1059,6 +1101,20 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 151
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00148|             CreateDWordField (Arg0, 0x04, IID1)
+syntaxcheck     00149|             CreateDWordField (Arg0, 0x08, IID2)
+syntaxcheck     00150|             CreateDWordField (Arg0, 0x0C, IID3)
+syntaxcheck     00151|             Name (UID1, ToUUID ("4077a616-290c-47be-9ebd-d87058713953") /* Unknown UUID */)
+syntaxcheck          |                                                                     ^
+syntaxcheck          | Remark 2184: Unknown UUID string  
+syntaxcheck     00152|             CreateDWordField (UID1, 0x00, EID0)
+syntaxcheck     00153|             CreateDWordField (UID1, 0x04, EID1)
+syntaxcheck     00154|             CreateDWordField (UID1, 0x08, EID2)
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
 syntaxcheck     line 151
 syntaxcheck     Line | AML source
@@ -1101,11 +1157,11 @@ syntaxcheck     00189|                     Load (CST1, HC1) /* \_PR_.CPU1.HC1_ *
 syntaxcheck     00190|                 }
 syntaxcheck     00191|             }
 syntaxcheck     ==========================================================
-syntaxcheck     Table SSDT (5) reassembly: Found 0 errors, 0 warnings, 10
+syntaxcheck     Table SSDT (5) reassembly: Found 0 errors, 0 warnings, 14
 syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     ==========================================================
-syntaxcheck     2 passed, 67 failed, 0 warning, 0 aborted, 0 skipped, 0
+syntaxcheck     2 passed, 71 failed, 0 warning, 0 aborted, 0 skipped, 0
 syntaxcheck     info only.
 syntaxcheck     ==========================================================

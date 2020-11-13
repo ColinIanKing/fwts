@@ -5973,7 +5973,7 @@
   },
   {
    "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
+   "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "ACPI Error.+psparse",
    "advice": "The ACPI engine has failed to execute some AML. The error message above lists the method that caused this error.",
    "label": "KlogAcpiParseOrExecFailure"

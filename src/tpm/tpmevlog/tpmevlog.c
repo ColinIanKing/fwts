@@ -333,6 +333,50 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 	return FWTS_OK;
 }
 
+static int tpmevlog_check(fwts_framework *fw, uint8_t *data, size_t len)
+{
+
+	uint8_t *pdata = data;
+	int ret = FWTS_OK;
+	fwts_pc_client_pcr_event *pc_event = NULL;
+
+	do {
+		if (len < sizeof(fwts_pc_client_pcr_event)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventLength",
+					"The length of the event is %zd bytes "
+					"is smaller than the PCClientPCREvent %zd bytes.",
+					len,
+					sizeof(fwts_pc_client_pcr_event));
+			return FWTS_ERROR;
+		}
+
+		pc_event = (fwts_pc_client_pcr_event *)pdata;
+		ret = tpmevlog_pcrindex_value_check(fw, pc_event->pcr_index);
+		if (ret != FWTS_OK)
+			return ret;
+		ret = tpmevlog_eventtype_check(fw, pc_event->event_type);
+		if (ret != FWTS_OK)
+			return ret;
+
+		if ((len - sizeof(fwts_pc_client_pcr_event)) < pc_event->event_data_size) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventLength",
+					"The remain length of the event is %zd bytes "
+					"is smaller than required event length "
+					"%" PRIu32 " bytes.",
+					len - sizeof(fwts_pc_client_pcr_event),
+					pc_event->event_data_size);
+			return FWTS_ERROR;
+		}
+
+		pdata += (sizeof(fwts_pc_client_pcr_event) + pc_event->event_data_size);
+		len -= (sizeof(fwts_pc_client_pcr_event) + pc_event->event_data_size);
+	} while (len > 0);
+
+	fwts_passed(fw, "Check TPM event SHA1 log test passed.");
+	return FWTS_OK;
+}
+
+
 static uint8_t *tpmevlog_load_file(const int fd, size_t *length)
 {
 	uint8_t *ptr = NULL, *tmp;
@@ -416,6 +460,9 @@ static int tpmevlog_test1(fwts_framework *fw)
 					/* check if the TPM2 eventlog */
 					if (strstr((char *)(data + sizeof(fwts_pc_client_pcr_event)), FWTS_TPM_EVENTLOG_V2_SIGNATURE))
 						tpmevlog_v2_check(fw, data, length);
+					else {
+						tpmevlog_check(fw, data, length);
+					}
 
 					free(data);
 				}

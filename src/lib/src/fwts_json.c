@@ -924,9 +924,12 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 		if (!str)
 			return NULL;
 		tmp = str_escape((char *)obj->u.ptr);
-		if (!tmp)
+		if (!tmp) {
+			free(str);
 			return NULL;
+		}
 		str = str_append(str, tmp);
+		free(tmp);
 		if (!str)
 			return NULL;
 		str = str_append(str, "\"");

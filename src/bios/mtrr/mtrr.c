@@ -51,8 +51,10 @@ static fwts_cpuinfo_x86 *fwts_cpuinfo;
 
 #define MTRR_DEF_TYPE_MSR	0x2FF
 #define AMD_SYS_CFG_MSR		0xC0010010
+#define AMD_TOM2_MSR		0xC001001D
 
 static	uint64_t mtrr_default;
+static	uint64_t amd_tom2_addr;
 static	bool amd_Tom2ForceMemTypeWB = false;
 
 struct mtrr_entry {
@@ -195,6 +197,9 @@ static int get_default_mtrr(fwts_framework *fw)
 		if (fwts_cpu_readmsr(fw, 0, AMD_SYS_CFG_MSR, &amd_sys_conf) == FWTS_OK)
 			if (amd_sys_conf & 0x200000)
 				amd_Tom2ForceMemTypeWB = true;
+
+		if (fwts_cpu_readmsr(fw, 0, AMD_TOM2_MSR, &amd_tom2_addr) != FWTS_OK)
+			amd_tom2_addr = 0x100000000;	/* this should above 4GB */
 	}
 
 	if (fwts_cpu_readmsr(fw, 0, MTRR_DEF_TYPE_MSR, &mtrr_default) == FWTS_OK) {
@@ -229,18 +234,16 @@ static int cache_types(uint64_t start, uint64_t end)
 	struct mtrr_entry *entry;
 	int type = 0;
 
-	/* On AMD platforms, Tom2ForceMemTypeWB overwrites other memory types */
-	if (amd_Tom2ForceMemTypeWB && start >= 0x100000000) {
-		type = WRITE_BACK;
-		return type;
-	}
-
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
 		if (entry->end >= start && entry->start <= end)
 			type |= entry->type;
 	}
+
+	/* On AMD platforms, Tom2ForceMemTypeWB overwrites MTRRdefType */
+	if (type == 0 && amd_Tom2ForceMemTypeWB && start >= 0x100000000 && start <= amd_tom2_addr)
+			return WRITE_BACK;
 
 	/*
 	 * now to see if there is any part of the range that isn't

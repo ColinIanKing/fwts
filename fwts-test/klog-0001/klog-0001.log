@@ -3105,8 +3105,8 @@ klog            Kernel message: [ 0.104297] ACPI Error (psargs-0359):
 klog            [OSYS] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.104304] ACPI Error (psparse-0537): Method
@@ -3215,8 +3215,8 @@ klog            Kernel message: [ 0.118277] ACPI Error (psargs-0359):
 klog            [SUPP] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.118284] ACPI Error (psparse-0537): Method
@@ -3403,8 +3403,8 @@ klog            Namespace lookup failure, AE_NOT_FOUND (20110112
 klog            /psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [MEDIUM] KlogBiosMtrrsInconsistentAcrossCPUs: Test
 klog            1, MEDIUM Kernel message: [ 0.160449] mtrr: your CPUs had
@@ -3447,8 +3447,8 @@ klog            Kernel message: [ 0.165683] ACPI Error: [CDW1] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.165689] ACPI Error: Method parse/execution
@@ -3532,8 +3532,8 @@ klog            Kernel message: [ 0.169111] ACPI Error: [HPTF] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.169117] ACPI Error: Method parse/execution
@@ -3783,8 +3783,8 @@ klog            Kernel message: [ 0.176410] ACPI Error: [RAMB] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110413/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.176680] ACPI Warning: Incorrect
@@ -4024,16 +4024,16 @@ klog            Kernel message: [ 0.182199] ACPI Error: [Z012] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
 klog            Kernel message: [ 0.182639] ACPI Error (psargs-0359):
 klog            [ECEN] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.182645] ACPI Error (psparse-0537): Method
@@ -4183,8 +4183,8 @@ klog            Kernel message: [ 0.185673] ACPI Error (dswload-0659):
 klog            [___P] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiInvalidTableLength: Test 1, HIGH
 klog            Kernel message: [ 0.185686] ACPI Error (psparse-0537):
@@ -4295,8 +4295,8 @@ klog            Kernel message: [ 0.188487] ACPI Error (psargs-0359): q z
 klog            Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.188669] ACPI Warning: Incorrect
@@ -4345,8 +4345,8 @@ klog            Kernel message: [ 0.189515] ACPI Error (psargs-0359):
 klog            [CVCL] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.189522] ACPI Error (psparse-0537): Method
@@ -4558,8 +4558,8 @@ klog            Kernel message: [ 0.199465] ACPI Error: [CDW1] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110413/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.199471] ACPI Error: Method parse/execution
@@ -5148,8 +5148,8 @@ klog            Kernel message: [ 0.228032] ACPI Error (psargs-0359):
 klog            [_PR_.C002._PPC] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.228041] ACPI Error (psparse-0537): Method
@@ -5199,8 +5199,8 @@ klog            Kernel message: [ 0.229639] ACPI Error (psargs-0359):
 klog            [CDW1] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.229644] ACPI Error (psparse-0537): Method
@@ -5787,8 +5787,8 @@ klog            Kernel message: [ 0.285468] ACPI Error (psargs-0359):
 klog            [_PR_.CPU0._PPC] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.285476] ACPI Error (psparse-0537): Method
@@ -5866,8 +5866,8 @@ klog            Kernel message: [ 0.302946] ACPI Error (psargs-0359):
 klog            [HPTF] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.302952] ACPI Error (psparse-0537): Method
@@ -6482,8 +6482,8 @@ klog            Kernel message: [ 0.332160] ACPI Error (dswload-0677):
 klog            [PCI0] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.332167] ACPI Error (psparse-0537): Method
@@ -6586,8 +6586,8 @@ klog            Kernel message: [ 0.333765] ACPI Error (psargs-0359):
 klog            [FZHD] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.333771] ACPI Error (psparse-0537): Method
@@ -6677,8 +6677,8 @@ klog            Kernel message: [ 0.337662] ACPI Error (psargs-0359):
 klog            [URES] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.337662] ACPI Error (psparse-0537): Method
@@ -7467,8 +7467,8 @@ klog            Kernel message: [ 0.375585] ACPI Error (dswload-0677):
 klog            [USB0] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.375609] ACPI Error (psparse-0537): Method
@@ -7666,8 +7666,8 @@ klog            Namespace lookup failure, AE_NOT_FOUND (20110112
 klog            /psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.390354] ACPI Error: Method parse/execution
@@ -7967,8 +7967,8 @@ klog            Kernel message: [ 0.426823] ACPI Error (psargs-0359):
 klog            [_PR_.CPU0._PSS] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.426833] ACPI Error (psparse-0537): Method
@@ -8072,8 +8072,8 @@ klog            Kernel message: [ 0.451517] ACPI Error (psargs-0359):
 klog            [GUR_._BAS] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.451682] ACPI Error (psparse-0537): Method
@@ -8536,8 +8536,8 @@ klog            Namespace lookup failure, AE_NOT_FOUND (20110112
 klog            /psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.540046] ACPI Error: Method parse/execution
@@ -8776,8 +8776,8 @@ klog            Kernel message: [ 0.600451] ACPI Error (psargs-0359):
 klog            [_SB_.PCI0.EGBA] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.600456] ACPI Error (psparse-0537): Method
@@ -8894,8 +8894,8 @@ klog            [_SB_.PCI0.EC__.HOTT] Namespace lookup failure,
 klog            AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.627255] ACPI Error (psparse-0537): Method
@@ -9037,8 +9037,8 @@ klog            Kernel message: [ 0.655369] ACPI Error (psargs-0359):
 klog            [_SB_.PCI0.PSKB] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.655376] ACPI Error (psparse-0537): Method
@@ -9054,8 +9054,8 @@ klog            Kernel message: [ 0.655576] ACPI Error (psargs-0359):
 klog            [_SB_.PCI0.PSMS] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.655581] ACPI Error (psparse-0537): Method
@@ -9429,8 +9429,8 @@ klog            Kernel message: [ 0.721822] ACPI Error (dswload-0659):
 klog            [USB0] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.722199] ACPI Error (psparse-0537): Method
@@ -9639,8 +9639,8 @@ klog            Kernel message: [ 0.782613] ACPI Error (psargs-0359):
 klog            [RAMB] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.783246] ACPI Warning: Incorrect
@@ -9767,24 +9767,24 @@ klog            Kernel message: [ 0.810687] ACPI Error (dswload-0659):
 klog            [DD02] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
 klog            Kernel message: [ 0.810756] ACPI Error (dswload-0659):
 klog            [EHC1] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
 klog            Kernel message: [ 0.820565] ACPI Error: [FZHD] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.820571] ACPI Error: Method parse/execution
@@ -9935,8 +9935,8 @@ klog            Kernel message: [ 0.879606] ACPI Error (psargs-0359):
 klog            [MPEN] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.879794] ACPI Error (psparse-0537): Method
@@ -10401,8 +10401,8 @@ klog            Kernel message: [ 1.167050] ACPI Error: [CDW1] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110316/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.167226] ACPI Error: Method parse/execution
@@ -10486,8 +10486,8 @@ klog            Kernel message: [ 1.186079] ACPI Error: [BRTW] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.186087] ACPI Error: Method parse/execution
@@ -10797,8 +10797,8 @@ klog            Kernel message: [ 1.314561] ACPI Error: [ECPU] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.314567] ACPI Error: Method parse/execution
@@ -10873,8 +10873,8 @@ klog            Kernel message: [ 1.381481] ACPI Error (dswload-0659):
 klog            [PCI0] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiResolveOpBadType: Test 1, HIGH
 klog            Kernel message: [ 1.384655] ACPI Error: Needed [Buffer
@@ -10971,8 +10971,8 @@ klog            Kernel message: [ 1.488986] ACPI Error (psargs-0359):
 klog            [GTF0] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.488991] ACPI Error (psparse-0537): Method
@@ -11177,8 +11177,8 @@ klog            Kernel message: [ 1.605465] ACPI Error: [RAMB] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.616034] ACPI Error (psparse-0537): Method
@@ -11230,8 +11230,8 @@ klog            Kernel message: [ 1.648580] ACPI Error: [SMS_] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.648589] ACPI Error: Method parse/execution
@@ -11476,8 +11476,8 @@ klog            Kernel message: [ 1.900224] ACPI Error: [NPSS] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.900238] ACPI Error: Method parse/execution
@@ -11538,8 +11538,8 @@ klog            Kernel message: [ 1.907422] ACPI Error: [GTF0] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 1.907427] ACPI Error: Method parse/execution
@@ -11856,8 +11856,8 @@ klog            Kernel message: [ 2.081502] ACPI Error (psargs-0359):
 klog            [NPSS] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 2.081508] ACPI Error (psparse-0537): Method
@@ -12052,8 +12052,8 @@ klog            Kernel message: [ 2.227407] ACPI Error (psargs-0359):
 klog            [GTF1] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 2.227411] ACPI Error (psparse-0537): Method
@@ -12159,8 +12159,8 @@ klog            Kernel message: [ 2.283579] ACPI Error (psargs-0359):
 klog            [_T_0] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 2.283585] ACPI Error (psparse-0537): Method
@@ -12307,8 +12307,8 @@ klog            Kernel message: [ 2.440684] ACPI Error (psargs-0359):
 klog            [SMS_] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 2.440692] ACPI Error (psparse-0537): Method
@@ -12412,8 +12412,8 @@ klog            Kernel message: [ 2.634350] ACPI Error: [GTF1] Namespace
 klog            lookup failure, AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 2.634355] ACPI Error: Method parse/execution
@@ -12553,8 +12553,8 @@ klog            [_SB_.PCI0.GFX0.DD02._BCL] Namespace lookup failure,
 klog            AE_NOT_FOUND (20110112/psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 2.861812] ACPI Error: Method parse/execution
@@ -13569,8 +13569,8 @@ klog            Kernel message: [ 10.289821] ACPI Error (psargs-0359):
 klog            [_PR_.CPU0._CST] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 10.289828] ACPI Error (psparse-0537): Method
@@ -14250,8 +14250,8 @@ klog            Kernel message: [ 13.452167] ACPI Error (psargs-0359):
 klog            [_PR_.C001] Namespace lookup failure, AE_NOT_FOUND
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 13.452177] ACPI Error (psparse-0537): Method
@@ -15116,8 +15116,8 @@ klog            Namespace lookup failure, AE_NOT_FOUND (20110112
 klog            /psargs-359)
 klog            
 klog            ADVICE: The kernel has detected an error trying to execute
-klog            an Method and it cannot find an object. This is indicates
-klog            a bug in the DSDT or SSDT AML code.
+klog            a method and it cannot find an object. This indicates a
+klog            bug in the DSDT or SSDT AML code.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 42.490202] ACPI Error: Method parse/execution

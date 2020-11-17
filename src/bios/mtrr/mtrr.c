@@ -53,6 +53,10 @@ static fwts_cpuinfo_x86 *fwts_cpuinfo;
 #define AMD_SYS_CFG_MSR		0xC0010010
 #define AMD_TOM2_MSR		0xC001001D
 
+#define MTRR_ENABLE		0x800
+#define FIXED_MTRR_ENABLE	0x400
+
+
 static	uint64_t mtrr_default;
 static	uint64_t amd_tom2_addr;
 static	bool amd_Tom2ForceMemTypeWB = false;
@@ -593,6 +597,36 @@ static int mtrr_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int mtrr_test0(fwts_framework *fw)
+{
+	uint64_t mtrr_def_msr;
+
+	if (fwts_cpu_readmsr(fw, 0, MTRR_DEF_TYPE_MSR, &mtrr_def_msr) != FWTS_OK) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"MTRRMSRDefaultNotAvailable",
+			"MTRR_DEF_TYPE_MSR cannot be read from CPU.");
+		return FWTS_ERROR;
+	}
+
+	if (mtrr_def_msr & MTRR_ENABLE)
+		fwts_passed(fw, "MTRRs enabled flag is set in MTRR_DEF_TYPE MSR correctly.");
+	else
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"MTRRDisabled",
+			"MTRRs enabled flag is clear in MTRR_DEF_TYPE MSR and "
+			"all MTRRs are disabled ");
+
+	if (mtrr_def_msr & FIXED_MTRR_ENABLE)
+		fwts_passed(fw, "fixed MTRRs enabled flag is set in MTRR_DEF_TYPE MSR correctly.");
+	else
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"MTRRFixedRangeDisabled",
+			"Fixed MTRRs enabled flag is clear in MTRR_DEF_TYPE MSR and "
+			"all Fixed-range MTRRs are disabled ");
+
+	return FWTS_OK;
+}
+
 static int mtrr_test1(fwts_framework *fw)
 {
 	return validate_iomem(fw);
@@ -657,6 +691,7 @@ static int mtrr_test3(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test mtrr_tests[] = {
+	{ mtrr_test0, "Validate MTRR default enabled." },
 	{ mtrr_test1, "Validate the kernel MTRR IOMEM setup." },
 	{ mtrr_test2, "Validate the MTRR setup across all processors." },
 	{ mtrr_test3, "Test for AMD MtrrFixDramModEn being cleared by the BIOS." },

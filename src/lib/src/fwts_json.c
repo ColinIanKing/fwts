@@ -755,20 +755,30 @@ static char *str_indent(char *str, int indent)
 	return str_append(str, buf);
 }
 
-static bool char_escape(const int ch)
+/*
+ *  char_escape()
+ *	convert escape char to the unescaped char to
+ *	be prefixed by \\.  If not an escape char, return 0
+ */
+static inline int char_escape(const int ch)
 {
 	switch (ch) {
 	case '"':
+		return '"';
 	case '\b':
+		return 'b';
 	case '\f':
+		return 'f';
 	case '\n':
+		return 'n';
 	case '\r':
+		return 'r';
 	case '\t':
-		return true;
+		return 't';
 	default:
 		break;
 	}
-	return false;
+	return 0;
 }
 
 static char *str_escape(char *oldstr)
@@ -784,10 +794,15 @@ static char *str_escape(char *oldstr)
 	if (!newstr)
 		return NULL;
 
-	for (oldptr = oldstr, newptr = newstr; *oldptr; oldptr++, newptr++) {
-		if (char_escape(*oldptr))
+	for (oldptr = oldstr, newptr = newstr; *oldptr; oldptr++) {
+		const int esc = char_escape(*oldptr);
+
+		if (esc) {
 			*(newptr++) = '\\';
-		*newptr = *oldptr;
+			*(newptr++) = esc;
+		} else {
+			*(newptr++) = *oldptr;
+		}
 	}
 	*newptr = '\0';
 	return newstr;

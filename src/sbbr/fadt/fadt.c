@@ -93,11 +93,12 @@ static int fadt_sbbr_reduced_hw_test2(fwts_framework *fw)
 	uint32_t flag_mask;
 
 	rhw = fwts_acpi_is_reduced_hardware(fw);
-	if (rhw == 0)
+	if (rhw == FWTS_FALSE)
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "fadt_reduced_hw:", "FADT indicates ACPI is not in reduced hardware mode.");
-	else
+	else if(rhw == FWTS_TRUE)
 		fwts_passed(fw, "FADT indicates ACPI is in reduced hardware mode.");
-
+	else
+		fwts_failed(fw, LOG_LEVEL_HIGH, "fadt_reduced_hw:", "ACPI table reads error.");
 
 	if (!rhw)
 		return FWTS_OK;

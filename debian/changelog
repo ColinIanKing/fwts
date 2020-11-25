@@ -1,3 +1,44 @@
+fwts (20.11.00-0ubuntu1) hirsute; urgency=medium
+
+  [Alex Hung]
+  * acpi/wmi: update WMI known GUIDs from Linux kernel
+  * acpi/pptt: add a warning for type 2 depreciation
+  * fwts-test: sync up with pptt type 2 changes
+  * auto-packager:mkpackage.sh: add hirsute
+  * klog.json: add ACPI error "Could not resolve symbol ..."
+  * klog.json: fix grammar mistakes
+  * klog.json: sync AE_NOT_FOUND severity with a5d747194a9e
+  * fwts-test: sync up with klog (e09cbe166d4c)
+  * mtrr: refine memory type above 4GB on AMD platforms
+  * mtrr: add tests for enable bits in MTRR_DEF_TYPE MSR
+  * lib: refactor fwts_acpi_is_reduced_hardware
+  * acpi/ec: check _GPE is not used for hardware-reduced
+  * cpu/msr: skip MSR MCG_CTL (0x17b) for AMD CPUS
+  * acpi/method: fix _SxW which can return 4
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20201008
+  * fwts-test: sync up output with the latest ACPICA 20201008 release
+  * lib: fwts_json: fix output so that it is machine parsable (LP: #1902249)
+  * lib: fwts_cmos: remove cli/sti assembler from cmos reading
+  * ACPICA: Update to version 20201113
+  * fwts-test: sync up output with the latest ACPICA 20201113
+  * lib: fwts_json: fix memory leaks on error return paths
+  * lib: fwts_json: fix output so that it is machine parsable (LP: #1902249)
+
+  [Heinrich Schuchardt]
+  * README: document required kernel configuration
+  * lib: avoid bus error in fwts_safe_memcpy
+  * lib: enable /dev/mem access on aarch64
+
+  [Ivan Hu]
+  * lib: fwts_tpm: move some tpm funcitons to lib
+  * tpmevlog: add tests for snatic check of the Tpm event log
+  * tpmevlog: add tests for snatic check of the TPM event sha1 format log
+  * lib: fwts_acpi_table.c: fix build fail
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 25 Nov 2020 17:20:45 +0800
+
 fwts (20.09.00-0ubuntu1) groovy; urgency=medium
 
   [Alex Hung]

@@ -381,8 +381,8 @@ static int fadt_sbbr_profile_test3(fwts_framework *fw)
 		fwts_acpi_fadt_preferred_pm_profile(fadt->preferred_pm_profile));
 
 	if ((fadt->preferred_pm_profile == SBBR_ENT_SERVER)  ||
-	(fadt->preferred_pm_profile == SBBR_SOHO_SERVER) ||
-	(fadt->preferred_pm_profile == SBBR_PERF_SERVER))
+            (fadt->preferred_pm_profile == SBBR_SOHO_SERVER) ||
+            (fadt->preferred_pm_profile == SBBR_PERF_SERVER))
 		fwts_passed(fw, "FADT has a recommended server PM profile.");
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "fadt_profile:", "FADT preferred PM profile is not recommended.");

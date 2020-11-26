@@ -71,7 +71,7 @@ static void fwts_klog_stack_dump(
 		 * We are looking for an Oops message within 5 lines of a "BUG:"
 		 * or we've got a WARN_ON then, OK, otherwise abort.
 		 */
-		if ((lines > 5) && 
+		if ((lines > 5) &&
 		    (!(dumpable & (FWTS_OOPS_GOT_OOPS | FWTS_OOPS_GOT_WARN_ON))))
 			return;
 

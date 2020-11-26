@@ -66,7 +66,7 @@ int fwts_printf(fwts_framework *fw, const char *fmt, ...)
 {
 	int len;
 	va_list ap;
-	
+
 	FWTS_UNUSED(fw);
 
 	va_start(ap, fmt);

@@ -95,7 +95,7 @@ static int ebda_test1(fwts_framework *fw)
 			"EBDAMappedNotReserved",
 			"EBDA region mapped at 0x%lx but not reserved in the %s table.",
 			ebda_addr, memory_map_name);
-		
+
 	return FWTS_OK;
 }
 

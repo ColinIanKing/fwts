@@ -44,7 +44,7 @@ static int example_deinit(fwts_framework *fw)
 static int example_test1(fwts_framework *fw)
 {
 	/* Do your test */
-	
+
 	/* Log success or failure */
 	fwts_passed(fw, "Test passed, hurrah!");
 	/*
@@ -61,7 +61,7 @@ static int example_test1(fwts_framework *fw)
 static int example_test2(fwts_framework *fw)
 {
 	/* Do your test */
-	
+
 	/* Log success or failure */
 	fwts_passed(fw, "Test passed, hurrah!");
 	/*

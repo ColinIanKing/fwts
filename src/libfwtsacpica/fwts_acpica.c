@@ -60,7 +60,7 @@
 #define ACPI_ADR_SPACE_USER_DEFINED1	(0x80)
 #define ACPI_ADR_SPACE_USER_DEFINED2	(0xE4)
 
-/* 
+/*
  *  Semaphore accounting info
  */
 typedef struct {

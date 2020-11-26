@@ -146,7 +146,7 @@ int fwts_outl(uint32_t port, uint32_t value)
  *  set to ~0.
  */
 int fwts_inb(uint32_t port, uint8_t *value)
-{	
+{
 	FWTS_UNUSED(port);
 
 	*value = ~0;

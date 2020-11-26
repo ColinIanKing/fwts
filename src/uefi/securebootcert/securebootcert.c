@@ -487,7 +487,7 @@ static int securebootcert_test1(fwts_framework *fw)
 				"Secureboot or deployed mode on, but the variable KEK not found.");
 	} else {
 		if (!(var_found & VAR_DB_FOUND))
-			fwts_log_info(fw, "Not in readiness for secureboot, variable DB not found.");		
+			fwts_log_info(fw, "Not in readiness for secureboot, variable DB not found.");
 		if (!(var_found & VAR_KEK_FOUND))
 			fwts_log_info(fw, "Not in readiness for secureboot, variable KEK not found.");
 	}

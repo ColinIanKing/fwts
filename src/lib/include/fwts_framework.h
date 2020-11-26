@@ -27,6 +27,7 @@
 
 typedef struct fwts_framework fwts_framework;
 
+#include "fwts.h"
 #include "fwts_arch.h"
 #include "fwts_log.h"
 #include "fwts_list.h"
@@ -259,8 +260,6 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 	(flags & (FWTS_FLAG_INTERACTIVE | \
 		  FWTS_FLAG_INTERACTIVE_EXPERIMENTAL))
 
-#define FWTS_ARRAY_LEN(s) (sizeof(s)/sizeof(s[0]))
-
 /*
  * FWTS_ASSERT(test, message)
  *	compile time assertion that throws a division by zero
@@ -275,8 +274,7 @@ enum { FWTS_CONCAT_EXPAND(FWTS_ASSERT_ ## m ## _in_line_, __LINE__) = 1 / !!(e) 
 
 #define FWTS_REGISTER_FEATURES(name, ops, priority, flags, features)	\
 /* Ensure name is not too long */					\
-FWTS_ASSERT(FWTS_ARRAY_LEN(name) < 16,					\
-	fwts_register_name_too_long);					\
+FWTS_ASSERT(FWTS_ARRAY_SIZE(name) < 16,	fwts_register_name_too_long);	\
 									\
 static void __test_init (void) __attribute__ ((constructor));		\
 									\

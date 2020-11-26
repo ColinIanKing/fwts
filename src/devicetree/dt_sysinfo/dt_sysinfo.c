@@ -46,9 +46,9 @@ static struct reference_platform {
 	int		n_models;
 } openpower_reference_platforms[] = {
 	{"ibm,firestone", firestone_models,
-		FWTS_ARRAY_LEN(firestone_models)},
+		FWTS_ARRAY_SIZE(firestone_models)},
 	{"ibm,garrison", garrison_models,
-		FWTS_ARRAY_LEN(garrison_models)},
+		FWTS_ARRAY_SIZE(garrison_models)},
 };
 
 
@@ -224,7 +224,7 @@ static bool machine_matches_reference_model(fwts_framework *fw,
 	struct reference_platform *plat;
 	int i;
 
-	for (i = 0; i < (int)FWTS_ARRAY_LEN(openpower_reference_platforms);
+	for (i = 0; i < (int)FWTS_ARRAY_SIZE(openpower_reference_platforms);
 			i++) {
 		plat = &openpower_reference_platforms[i];
 		if (dt_fdt_stringlist_contains_last(compatible,

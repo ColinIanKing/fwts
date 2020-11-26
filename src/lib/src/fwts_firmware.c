@@ -87,7 +87,7 @@ int fwts_firmware_features(void)
 
 const char *fwts_firmware_feature_string(const fwts_firmware_feature features)
 {
-	const int n = FWTS_ARRAY_LEN(feature_names);
+	const int n = FWTS_ARRAY_SIZE(feature_names);
 	static const char sep[] = ", ";
 	static char str[60];
 	size_t len;

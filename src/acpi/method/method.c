@@ -262,6 +262,9 @@
  * _WED 	 N
  */
 
+#define DEVICE_D3HOT	3
+#define DEVICE_D3COLD	4
+
 static bool fadt_mobile_platform;	/* True if a mobile platform */
 
 #define method_test_integer(name, type)				\
@@ -1570,7 +1573,7 @@ static int method_test_PSW(fwts_framework *fw)
 #define method_test_SxD(name)						\
 static int method_test ## name(fwts_framework *fw)			\
 {									\
-	uint64_t max = 3;						\
+	uint64_t max = DEVICE_D3HOT;					\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
 		# name, NULL, 0, fwts_method_test_integer_max_return, &max);	\
 }
@@ -1583,7 +1586,7 @@ method_test_SxD(_S4D)
 #define method_test_SxW(name)						\
 static int method_test ## name(fwts_framework *fw)			\
 {									\
-	uint64_t max = 4;						\
+	uint64_t max = DEVICE_D3COLD;					\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
 		# name, NULL, 0, fwts_method_test_integer_max_return, &max);	\
 }

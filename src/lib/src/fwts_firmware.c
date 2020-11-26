@@ -78,7 +78,6 @@ int fwts_firmware_features(void)
 	}
 
 	/* just check for IPMI device presence */
-
 	if (!stat("/dev/ipmi0", &ipmi_statbuf))
 		features |= FWTS_FW_FEATURE_IPMI;
 
@@ -94,14 +93,16 @@ const char *fwts_firmware_feature_string(const fwts_firmware_feature features)
 	char *p;
 	int i;
 
-	/* ensure we have enough space in str to store n names, plus n-1
-	 * separators, plus a trailing nul */
+	/*
+	 * ensure we have enough space in str to store n names, plus n-1
+	 * separators, plus a trailing nul
+	 */
 	FWTS_ASSERT((n * (sizeof(feature_names[0].name) - 1)) +
 				((n-1) * (sizeof(sep) - 1)) + 1 <
 			sizeof(str), str_too_small);
 
 	/* ensure we have a name defined for all features */
-	FWTS_ASSERT(((1 << n) - 1) == FWTS_FW_FEATURE_ALL,
+	FWTS_ASSERT(((1UL << n) - 1) == FWTS_FW_FEATURE_ALL,
 			invalid_feature_names);
 
 	for (p = str, i = 0; i < n; i++) {

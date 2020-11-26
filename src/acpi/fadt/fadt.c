@@ -1527,21 +1527,23 @@ static void acpi_table_check_fadt_x_gpex_blk(fwts_framework *fw) {
 	if (fadt->x_gpe0_blk.access_width == 1)
 		fwts_passed(fw, "FADT X_GPE0_BLK has correct byte access width.");
 	else {
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"X_GPE0_BLKBadAccessWidth",
-			"FADT X_GPE0_BLK Access width 0x%2.2" PRIx8
-			" but it should be 1 (byte access).",
-			fadt->x_gpe0_blk.access_width);
+		if (!fwts_acpi_data_zero((const void *) &fadt->x_gpe0_blk, sizeof(fwts_acpi_gas)))
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"X_GPE0_BLKBadAccessWidth",
+				"FADT X_GPE0_BLK Access width 0x%2.2" PRIx8
+				" but it should be 1 (byte access).",
+				fadt->x_gpe0_blk.access_width);
 	}
 
 	if (fadt->x_gpe1_blk.access_width == 1)
 		fwts_passed(fw, "FADT X_GPE1_BLK has correct byte access width.");
 	else {
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"X_GPE1_BLKBadAccessWidth",
-			"FADT X_GPE1_BLK Access width 0x%2.2" PRIx8
-			" but it should be 1 (byte access).",
-			fadt->x_gpe1_blk.access_width);
+		if (!fwts_acpi_data_zero((const void *) &fadt->x_gpe1_blk, sizeof(fwts_acpi_gas)))
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"X_GPE1_BLKBadAccessWidth",
+				"FADT X_GPE1_BLK Access width 0x%2.2" PRIx8
+				" but it should be 1 (byte access).",
+				fadt->x_gpe1_blk.access_width);
 	}
 }
 

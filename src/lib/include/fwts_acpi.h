@@ -115,9 +115,9 @@ const char *fwts_acpi_fadt_preferred_pm_profile(const int profile);
 typedef struct {
 	uint8_t 	address_space_id;
 	uint8_t		register_bit_width;
-        uint8_t 	register_bit_offset;
-        uint8_t 	access_width;
-        uint64_t 	address;
+	uint8_t 	register_bit_offset;
+	uint8_t 	access_width;
+	uint64_t 	address;
 } __attribute__ ((packed)) fwts_acpi_gas;
 
 /*
@@ -1828,6 +1828,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_hest_generic_hardware_error_source_v2;
 
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
+bool fwts_acpi_data_zero(const void *data, const size_t len);
 
 /*
  * ACPI CSTR (Core System Resources Table)

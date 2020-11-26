@@ -30,17 +30,25 @@
 
 #if defined(FWTS_HAS_ACPI)
 
-const char *fwts_acpi_fadt_preferred_pm_profile[] = {
-	"Unspecified",
-	"Desktop",
-	"Mobile",
-	"Workstation",
-	"Enterprise Server",
-	"SOHO Server",
-	"Appliance PC",
-	"Performance Server",
-	"Tablet",
-};
+const char *fwts_acpi_fadt_preferred_pm_profile(const int profile)
+{
+	static const char *pm_profiles[] = {
+		"Unspecified",
+		"Desktop",
+		"Mobile",
+		"Workstation",
+		"Enterprise Server",
+		"SOHO Server",
+		"Appliance PC",
+		"Performance Server",
+		"Tablet"
+	};
+
+	if ((profile < 0) || profile >= (int)(FWTS_ARRAY_SIZE(pm_profiles)))
+		return "Reserved";
+
+	return pm_profiles[profile];
+}
 
 /*
  *  fwts_acpi_table_get_header()

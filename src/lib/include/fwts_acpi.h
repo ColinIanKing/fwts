@@ -105,10 +105,8 @@
 #include "fwts_framework.h"
 #include "fwts_log.h"
 
-extern const char *fwts_acpi_fadt_preferred_pm_profile[];
+const char *fwts_acpi_fadt_preferred_pm_profile(const int profile);
 
-#define FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(x)		\
-	((x) > 8) ? "Reserved" : fwts_acpi_fadt_preferred_pm_profile[x]
 #define FWTS_ACPI_FADT_FLAGS_HW_REDUCED_ACPI (1<<20)
 
 /*

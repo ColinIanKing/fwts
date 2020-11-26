@@ -425,7 +425,7 @@ static void acpi_table_check_fadt_pm_profile(fwts_framework *fw)
 {
 	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)",
 		fadt->preferred_pm_profile,
-		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
+		fwts_acpi_fadt_preferred_pm_profile(fadt->preferred_pm_profile));
 
 	if (fadt->preferred_pm_profile <= 8)
 		fwts_passed(fw, "FADT has a valid preferred PM profile.");

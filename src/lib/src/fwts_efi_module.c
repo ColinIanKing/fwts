@@ -172,7 +172,7 @@ int fwts_lib_efi_runtime_open(void)
 	if (!efi_dev_name)
 		return -1;
 
-	return open(efi_dev_name, O_WRONLY | O_RDWR);
+	return open(efi_dev_name, O_RDWR);
 }
 
 /*

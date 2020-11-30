@@ -63,6 +63,7 @@ static int maxreadreq_test1(fwts_framework *fw)
 		int fd;
 		ssize_t n;
 		uint8_t offset = 0;
+		uint16_t vendor_id;
 
 		if (entry->d_name[0] == '.')
 			continue;
@@ -95,6 +96,12 @@ static int maxreadreq_test1(fwts_framework *fw)
 		/* Ignore Audio Device */
 		if ((config[FWTS_PCI_CONFIG_CLASS_CODE] == FWTS_PCI_CLASS_CODE_MULTIMEDIA_CONTROLLER) &&
 		    (config[FWTS_PCI_CONFIG_SUBCLASS] == FWTS_PCI_SUBCLASS_CODE_AUDIO_DEVICE))
+			continue;
+
+		/* Ignore Intel's Video Device */
+		vendor_id = config[FWTS_PCI_CONFIG_VENDOR_ID] + ((config[FWTS_PCI_CONFIG_VENDOR_ID  + 1]) << 8);
+		if ((config[FWTS_PCI_CONFIG_CLASS_CODE] == FWTS_PCI_CLASS_CODE_DISPLAY_CONTROLLER) &&
+		    (vendor_id == FWTS_PCI_INTEL_VENDOR_ID))
 			continue;
 
 		/* config region too small, do next */

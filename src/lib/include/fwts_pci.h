@@ -151,6 +151,8 @@
 #define FWTS_PCI_SUBCLASS_CODE_OTHER_SYSTEM_PERIPHERAL	(0x80)
 #define FWTS_PCI_SUBCLASS_CODE_AUDIO_DEVICE		(0x03)
 
+/* PCI Vendor IDs */
+#define FWTS_PCI_INTEL_VENDOR_ID			(0x8086)
 
 /*
  * PCI Express Capability Structure is defined in Section 7.8

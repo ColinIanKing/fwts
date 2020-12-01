@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <fcntl.h>
 
-#define DMI_VERSION			(0x0330)
+#define DMI_VERSION			(0x0340)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -1357,7 +1357,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Processor Type", hdr, 0x5, 0x1, 0x6);
 			dmi_str_check(fw, table, addr, "Processor Manufacturer", hdr, 0x7);
 			dmi_str_check(fw, table, addr, "Processor Version", hdr, 0x10);
-			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x3c);
+			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x3e);
 			if (hdr->length < 0x23)
 				break;
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x20);
@@ -1431,7 +1431,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x0c)
 				break;
 			dmi_str_check(fw, table, addr, "Slot Designation", hdr, 0x4);
-			fwts_dmi_value_range t9_ranges[] = {{1, 0x23}, {0x30, 0x30}, {0xa0, 0xbd}};
+			fwts_dmi_value_range t9_ranges[] = {{1, 0x28}, {0x30, 0x30}, {0xa0, 0xc6}};
 			dmi_ranges_uint8_check(fw, table, addr, "Slot Type", hdr, 0x5, t9_ranges, sizeof(t9_ranges));
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Data Bus Width", hdr, 0x6, 0x1, 0xe);
 			dmi_min_max_uint8_check(fw, table, addr, "Current Usage", hdr, 0x7, 0x1, 0x5);
@@ -1439,13 +1439,13 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x0d)
 				break;
 
-			dmi_reserved_bits_check(fw, table, addr, "Slot Characteristics 2", hdr, sizeof(uint8_t), 0x0c, 4, 7);
+			dmi_reserved_bits_check(fw, table, addr, "Slot Characteristics 2", hdr, sizeof(uint8_t), 0x0c, 7, 7);
 
 			if (hdr->length < 0x11)
 				break;
 			if (!((data[0x5] == 0x06) ||
-			      ((data[0x5] >= 0x0e) && (data[0x5] <= 0x23)) ||
-			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xb6)))) {
+			      ((data[0x5] >= 0x0e) && (data[0x5] <= 0x28)) ||
+			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xc6)))) {
 				if (GET_UINT16(data + 0xd) != 0xffff)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_VALUE_OUT_OF_RANGE,
 						"Invalid value 0x%4.4" PRIx16 " was used and 0xffff "
@@ -1594,7 +1594,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0x10);
 			dmi_str_check(fw, table, addr, "Locator", hdr, 0x10);
 			dmi_str_check(fw, table, addr, "Bank Locator", hdr, 0x11);
-			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x21);
+			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x23);
 			if (hdr->length < 0x1b)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x17);

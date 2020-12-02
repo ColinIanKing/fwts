@@ -215,8 +215,15 @@ static int fan_test2(fwts_framework *fw)
 
 	fwts_list_foreach(item1, fans1) {
 		fan_info *info1 = fwts_list_data(fan_info *, item1);
+
+		if (!info1->type)
+			continue;
+
 		fwts_list_foreach(item2, fans2) {
 			fan_info *info2 = fwts_list_data(fan_info *, item2);
+
+			if (!info2->type)
+				continue;
 
 			if (strcmp(info1->type, "Processor") == 0) {
 				if (strcmp(info1->name, info2->name) == 0) {

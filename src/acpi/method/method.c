@@ -1865,7 +1865,7 @@ static void method_test_CPC_return(
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"Method_CPCBadRevision",
 			"_CPC's revision is incorrect, "
-			"expecting 1 ,2 or 3, got 0x%" PRIx8 , revision);
+			"expecting 1, 2 or 3, got 0x%" PRIx8 , revision);
 
 		return;
 	}
@@ -2785,14 +2785,8 @@ static void method_test_LPI_return(
 			}
 
 			if (i == 0) {
-				if (obj->Package.Elements[i].Integer.Value != 0) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"Method_LPIBadRevision",
-						"%s: Expected Revision to be 0, "
-						"got 0x%4.4" PRIx64 ".", name,
-						(uint64_t)obj->Package.Elements[i].Integer.Value);
+				if (fwts_method_test_revision(fw, name, obj->Package.Elements[i].Integer.Value, 0) != FWTS_OK)
 					failed = true;
-				}
 			} else if (i == 2) {
 				if (obj->Package.Elements[i].Integer.Value != obj->Package.Count - 3) {
 					fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -4470,12 +4464,8 @@ static void method_test_FPS_return(
 		return;
 
 	if (obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER) {
-		if (obj->Package.Elements[0].Integer.Value != 0) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_FPSBadRevision",
-				"%s element 0 is not revision 0.", name);
+		if (fwts_method_test_revision(fw, name, obj->Package.Elements[0].Integer.Value, 0) != FWTS_OK)
 			failed = true;
-		}
 	} else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Method_FPSBadReturnType",
@@ -4683,12 +4673,8 @@ static void method_test_ART_return(
 		return;
 
 	if (obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER) {
-		if (obj->Package.Elements[0].Integer.Value != 0) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_ARTBadRevision",
-				"%s element 0 is not revision 0.", name);
+		if (fwts_method_test_revision(fw, name, obj->Package.Elements[0].Integer.Value, 0) != FWTS_OK)
 			failed = true;
-		}
 	} else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Method_ARTBadReturnType",

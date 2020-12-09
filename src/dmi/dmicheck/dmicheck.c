@@ -2230,6 +2230,9 @@ static int dmicheck_test3(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
+	if (dmi_version_check(fw, version) != FWTS_OK)
+		return FWTS_SKIP;
+
 	table = dmi_table_smbios30(fw, &entry30);
 	if (table == NULL)
 		return FWTS_ERROR;

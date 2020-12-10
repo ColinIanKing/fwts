@@ -708,6 +708,31 @@ int fwts_method_package_elements_type(
 	return failed ? FWTS_ERROR: FWTS_OK;
 }
 
+int fwts_method_test_revision(
+	fwts_framework *fw,
+	const char *name,
+	const uint32_t cur_revision,
+	const uint32_t spec_revision)
+{
+	char method[5];
+	char tag[22];
+
+	if (strlen(name) < 4)
+		return FWTS_ERROR;
+
+	memcpy(method, name + strlen(name) - 4, 4);
+	method[4] = '\0';
+	snprintf(tag, 22, "Method%sBadRevision", method);
+
+	if (cur_revision != spec_revision) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tag,
+			"%s revision is not revision %" PRIu32 ".", name, spec_revision);
+		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+}
+
 /*
  *  fwts_method_test_integer_return
  *	check if an integer object was returned

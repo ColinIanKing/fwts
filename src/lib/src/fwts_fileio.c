@@ -45,7 +45,7 @@ fwts_list *fwts_file_read(FILE *fp)
 }
 
 /*
- *  fwts_file_read()
+ *  fwts_file_open_and_read()
  *	open and read file and return contents as a list of lines
  */
 fwts_list* fwts_file_open_and_read(const char *file)

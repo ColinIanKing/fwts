@@ -1,3 +1,27 @@
+fwts (20.12.00-0ubuntu1) hirsute; urgency=medium
+
+  [Alex Hung]
+  * acpi: method: define marcos for D3hot and D3cold
+  * acpi: fadt: X_GPE0/1_BLK can be zero when not used
+  * pci: maxreadreq: skip Intel video devices
+  * acpi: method: replace revision checks by fwts_method_test_revision
+  * dmicheck: add dmi version check to SMBIOS3
+  * lib: fwts_acpi_object_eval: add fwts_method_test_revision function
+  * lib: fix a function name typo in comment
+  * dmi: dmicheck: update type 4, 9 and 17 according to spec 3.4
+
+  [Colin Ian King]
+  * lib: replace FWTS_ACPI_FADT_PREFERRED_PM_PROFILE with function
+  * Replace FWTS_ARRAY_LEN with FWTS_ARRAY_SIZE
+  * sbbr/fadt: Clean up indentation of a few lines
+  * lib: fwts_firmware: cast 1 to UL to ensure no signed extension, clean up
+    comments
+  * src: Clean-up: remove trailing spaces and tabs from lines
+  * lib: fwts_efi_module: fix flags on device open
+  * acpi: fan: skip over fan info when the type field is NULL (LP: #1906540)
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 17 Dec 2020 10:14:02 +0800
+
 fwts (20.11.00-0ubuntu1) hirsute; urgency=medium
 
   [Alex Hung]

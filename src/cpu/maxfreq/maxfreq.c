@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdbool.h>
 #include <sys/types.h>
@@ -79,9 +77,11 @@ static int maxfreq_test1(fwts_framework *fw)
 			cpus++;
 	}
 	if (!cpus) {
-		fwts_log_error(fw, "Cannot find any CPUs.");
 		fwts_list_free(cpuinfo, free);
-		return FWTS_ERROR;
+		fwts_skipped(fw,
+			"Cannot read CPU model names from %s, this generally "
+			"happens on ARM CPUs, skipping test.", CPU_INFO_PATH);
+		return FWTS_SKIP;
 	}
 
 	if ((cpufreq = calloc(cpus, sizeof(double))) == NULL) {
@@ -215,4 +215,3 @@ static fwts_framework_ops maxfreq_ops = {
 
 FWTS_REGISTER("maxfreq", &maxfreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
 
-#endif

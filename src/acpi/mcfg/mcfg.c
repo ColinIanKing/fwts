@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -269,4 +267,3 @@ static fwts_framework_ops mcfg_ops = {
 
 FWTS_REGISTER("mcfg", &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
 
-#endif

@@ -27,19 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int rsdt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "RSDT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI RSDT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(RSDT, &table)
 
 /*
  *  RSDT Extended System Description Table
@@ -78,7 +66,7 @@ static fwts_framework_minor_test rsdt_tests[] = {
 
 static fwts_framework_ops rsdt_ops = {
 	.description = "RSDT Root System Description Table test.",
-	.init        = rsdt_init,
+	.init        = RSDT_init,
 	.minor_tests = rsdt_tests
 };
 

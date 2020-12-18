@@ -27,21 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int lpit_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "LPIT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI LPIT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(LPIT, &table)
 
 static void lpit_check_type_0(
 	fwts_framework *fw,
@@ -231,7 +217,7 @@ static fwts_framework_minor_test lpit_tests[] = {
 
 static fwts_framework_ops lpit_ops = {
 	.description = "LPIT Low Power Idle Table test.",
-	.init        = lpit_init,
+	.init        = LPIT_init,
 	.minor_tests = lpit_tests
 };
 

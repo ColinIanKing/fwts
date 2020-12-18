@@ -31,21 +31,7 @@
 #define ACPI_DUMP	(0)		/* WDAT entries are long, so don't dump, too verbose */
 
 static fwts_acpi_table_info *table;
-
-static int wdat_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "WDAT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI WDAT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(WDAT, &table)
 
 /*
  * ACPI WDAT (Watchdog Action Table)
@@ -213,7 +199,7 @@ static fwts_framework_minor_test wdat_tests[] = {
 
 static fwts_framework_ops wdat_ops = {
 	.description = "WDAT Microsoft Hardware Watchdog Action Table test.",
-	.init        = wdat_init,
+	.init        = WDAT_init,
 	.minor_tests = wdat_tests
 };
 

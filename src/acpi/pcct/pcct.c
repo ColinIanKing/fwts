@@ -24,20 +24,7 @@
 #include <stdbool.h>
 
 static fwts_acpi_table_info *table;
-
-static int pcct_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "PCCT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (table == NULL) {
-		fwts_log_error(fw, "ACPI PCCT table does not exist, skipping test");
-		return FWTS_ERROR;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(PCCT, &table)
 
 static bool subspace_length_equal(fwts_framework *fw, uint8_t type, uint8_t type_size, uint8_t length)
 {
@@ -315,7 +302,7 @@ static fwts_framework_minor_test pcct_tests[] = {
 
 static fwts_framework_ops pcct_ops = {
 	.description = "PCCT Platform Communications Channel test.",
-	.init        = pcct_init,
+	.init        = PCCT_init,
 	.minor_tests = pcct_tests
 };
 

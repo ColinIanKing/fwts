@@ -24,20 +24,7 @@
 #include <inttypes.h>
 
 static fwts_acpi_table_info *table;
-
-static int xenv_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "XENV", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (table == NULL) {
-		fwts_log_error(fw, "ACPI XENV table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(XENV, &table)
 
 /*
  * Sanity check XENV table, see:
@@ -86,7 +73,7 @@ static fwts_framework_minor_test xenv_tests[] = {
 
 static fwts_framework_ops xenv_check_ops = {
 	.description = "XENV Xen Environment Table tests.",
-	.init        = xenv_init,
+	.init        = XENV_init,
 	.minor_tests = xenv_tests
 };
 

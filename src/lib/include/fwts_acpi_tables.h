@@ -43,6 +43,14 @@ typedef struct {
 	fwts_acpi_table_provenance provenance;
 } fwts_acpi_table_info;
 
+int acpi_table_generic_init(fwts_framework *fw, char *name, fwts_acpi_table_info **table);
+
+#define acpi_table_init(name, table)				\
+static int name ## _init (fwts_framework *fw)			\
+{								\
+	return acpi_table_generic_init(fw, # name, table);	\
+}
+
 int fwts_acpi_load_tables(fwts_framework *fw);
 int fwts_acpi_free_tables(void);
 

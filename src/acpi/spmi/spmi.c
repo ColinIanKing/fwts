@@ -27,21 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int spmi_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "SPMI", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI SPMI table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(SPMI, &table)
 
 /*
  *  SPMI Service Processor Management Interface Description Table
@@ -218,7 +204,7 @@ static fwts_framework_minor_test spmi_tests[] = {
 
 static fwts_framework_ops spmi_ops = {
 	.description = "SPMI Service Processor Management Interface Description Table test.",
-	.init        = spmi_init,
+	.init        = SPMI_init,
 	.minor_tests = spmi_tests
 };
 

@@ -29,21 +29,7 @@
 #define DUMP_MCHI_TABLE		(1)	/* table is small and not used much, so dump it */
 
 static fwts_acpi_table_info *table;
-
-static int mchi_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "MCHI", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI MCHI table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(MCHI, &table)
 
 /*
  *  MCHI Management Controller Host Interface Table
@@ -225,7 +211,7 @@ static fwts_framework_minor_test mchi_tests[] = {
 
 static fwts_framework_ops mchi_ops = {
 	.description = "MCHI Management Controller Host Interface Table test.",
-	.init        = mchi_init,
+	.init        = MCHI_init,
 	.minor_tests = mchi_tests
 };
 

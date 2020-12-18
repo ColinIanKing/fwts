@@ -56,6 +56,7 @@ static const uint8_t guid_virtual_device[4][16] = {
 };
 
 static fwts_acpi_table_info *nfit_table;
+acpi_table_init(NFIT, &nfit_table)
 
 static bool check_length(fwts_framework *fw, const int actual, int min, const char *name)
 {
@@ -109,19 +110,6 @@ static bool scan_nfit_smbios(fwts_framework *fw, int len, uint8_t *table)
 		return false;
 	}
 	return true;
-}
-
-static int nfit_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "NFIT", 0, &nfit_table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (nfit_table == NULL || (nfit_table && nfit_table->length == 0)) {
-		fwts_log_error(fw, "ACPI NFIT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
 }
 
 /*
@@ -543,7 +531,7 @@ static fwts_framework_minor_test nfit_tests[] = {
 
 static fwts_framework_ops nfit_ops = {
 	.description = "NFIT NVDIMM Firmware Interface Table test.",
-	.init        = nfit_init,
+	.init        = NFIT_init,
 	.minor_tests = nfit_tests
 };
 

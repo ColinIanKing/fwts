@@ -27,21 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int hest_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "HEST", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI HEST table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(HEST, &table)
 
 /*
  *  ACPI Section 18.3.2.1 IA-32 Architecture Machine Check Exception
@@ -900,7 +886,7 @@ static fwts_framework_minor_test hest_tests[] = {
 
 static fwts_framework_ops hest_ops = {
 	.description = "HEST Hardware Error Source Table test.",
-	.init        = hest_init,
+	.init        = HEST_init,
 	.minor_tests = hest_tests
 };
 

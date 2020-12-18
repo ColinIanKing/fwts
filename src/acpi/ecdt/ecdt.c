@@ -29,21 +29,7 @@
 #include "fwts_acpi_object_eval.h"
 
 static fwts_acpi_table_info *table;
-
-static int ecdt_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "ECDT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI ECDT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(ECDT, &table)
 
 /*
  *  See ACPI 6.0, Section 5.2.15
@@ -213,7 +199,7 @@ static fwts_framework_minor_test ecdt_tests[] = {
 
 static fwts_framework_ops ecdt_ops = {
 	.description = "ECDT Embedded Controller Boot Resources Table test.",
-	.init        = ecdt_init,
+	.init        = ECDT_init,
 	.minor_tests = ecdt_tests
 };
 

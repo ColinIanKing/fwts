@@ -27,6 +27,7 @@
 
 static fwts_list *memory_map_list;
 static fwts_acpi_table_info *mcfg_table;
+acpi_table_init(MCFG, &mcfg_table)
 
 static int compare_config_space(
 	fwts_framework *fw,
@@ -93,22 +94,6 @@ static int compare_config_space(
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"PCIConfigSpaceBad",
 			"PCI config space appears to not work.");
-
-	return FWTS_OK;
-}
-
-static int mcfg_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "MCFG", 0, &mcfg_table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (mcfg_table == NULL) {
-		fwts_log_error(fw,
-			"ACPI table MCFG not found. This table is "
-			"required to check for PCI Express*");
-		return FWTS_ERROR;
-	}
 
 	return FWTS_OK;
 }
@@ -260,7 +245,7 @@ static fwts_framework_minor_test mcfg_tests[] = {
 
 static fwts_framework_ops mcfg_ops = {
 	.description = "MCFG PCI Express* memory mapped config space test.",
-	.init        = mcfg_init,
+	.init        = MCFG_init,
 	.deinit      = mcfg_deinit,
 	.minor_tests = mcfg_tests
 };

@@ -27,19 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int csrt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "CSRT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI CSRT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(CSRT, &table)
 
 /*
  *  CSRT Core System Resource Table
@@ -239,7 +227,7 @@ static fwts_framework_minor_test csrt_tests[] = {
 
 static fwts_framework_ops csrt_ops = {
 	.description = "CSRT Core System Resource Table test.",
-	.init        = csrt_init,
+	.init        = CSRT_init,
 	.minor_tests = csrt_tests
 };
 

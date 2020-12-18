@@ -28,19 +28,7 @@
 #include <ctype.h>
 
 static fwts_acpi_table_info *table;
-
-static int bgrt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "BGRT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI BGRT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(BGRT, &table)
 
 /*
  *  BGRT Boot Graphics Resource Table
@@ -91,7 +79,7 @@ static fwts_framework_minor_test bgrt_tests[] = {
 
 static fwts_framework_ops bgrt_ops = {
 	.description = "BGRT Boot Graphics Resource Table test.",
-	.init        = bgrt_init,
+	.init        = BGRT_init,
 	.minor_tests = bgrt_tests
 };
 

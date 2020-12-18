@@ -26,19 +26,7 @@
 #include <ctype.h>
 
 static fwts_acpi_table_info *table;
-
-static int einj_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "EINJ", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI EINJ table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(EINJ, &table)
 
 /*
  *  EINJ Error Injection Table
@@ -143,7 +131,7 @@ static fwts_framework_minor_test einj_tests[] = {
 
 static fwts_framework_ops einj_ops = {
 	.description = "EINJ Error Injection Table test.",
-	.init        = einj_init,
+	.init        = EINJ_init,
 	.minor_tests = einj_tests
 };
 

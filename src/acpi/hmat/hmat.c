@@ -24,20 +24,7 @@
 #include <stdbool.h>
 
 static fwts_acpi_table_info *table;
-
-static int hmat_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "HMAT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (table == NULL) {
-		fwts_log_error(fw, "ACPI HMAT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(HMAT, &table)
 
 static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table_hmat_proximity_domain *entry, bool *passed)
 {
@@ -231,7 +218,7 @@ static fwts_framework_minor_test hmat_tests[] = {
 
 static fwts_framework_ops hmat_ops = {
 	.description = "HMAT Heterogeneous Memory Attribute Table test.",
-	.init        = hmat_init,
+	.init        = HMAT_init,
 	.minor_tests = hmat_tests
 };
 

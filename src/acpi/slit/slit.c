@@ -29,21 +29,7 @@
 #define	INDEX(i, j)	(((i) * slit->num_of_system_localities) + (j))
 
 static fwts_acpi_table_info *table;
-
-static int slit_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "SLIT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI SLIT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(SLIT, &table)
 
 /*
  *  For SLIT System Locality Distance Information refer to
@@ -178,7 +164,7 @@ static fwts_framework_minor_test slit_tests[] = {
 
 static fwts_framework_ops slit_ops = {
 	.description = "SLIT System Locality Distance Information test.",
-	.init        = slit_init,
+	.init        = SLIT_init,
 	.minor_tests = slit_tests
 };
 

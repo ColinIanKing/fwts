@@ -24,20 +24,7 @@
 #include <stdbool.h>
 
 static fwts_acpi_table_info *table;
-
-static int pptt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "PPTT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (table == NULL) {
-		fwts_log_error(fw, "ACPI PPTT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(PPTT, &table)
 
 static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_processor *entry, uint8_t rev, bool *passed)
 {
@@ -191,7 +178,7 @@ static fwts_framework_minor_test pptt_tests[] = {
 
 static fwts_framework_ops pptt_ops = {
 	.description = "PPTT Processor Properties Topology Table test.",
-	.init        = pptt_init,
+	.init        = PPTT_init,
 	.minor_tests = pptt_tests
 };
 

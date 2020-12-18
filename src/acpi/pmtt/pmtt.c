@@ -24,20 +24,7 @@
 #include <stdbool.h>
 
 static fwts_acpi_table_info *table;
-
-static int pmtt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "PMTT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (table == NULL) {
-		fwts_log_error(fw, "ACPI PMTT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(PMTT, &table)
 
 static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry, bool *passed)
 {
@@ -222,7 +209,7 @@ static fwts_framework_minor_test pmtt_tests[] = {
 
 static fwts_framework_ops pmtt_ops = {
 	.description = "PMTT Memory Topology Table test.",
-	.init        = pmtt_init,
+	.init        = PMTT_init,
 	.minor_tests = pmtt_tests
 };
 

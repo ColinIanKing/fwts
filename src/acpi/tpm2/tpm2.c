@@ -24,20 +24,7 @@
 #include <stdbool.h>
 
 static fwts_acpi_table_info *table;
-
-static int tpm2_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "TPM2", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (table == NULL) {
-		fwts_log_error(fw, "ACPI TPM2 table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(TPM2, &table)
 
 /*
  * TPM2 table
@@ -106,7 +93,7 @@ static fwts_framework_minor_test tpm2_tests[] = {
 
 static fwts_framework_ops tpm2_ops = {
 	.description = "TPM2 Trusted Platform Module 2 test.",
-	.init        = tpm2_init,
+	.init        = TPM2_init,
 	.minor_tests = tpm2_tests
 };
 

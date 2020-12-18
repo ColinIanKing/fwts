@@ -27,19 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int erst_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "ERST", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI ERST table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(ERST, &table)
 
 /*
  *  ERST Extended System Description Table
@@ -180,7 +168,7 @@ static fwts_framework_minor_test erst_tests[] = {
 
 static fwts_framework_ops erst_ops = {
 	.description = "ERST Error Record Serialization Table test.",
-	.init        = erst_init,
+	.init        = ERST_init,
 	.minor_tests = erst_tests
 };
 

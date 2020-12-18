@@ -28,19 +28,7 @@
 #include <ctype.h>
 
 static fwts_acpi_table_info *table;
-
-static int facs_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "FACS", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI FACS table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(FACS, &table)
 
 /*
  *  FACS Firmware ACPI Control Structure test
@@ -157,7 +145,7 @@ static fwts_framework_minor_test facs_tests[] = {
 
 static fwts_framework_ops facs_ops = {
 	.description = "FACS Firmware ACPI Control Structure test.",
-	.init        = facs_init,
+	.init        = FACS_init,
 	.minor_tests = facs_tests
 };
 

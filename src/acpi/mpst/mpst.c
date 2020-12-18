@@ -24,20 +24,7 @@
 #include <stdbool.h>
 
 static fwts_acpi_table_info *table;
-
-static int mpst_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "MPST", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot load ACPI table");
-		return FWTS_ERROR;
-	}
-	if (table == NULL) {
-		fwts_log_error(fw, "ACPI MPST table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(MPST, &table)
 
 static int mpst_test1(fwts_framework *fw)
 {
@@ -197,7 +184,7 @@ static fwts_framework_minor_test mpst_tests[] = {
 
 static fwts_framework_ops mpst_ops = {
 	.description = "MPST Memory Power State Table test.",
-	.init        = mpst_init,
+	.init        = MPST_init,
 	.minor_tests = mpst_tests
 };
 

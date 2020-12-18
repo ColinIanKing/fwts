@@ -29,21 +29,7 @@
 #define	DUMP_SLIC	(0)	/* Disable this, just used it for debugging */
 
 static fwts_acpi_table_info *table;
-
-static int slic_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "SLIC", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI SLIC table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(SLIC, &table)
 
 /*
  *  Software Licensing Description Table
@@ -170,7 +156,7 @@ static fwts_framework_minor_test slic_tests[] = {
 
 static fwts_framework_ops slic_ops = {
 	.description = "SLIC Software Licensing Description Table test.",
-	.init        = slic_init,
+	.init        = SLIC_init,
 	.minor_tests = slic_tests
 };
 

@@ -27,20 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int sdev_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "SDEV", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI SDEV table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(SDEV, &table)
 
 static void sdev_acpi_namespace_device_test(fwts_framework *fw, const fwts_acpi_table_sdev_acpi *entry, bool *passed)
 {
@@ -137,7 +124,7 @@ static fwts_framework_minor_test sdev_tests[] = {
 
 static fwts_framework_ops sdev_ops = {
 	.description = "SDEV Secure Devices Table test",
-	.init        = sdev_init,
+	.init        = SDEV_init,
 	.minor_tests = sdev_tests
 };
 

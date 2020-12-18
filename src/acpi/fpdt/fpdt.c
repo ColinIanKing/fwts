@@ -28,21 +28,7 @@
 #include <ctype.h>
 
 static fwts_acpi_table_info *table;
-
-static int fpdt_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "FPDT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI FPDT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(FPDT, &table)
 
 static void fpdt_rec_header_dump(
 	fwts_framework *fw,
@@ -219,7 +205,7 @@ static fwts_framework_minor_test fpdt_tests[] = {
 
 static fwts_framework_ops fpdt_ops = {
 	.description = "FPDT Firmware Performance Data Table test.",
-	.init        = fpdt_init,
+	.init        = FPDT_init,
 	.minor_tests = fpdt_tests
 };
 

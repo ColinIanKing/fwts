@@ -27,21 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int srat_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "SRAT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI SRAT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(SRAT, &table)
 
 static void srat_check_local_apic_sapic_affinity(
 	fwts_framework *fw,
@@ -417,7 +403,7 @@ static fwts_framework_minor_test srat_tests[] = {
 
 static fwts_framework_ops srat_ops = {
 	.description = "SRAT System Resource Affinity Table test.",
-	.init        = srat_init,
+	.init        = SRAT_init,
 	.minor_tests = srat_tests
 };
 

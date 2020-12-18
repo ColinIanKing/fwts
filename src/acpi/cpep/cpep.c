@@ -28,19 +28,7 @@
 #include <ctype.h>
 
 static fwts_acpi_table_info *table;
-
-static int cpep_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "CPEP", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI CPEP table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(CPEP, &table)
 
 /*
  *  CPEP Corrected Platform Error Polling Table
@@ -121,7 +109,7 @@ static fwts_framework_minor_test cpep_tests[] = {
 
 static fwts_framework_ops cpep_ops = {
 	.description = "CPEP Corrected Platform Error Polling Table test.",
-	.init        = cpep_init,
+	.init        = CPEP_init,
 	.minor_tests = cpep_tests
 };
 

@@ -27,21 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int aspt_init(fwts_framework *fw)
-{
-
-	if (fwts_acpi_find_table(fw, "ASPT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI ASPT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(ASPT, &table)
 
 /*
  *  ASPT Table
@@ -101,7 +87,7 @@ static fwts_framework_minor_test aspt_tests[] = {
 
 static fwts_framework_ops aspt_ops = {
 	.description = "ASPT Table test.",
-	.init        = aspt_init,
+	.init        = ASPT_init,
 	.minor_tests = aspt_tests
 };
 

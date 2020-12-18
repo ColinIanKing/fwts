@@ -28,19 +28,7 @@
 #include <ctype.h>
 
 static fwts_acpi_table_info *table;
-
-static int wpbt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "WPBT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI WPBT table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-	return FWTS_OK;
-}
+acpi_table_init(WPBT, &table)
 
 /*
  *  WPBT Windows Platform Binary Table
@@ -99,7 +87,7 @@ static fwts_framework_minor_test wpbt_tests[] = {
 
 static fwts_framework_ops wpbt_ops = {
 	.description = "WPBT Windows Platform Binary Table test.",
-	.init        = wpbt_init,
+	.init        = WPBT_init,
 	.minor_tests = wpbt_tests
 };
 

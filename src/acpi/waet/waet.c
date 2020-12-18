@@ -30,20 +30,7 @@
 #include "fwts_acpi_object_eval.h"
 
 static fwts_acpi_table_info *table;
-
-static int waet_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "WAET", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI WAET table does not exist, skipping test");
-		return FWTS_SKIP;
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(WAET, &table)
 
 /*
  *  WAET Windows ACPI Emulated Devices Table
@@ -82,7 +69,7 @@ static fwts_framework_minor_test waet_tests[] = {
 
 static fwts_framework_ops waet_ops = {
 	.description = "WAET Windows ACPI Emulated Devices Table test.",
-	.init        = waet_init,
+	.init        = WAET_init,
 	.minor_tests = waet_tests
 };
 

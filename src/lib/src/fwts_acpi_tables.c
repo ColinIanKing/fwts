@@ -55,6 +55,23 @@ typedef enum {
 static acpi_table_load_state acpi_tables_loaded = ACPI_TABLES_NOT_LOADED;
 
 /*
+ *  acpi_table_generic_init()
+ *  	Generic ACPI table init function
+ */
+int acpi_table_generic_init(fwts_framework *fw, char *name, fwts_acpi_table_info **table)
+{
+	if (fwts_acpi_find_table(fw, name, 0, table) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read ACPI tables.");
+		return FWTS_ERROR;
+	}
+	if (*table == NULL || (*table)->length == 0) {
+		fwts_log_error(fw, "ACPI %s table does not exist, skipping test", name);
+		return FWTS_SKIP;
+	}
+	return FWTS_OK;
+}
+
+/*
  *  fwts_acpi_find_rsdp_efi()
  *  	Get RSDP address from EFI if possible
  */

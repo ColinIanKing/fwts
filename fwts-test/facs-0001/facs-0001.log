@@ -11,7 +11,7 @@ facs              Global Lock:              0x00000000
 facs              Flags:                    0x00000000
 facs              X-Firmware Waking Vector: 0x0000000000000000
 facs              Version:                  0x01
-facs              Reserved:                 0x00 0x00 0x00
+facs              Reserved:                 0x00000000
 facs              OSPM Flags:               0x00000000
 facs              Reserved:                 0x00 0x00 0x00 0x00
 facs              Reserved:                 0x00 0x00 0x00 0x00

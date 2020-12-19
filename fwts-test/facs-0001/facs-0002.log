@@ -11,7 +11,7 @@ facs              Global Lock:              0x00000000
 facs              Flags:                    0xffffffff
 facs              X-Firmware Waking Vector: 0x0000000000000000
 facs              Version:                  0x01
-facs              Reserved:                 0xaa 0x55 0xaa
+facs              Reserved:                 0x00aa55aa
 facs              OSPM Flags:               0xefefefef
 facs              Reserved:                 0x00 0x00 0x00 0x00
 facs              Reserved:                 0x00 0x00 0x00 0x00
@@ -19,8 +19,8 @@ facs              Reserved:                 0x00 0x00 0x01 0x00
 facs              Reserved:                 0x00 0x00 0x00 0x00
 facs              Reserved:                 0x00 0x00 0x00 0x00
 facs              Reserved:                 0x00 0x00 0x00 0x00
-facs            FAILED [LOW] FACSInvalidReserved1: Test 1, FACS: 1st
-facs            Reserved field is non-zero
+facs            FAILED [MEDIUM] FACSReservedNonZero: Test 1, FACS Reserved
+facs            field must be zero, got 0x00aa55aa instead
 facs            FAILED [HIGH] FACSReservedBitsNonZero: Test 1, FACS Flags
 facs            Bits [31..2] must be zero, got 0xffffffff instead
 facs            FAILED [HIGH] FACSReservedBitsNonZero: Test 1, FACS OSPM

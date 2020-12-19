@@ -3,9 +3,7 @@ dbgp            ----------------------------------------------------------
 dbgp            Test 1 of 1: DBGP (Debug Port) Table test.
 dbgp            DBGP Table:
 dbgp              Interface Type            0x00 (Full 16550 interface)
-dbgp              Reserved:                 0x00
-dbgp              Reserved:                 0x00
-dbgp              Reserved:                 0x00
+dbgp              Reserved:                 0x00000000
 dbgp              Base Address:
 dbgp                Address Space ID:       0x01
 dbgp                Register Bit Width      0x08

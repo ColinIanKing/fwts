@@ -1183,7 +1183,7 @@ static void method_test_STA_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	bool failed = false;
+	bool passed = true;
 
 	FWTS_UNUSED(private);
 
@@ -1195,17 +1195,12 @@ static void method_test_STA_return(
 			"Method_STAEnabledNotPresent",
 			"%s indicates that the device is enabled "
 			"but not present, which is impossible.", name);
-		failed = true;
+		passed = false;
 	}
-	if ((obj->Integer.Value & ~0x1f) != 0) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_STAReservedBitsSet",
-			"%s is returning non-zero reserved "
-			"bits 5-31. These should be zero.", name);
-		failed = true;
-	}
+	fwts_acpi_reserved_bits_check(fw, "_STA", "Reserved Bits",
+		obj->Integer.Value, sizeof(uint32_t), 5, 31, &passed);
 
-	if (!failed)
+	if (passed)
 		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
@@ -3388,183 +3383,22 @@ static int method_test_TIV(fwts_framework *fw)
 /*
  * Section 9.20 NVDIMM Devices
  */
-static void check_nvdimm_status(
-	fwts_framework *fw,
-	char *name,
-	uint16_t status,
-	bool *failed)
-{
-	if (status > 6) {
-		*failed = true;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"MethodBadStatus",
-			"%s: Expected Status to be 0..6, got %" PRIx16,
-			name, status);
-	}
-}
-
-static void check_nvdimm_extended_status(
-	fwts_framework *fw,
-	char *name,
-	uint16_t ext_status,
-	uint16_t expected,
-	bool *failed)
-{
-	if (ext_status != expected) {
-		*failed = true;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"MethodBadExtendedStatus",
-			"%s: Expected Extended Status to be %" PRIx16
-			", got %" PRIx16, name, expected, ext_status);
-	}
-}
-
-static void method_test_NBS_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	bool failed = false;
-	nbs_return_t *ret;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
-		return;
-
-	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
-		failed = true;
-
-	ret = (nbs_return_t *) obj->Buffer.Pointer;
-	check_nvdimm_status(fw, name, ret->status, &failed);
-	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NBS", "Validation Flags",
-		ret->validation_flags, sizeof(uint16_t), 1, 15, &failed);
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "buffer");
-}
-
 static int method_test_NBS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_NBS", NULL, 0, method_test_NBS_return, NULL);
-}
-
-static void method_test_NCH_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	bool failed = false;
-	nch_return_t *ret;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
-		return;
-
-	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
-		failed = true;
-
-	ret = (nch_return_t *) obj->Buffer.Pointer;
-	check_nvdimm_status(fw, name, ret->status, &failed);
-	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Validation Flags",
-		ret->extended_status, sizeof(uint16_t), 2, 15, &failed);
-
-	/* Health Status Flags [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
-		ret->health_status_flags, sizeof(uint32_t), 2, 7, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
-		ret->health_status_flags, sizeof(uint32_t), 11, 15, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
-		ret->health_status_flags, sizeof(uint32_t), 19, 31, &failed);
-
-	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Attributes",
-		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "buffer");
+		"_NBS", NULL, 0, fwts_method_test_NBS_return, NULL);
 }
 
 static int method_test_NCH(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_NCH", NULL, 0, method_test_NCH_return, NULL);
-}
-
-static void method_test_NIC_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	bool failed = false;
-	nic_return_t *ret;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
-		return;
-
-	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
-		failed = true;
-
-	ret = (nic_return_t *) obj->Buffer.Pointer;
-	check_nvdimm_status(fw, name, ret->status, &failed);
-	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &failed);
-
-	/* Health Error Injection Capabilities [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
-		ret->health_error_injection, sizeof(uint32_t), 2, 7, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
-		ret->health_error_injection, sizeof(uint32_t), 11, 15, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
-		ret->health_error_injection, sizeof(uint32_t), 19, 31, &failed);
-
-	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Status Attributes Capabilities",
-		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "buffer");
+		"_NCH", NULL, 0, fwts_method_test_NCH_return, NULL);
 }
 
 static int method_test_NIC(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_NIC", NULL, 0, method_test_NIC_return, NULL);
-}
-
-static void method_test_NIH_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	bool failed = false;
-	nih_return_t *ret;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
-		return;
-
-	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
-		failed = true;
-
-	ret = (nih_return_t *) obj->Buffer.Pointer;
-	check_nvdimm_status(fw, name, ret->status, &failed);
-	check_nvdimm_extended_status(fw, name, ret->extended_status, 1, &failed);
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "buffer");
+		"_NIC", NULL, 0, fwts_method_test_NIC_return, NULL);
 }
 
 static int method_test_NIH(fwts_framework *fw)
@@ -3590,7 +3424,7 @@ static int method_test_NIH(fwts_framework *fw)
 			data[8] = j;
 
 			result = method_evaluate_method(fw, METHOD_OPTIONAL,
-				"_NIH", &arg0, 1, method_test_NIH_return, NULL);
+				"_NIH", &arg0, 1, fwts_method_test_NIH_return, NULL);
 
 			if (result != FWTS_OK)
 				return result;
@@ -3600,49 +3434,10 @@ static int method_test_NIH(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void method_test_NIG_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	bool failed = false;
-	nig_return_t *ret;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
-		return;
-
-	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
-		failed = true;
-
-	ret = (nig_return_t *) obj->Buffer.Pointer;
-	check_nvdimm_status(fw, name, ret->status, &failed);
-	check_nvdimm_extended_status(fw, name,  ret->extended_status, 0, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Validation Flags",
-		ret->validation_flags, sizeof(uint16_t), 2, 15, &failed);
-
-	/* Injected Health Status Errors [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
-		ret->health_status_errors, sizeof(uint32_t), 2, 7, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
-		ret->health_status_errors, sizeof(uint32_t), 11, 15, &failed);
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
-		ret->health_status_errors, sizeof(uint32_t), 19, 31, &failed);
-
-	fwts_acpi_reserved_bits_check(fw, "_NIG", "Health Status Attributes of Injected Errors",
-		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &failed);
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "buffer");
-}
-
 static int method_test_NIG(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_NIG", NULL, 0, method_test_NIG_return, NULL);
+		"_NIG", NULL, 0, fwts_method_test_NIG_return, NULL);
 }
 
 /*

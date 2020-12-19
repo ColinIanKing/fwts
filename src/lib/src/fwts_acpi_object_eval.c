@@ -2335,4 +2335,207 @@ void fwts_method_test_BMD_return(
 		fwts_method_passed_sane(fw, name, "package");
 }
 
+/*
+ * Section 9.20 NVDIMM Devices
+ */
+static void check_nvdimm_status(
+	fwts_framework *fw,
+	char *name,
+	uint16_t status,
+	bool *passed)
+{
+	if (status > 6) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"MethodBadStatus",
+			"%s: Expected Status to be 0..6, got %" PRIx16,
+			name, status);
+	}
+}
+
+static void check_nvdimm_extended_status(
+	fwts_framework *fw,
+	char *name,
+	uint16_t ext_status,
+	uint16_t expected,
+	bool *passed)
+{
+	if (ext_status != expected) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"MethodBadExtendedStatus",
+			"%s: Expected Extended Status to be %" PRIx16
+			", got %" PRIx16, name, expected, ext_status);
+	}
+}
+
+void fwts_method_test_NBS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+	nbs_return_t *ret;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
+		passed = false;
+
+	ret = (nbs_return_t *) obj->Buffer.Pointer;
+	check_nvdimm_status(fw, name, ret->status, &passed);
+	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NBS", "Validation Flags",
+		ret->validation_flags, sizeof(uint16_t), 1, 15, &passed);
+
+	if (passed)
+		fwts_method_passed_sane(fw, name, "buffer");
+}
+
+void fwts_method_test_NCH_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+	nch_return_t *ret;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
+		passed = false;
+
+	ret = (nch_return_t *) obj->Buffer.Pointer;
+	check_nvdimm_status(fw, name, ret->status, &passed);
+	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Validation Flags",
+		ret->extended_status, sizeof(uint16_t), 2, 15, &passed);
+
+	/* Health Status Flags [2..7], [11.15], [19..31] are reserved */
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
+		ret->health_status_flags, sizeof(uint32_t), 2, 7, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
+		ret->health_status_flags, sizeof(uint32_t), 11, 15, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Flags",
+		ret->health_status_flags, sizeof(uint32_t), 19, 31, &passed);
+
+	fwts_acpi_reserved_bits_check(fw, "_NCH", "Health Status Attributes",
+		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &passed);
+
+	if (passed)
+		fwts_method_passed_sane(fw, name, "buffer");
+}
+
+void fwts_method_test_NIC_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+	nic_return_t *ret;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
+		passed = false;
+
+	ret = (nic_return_t *) obj->Buffer.Pointer;
+	check_nvdimm_status(fw, name, ret->status, &passed);
+	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &passed);
+
+	/* Health Error Injection Capabilities [2..7], [11.15], [19..31] are reserved */
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
+		ret->health_error_injection, sizeof(uint32_t), 2, 7, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
+		ret->health_error_injection, sizeof(uint32_t), 11, 15, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Error Injection Capabilities",
+		ret->health_error_injection, sizeof(uint32_t), 19, 31, &passed);
+
+	fwts_acpi_reserved_bits_check(fw, "_NIC", "Health Status Attributes Capabilities",
+		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &passed);
+
+	if (passed)
+		fwts_method_passed_sane(fw, name, "buffer");
+}
+
+void fwts_method_test_NIH_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+	nih_return_t *ret;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
+		passed = false;
+
+	ret = (nih_return_t *) obj->Buffer.Pointer;
+	check_nvdimm_status(fw, name, ret->status, &passed);
+	check_nvdimm_extended_status(fw, name, ret->extended_status, 1, &passed);
+
+	if (passed)
+		fwts_method_passed_sane(fw, name, "buffer");
+}
+
+void fwts_method_test_NIG_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+	nig_return_t *ret;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
+		passed = false;
+
+	ret = (nig_return_t *) obj->Buffer.Pointer;
+	check_nvdimm_status(fw, name, ret->status, &passed);
+	check_nvdimm_extended_status(fw, name,  ret->extended_status, 0, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Validation Flags",
+		ret->validation_flags, sizeof(uint16_t), 2, 15, &passed);
+
+	/* Injected Health Status Errors [2..7], [11.15], [19..31] are reserved */
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
+		ret->health_status_errors, sizeof(uint32_t), 2, 7, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
+		ret->health_status_errors, sizeof(uint32_t), 11, 15, &passed);
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Injected Health Status Errors",
+		ret->health_status_errors, sizeof(uint32_t), 19, 31, &passed);
+
+	fwts_acpi_reserved_bits_check(fw, "_NIG", "Health Status Attributes of Injected Errors",
+		ret->health_status_attributes, sizeof(uint32_t), 1, 31, &passed);
+
+	if (passed)
+		fwts_method_passed_sane(fw, name, "buffer");
+}
+
 #endif

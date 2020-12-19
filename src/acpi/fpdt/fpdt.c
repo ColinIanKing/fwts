@@ -110,6 +110,8 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info_verbatim(fw, "    Reserved:	0x%8.8" PRIx32, fbbpr->reserved);
 				fwts_log_info_verbatim(fw, "    FBPT Pointer:	0x%16.16" PRIx64, fbbpr->fbpt_addr);
 
+				fwts_acpi_reserved_zero_check(fw, "FPDT", "Reserved", fbbpr->reserved, sizeof(fbbpr->reserved), &passed);
+
 				/*
 				 * For the moment, only dump the 64-bit processor-relative physical address
 				 * of the Firmware Basic Boot Performance Table, should also get and check
@@ -140,6 +142,8 @@ static int fpdt_test1(fwts_framework *fw)
 				fpdt_rec_header_dump(fw, "S3 Performance Table Pointer Record", fpdt);
 				fwts_log_info_verbatim(fw, "    Reserved:	0x%8.8" PRIx32, s3ptpr->reserved);
 				fwts_log_info_verbatim(fw, "    S3PT Pointer:	0x%16.16" PRIx64, s3ptpr->s3pt_addr);
+
+				fwts_acpi_reserved_zero_check(fw, "FPDT", "Reserved", s3ptpr->reserved, sizeof(s3ptpr->reserved), &passed);
 
 				/*
 				 * For the moment, only dump 64-bit processor-relative physical

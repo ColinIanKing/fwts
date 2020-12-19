@@ -39,6 +39,7 @@ static void hest_check_ia32_arch_machine_check_exception(
 	bool *passed)
 {
 	ssize_t i, total_size;
+	uint64_t reserved2;
 
 	fwts_acpi_table_hest_ia32_machine_check_exception *exception =
 		(fwts_acpi_table_hest_ia32_machine_check_exception *)*data;
@@ -65,6 +66,11 @@ static void hest_check_ia32_arch_machine_check_exception(
 		return;
 	}
 
+	reserved2 = exception->reserved2[0] + ((uint64_t) exception->reserved2[1] << 8) +
+		   ((uint64_t) exception->reserved2[2] << 16) + ((uint64_t) exception->reserved2[3] << 24) +
+		   ((uint64_t) exception->reserved2[4] << 32) + ((uint64_t) exception->reserved2[5] << 40) +
+		   ((uint64_t) exception->reserved2[6] << 48);
+
 	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Machine Check Exception:");
 	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, exception->type);
 	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, exception->source_id);
@@ -76,14 +82,10 @@ static void hest_check_ia32_arch_machine_check_exception(
 	fwts_log_info_verbatim(fw, "  Global Capability Data:   0x%16.16" PRIx64, exception->global_capability_init_data);
 	fwts_log_info_verbatim(fw, "  Global Control Data:      0x%16.16" PRIx64, exception->global_control_init_data);
 	fwts_log_info_verbatim(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, exception->number_of_hardware_banks);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[0]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[1]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[2]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[3]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[4]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[5]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[6]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%16.16" PRIx64, reserved2);
 	fwts_log_nl(fw);
+
+	fwts_acpi_reserved_zero_check(fw, "HEST", "MCE Reserved1", exception->reserved1, sizeof(exception->reserved1), passed);
 
 	if (exception->flags & ~0x5) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -100,6 +102,8 @@ static void hest_check_ia32_arch_machine_check_exception(
 			exception->flags);
 		*passed = false;
 	}
+
+	fwts_acpi_reserved_zero_check(fw, "HEST", "MCE Reserved2", reserved2, sizeof(reserved2), passed);
 
 	for (i = 0; i < exception->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &exception->bank[i];
@@ -151,6 +155,7 @@ static void hest_check_ia32_arch_corrected_machine_check(
 	bool *passed)
 {
 	ssize_t i, total_size;
+	uint32_t reserved2;
 
 	fwts_acpi_table_hest_ia32_corrected_machine_check *check =
 		(fwts_acpi_table_hest_ia32_corrected_machine_check *)*data;
@@ -176,6 +181,9 @@ static void hest_check_ia32_arch_corrected_machine_check(
 		*length = 0;	/* Forces an early abort */
 		return;
 	}
+
+	reserved2 = check->reserved2[0] + ((uint32_t) check->reserved2[1] << 8) +
+		   ((uint32_t) check->reserved2[2] << 16);
 
 	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Machine Check:");
 	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, check->type);
@@ -203,10 +211,10 @@ static void hest_check_ia32_arch_corrected_machine_check(
 	fwts_log_info_verbatim(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
 		check->notification.error_threshold_window);
 	fwts_log_info_verbatim(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, check->number_of_hardware_banks);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[0]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[1]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[2]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, reserved2);
 	fwts_log_nl(fw);
+
+	fwts_acpi_reserved_zero_check(fw, "HEST", "Machine Check Reserved1", check->reserved1, sizeof(check->reserved1), passed);
 
 	if (check->flags & ~0x5) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -233,6 +241,8 @@ static void hest_check_ia32_arch_corrected_machine_check(
 			"expecting value 0 to 11",
 			check->notification.type);
 	}
+
+	fwts_acpi_reserved_zero_check(fw, "HEST", "Machine Check Reserved2", reserved2, sizeof(reserved2), passed);
 
 	for (i = 0; i < check->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &check->bank[i];
@@ -309,14 +319,8 @@ static void hest_check_acpi_table_hest_nmi_error(
 	fwts_log_info_verbatim(fw, "  Max Raw Data Length:      0x%8.8" PRIx32, err->max_raw_data_length);
 	fwts_log_nl(fw);
 
-	if (err->reserved1) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HESTInvalidRecordsToPreallocate",
-			"HEST IA-32 Architecture NMI Reserved field "
-			"at offset 4 must be zero, instead got 0x%" PRIx16,
-			err->reserved1);
-	}
+	fwts_acpi_reserved_zero_check(fw, "HEST", "NMI Reserved", err->reserved1, sizeof(err->reserved1), passed);
+
 	if (err->number_of_records_to_preallocate < 1) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

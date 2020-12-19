@@ -1585,7 +1585,7 @@ typedef struct {
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint8_t		interface_type;
-	uint8_t		reserved1[3];
+	uint8_t		reserved[3];
 	fwts_acpi_gas	base_address;
 } __attribute__ ((packed)) fwts_acpi_table_dbgp;
 

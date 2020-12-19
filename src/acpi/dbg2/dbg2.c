@@ -285,6 +285,8 @@ static int dbg2_test1(fwts_framework *fw)
 				info->port_subtype);
 		}
 
+		fwts_acpi_reserved_zero_check(fw, "DBG2", "Info Structure Reserved", info->reserved, sizeof(info->reserved), &passed);
+
 		length_ok = true;
 		dbg2_check_offset(fw, table->length, offset + info->length,
 			"DBG2 Info Structure Namespace Length", &length_ok);

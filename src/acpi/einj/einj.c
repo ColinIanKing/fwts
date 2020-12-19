@@ -38,8 +38,8 @@ static int einj_test1(fwts_framework *fw)
 	uint32_t reserved, i;
 	bool passed = true;
 
-	reserved = einj->reserved[0] + (einj->reserved[1] << 4) +
-		   (einj->reserved[2] << 8);
+	reserved = einj->reserved[0] + ((uint32_t) einj->reserved[1] << 8) +
+		   ((uint32_t) einj->reserved[2] << 16);
 
 	fwts_log_info_verbatim(fw, "EINJ Error Injection Table:");
 	fwts_log_info_verbatim(fw, "  Injection Header Size: 0x%8.8" PRIx32,

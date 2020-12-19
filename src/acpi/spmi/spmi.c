@@ -116,14 +116,8 @@ static int spmi_test1(fwts_framework *fw)
 			"Type bit 0 (SCI triggered through GPE) is set to 0",
 			spmi->gpe);
 	}
-	if (spmi->reserved2 != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"SPMIReserved1NonZero",
-			"SPMI reserved field (offset 42) must be 0x00, got "
-			"0x%2.2" PRIx8 " instead", spmi->reserved2);
-	}
 
+	fwts_acpi_reserved_zero_check(fw, "SPMI", "Reserved2", spmi->reserved2, sizeof(spmi->reserved2), &passed);
 	fwts_acpi_reserved_bits_check(fw, "SPMI", "PCI device flag", spmi->pci_device_flag, sizeof(spmi->pci_device_flag), 1, 7, &passed);
 
 	if (((spmi->interrupt_type & 2) == 0) &&

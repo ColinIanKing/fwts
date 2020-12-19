@@ -35,9 +35,10 @@ acpi_table_init(DBGP, &table)
  */
 static int dbgp_test1(fwts_framework *fw)
 {
-	bool passed = true;
-	char *interface_type;
 	fwts_acpi_table_dbgp *dbgp = (fwts_acpi_table_dbgp *)table->data;
+	char *interface_type;
+	bool passed = true;
+	uint32_t reserved;
 
 	if (!fwts_acpi_table_length_check(fw, "DBGP", table->length, sizeof(fwts_acpi_table_dbgp))) {
 		passed = false;
@@ -56,12 +57,13 @@ static int dbgp_test1(fwts_framework *fw)
 		break;
 	}
 
+	reserved = dbgp->reserved[0] + ((uint32_t) dbgp->reserved[1] << 8) +
+		   ((uint32_t) dbgp->reserved[2] << 16);
+
 	fwts_log_info_verbatim(fw, "DBGP Table:");
 	fwts_log_info_verbatim(fw, "  Interface Type            0x%2.2" PRIx8 " (%s)",
 		dbgp->interface_type, interface_type);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[0]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[1]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[2]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, reserved);
 	fwts_log_info_verbatim(fw, "  Base Address:");
 	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, dbgp->base_address.address_space_id);
 	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, dbgp->base_address.register_bit_width);
@@ -79,6 +81,9 @@ static int dbgp_test1(fwts_framework *fw)
 			" 0x00 (Full 16550) or 0x01 (16550 subset)",
 			dbgp->interface_type);
 	}
+
+	fwts_acpi_reserved_zero_check(fw, "DBGP", "Reserved", reserved, sizeof(reserved), &passed);
+
 	if (dbgp->base_address.register_bit_width == 0) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

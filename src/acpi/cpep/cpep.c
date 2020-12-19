@@ -37,6 +37,7 @@ static int cpep_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_cpep *cpep = (fwts_acpi_table_cpep*)table->data;
 	bool passed = true;
+	uint64_t reserved;
 	uint32_t i, n;
 
 	fwts_log_info_verbatim(fw, "CPEP Corrected Platform Error Polling Table:");
@@ -46,15 +47,12 @@ static int cpep_test1(fwts_framework *fw)
 		cpep->reserved[0], cpep->reserved[1], cpep->reserved[2], cpep->reserved[3],
 		cpep->reserved[4], cpep->reserved[4], cpep->reserved[6], cpep->reserved[7]);
 
-	if (cpep->reserved[0] | cpep->reserved[1] |
-	    cpep->reserved[2] | cpep->reserved[3] |
-	    cpep->reserved[4] | cpep->reserved[5] |
-            cpep->reserved[6] | cpep->reserved[7]) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"CPEPNonZeroReserved",
-			"CPEP: Reserved field contains a non-zero value");
-	}
+	reserved = cpep->reserved[0] + ((uint64_t) cpep->reserved[1] << 8) +
+		   ((uint64_t) cpep->reserved[2] << 16) + ((uint64_t) cpep->reserved[3] << 24) +
+		   ((uint64_t) cpep->reserved[4] << 32) + ((uint64_t) cpep->reserved[5] << 40) +
+		   ((uint64_t) cpep->reserved[6] << 48) + ((uint64_t) cpep->reserved[7] << 56);
+	fwts_acpi_reserved_zero_check(fw, "CPEP", "Reserved", reserved, sizeof(reserved), &passed);
+
 	n = (table->length - sizeof(fwts_acpi_table_cpep)) /
 		sizeof(fwts_acpi_cpep_processor_info);
 

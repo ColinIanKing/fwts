@@ -37,6 +37,7 @@ static int facs_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_facs *facs = (fwts_acpi_table_facs*)table->data;
 	bool passed = true;
+	uint32_t reserved;
 	int i;
 
 	if (table->length < 64) {
@@ -49,6 +50,9 @@ static int facs_test1(fwts_framework *fw)
 		goto done;
 	}
 
+	reserved = facs->reserved[0] + ((uint32_t) facs->reserved[1] << 8) +
+		   ((uint32_t) facs->reserved[2] << 16);
+
 	fwts_log_info_verbatim(fw, "FACS Firmware ACPI Control Structure:");
 	fwts_log_info_verbatim(fw, "  Signature:                '%4.4s'", facs->signature);
 	fwts_log_info_verbatim(fw, "  Length:                   0x%8.8" PRIx32, facs->length);
@@ -58,8 +62,7 @@ static int facs_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, facs->flags);
 	fwts_log_info_verbatim(fw, "  X-Firmware Waking Vector: 0x%16.16" PRIx64, facs->x_firmware_waking_vector);
 	fwts_log_info_verbatim(fw, "  Version:                  0x%2.2" PRIx8, facs->version);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
-		facs->reserved[0], facs->reserved[1], facs->reserved[2]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, reserved);
 	fwts_log_info_verbatim(fw, "  OSPM Flags:               0x%8.8" PRIx32, facs->ospm_flags);
 	for (i = 0; i < 24; i+= 4) {
 		fwts_log_info_verbatim(fw, "  Reserved:                 "
@@ -110,15 +113,8 @@ static int facs_test1(fwts_framework *fw)
 			" and should be at least 64",
 			facs->length);
 	}
-	if (facs->reserved[0] |
-	    facs->reserved[1] |
-	    facs->reserved[2]) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"FACSInvalidReserved1",
-			"FACS: 1st Reserved field is non-zero");
-	}
 
+	fwts_acpi_reserved_zero_check(fw, "FACS", "Reserved", reserved, sizeof(reserved), &passed);
 	fwts_acpi_reserved_bits_check(fw, "FACS", "Flags", facs->flags, sizeof(facs->flags), 2, 31, &passed);
 	fwts_acpi_reserved_bits_check(fw, "FACS", "OSPM Flags", facs->ospm_flags, sizeof(facs->ospm_flags), 1, 31, &passed);
 

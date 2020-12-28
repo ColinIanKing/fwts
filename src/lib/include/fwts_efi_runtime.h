@@ -158,4 +158,10 @@ struct efi_querycapsulecapabilities {
 #define EFI_RUNTIME_QUERY_CAPSULECAPABILITIES \
 	_IOR('p', 0x0A, struct efi_querycapsulecapabilities)
 
+#define EFI_RUNTIME_RESET_SYSTEM \
+	_IOW('p', 0x0B, struct efi_resetsystem)
+
+#define EFI_RUNTIME_GET_SUPPORTED_MASK \
+	_IOR('p', 0x0C, unsigned int)
+
 #endif /* _FWTS_EFI_RUNTIME_H_ */

@@ -137,6 +137,8 @@ enum {
 #define EFI_RT_SUPPORTED_QUERY_CAPSULE_CAPABILITIES	0x1000
 #define EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO		0x2000
 
+#define EFI_RT_SUPPORTED_ALL				0x3fff
+
 #define EFI_CERT_SHA256_GUID \
 { 0xc1c41626, 0x504c, 0x4092, { 0xac, 0xa9, 0x41, 0xf9, 0x36, 0x93, 0x43, 0x28 }}
 
@@ -680,7 +682,7 @@ char *fwts_uefi_attribute_info(uint32_t attr);
 
 bool fwts_uefi_efivars_iface_exist(void);
 
-void fwts_uefi_rt_support_status_get(int fd, bool *getvar_supported, uint32_t *var_rtsupported);
+void fwts_uefi_rt_support_status_get(int fd, bool *have_rtsupported, uint32_t *var_rtsupported);
 
 PRAGMA_POP
 

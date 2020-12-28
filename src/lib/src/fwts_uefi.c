@@ -541,45 +541,26 @@ bool fwts_uefi_efivars_iface_exist(void)
 
 /*
  *  fwts_uefi_rt_support_status_get()
- *	get the status of runtime service support and the value of
- *	the RuntimeServicesSupported variable
+ *	get the status of runtime service support.
+ *
+ *	Since UEFI 2.8 Errata A the EFI_RT_PROPERTIES_TABLE configuration table
+ *	can be used to indicate which UEFI runtime services are not implemented
+ *	via the bitmask RuntimeServicesSupported. If the table is not present,
+ *	all runtime services are to be considered available. Since Linux 5.11
+ *	this bitmask can be read via an IOCTL call. Before Linux 5.11 the value
+ *	cannot be determined.
  */
-void fwts_uefi_rt_support_status_get(int fd, bool *getvar_supported, uint32_t *var_rtsupported)
+void fwts_uefi_rt_support_status_get(int fd, bool *have_rtsupported, uint32_t *var_rtsupported)
 {
 	long ioret;
-	struct efi_getvariable getvariable;
-	uint64_t status = ~0ULL;
-	uint8_t data[512];
-	uint64_t getdatasize = sizeof(data);
-	*var_rtsupported = 0xFFFF;
 
-	uint32_t attributes = FWTS_UEFI_VAR_NON_VOLATILE |
-				FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
-				FWTS_UEFI_VAR_RUNTIME_ACCESS;
-	static uint16_t varname[] = {'R', 'u', 'n', 't', 'i', 'm', 'e', 'S', 'e',
-				'r', 'v', 'i', 'c', 'e', 's', 'S', 'u', 'p',
-				'p', 'o', 'r', 't', 'e', 'd', '\0'};
-	EFI_GUID global_var_guid = EFI_GLOBAL_VARIABLE;
-	getvariable.VariableName = varname;
-	getvariable.VendorGuid = &global_var_guid;
-	getvariable.Attributes = &attributes;
-	getvariable.DataSize = &getdatasize;
-	getvariable.Data = data;
-	getvariable.status = &status;
-
-	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
+	ioret = ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, var_rtsupported);
 	if (ioret == -1) {
-		if (status == EFI_NOT_FOUND) {
-			*getvar_supported = true;
-		} else {
-			*getvar_supported = false;
-		}
-		return;
+		*have_rtsupported = false;
+		*var_rtsupported = EFI_RT_SUPPORTED_ALL;
+	} else {
+		*have_rtsupported = true;
 	}
 
-	*getvar_supported = true;
-	*var_rtsupported = data[0] | data[1] << 8;
-
 	return;
-
 }

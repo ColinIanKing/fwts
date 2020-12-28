@@ -247,20 +247,18 @@ static int uefirtmisc_test4(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	bool getvar_supported;
+	bool have_rtsupported;
 	uint32_t var_runtimeservicessupported;
 
 	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount;
 	uint32_t highcount;
 
-	fwts_uefi_rt_support_status_get(fd, &getvar_supported,
+	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
 			&var_runtimeservicessupported);
-	if (!getvar_supported || (var_runtimeservicessupported == 0xFFFF)) {
+	if (!have_rtsupported) {
 		fwts_skipped(fw, "Cannot get the RuntimeServicesSupported "
-				"variable, maybe the runtime service "
-				"GetVariable is not supported or "
-				"RuntimeServicesSupported not provided by "
-				"firmware.");
+				 "mask from the kernel. This IOCTL was "
+				 "introduced in Linux v5.11.");
 		return FWTS_SKIP;
 	}
 
@@ -270,13 +268,12 @@ static int uefirtmisc_test4(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT, &getnexthighmonotoniccount);
 	if (ioret == -1) {
 		if (status == EFI_UNSUPPORTED) {
-			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT)
-				|| (var_runtimeservicessupported == 0)) {
+			if (var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"UEFIRuntimeGetNextHighMonotonicCount",
 					"Get the GetNextHighMonotonicCount runtime "
 					"service supported via RuntimeServicesSupported "
-					"variable. But actually is not supported by "
+					"mask. But actually is not supported by "
 					"firmware.");
 			} else {
 				fwts_passed(fw, "UEFI GetNextHighMonotonicCount runtime "
@@ -287,8 +284,7 @@ static int uefirtmisc_test4(fwts_framework *fw)
 				fwts_skipped(fw, "Unknown error occurred, skip test.");
 				return FWTS_SKIP;
 			}
-			if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT)
-				|| (var_runtimeservicessupported == 0)) {
+			if (var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT) {
 				fwts_passed(fw, "UEFI GetNextHighMonotonicCount runtime "
 					"service supported status test passed.");
 			} else {
@@ -296,7 +292,7 @@ static int uefirtmisc_test4(fwts_framework *fw)
 					"UEFIRuntimeGetNextHighMonotonicCount",
 					"Get the GetNextHighMonotonicCount runtime "
 					"service unsupported via RuntimeServicesSupported "
-					"variable. But actually is supported by firmware.");
+					"mask. But actually is supported by firmware.");
 			}
 		}
 	} else {
@@ -304,8 +300,7 @@ static int uefirtmisc_test4(fwts_framework *fw)
 			fwts_skipped(fw, "Unknown error occurred, skip test.");
 			return FWTS_SKIP;
 		}
-		if ((var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT)
-			|| (var_runtimeservicessupported == 0)) {
+		if (var_runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT) {
 			fwts_passed(fw, "UEFI GetNextHighMonotonicCount runtime "
 				"service supported status test passed.");
 		} else {
@@ -313,7 +308,7 @@ static int uefirtmisc_test4(fwts_framework *fw)
 				"UEFIRuntimeGetNextHighMonotonicCount",
 				"Get the GetNextHighMonotonicCount runtime "
 				"service unsupported via RuntimeServicesSupported "
-				"variable. But actually is supported by firmware.");
+				"mask. But actually is supported by firmware.");
 		}
 	}
 

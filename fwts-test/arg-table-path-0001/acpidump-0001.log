@@ -56,7 +56,7 @@ acpidump            0000: 4D 43 46 47 3C 00 00 00 01 32 49 4E 54 45 4C 20  // MC
 acpidump            0000: 52 53 44 54 68 00 00 00 01 AF 46 57 54 53 49 44  // RSDTh.....FWTSID
 acpidump            0000: 53 4C 49 43 76 01 00 00 01 99 4C 45 4E 4F 56 4F  // SLICv.....LENOVO
 acpidump            0000: 54 43 50 41 32 00 00 00 01 8F 49 6E 74 65 6C 20  // TCPA2.....Intel 
-acpidump            0000: 58 53 44 54 AC 00 00 00 02 64 46 57 54 53 49 44  // XSDT.....dFWTSID
+acpidump            0000: 58 53 44 54 AC 00 00 00 01 65 46 57 54 53 49 44  // XSDT.....eFWTSID
 acpidump            0010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
 acpidump            0010: 09 20 41 50 49 43 20 20 00 00 04 06 20 4C 54 50  // . APIC  .... LTP
 acpidump            0010: 24 53 42 46 54 42 4C 24 00 00 04 06 20 4C 54 50  // $SBFTBL$.... LTP
@@ -218,7 +218,7 @@ acpidump        [009h 0009   1]                     Checksum : 13
 acpidump        [009h 0009   1]                     Checksum : 32
 acpidump        [009h 0009   1]                     Checksum : 52
 acpidump        [009h 0009   1]                     Checksum : 59
-acpidump        [009h 0009   1]                     Checksum : 64
+acpidump        [009h 0009   1]                     Checksum : 65
 acpidump        [009h 0009   1]                     Checksum : 6d
 acpidump        [009h 0009   1]                     Checksum : 8F
 acpidump        [009h 0009   1]                     Checksum : 99

@@ -26,6 +26,8 @@
 
 #define ACPI_MAX_TABLES		(128)
 
+#define fwts_acpi_revision_check(table, actual, must_be, passed) fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, table, "Revision", actual, must_be, passed)
+
 typedef enum {
 	FWTS_ACPI_TABLE_FROM_FIRMWARE,	/* directly from firmware */
 	FWTS_ACPI_TABLE_FROM_FILE,	/* loaded from file, e.g. from acpidump */
@@ -67,6 +69,7 @@ void fwts_acpi_reserved_bits_check(fwts_framework *fw, const char *table, const 
 void fwts_acpi_reserved_type_check(fwts_framework *fw, const char *table, uint8_t value, uint8_t min, uint8_t reserved, bool *passed);
 bool fwts_acpi_table_length_check(fwts_framework *fw, const char *table, uint32_t length, uint32_t size);
 bool fwts_acpi_structure_length_check(fwts_framework *fw, const char *table, uint8_t subtable_type, uint32_t subtable_length, uint32_t size);
+void fwts_acpi_fixed_value_check(fwts_framework *fw, fwts_log_level level, const char *table, const char *field, uint8_t actual, uint8_t must_be, bool *passed);
 
 uint32_t fwts_get_acpi_version(fwts_framework *fw);
 

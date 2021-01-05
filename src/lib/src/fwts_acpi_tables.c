@@ -1510,6 +1510,32 @@ void fwts_acpi_reserved_zero_array_check(
 }
 
 /*
+ *  fwts_acpi_fixed_value_check()
+ *  verify whether a field matches the designed fixed value
+ */
+void fwts_acpi_fixed_value_check(
+	fwts_framework *fw,
+	fwts_log_level level,
+	const char *table,
+	const char *field,
+	uint8_t actual,
+	uint8_t must_be,
+	bool *passed)
+{
+	char label[20];
+
+	strncpy(label, table, 4);	/* ACPI table name is 4 char long */
+	strncpy(label + 4, "BadFieldValue", sizeof(label) - 4);
+
+	if (actual != must_be) {
+		fwts_failed(fw, level, label,
+			"%4.4s %s field must be %" PRIu8 ", got %" PRIu8 " instead.",
+			table, field, must_be, actual);
+		*passed = false;
+	}
+}
+
+/*
  *  fwts_acpi_reserved_bits_check()
  *  verify whether the reserved bits are zero
  */

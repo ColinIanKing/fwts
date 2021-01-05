@@ -1,8 +1,8 @@
 srat            srat: SRAT System Resource Affinity Table test.
 srat            ----------------------------------------------------------
 srat            Test 1 of 1: SRAT System Resource Affinity Table test.
-srat            FAILED [MEDIUM] SRATInterfaceReserved: Test 1, SRAT
-srat            reserved field 1 should be 1, instead was 0x7
+srat            FAILED [MEDIUM] SRATBadFieldValue: Test 1, SRAT Revision1
+srat            field must be 1, got 7 instead.
 srat            SRAT Local APIC/SAPIC Affinity Structure:
 srat              Type:                     0x00
 srat              Length:                   0x10

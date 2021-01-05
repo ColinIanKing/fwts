@@ -19,8 +19,8 @@ dbg2              Reserved:                 0x00f0
 dbg2              Base Address Offset:      0x0016
 dbg2              Address Size Offset:      0x3022
 dbg2            
-dbg2            FAILED [HIGH] DBG2NonZeroRevision: Test 1, DBG2 Info
-dbg2            Structure Revision is 0x01 and was expecting 0x00
+dbg2            FAILED [HIGH] DBG2BadFieldValue: Test 1, DBG2 Info
+dbg2            Structure Revision field must be 0, got 1 instead.
 dbg2            FAILED [HIGH] DBG2PortSubTypeReserved: Test 1, DBG2 Info
 dbg2            Structure Port Subtype is 0x0008 which is a reserved type.
 dbg2            FAILED [MEDIUM] DBG2ReservedNonZero: Test 1, DBG2 Info

@@ -8,12 +8,12 @@ bgrt              Image Type:               0x01
 bgrt              Image Memory Address:     0x035f701800000000
 bgrt              Image Offset X:           0x00000000
 bgrt              Image Offset Y:           0x00000000
-bgrt            FAILED [MEDIUM] BGRTInvalidVersion: Test 1, BGRT: Version
-bgrt            field is 0x2 and not the expected value of 0x01
+bgrt            FAILED [MEDIUM] BGRTBadFieldValue: Test 1, BGRT Version
+bgrt            field must be 1, got 2 instead.
 bgrt            FAILED [HIGH] BGRTReservedBitsNonZero: Test 1, BGRT BGRT
 bgrt            Status Bits [7..3] must be zero, got 0xff instead
-bgrt            FAILED [MEDIUM] BGRTInvalidImageType: Test 1, BGRT: Image
-bgrt            Type field is 0x1, the only allowed type is 0x00
+bgrt            FAILED [MEDIUM] BGRTBadFieldValue: Test 1, BGRT Image Type
+bgrt            field must be 0, got 1 instead.
 bgrt            
 bgrt            ==========================================================
 bgrt            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0

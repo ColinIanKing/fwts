@@ -18,8 +18,8 @@ iort            FAILED [HIGH] IORTItsIdArrayOutsideTable: Test 1, IORT ITS
 iort            Identifier Array end is outside the IORT ACPI table.
 iort            Either the Number of ID mappings is too large or the IORT
 iort            table size or ITS Group Node is too small.
-iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
-iort            Revision field is 0x03 and should be zero.
+iort            FAILED [MEDIUM] IORTBadFieldValue: Test 1, IORT IORT Node
+iort            Revision field must be 0, got 3 instead.
 iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
 iort            Reserved field must be zero, got 0xffffffff instead
 iort            FAILED [LOW] IORTNodeMappingsCountNonZero: Test 1, IORT
@@ -98,8 +98,8 @@ iort              ID Count:                 0x00000003
 iort              Output Base:              0x00000004
 iort              Output Reference:         0x00000005
 iort              Flags:                    0x00000001
-iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
-iort            Revision field is 0x50 and should be zero.
+iort            FAILED [MEDIUM] IORTBadFieldValue: Test 1, IORT IORT Node
+iort            Revision field must be 0, got 80 instead.
 iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
 iort            Reserved field must be zero, got 0x0000000f instead
 iort            FAILED [HIGH] IORTCPCIRootComplexAtsAttrInvalid: Test 1,

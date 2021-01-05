@@ -4,27 +4,21 @@ cpep            Test 1 of 1: CPEP Corrected Platform Error Polling Table
 cpep            test.
 cpep            CPEP Corrected Platform Error Polling Table:
 cpep              Reserved:                 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-cpep            FAILED [HIGH] CPEPInvalidProcStructureType: Test 1, CPEP:
-cpep            Processor Structure 0 Type field is 0x1 and was expected
-cpep            to be 0x00
-cpep            FAILED [MEDIUM] CPEPInvalidProcStructureType: Test 1, CPEP
-cpep            : Processor Structure 0 Length field is 0x10 and was
-cpep            expected to be 0x08
+cpep            FAILED [HIGH] CPEPBadFieldValue: Test 1, CPEP Processor
+cpep            Structure 0 Type field must be 0, got 1 instead.
+cpep            FAILED [MEDIUM] CPEPBadFieldValue: Test 1, CPEP Processor
+cpep            Structure 0 Length field must be 8, got 16 instead.
 cpep            WARNING: Test 1, CPEP Processor Structure 0 Polling
 cpep            Interval of 0 milliseconds is relatively short and may
 cpep            cause excessive polling CPU load
-cpep            FAILED [HIGH] CPEPInvalidProcStructureType: Test 1, CPEP:
-cpep            Processor Structure 1 Type field is 0x2 and was expected
-cpep            to be 0x00
-cpep            FAILED [MEDIUM] CPEPInvalidProcStructureType: Test 1, CPEP
-cpep            : Processor Structure 1 Length field is 0x0 and was
-cpep            expected to be 0x08
-cpep            FAILED [HIGH] CPEPInvalidProcStructureType: Test 1, CPEP:
-cpep            Processor Structure 2 Type field is 0x23 and was expected
-cpep            to be 0x00
-cpep            FAILED [MEDIUM] CPEPInvalidProcStructureType: Test 1, CPEP
-cpep            : Processor Structure 2 Length field is 0xff and was
-cpep            expected to be 0x08
+cpep            FAILED [HIGH] CPEPBadFieldValue: Test 1, CPEP Processor
+cpep            Structure 1 Type field must be 0, got 2 instead.
+cpep            FAILED [MEDIUM] CPEPBadFieldValue: Test 1, CPEP Processor
+cpep            Structure 1 Length field must be 8, got 0 instead.
+cpep            FAILED [HIGH] CPEPBadFieldValue: Test 1, CPEP Processor
+cpep            Structure 2 Type field must be 0, got 35 instead.
+cpep            FAILED [MEDIUM] CPEPBadFieldValue: Test 1, CPEP Processor
+cpep            Structure 2 Length field must be 8, got 255 instead.
 cpep            WARNING: Test 1, CPEP Processor Structure 2 Polling
 cpep            Interval of 4 milliseconds is relatively short and may
 cpep            cause excessive polling CPU load

@@ -6,10 +6,10 @@ wpbt              Handoff Memory Size:      0x12345678
 wpbt              Handoff Memory Location:  0xaa000000bb000000
 wpbt              Content Layout:           0x33
 wpbt              Content Type:             0x88
-wpbt            FAILED [HIGH] WPBTBadLayout: Test 1, WPBT supports Content
-wpbt            Layout 1 only, got 0x33 instead
-wpbt            FAILED [HIGH] WPBTBadType: Test 1, WPBT supports Content
-wpbt            Type 1 only, got 0x88 instead
+wpbt            FAILED [HIGH] WPBTBadFieldValue: Test 1, WPBT Layout field
+wpbt            must be 1, got 51 instead.
+wpbt            FAILED [HIGH] WPBTBadFieldValue: Test 1, WPBT Type field
+wpbt            must be 1, got 136 instead.
 wpbt            
 wpbt            
 wpbt            ==========================================================

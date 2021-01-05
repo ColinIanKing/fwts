@@ -2,10 +2,10 @@ tcpa            tcpa: TCPA Trusted Computing Platform Alliance
 tcpa            Capabilities Table test.
 tcpa            ----------------------------------------------------------
 tcpa            Test 1 of 1: Validate TCPA table.
-tcpa            FAILED [HIGH] TCPABadSize: Test 1, TCPA size is incorrect,
-tcpa            expecting 0x32 bytes, instead got 0x00000064 bytes
-tcpa            FAILED [HIGH] TCPABadRevision: Test 1, TCPA revision is
-tcpa            incorrect, expecting 0x02, instead got 0x01
+tcpa            FAILED [HIGH] TCPABadFieldValue: Test 1, TCPA Length field
+tcpa            must be 50, got 100 instead.
+tcpa            FAILED [HIGH] TCPABadFieldValue: Test 1, TCPA Revision
+tcpa            field must be 2, got 1 instead.
 tcpa            TCPA Table:
 tcpa              Platform Class:                  0x0000
 tcpa              Log Area Minimum Length:         0x00010000

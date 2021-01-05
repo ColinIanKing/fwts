@@ -71,14 +71,7 @@ static int fpdt_test1(fwts_framework *fw)
 		goto done;
 	}
 
-	if (header->revision != 1) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"FPDTBadRevision",
-			"FPDT revision is incorrect, expecting 0x01,"
-			" instead got 0x%2.2" PRIx8,
-			header->revision);
-	}
+	fwts_acpi_revision_check("FPDT", header->revision, 1, &passed);
 
 	ptr += sizeof(fwts_acpi_table_header);
 	while (ptr < data + table->length) {
@@ -120,14 +113,8 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info(fw, "Note: currently fwts does not check FBPT validity and the associated data");
 			}
 
-			if (fbbpr->fpdt.revision != 1) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"FPDTInvalidRevision",
-					"FPDT: Revision field is 0x%" PRIx8
-					" and not the expected value of 0x01",
-					fbbpr->fpdt.revision);
-			}
+			fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "FPDT", "FBPT Revision", fbbpr->fpdt.revision, 1, &passed);
+
 			/* Spec doesn't mention Reserved field should be 0 or not, skip checking the reserved field */
 			break;
 		case 0x0001:	/* S3 Performance Table Pointer Record */
@@ -153,14 +140,8 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info(fw, "Note: currently fwts does not check S3PT validity and the associated data");
 			}
 
-			if (s3ptpr->fpdt.revision != 1) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"FPDTInvalidRevision",
-					"FPDT: Revision field is 0x%" PRIx8
-					" and not the expected value of 0x01",
-					s3ptpr->fpdt.revision);
-			}
+			fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "FPDT", "S3PT Revision", s3ptpr->fpdt.revision, 1, &passed);
+
 			/* Spec doesn't mention Reserved field should be 0 or not, skip checking the reserved field */
 			break;
 		case 0x0002 ... 0x0fff:

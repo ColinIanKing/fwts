@@ -347,13 +347,7 @@ static int srat_test1(fwts_framework *fw)
 	bool passed = true;
 	ssize_t length = (ssize_t)srat->header.length;
 
-	if (srat->reserved1 != 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATInterfaceReserved",
-			"SRAT reserved field 1 should be 1, instead was "
-			"0x%" PRIx32, srat->reserved1);
-		passed = false;
-	}
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "SRAT", "Revision1", srat->reserved1, 1, &passed);
 
 	data += sizeof(fwts_acpi_table_srat);
 	length -= sizeof(fwts_acpi_table_srat);

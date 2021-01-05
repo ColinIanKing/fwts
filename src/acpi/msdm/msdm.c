@@ -71,14 +71,9 @@ static int msdm_test1(fwts_framework *fw)
 	switch (msdm->data_type) {
 	case 0x0001:
 		/* Check license key size */
-		if (msdm->data_length != 0x1d) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"MSDMDataLengthInvalid",
-				"MSDM Data Length field should be 0x0000001d, got 0x8.8%" PRIx32
-				" instead",
-				msdm->data_length);
-		} else {
+		if (msdm->data_length != 0x1d)
+			fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "MSDM", "Data Length", msdm->data_length, 29, &passed);
+		else {
 			size_t i;
 			bool invalid = false;
 			/* Note, no checks to see if this is a valid key! */

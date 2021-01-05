@@ -44,22 +44,11 @@ static int wpbt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Content Layout:           0x%2.2" PRIx8, wpbt->layout);
 	fwts_log_info_verbatim(fw, "  Content Type:             0x%2.2" PRIx8, wpbt->type);
 
-	if (wpbt->layout != 1) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"WPBTBadLayout",
-			"WPBT supports Content Layout 1 only, got "
-			"0x%2.2" PRIx8 " instead", wpbt->layout);
-	}
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "WPBT", "Layout", wpbt->layout, 1, &passed);
 
-	if (wpbt->type != 1) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"WPBTBadType",
-			"WPBT supports Content Type 1 only, got "
-			"0x%2.2" PRIx8 " instead", wpbt->type);
-
-	} else {
+	if (wpbt->type != 1)
+		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "WPBT", "Type", wpbt->type, 1, &passed);
+	else {
 		fwts_acpi_table_wpbt_type1 *type = (fwts_acpi_table_wpbt_type1 *) (table->data + sizeof(fwts_acpi_table_wpbt));
 		fwts_log_info_verbatim(fw, "  Arguments Length:         0x%4.4" PRIx16, type->arguments_length);
 

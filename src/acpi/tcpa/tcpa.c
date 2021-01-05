@@ -30,23 +30,8 @@ static int tcpa_client_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 {
 	bool passed = true;
 
-	if (tcpa->header.length != 50) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TCPABadSize",
-			"TCPA size is incorrect, expecting 0x32 bytes, "
-			"instead got 0x%8.8" PRIx32 " bytes",
-			tcpa->header.length);
-	}
-
-	if (tcpa->header.revision != 2) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TCPABadRevision",
-			"TCPA revision is incorrect, expecting 0x02, "
-			"instead got 0x%2.2" PRIx8,
-			tcpa->header.revision);
-	}
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "TCPA", "Length", tcpa->header.length, 50, &passed);
+	fwts_acpi_revision_check("TCPA", tcpa->header.revision, 2, &passed);
 
 	fwts_log_info_verbatim(fw, "TCPA Table:");
 	fwts_log_info_verbatim(fw, "  Platform Class:                  0x%4.4"   PRIx16, tcpa->platform_class);
@@ -61,23 +46,8 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 	bool passed = true;
 	uint32_t reserved2;
 
-	if (tcpa->header.length != 100) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TCPABadSize",
-			"TCPA size is incorrect, expecting 0x64 bytes, "
-			"instead got 0x%8.8" PRIx32 " bytes",
-			tcpa->header.length);
-	}
-
-	if (tcpa->header.revision != 2) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TCPABadRevision",
-			"TCPA revision is incorrect, expecting 0x02, "
-			"instead got 0x%2.2" PRIx8,
-			tcpa->header.revision);
-	}
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "TCPA", "Length", tcpa->header.length, 100, &passed);
+	fwts_acpi_revision_check("TCPA", tcpa->header.revision, 2, &passed);
 
 	reserved2 = tcpa->server.reserved2[0] + (tcpa->server.reserved2[1] << 4) + (tcpa->server.reserved2[2] << 8);
 

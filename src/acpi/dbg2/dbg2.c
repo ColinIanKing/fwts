@@ -260,14 +260,8 @@ static int dbg2_test1(fwts_framework *fw)
 		fwts_log_info_verbatim(fw, "  Address Size Offset:      0x%4.4" PRIx16, info->address_size_offset);
 		fwts_log_nl(fw);
 
-		if (info->revision != 0) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"DBG2NonZeroRevision",
-				"DBG2 Info Structure Revision is 0x%2.2" PRIx8
-				" and was expecting 0x00",
-				info->revision);
-		}
+		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "DBG2", "Info Structure Revision", info->revision, 0, &passed);
+
 		if (port == NULL) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,

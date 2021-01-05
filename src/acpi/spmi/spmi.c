@@ -96,14 +96,7 @@ static int spmi_test1(fwts_framework *fw)
 			spmi->interface_type);
 	}
 
-	if (spmi->reserved1 != 1) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"SPMIReserved1Not1",
-			"SPMI reserved field (offset 37) must be 0x01, got "
-			"0x%2.2" PRIx8 " instead", spmi->reserved1);
-	}
-
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "SPMI", "Reserved1", spmi->reserved1, 1, &passed);
 	fwts_acpi_reserved_bits_check(fw, "SPMI", "Interrupt type", spmi->interrupt_type, sizeof(spmi->interrupt_type), 2, 7, &passed);
 
 	/* Check for zero GPE on specific condition of interrupt type */

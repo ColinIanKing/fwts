@@ -70,14 +70,8 @@ static void iort_node_check(
 				node->revision);
 		}
 
-	} else if (node->revision != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"IORTNodeRevisionNonZero",
-			"IORT Node Revision field is 0x%2.2" PRIx8
-			" and should be zero.",
-			node->revision);
-	}
+	} else
+		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "IORT", "IORT Node Revision", node->revision, 0, passed);
 
 	fwts_acpi_reserved_zero_check(fw, "IORT", "Node Reserved", node->reserved, sizeof(node->reserved), passed);
 

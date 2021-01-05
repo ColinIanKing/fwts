@@ -58,26 +58,16 @@ static int cpep_test1(fwts_framework *fw)
 
 	for (i = 0; i < n; i++) {
 		bool cpep_passed = true;
+		char label[40];
+
 		fwts_acpi_cpep_processor_info *info = &cpep->cpep_info[i];
 
-		if (info->type != 0) {
-			cpep_passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"CPEPInvalidProcStructureType",
-				"CPEP: Processor Structure %" PRIu32
-				" Type field is 0x%" PRIx8
-				" and was expected to be 0x00",
-				i, info->type);
-		}
-		if (info->length != 8) {
-			cpep_passed = false;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"CPEPInvalidProcStructureType",
-				"CPEP: Processor Structure %" PRIu32
-				" Length field is 0x%" PRIx8
-				" and was expected to be 0x08",
-				i, info->length);
-		}
+		snprintf(label, 40, "Processor Structure %d Type", i);
+		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "CPEP", label, info->type, 0, &cpep_passed);
+
+		snprintf(label, 40, "Processor Structure %d Length", i);
+		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "CPEP", label, info->length, 8, &cpep_passed);
+
 		/* Should probably sanity check processor UID, EIDs at a later date */
 
 		/* Some feedback if polling interval is very short */

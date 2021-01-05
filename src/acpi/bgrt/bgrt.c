@@ -46,25 +46,9 @@ static int bgrt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Image Offset X:           0x%8.8" PRIx32, bgrt->image_offset_x);
 	fwts_log_info_verbatim(fw, "  Image Offset Y:           0x%8.8" PRIx32, bgrt->image_offset_y);
 
-	if (bgrt->version != 1) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"BGRTInvalidVersion",
-			"BGRT: Version field is 0x%" PRIx8
-			" and not the expected value of 0x01",
-			bgrt->version);
-	}
-
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "BGRT", "Version", bgrt->version, 1, &passed);
 	fwts_acpi_reserved_bits_check(fw, "BGRT", "BGRT Status", bgrt->status, sizeof(bgrt->status), 3, 7, &passed);
-
-	if (bgrt->image_type > 0x00) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"BGRTInvalidImageType",
-			"BGRT: Image Type field is 0x%" PRIx8
-			", the only allowed type is 0x00",
-			bgrt->image_type);
-	}
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "BGRT", "Image Type", bgrt->image_type, 0, &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in BGRT table.");

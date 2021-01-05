@@ -43,14 +43,7 @@ static int xenv_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (xenv->header.revision != 1) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"XENVBadRevision",
-			"XENV revision is incorrect, expecting 0x01, "
-			"instead got 0x%2.2" PRIx8,
-			xenv->header.revision);
-	}
+	fwts_acpi_revision_check("XENV", xenv->header.revision, 1, &passed);
 
 	fwts_log_info_verbatim(fw, "XENV Table:");
 	fwts_log_info_verbatim(fw, "  GNT Start Address:               0x%16.16" PRIx64, xenv->gnt_start);

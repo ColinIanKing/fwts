@@ -202,22 +202,8 @@ static int spcr_test1(fwts_framework *fw)
 			" is a reserved baud rate", spcr->baud_rate);
 	}
 
-	if (spcr->parity != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRReservedValueUsed",
-			"SPCR Parity field must be zero, got 0x%2.2" PRIx8 " instead",
-			spcr->parity);
-	}
-
-	if (spcr->stop_bits != 1) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRReservedValueUsed",
-			"SPCR Stop field must be 1, got 0x%2.2" PRIx8 " instead",
-			spcr->stop_bits);
-	}
-
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "SPCR", "Parity", spcr->parity, 0, &passed);
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "SPCR", "Stop", spcr->stop_bits, 1, &passed);
 	fwts_acpi_reserved_bits_check(fw, "SPCR", "Flow control", spcr->flow_control, sizeof(spcr->flow_control), 3, 7, &passed);
 
 	reserved = false;

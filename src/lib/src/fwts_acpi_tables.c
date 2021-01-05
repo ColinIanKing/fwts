@@ -1143,7 +1143,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 
 		(void)memcpy(xsdt->header.signature, "XSDT", 4);
 		xsdt->header.length = size;
-		xsdt->header.revision = 2;
+		xsdt->header.revision = 1;
 		(void)memcpy(xsdt->header.oem_id, "FWTSID", 6);
 		(void)memcpy(xsdt->header.oem_tbl_id, oem_tbl_id, 8);
 		xsdt->header.oem_revision = 1;

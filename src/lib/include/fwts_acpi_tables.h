@@ -70,6 +70,7 @@ void fwts_acpi_reserved_type_check(fwts_framework *fw, const char *table, uint8_
 bool fwts_acpi_table_length_check(fwts_framework *fw, const char *table, uint32_t length, uint32_t size);
 bool fwts_acpi_structure_length_check(fwts_framework *fw, const char *table, uint8_t subtable_type, uint32_t subtable_length, uint32_t size);
 void fwts_acpi_fixed_value_check(fwts_framework *fw, fwts_log_level level, const char *table, const char *field, uint8_t actual, uint8_t must_be, bool *passed);
+void fwts_acpi_space_id_check(fwts_framework *fw, const char *table, const char *field, bool *passed, uint8_t actual, uint8_t num_type, ...);
 
 uint32_t fwts_get_acpi_version(fwts_framework *fw);
 

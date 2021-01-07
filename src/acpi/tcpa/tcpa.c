@@ -100,23 +100,15 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 		}
 	}
 
-	if (tcpa->server.base_addr.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY &&
-	    tcpa->server.base_addr.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TCPABadAddressID",
-			"TCPA base address ID must be 1 or zero, got "
-			"0x%2.2" PRIx8 " instead", tcpa->server.base_addr.address_space_id);
-	}
+	fwts_acpi_space_id_check(fw, "TCPA", "Base Address", &passed,
+				 tcpa->server.base_addr.address_space_id, 2,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
-	if (tcpa->server.config_addr.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY &&
-	    tcpa->server.config_addr.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"TCPABadAddressID",
-			"TCPA configuration address ID must be 1 or zero, got "
-			"0x%2.2" PRIx8 " instead", tcpa->server.config_addr.address_space_id);
-	}
+	fwts_acpi_space_id_check(fw, "TCPA", "Configuration Address", &passed,
+				 tcpa->server.config_addr.address_space_id, 2,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
 	return passed;
 }

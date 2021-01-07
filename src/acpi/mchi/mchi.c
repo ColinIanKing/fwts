@@ -123,19 +123,13 @@ static int mchi_test1(fwts_framework *fw)
 			mchi->global_system_interrupt);
 	}
 
-	if ((mchi->base_address.address_space_id != 0x00) &&
-	    (mchi->base_address.address_space_id != 0x01) &&
-	    (mchi->base_address.address_space_id != 0x04)) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"MCHIAddrSpaceIdInvalid",
-			"MCHI Address Space ID is 0x%2.2" PRIx8 " and should be "
-			"0x00 (System Memory), 0x01 (System I/O) or 0x04 (SMBus)",
-			mchi->base_address.address_space_id);
-	}
+	fwts_acpi_space_id_check(fw, "MCHI", "Base Address", &passed, mchi->base_address.address_space_id, 3,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
+				 FWTS_GAS_ADDR_SPACE_ID_SMBUS);
 
 	/* SMBus specific checks */
-	if (mchi->base_address.address_space_id == 0x04) {
+	if (mchi->base_address.address_space_id == FWTS_GAS_ADDR_SPACE_ID_SMBUS) {
 		if ((mchi->pci_device_flag & 0x01) == 1) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,

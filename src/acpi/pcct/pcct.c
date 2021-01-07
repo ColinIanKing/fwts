@@ -41,21 +41,19 @@ static bool subspace_length_equal(fwts_framework *fw, uint8_t type, uint8_t type
 
 static void gas_messages(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, bool *passed)
 {
+	char label[20];
+
 	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
 	fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
 	fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
 	fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
 	fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
 
-	if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-	    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
-			(gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_FFH)) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PCCTSubspaceInvalidAddrSpaceID",
-			"PCCT Subspace Type %" PRId8 " has space ID = %" PRId8
-			" which is not System I/O, Memory or FFH", type, gas->address_space_id);
-	}
+	snprintf(label, 20, "Subspace Type % " PRId8, type);
+	fwts_acpi_space_id_check(fw, "PCCT", label, passed, gas->address_space_id, 3,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
+				 FWTS_GAS_ADDR_SPACE_ID_FFH);
 }
 
 static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_range, uint64_t min_length, bool *passed)
@@ -108,15 +106,8 @@ static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
 	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
 
-	if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-	    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY)) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PCCTSubspaceInvalidAddrSpaceID",
-			"PCCT Subspace Type 0 has space ID = 0x%2.2" PRIx8
-			" which is not System I/O or Memory",
-			gas->address_space_id);
-	}
+	fwts_acpi_space_id_check(fw, "PCCT", "Subspace Type 0", passed, gas->address_space_id, 2,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 }
 
 static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_1 *entry, bool *passed)

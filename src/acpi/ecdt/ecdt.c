@@ -41,18 +41,9 @@ static int ecdt_test1(fwts_framework *fw)
 	uint32_t min_length;
 	int i;
 
-
 	/* Must be I/O Address Space or a Memory Space */
-	if ((ecdt->ec_control.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-	    (ecdt->ec_control.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"ECDTECControlInvalidAddrSpaceID",
-			"ECDT EC_CONTROL address space ID is 0x%2.2" PRIx8
-			"which is not a System I/O Space ID or a System "
-			"Memory Space ID",
-			ecdt->ec_control.address_space_id);
-		passed = false;
-	}
+	fwts_acpi_space_id_check(fw, "ECDT", "EC_CONTROL", &passed, ecdt->ec_control.address_space_id, 2,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 	/* Must be correct Access Size */
 	if (ecdt->ec_control.access_width > 4) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -63,16 +54,8 @@ static int ecdt_test1(fwts_framework *fw)
 		passed = false;
 	}
 	/* Must be I/O Address Space or a Memory Space */
-	if ((ecdt->ec_data.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-	    (ecdt->ec_data.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"ECDTECControlInvalidAddrSpaceID",
-			"ECDT EC_DATA address space ID is 0x%2.2" PRIx8
-			"which is not a System I/O Space ID or a System "
-			"Memory Space ID",
-			ecdt->ec_data.address_space_id);
-		passed = false;
-	}
+	fwts_acpi_space_id_check(fw, "ECDT", "EC_DATA", &passed, ecdt->ec_control.address_space_id, 2,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 	/* Must be correct Access Size */
 	if (ecdt->ec_data.access_width > 4) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,

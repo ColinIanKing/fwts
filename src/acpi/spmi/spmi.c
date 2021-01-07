@@ -125,21 +125,11 @@ static int spmi_test1(fwts_framework *fw)
 	}
 
 	/* Base address must be one of 3 types, System Memory, System I/O or SMBUS */
-	if ((spmi->base_address.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
-	    (spmi->base_address.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-	    (spmi->base_address.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SMBUS)) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SPMIBaseAddressSpaceID",
-			"SPMI Base Address Space ID is 0x%2.2" PRIx8 " but should be one of "
-			"0x%2.2" PRIx8 " (System Memory), "
-			"0x%2.2" PRIx8 " (System I/O) or "
-			"0x%2.2" PRIx8 " (SMBUS)",
-			spmi->base_address.address_space_id,
-			FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
-			FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
-			FWTS_GAS_ADDR_SPACE_ID_SMBUS);
-	}
+	fwts_acpi_space_id_check(fw, "SPMI", "Base Address", &passed, spmi->base_address.address_space_id, 3,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
+				 FWTS_GAS_ADDR_SPACE_ID_SMBUS);
+
 	/*
 	 * For SSIF: The Address_Space_ID is SMBUS and the address field of the GAS
 	 * holds the 7-bit slave address of the BMC on the host SMBus

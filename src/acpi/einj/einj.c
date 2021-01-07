@@ -104,16 +104,8 @@ static int einj_test1(fwts_framework *fw)
 		}
 
 		fwts_acpi_reserved_zero_check(fw, "EINJ", "Reserved", entry->reserved, sizeof(entry->reserved), &passed);
-
-		if (gas.address_space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY &&
-		    gas.address_space_id != ACPI_ADR_SPACE_SYSTEM_IO) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				    "EINJBadSpaceId",
-				    "EINJ Address_Space_ID must be within 0 or "
-				    "1, got 0x%" PRIx8 " instead",
-				    gas.address_space_id);
-			passed = false;
-		}
+		fwts_acpi_space_id_check(fw, "EINJ", "Register Region", &passed, gas.address_space_id, 2,
+					 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
 		fwts_log_nl(fw);
 	}

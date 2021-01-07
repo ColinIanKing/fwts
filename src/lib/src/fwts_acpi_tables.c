@@ -1614,6 +1614,88 @@ void fwts_acpi_reserved_type_check(
 }
 
 /*
+ *  Space Id defined for Generic Address Structure (GAS)
+ *  See Table 5.1: Generic Address Structure (GAS) in ACPI spec
+ *  Also see fwts_acpi.h
+ */
+static const char *gas_space_id_names[] = {
+	"System Memory (0x0)",
+	"System I/O (0x1)",
+	"PCI Configuration (0x2)",
+	"Embedded Controller (0x3)",
+	"SMBus (0x4)",
+	"SystemCMOS (0x5)",
+	"PciBarTarget (0x6)",
+	"IPMI (0x7)",
+	"General PurposeIO (0x8)",
+	"GenericSerialBus (0x9)",
+	"Platform Communications Channel (0xa)",
+	"Functional Fixed Hardware (0x7f)",
+};
+
+static const char *get_space_id_name(uint8_t id) {
+	if (id <= 0x0a)
+		return gas_space_id_names[id];
+	else if (id == 0x7f)
+		return gas_space_id_names[0x0b];
+	else
+		return NULL;
+}
+
+/*
+ *  fwts_acpi_space_id_check()
+ *  check whether gas space id matches
+ */
+void fwts_acpi_space_id_check(
+	fwts_framework *fw,
+	const char *table,
+	const char *field,
+	bool *passed,
+	uint8_t actual,
+	uint8_t num_type,
+	...)
+{
+	bool matched = false;
+	char must_be_id[255];
+	uint16_t length = 0;
+	uint8_t i, must_be;
+	char label[25];
+	va_list ap;
+
+	strncpy(label, table, 4);	/* ACPI table name is 4 char long */
+	strncpy(label + 4, "BadAddressSpaceId", sizeof(label) - 4);
+	memset(must_be_id, 0, strlen(must_be_id));
+
+	va_start(ap, num_type);
+	for (i = 0; i < num_type; i++) {
+		must_be = va_arg(ap, int);
+		if (actual == must_be) {
+			matched = true;
+			break;
+		}
+
+		length += strlen(get_space_id_name(must_be));
+		if (length > 255)
+			continue;
+
+		strncat(must_be_id, get_space_id_name(must_be), strlen(get_space_id_name(must_be)));
+		if (i < num_type - 2)
+			strncat(must_be_id, ", ", 2);
+		else if (i == num_type - 2)
+			strncat(must_be_id, " or ", 4);
+	}
+
+	if (!matched) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, label,
+			"%4.4s %s Space ID must be one of %s, got %s instead.",
+			table, field, must_be_id, get_space_id_name(actual));
+		*passed = false;
+	}
+
+	 va_end(ap);
+}
+
+/*
  *  fwts_acpi_table_length_check()
  *  verify whether table length is sane
  */

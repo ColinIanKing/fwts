@@ -22,9 +22,9 @@ pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
 pcct                Max Periodic Access Rate:    0x77777777
 pcct                Min Request Turnaround Time: 0x00008888
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 0 has space ID = 0x02 which is not System I
-pcct            /O or Memory
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 0 Space ID must be one of System Memory (0x0) or
+pcct            System I/O (0x1), got PCI Configuration (0x2) instead.
 pcct            
 pcct              PCC Subspace Structure:
 pcct                Type:                        0x01
@@ -40,9 +40,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x4444444444444444
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 1 has space ID = 4 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 1 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got SMBus
+pcct            (0x4) instead.
 pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
@@ -63,9 +64,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x4444444444444444
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 2 has space ID = 3 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 2 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            Embedded Controller (0x3) instead.
 pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
@@ -77,9 +79,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 2 has space ID = 3 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 2 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            Embedded Controller (0x3) instead.
 pcct                Platform Ack Preserve:       0x4444444444444444
 pcct                Platform Ack Write:          0x5555555555555555
 pcct            
@@ -97,9 +100,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 3 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
@@ -111,9 +115,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 3 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Doorbell Ack Preserve:       0x9999999999999999
 pcct                Doorbell Ack Write:          0x0000000000000000
 pcct                Reserved:                    0x0000000000000000
@@ -123,9 +128,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 3 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Cmd Complete Check Mask:     0x2222222222222222
 pcct                Cmd Complete Update Register:
 pcct                  Address Space ID           0x05
@@ -133,9 +139,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 3 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Cmd Complete Update Mask:    0x3333333333333333
 pcct                Cmd Complete Set Mask:       0x3333333333333333
 pcct                Error Status Register:
@@ -144,9 +151,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 3 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Error Status Mask:           0x5555555555555555
 pcct            
 pcct              PCC Subspace Structure:
@@ -166,9 +174,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 4 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 4 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
@@ -180,9 +189,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 4 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 4 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Doorbell Ack Preserve:       0x9999999999999999
 pcct                Doorbell Ack Write:          0x0000000000000000
 pcct                Reserved:                    0x0000000000000000
@@ -192,9 +202,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 4 has space ID = 5 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 4 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got
+pcct            SystemCMOS (0x5) instead.
 pcct                Cmd Complete Check Mask:     0x2222222222222222
 pcct                Cmd Complete Update Register:
 pcct                  Address Space ID           0x04
@@ -202,9 +213,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 4 has space ID = 4 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 4 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got SMBus
+pcct            (0x4) instead.
 pcct                Cmd Complete Update Mask:    0x3333333333333333
 pcct                Cmd Complete Set Mask:       0x3333333333333333
 pcct                Error Status Register:
@@ -213,9 +225,10 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 4 has space ID = 4 which is not System I/O,
-pcct            Memory or FFH
+pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
+pcct            Type 4 Space ID must be one of System Memory (0x0), System
+pcct            I/O (0x1) or Functional Fixed Hardware (0x7f), got SMBus
+pcct            (0x4) instead.
 pcct                Error Status Mask:           0x5555555555555555
 pcct            
 pcct            

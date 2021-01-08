@@ -24,6 +24,7 @@
 #include <dirent.h>
 #include <ctype.h>
 #include <math.h>
+#include <bsd/string.h>
 
 #define CPU_FREQ_PATH	"/sys/devices/system/cpu"
 #define CPU_INFO_PATH	"/proc/cpuinfo"
@@ -139,9 +140,9 @@ static int maxfreq_test1(fwts_framework *fw)
 		    strlen(entry->d_name) < 3)
 			continue;
 
-		snprintf(path, sizeof(path),
-			CPU_FREQ_PATH "/%s/cpufreq/scaling_available_frequencies",
-			entry->d_name);
+		strlcpy(path, CPU_FREQ_PATH, strlen(CPU_FREQ_PATH) + 1);
+		snprintf(path + strlen(CPU_FREQ_PATH), sizeof(path) - strlen(CPU_FREQ_PATH),
+			"/%s/cpufreq/scaling_available_frequencies", entry->d_name);
 
 		if ((data = fwts_get(path)) == NULL)
 			continue;
@@ -214,4 +215,3 @@ static fwts_framework_ops maxfreq_ops = {
 };
 
 FWTS_REGISTER("maxfreq", &maxfreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
-

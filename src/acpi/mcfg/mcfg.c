@@ -18,6 +18,8 @@
  */
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -252,3 +254,4 @@ static fwts_framework_ops mcfg_ops = {
 
 FWTS_REGISTER("mcfg", &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
 
+#endif

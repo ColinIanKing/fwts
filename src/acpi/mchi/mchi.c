@@ -47,8 +47,8 @@ static int mchi_test1(fwts_framework *fw)
 
 #if DUMP_MCHI_TABLE
 	fwts_log_info_verbatim(fw, "MCHI Table:");
-	fwts_log_info_verbatim(fw, "  Interface Type:           0x%2.2" PRIx8, mchi->interface_type);
-	fwts_log_info_verbatim(fw, "  Protocol Identifier       0x%2.2" PRIx8, mchi->protocol_identifier);
+	fwts_log_info_simp_int(fw, "  Interface Type:           ", mchi->interface_type);
+	fwts_log_info_simp_int(fw, "  Protocol Identifier       ", mchi->protocol_identifier);
 	fwts_log_info_verbatim(fw, "  Protocol Data:            "
 		"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 			mchi->protocol_data[0], mchi->protocol_data[1],
@@ -57,21 +57,21 @@ static int mchi_test1(fwts_framework *fw)
 		"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 			mchi->protocol_data[4], mchi->protocol_data[5],
 			mchi->protocol_data[6], mchi->protocol_data[7]);
-	fwts_log_info_verbatim(fw, "  Interrupt Type:           0x%2.2" PRIx8, mchi->interrupt_type);
-	fwts_log_info_verbatim(fw, "  GPE:                      0x%2.2" PRIx8, mchi->gpe);
-	fwts_log_info_verbatim(fw, "  PCI Device Flag:          0x%2.2" PRIx8, mchi->pci_device_flag);
-	fwts_log_info_verbatim(fw, "  Global System Interrupt:  0x%8.8" PRIx32, mchi->global_system_interrupt);
+	fwts_log_info_simp_int(fw, "  Interrupt Type:           ", mchi->interrupt_type);
+	fwts_log_info_simp_int(fw, "  GPE:                      ", mchi->gpe);
+	fwts_log_info_simp_int(fw, "  PCI Device Flag:          ", mchi->pci_device_flag);
+	fwts_log_info_simp_int(fw, "  Global System Interrupt:  ", mchi->global_system_interrupt);
 	fwts_log_info_verbatim(fw, "  Base Address:");
-	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, mchi->base_address.address_space_id);
-	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, mchi->base_address.register_bit_width);
-	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, mchi->base_address.register_bit_offset);
-	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, mchi->base_address.access_width);
-	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, mchi->base_address.address);
+	fwts_log_info_simp_int(fw, "    Address Space ID:       ", mchi->base_address.address_space_id);
+	fwts_log_info_simp_int(fw, "    Register Bit Width      ", mchi->base_address.register_bit_width);
+	fwts_log_info_simp_int(fw, "    Register Bit Offset     ", mchi->base_address.register_bit_offset);
+	fwts_log_info_simp_int(fw, "    Access Size             ", mchi->base_address.access_width);
+	fwts_log_info_simp_int(fw, "    Address                 ", mchi->base_address.address);
 	if ((mchi->pci_device_flag & 1) == 1) {
-		fwts_log_info_verbatim(fw, "  PCI Segment Group:       0x%2.2" PRIx8, mchi->bytes[0]);
-		fwts_log_info_verbatim(fw, "  PCI Bus Number:          0x%2.2" PRIx8, mchi->bytes[1]);
-		fwts_log_info_verbatim(fw, "  PCI Device Number:       0x%2.2" PRIx8, mchi->bytes[2]);
-		fwts_log_info_verbatim(fw, "  PCI Function Number:     0x%2.2" PRIx8, mchi->bytes[3]);
+		fwts_log_info_simp_int(fw, "  PCI Segment Group:       ", mchi->bytes[0]);
+		fwts_log_info_simp_int(fw, "  PCI Bus Number:          ", mchi->bytes[1]);
+		fwts_log_info_simp_int(fw, "  PCI Device Number:       ", mchi->bytes[2]);
+		fwts_log_info_simp_int(fw, "  PCI Function Number:     ", mchi->bytes[3]);
 	} else {
 		/* Zero -> UIDS */
 		fwts_log_info_verbatim(fw, "  UID Bytes 1-4:            "

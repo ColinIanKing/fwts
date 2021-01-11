@@ -45,10 +45,10 @@ static int msdm_test1(fwts_framework *fw)
 		passed = false;
 		goto done;
 	}
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, msdm->reserved);
-	fwts_log_info_verbatim(fw, "  Data Type:                0x%8.8" PRIx32, msdm->data_type);
-	fwts_log_info_verbatim(fw, "  Data Reserved:            0x%8.8" PRIx32, msdm->data_reserved);
-	fwts_log_info_verbatim(fw, "  Data Length:              0x%8.8" PRIx32, msdm->data_length);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", msdm->reserved);
+	fwts_log_info_simp_int(fw, "  Data Type:                ", msdm->data_type);
+	fwts_log_info_simp_int(fw, "  Data Reserved:            ", msdm->data_reserved);
+	fwts_log_info_simp_int(fw, "  Data Length:              ", msdm->data_length);
 
 	fwts_acpi_reserved_zero_check(fw, "MSDM", "Reserved", msdm->reserved, sizeof(msdm->reserved), &passed);
 	fwts_acpi_reserved_zero_check(fw, "MSDM", "Data Reserved", msdm->data_reserved, sizeof(msdm->data_reserved), &passed);

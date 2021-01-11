@@ -42,14 +42,10 @@ static int einj_test1(fwts_framework *fw)
 		   ((uint32_t) einj->reserved[2] << 16);
 
 	fwts_log_info_verbatim(fw, "EINJ Error Injection Table:");
-	fwts_log_info_verbatim(fw, "  Injection Header Size: 0x%8.8" PRIx32,
-			einj->header_size);
-	fwts_log_info_verbatim(fw, "  Injection Flags:       0x%8.8" PRIx32,
-			einj->flags);
-	fwts_log_info_verbatim(fw, "  Reserved:              0x%8.8" PRIx32,
-			reserved);
-	fwts_log_info_verbatim(fw, "  Injection Entry Count: 0x%8.8" PRIx32,
-			einj->count);
+	fwts_log_info_simp_int(fw, "  Injection Header Size: ", einj->header_size);
+	fwts_log_info_simp_int(fw, "  Injection Flags:       ", einj->flags);
+	fwts_log_info_simp_int(fw, "  Reserved:              ", reserved);
+	fwts_log_info_simp_int(fw, "  Injection Entry Count: ", einj->count);
 
 	fwts_acpi_reserved_bits_check(fw, "EINJ", "Injection Flags", einj->flags, sizeof(einj->flags), 0, 31, &passed);
 	fwts_acpi_reserved_zero_check(fw, "EINJ", "Reserved", reserved, sizeof(reserved), &passed);

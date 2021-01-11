@@ -443,6 +443,33 @@ int fwts_log_printf(
 	return ret;
 }
 
+
+/*
+ *  _fwts_log_info_simp_int()
+ *	simplify printing integers with different sizes
+ */
+void _fwts_log_info_simp_int(
+	const fwts_framework *fw,
+	const char *message,
+	uint8_t size,
+	uint64_t value)
+{
+	switch (size) {
+		case sizeof(uint8_t):
+			fwts_log_info_verbatim(fw, "%s0x%2.2" PRIx8, message, (uint8_t)value);
+			break;
+		case sizeof(uint16_t):
+			fwts_log_info_verbatim(fw, "%s0x%4.4" PRIx16, message, (uint16_t)value);
+			break;
+		case sizeof(uint32_t):
+			fwts_log_info_verbatim(fw, "%s0x%8.8" PRIx32, message, (uint32_t)value);
+			break;
+		case sizeof(uint64_t):
+			fwts_log_info_verbatim(fw, "%s0x%16.16" PRIx64, message, value);
+			break;
+	}
+}
+
 /*
  *  fwts_log_underline()
  *	write an underline across log, using character ch as the underline

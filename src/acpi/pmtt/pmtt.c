@@ -29,11 +29,11 @@ acpi_table_init(PMTT, &table)
 static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  PMTT Subtable:");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->type);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%2.2" PRIx8, entry->reserved1);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%4.4" PRIx16, entry->length);
-	fwts_log_info_verbatim(fw, "    Flags:                          0x%4.4" PRIx16, entry->flags);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved2);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->type);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved1);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->length);
+	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
 
 	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved1", entry->reserved1, sizeof(entry->reserved1), passed);
 	fwts_acpi_reserved_bits_check(fw, "PMTT", "Flags", entry->flags, sizeof(entry->flags), 4, 15, passed);
@@ -51,10 +51,10 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmtt_physical_component *entry, bool *passed)
 {
 	pmtt_subtable_header_test(fw, &entry->header, passed);
-	fwts_log_info_verbatim(fw, "    Physical Component Identifier:  0x%4.4" PRIx16, entry->component_id);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
-	fwts_log_info_verbatim(fw, "    Size of DIMM:                   0x%8.8" PRIx32, entry->memory_size);
-	fwts_log_info_verbatim(fw, "    SMBIOS Handle:                  0x%8.8" PRIx32, entry->bios_handle);
+	fwts_log_info_simp_int(fw, "    Physical Component Identifier:  ", entry->component_id);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
+	fwts_log_info_simp_int(fw, "    Size of DIMM:                   ", entry->memory_size);
+	fwts_log_info_simp_int(fw, "    SMBIOS Handle:                  ", entry->bios_handle);
 
 	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
@@ -74,14 +74,14 @@ static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 	size_t i;
 
 	pmtt_subtable_header_test(fw, &entry->header, passed);
-	fwts_log_info_verbatim(fw, "    Read Latency:                   0x%8.8" PRIx32, entry->read_latency);
-	fwts_log_info_verbatim(fw, "    Write latency:                  0x%8.8" PRIx32, entry->write_latency);
-	fwts_log_info_verbatim(fw, "    Read Bandwidth:                 0x%8.8" PRIx32, entry->read_bandwidth);
-	fwts_log_info_verbatim(fw, "    Write Bandwidth:                0x%8.8" PRIx32, entry->write_bandwidth);
-	fwts_log_info_verbatim(fw, "    Optimal Access Unit:            0x%4.4" PRIx16, entry->access_width);
-	fwts_log_info_verbatim(fw, "    Optimal Access Alignment:       0x%4.4" PRIx16, entry->alignment);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
-	fwts_log_info_verbatim(fw, "    Number of Proximity Domains:    0x%4.4" PRIx16, entry->domain_count);
+	fwts_log_info_simp_int(fw, "    Read Latency:                   ", entry->read_latency);
+	fwts_log_info_simp_int(fw, "    Write latency:                  ", entry->write_latency);
+	fwts_log_info_simp_int(fw, "    Read Bandwidth:                 ", entry->read_bandwidth);
+	fwts_log_info_simp_int(fw, "    Write Bandwidth:                ", entry->write_bandwidth);
+	fwts_log_info_simp_int(fw, "    Optimal Access Unit:            ", entry->access_width);
+	fwts_log_info_simp_int(fw, "    Optimal Access Alignment:       ", entry->alignment);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
+	fwts_log_info_simp_int(fw, "    Number of Proximity Domains:    ", entry->domain_count);
 
 	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
@@ -96,7 +96,7 @@ static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 
 	fwts_acpi_table_pmtt_domain *domain = (fwts_acpi_table_pmtt_domain *)(((char *) entry) + offset);
 	for (i = 0; i < entry->domain_count; i++) {
-		fwts_log_info_verbatim(fw, "    Proximity Domain:               0x%8.8" PRIx32, domain->proximity_domain);
+		fwts_log_info_simp_int(fw, "    Proximity Domain:               ", domain->proximity_domain);
 		domain++;
 		/* TODO cross check proximity domain with SRAT table*/
 	}
@@ -125,8 +125,8 @@ static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *en
 	uint32_t offset;
 
 	pmtt_subtable_header_test(fw, &entry->header, passed);
-	fwts_log_info_verbatim(fw, "    Socket Identifier:              0x%4.4" PRIx16, entry->socket_id);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
+	fwts_log_info_simp_int(fw, "    Socket Identifier:              ", entry->socket_id);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
 
 	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
@@ -156,7 +156,7 @@ static int pmtt_test1(fwts_framework *fw)
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "PMTT Table:");
-	fwts_log_info_verbatim(fw, "  Reserved:                         0x%8.8" PRIx32, pmtt->reserved);
+	fwts_log_info_simp_int(fw, "  Reserved:                         ", pmtt->reserved);
 
 	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", pmtt->reserved, sizeof(pmtt->reserved), &passed);
 

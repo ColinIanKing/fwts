@@ -39,12 +39,12 @@ static int bgrt_test1(fwts_framework *fw)
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "BGRT Boot Graphics Resource Table:");
-	fwts_log_info_verbatim(fw, "  Version:                  0x%4.4" PRIx16, bgrt->version);
-	fwts_log_info_verbatim(fw, "  Status:                   0x%2.2" PRIx8, bgrt->status);
-	fwts_log_info_verbatim(fw, "  Image Type:               0x%2.2" PRIx8, bgrt->image_type);
-	fwts_log_info_verbatim(fw, "  Image Memory Address:     0x%16.16" PRIx64, bgrt->image_addr);
-	fwts_log_info_verbatim(fw, "  Image Offset X:           0x%8.8" PRIx32, bgrt->image_offset_x);
-	fwts_log_info_verbatim(fw, "  Image Offset Y:           0x%8.8" PRIx32, bgrt->image_offset_y);
+	fwts_log_info_simp_int(fw, "  Version:                  ", bgrt->version);
+	fwts_log_info_simp_int(fw, "  Status:                   ", bgrt->status);
+	fwts_log_info_simp_int(fw, "  Image Type:               ", bgrt->image_type);
+	fwts_log_info_simp_int(fw, "  Image Memory Address:     ", bgrt->image_addr);
+	fwts_log_info_simp_int(fw, "  Image Offset X:           ", bgrt->image_offset_x);
+	fwts_log_info_simp_int(fw, "  Image Offset Y:           ", bgrt->image_offset_y);
 
 	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "BGRT", "Version", bgrt->version, 1, &passed);
 	fwts_acpi_reserved_bits_check(fw, "BGRT", "BGRT Status", bgrt->status, sizeof(bgrt->status), 3, 7, &passed);

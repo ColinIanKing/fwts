@@ -63,13 +63,13 @@ static int dbgp_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "DBGP Table:");
 	fwts_log_info_verbatim(fw, "  Interface Type            0x%2.2" PRIx8 " (%s)",
 		dbgp->interface_type, interface_type);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, reserved);
+	fwts_log_info_simp_int(fw, "  Reserved:                 "	, reserved);
 	fwts_log_info_verbatim(fw, "  Base Address:");
-	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, dbgp->base_address.address_space_id);
-	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, dbgp->base_address.register_bit_width);
-	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, dbgp->base_address.register_bit_offset);
-	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, dbgp->base_address.access_width);
-	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, dbgp->base_address.address);
+	fwts_log_info_simp_int(fw, "    Address Space ID:       ", dbgp->base_address.address_space_id);
+	fwts_log_info_simp_int(fw, "    Register Bit Width      ", dbgp->base_address.register_bit_width);
+	fwts_log_info_simp_int(fw, "    Register Bit Offset     ", dbgp->base_address.register_bit_offset);
+	fwts_log_info_simp_int(fw, "    Access Size             ", dbgp->base_address.access_width);
+	fwts_log_info_simp_int(fw, "    Address                 ", dbgp->base_address.address);
 	fwts_log_nl(fw);
 
 	if (dbgp->interface_type > 2) {

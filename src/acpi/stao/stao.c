@@ -85,7 +85,7 @@ static int stao_test1(fwts_framework *fw)
 
 	/* Now we have got some sane data, dump the STAO */
         fwts_log_info_verbatim(fw, "STAO Status Override Table:");
-        fwts_log_info_verbatim(fw, "  UART:                     0x%2.2" PRIx8, stao->uart);
+        fwts_log_info_simp_int(fw, "  UART:                     ", stao->uart);
 
 	ptr = (const char *)stao->namelist;
 	end = (const char *)table->data + stao->header.length;

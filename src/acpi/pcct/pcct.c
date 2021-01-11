@@ -43,11 +43,11 @@ static void gas_messages(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, b
 {
 	char label[20];
 
-	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
-	fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
-	fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
-	fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
-	fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
+	fwts_log_info_simp_int(fw, "      Address Space ID           ", gas->address_space_id);
+	fwts_log_info_simp_int(fw, "      Register Bit Width         ", gas->register_bit_width);
+	fwts_log_info_simp_int(fw, "      Register Bit Offset        ", gas->register_bit_offset);
+	fwts_log_info_simp_int(fw, "      Access Size                ", gas->access_width);
+	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
 
 	snprintf(label, 20, "Subspace Type % " PRId8, type);
 	fwts_acpi_space_id_check(fw, "PCCT", label, passed, gas->address_space_id, 3,
@@ -60,7 +60,7 @@ static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_rang
 {
 	switch (type) {
 	case 0 ... 2:
-		fwts_log_info_verbatim(fw, "    Length:                      0x%16.16" PRIx64, memory_range);
+		fwts_log_info_simp_int(fw, "    Length:                      ", memory_range);
 		if (memory_range <= min_length) {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -70,7 +70,7 @@ static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_rang
 		}
 		break;
 	case 3 ... 4:
-		fwts_log_info_verbatim(fw, "    Length:                      0x%8.8" PRIx32, (uint32_t)memory_range);
+		fwts_log_info_simp_int(fw, "    Length:                      ", (uint32_t)memory_range);
 		if (memory_range <= min_length) {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -91,20 +91,20 @@ static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 		   ((uint64_t) entry->reserved[2] << 16) + ((uint64_t) entry->reserved[3] << 24) +
 		   ((uint64_t) entry->reserved[4] << 32) + ((uint64_t) entry->reserved[5] << 40);
 
-	fwts_log_info_verbatim(fw, "    Reserved:                    0x%16.16" PRIx64, reserved);
-	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
+	fwts_log_info_simp_int(fw, "    Reserved:                    ", reserved);
+	fwts_log_info_simp_int(fw, "    Base Address:                ", entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 8, passed);
 	fwts_log_info_verbatim(fw, "    Doorbell Register:");
-	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
-	fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
-	fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
-	fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
-	fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
-	fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, entry->doorbell_preserve);
-	fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, entry->doorbell_write);
-	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
-	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
-	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+	fwts_log_info_simp_int(fw, "      Address Space ID           ", gas->address_space_id);
+	fwts_log_info_simp_int(fw, "      Register Bit Width         ", gas->register_bit_width);
+	fwts_log_info_simp_int(fw, "      Register Bit Offset        ", gas->register_bit_offset);
+	fwts_log_info_simp_int(fw, "      Access Size                ", gas->access_width);
+	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
+	fwts_log_info_simp_int(fw, "    Doorbell Preserve:           ", entry->doorbell_preserve);
+	fwts_log_info_simp_int(fw, "    Doorbell Write:              ", entry->doorbell_write);
+	fwts_log_info_simp_int(fw, "    Nominal Latency:             ", entry->nominal_latency);
+	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
+	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 
 	fwts_acpi_space_id_check(fw, "PCCT", "Subspace Type 0", passed, gas->address_space_id, 2,
 				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
@@ -112,73 +112,73 @@ static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 
 static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_1 *entry, bool *passed)
 {
-	fwts_log_info_verbatim(fw, "    Platform Interrupt:          0x%8.8"   PRIx32, entry->platform_interrupt);
-	fwts_log_info_verbatim(fw, "    Platform Interrupt Flags:    0x%2.2"   PRIx8, entry->platform_interrupt_flags);
-	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved);
-	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
+	fwts_log_info_simp_int(fw, "    Platform Interrupt:          ", entry->platform_interrupt);
+	fwts_log_info_simp_int(fw, "    Platform Interrupt Flags:    ", entry->platform_interrupt_flags);
+	fwts_log_info_simp_int(fw, "    Reserved:                    ", entry->reserved);
+	fwts_log_info_simp_int(fw, "    Base Address:                ", entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 8, passed);
 	fwts_log_info_verbatim(fw, "    Doorbell Register:");
 	gas_messages(fw, entry->header.type, &entry->doorbell_register, passed);
-	fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, entry->doorbell_preserve);
-	fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, entry->doorbell_write);
-	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
-	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
-	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+	fwts_log_info_simp_int(fw, "    Doorbell Preserve:           ", entry->doorbell_preserve);
+	fwts_log_info_simp_int(fw, "    Doorbell Write:              ", entry->doorbell_write);
+	fwts_log_info_simp_int(fw, "    Nominal Latency:             ", entry->nominal_latency);
+	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
+	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 
 	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
 }
 
 static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_2 *entry, bool *passed)
 {
-	fwts_log_info_verbatim(fw, "    Platform Interrupt:          0x%8.8"   PRIx32, entry->platform_interrupt);
-	fwts_log_info_verbatim(fw, "    Platform Interrupt Flags:    0x%2.2"   PRIx8, entry->platform_interrupt_flags);
-	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved);
-	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
+	fwts_log_info_simp_int(fw, "    Platform Interrupt:          ", entry->platform_interrupt);
+	fwts_log_info_simp_int(fw, "    Platform Interrupt Flags:    ", entry->platform_interrupt_flags);
+	fwts_log_info_simp_int(fw, "    Reserved:                    ", entry->reserved);
+	fwts_log_info_simp_int(fw, "    Base Address:                ", entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 8, passed);
 	fwts_log_info_verbatim(fw, "    Doorbell Register:");
 	gas_messages(fw, entry->header.type, &entry->doorbell_register, passed);
-	fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, entry->doorbell_preserve);
-	fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, entry->doorbell_write);
-	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
-	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
-	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+	fwts_log_info_simp_int(fw, "    Doorbell Preserve:           ", entry->doorbell_preserve);
+	fwts_log_info_simp_int(fw, "    Doorbell Write:              ", entry->doorbell_write);
+	fwts_log_info_simp_int(fw, "    Nominal Latency:             ", entry->nominal_latency);
+	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
+	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 	fwts_log_info_verbatim(fw, "    Platform Interrupt Ack Register:");
 	gas_messages(fw, entry->header.type, &entry->platform_ack_register, passed);
-	fwts_log_info_verbatim(fw, "    Platform Ack Preserve:       0x%16.16" PRIx64, entry->platform_ack_preserve);
-	fwts_log_info_verbatim(fw, "    Platform Ack Write:          0x%16.16" PRIx64, entry->platform_ack_write);
+	fwts_log_info_simp_int(fw, "    Platform Ack Preserve:       ", entry->platform_ack_preserve);
+	fwts_log_info_simp_int(fw, "    Platform Ack Write:          ", entry->platform_ack_write);
 
 	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
 }
 
 static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_3_4 *entry, bool *passed)
 {
-	fwts_log_info_verbatim(fw, "    Platform Interrupt:          0x%8.8"   PRIx32, entry->platform_interrupt);
-	fwts_log_info_verbatim(fw, "    Platform Interrupt Flags:    0x%2.2"   PRIx8, entry->platform_interrupt_flags);
-	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved1);
-	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
+	fwts_log_info_simp_int(fw, "    Platform Interrupt:          ", entry->platform_interrupt);
+	fwts_log_info_simp_int(fw, "    Platform Interrupt Flags:    ", entry->platform_interrupt_flags);
+	fwts_log_info_simp_int(fw, "    Reserved:                    ", entry->reserved1);
+	fwts_log_info_simp_int(fw, "    Base Address:                ", entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 16, passed);
 	fwts_log_info_verbatim(fw, "    Doorbell Register:");
 	gas_messages(fw, entry->header.type, &entry->doorbell_register, passed);
-	fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, entry->doorbell_preserve);
-	fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, entry->doorbell_write);
-	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
-	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
-	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+	fwts_log_info_simp_int(fw, "    Doorbell Preserve:           ", entry->doorbell_preserve);
+	fwts_log_info_simp_int(fw, "    Doorbell Write:              ", entry->doorbell_write);
+	fwts_log_info_simp_int(fw, "    Nominal Latency:             ", entry->nominal_latency);
+	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
+	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 	fwts_log_info_verbatim(fw, "    Command Complete Check Register:");
 	gas_messages(fw, entry->header.type, &entry->platform_ack_register, passed);
-	fwts_log_info_verbatim(fw, "    Doorbell Ack Preserve:       0x%16.16" PRIx64, entry->platform_ack_preserve);
-	fwts_log_info_verbatim(fw, "    Doorbell Ack Write:          0x%16.16" PRIx64, entry->platform_ack_write);
-	fwts_log_info_verbatim(fw, "    Reserved:                    0x%16.16" PRIx64, entry->reserved2);
+	fwts_log_info_simp_int(fw, "    Doorbell Ack Preserve:       ", entry->platform_ack_preserve);
+	fwts_log_info_simp_int(fw, "    Doorbell Ack Write:          ", entry->platform_ack_write);
+	fwts_log_info_simp_int(fw, "    Reserved:                    ", entry->reserved2);
 	fwts_log_info_verbatim(fw, "    Cmd Complete Check Register:");
 	gas_messages(fw, entry->header.type, &entry->cmd_complete_register, passed);
-	fwts_log_info_verbatim(fw, "    Cmd Complete Check Mask:     0x%16.16" PRIx64, entry->cmd_complete_mask);
+	fwts_log_info_simp_int(fw, "    Cmd Complete Check Mask:     ", entry->cmd_complete_mask);
 	fwts_log_info_verbatim(fw, "    Cmd Complete Update Register:");
 	gas_messages(fw, entry->header.type, &entry->cmd_update_register, passed);
-	fwts_log_info_verbatim(fw, "    Cmd Complete Update Mask:    0x%16.16" PRIx64, entry->cmd_update_preserve_mask);
-	fwts_log_info_verbatim(fw, "    Cmd Complete Set Mask:       0x%16.16" PRIx64, entry->cmd_update_preserve_mask);
+	fwts_log_info_simp_int(fw, "    Cmd Complete Update Mask:    ", entry->cmd_update_preserve_mask);
+	fwts_log_info_simp_int(fw, "    Cmd Complete Set Mask:       ", entry->cmd_update_preserve_mask);
 	fwts_log_info_verbatim(fw, "    Error Status Register:");
 	gas_messages(fw, entry->header.type, &entry->error_status_register, passed);
-	fwts_log_info_verbatim(fw, "    Error Status Mask:           0x%16.16" PRIx64, entry->error_status_mask);
+	fwts_log_info_simp_int(fw, "    Error Status Mask:           ", entry->error_status_mask);
 
 	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
 }
@@ -191,8 +191,8 @@ static int pcct_test1(fwts_framework *fw)
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "PCC Table:");
-	fwts_log_info_verbatim(fw, "  Flags:     0x%8.8"   PRIx32, pcct->flags);
-	fwts_log_info_verbatim(fw, "  Reserved:  0x%16.16"   PRIx64, pcct->reserved);
+	fwts_log_info_simp_int(fw, "  Flags:     ", pcct->flags);
+	fwts_log_info_simp_int(fw, "  Reserved:  ", pcct->reserved);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_bits_check(fw, "PCCT", "Flags", pcct->flags, sizeof(pcct->flags), 1, 31, &passed);
@@ -204,8 +204,8 @@ static int pcct_test1(fwts_framework *fw)
 	while (offset < table->length) {
 
 		fwts_log_info_verbatim(fw, "  PCC Subspace Structure:");
-		fwts_log_info_verbatim(fw, "    Type:                        0x%2.2"   PRIx8, pcct_sub->type);
-		fwts_log_info_verbatim(fw, "    Length:                      0x%2.2"   PRIx8, pcct_sub->length);
+		fwts_log_info_simp_int(fw, "    Type:                        ", pcct_sub->type);
+		fwts_log_info_simp_int(fw, "    Length:                      ", pcct_sub->length);
 
 		if (pcct_sub->type == 0) {
 			fwts_acpi_table_pcct_subspace_type_0 *subspace = (fwts_acpi_table_pcct_subspace_type_0 *) pcct_sub;

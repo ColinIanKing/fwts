@@ -40,14 +40,10 @@ static int msct_test1(fwts_framework *fw)
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "MSCT Max System Characteristics Table:");
-	fwts_log_info_verbatim(fw, "  Proximity Offset:      0x%8.8" PRIx32,
-			msct->proximity_offset);
-	fwts_log_info_verbatim(fw, "  Max Proximity Domains: 0x%8.8" PRIx32,
-			msct->max_proximity_domains);
-	fwts_log_info_verbatim(fw, "  Max Clock Domains:     0x%8.8" PRIx32,
-			msct->max_clock_domains);
-	fwts_log_info_verbatim(fw, "  Max Physical Address:  0x%16.16" PRIx64,
-			msct->max_address);
+	fwts_log_info_simp_int(fw, "  Proximity Offset:      ",	msct->proximity_offset);
+	fwts_log_info_simp_int(fw, "  Max Proximity Domains: ",	msct->max_proximity_domains);
+	fwts_log_info_simp_int(fw, "  Max Clock Domains:     ",	msct->max_clock_domains);
+	fwts_log_info_simp_int(fw, "  Max Physical Address:  ",	msct->max_address);
 
 	if (msct->proximity_offset < 0x38) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,

@@ -46,10 +46,10 @@ static int xenv_test1(fwts_framework *fw)
 	fwts_acpi_revision_check("XENV", xenv->header.revision, 1, &passed);
 
 	fwts_log_info_verbatim(fw, "XENV Table:");
-	fwts_log_info_verbatim(fw, "  GNT Start Address:               0x%16.16" PRIx64, xenv->gnt_start);
-	fwts_log_info_verbatim(fw, "  GNT Size:                        0x%16.16" PRIx64, xenv->gnt_size);
-	fwts_log_info_verbatim(fw, "  Evtchn Intr:                     0x%8.8"   PRIx32, xenv->evtchn_intr);
-	fwts_log_info_verbatim(fw, "  Evtchn Intr Flags:               0x%2.2"   PRIx8,  xenv->evtchn_intr_flags);
+	fwts_log_info_simp_int(fw, "  GNT Start Address:               ", xenv->gnt_start);
+	fwts_log_info_simp_int(fw, "  GNT Size:                        ", xenv->gnt_size);
+	fwts_log_info_simp_int(fw, "  Evtchn Intr:                     ", xenv->evtchn_intr);
+	fwts_log_info_simp_int(fw, "  Evtchn Intr Flags:               ",  xenv->evtchn_intr_flags);
 
 	fwts_acpi_reserved_bits_check(fw, "XENV", "Evtchn Intr Flags", xenv->evtchn_intr_flags, sizeof(xenv->evtchn_intr_flags), 2, 7, &passed);
 

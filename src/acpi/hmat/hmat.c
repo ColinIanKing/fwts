@@ -29,16 +29,16 @@ acpi_table_init(HMAT, &table)
 static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table_hmat_proximity_domain *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  Memory Proximity Domain Attributes (Type 0):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%4.4" PRIx16, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->header.reserved);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%8.8" PRIx32, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Flags:                          0x%4.4" PRIx16, entry->flags);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved1);
-	fwts_log_info_verbatim(fw, "    Proximity Domain for Initiator: 0x%8.8" PRIx32, entry->initiator_proximity_domain);
-	fwts_log_info_verbatim(fw, "    Proximity Domain for Memory:    0x%8.8" PRIx32, entry->memory_proximity_domain);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%8.8" PRIx32, entry->reserved2);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%16.16" PRIx64, entry->reserved3);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%16.16" PRIx64, entry->reserved4);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->header.reserved);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved1);
+	fwts_log_info_simp_int(fw, "    Proximity Domain for Initiator: ", entry->initiator_proximity_domain);
+	fwts_log_info_simp_int(fw, "    Proximity Domain for Memory:    ", entry->memory_proximity_domain);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved3);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved4);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
 	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 1, 15, passed);
@@ -53,16 +53,16 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	uint32_t pd_size;
 
 	fwts_log_info_verbatim(fw, "  System Locality Latency and Bandwidth Information (Type 1):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%4.4" PRIx16, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->header.reserved);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%8.8" PRIx32, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Flags:                          0x%2.2" PRIx8, entry->flags);
-	fwts_log_info_verbatim(fw, "    Data Type:                      0x%2.2" PRIx8, entry->data_type);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved1);
-	fwts_log_info_verbatim(fw, "    Number of Initiator PDs:        0x%8.8" PRIx32, entry->num_initiator);
-	fwts_log_info_verbatim(fw, "    Number of Target PDs:           0x%8.8" PRIx32, entry->num_target);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%8.8" PRIx32, entry->reserved2);
-	fwts_log_info_verbatim(fw, "    Entry Base Unit:                0x%16.16" PRIx64, entry->entry_base_unit);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->header.reserved);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
+	fwts_log_info_simp_int(fw, "    Data Type:                      ", entry->data_type);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved1);
+	fwts_log_info_simp_int(fw, "    Number of Initiator PDs:        ", entry->num_initiator);
+	fwts_log_info_simp_int(fw, "    Number of Target PDs:           ", entry->num_target);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
+	fwts_log_info_simp_int(fw, "    Entry Base Unit:                ", entry->entry_base_unit);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
 	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 4, 7, passed);
@@ -98,15 +98,15 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  Memory Side Cache Information (Type 2):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%4.4" PRIx16, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->header.reserved);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%8.8" PRIx32, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Proximity Domain for Memory:    0x%8.8" PRIx32, entry->memory_proximity_domain);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%8.8" PRIx32, entry->reserved1);
-	fwts_log_info_verbatim(fw, "    Memory Side Cache Size:         0x%16.16" PRIx64, entry->cache_size);
-	fwts_log_info_verbatim(fw, "    Cache Attributes:               0x%8.8" PRIx32, entry->cache_attr);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved2);
-	fwts_log_info_verbatim(fw, "    Number of SMBIOS Handles:       0x%4.4" PRIx16, entry->num_smbios);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->header.reserved);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    Proximity Domain for Memory:    ", entry->memory_proximity_domain);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved1);
+	fwts_log_info_simp_int(fw, "    Memory Side Cache Size:         ", entry->cache_size);
+	fwts_log_info_simp_int(fw, "    Cache Attributes:               ", entry->cache_attr);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
+	fwts_log_info_simp_int(fw, "    Number of SMBIOS Handles:       ", entry->num_smbios);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
 
@@ -141,7 +141,7 @@ static int hmat_test1(fwts_framework *fw)
 	uint32_t offset;
 
 	fwts_log_info_verbatim(fw, "HMAT Heterogeneous Memory Attribute Table:");
-	fwts_log_info_verbatim(fw, "  Reserved:        0x%2.2" PRIx8, hmat->reserved);
+	fwts_log_info_simp_int(fw, "  Reserved:        ", hmat->reserved);
 
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", hmat->reserved, sizeof(hmat->reserved), &passed);

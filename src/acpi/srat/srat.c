@@ -55,16 +55,16 @@ static void srat_check_local_apic_sapic_affinity(
 	}
 
 	fwts_log_info_verbatim(fw, "SRAT Local APIC/SAPIC Affinity Structure:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:   [7:0] 0x%2.2" PRIx8, affinity->proximity_domain_0);
-	fwts_log_info_verbatim(fw, "  APIC ID:                  0x%2.2" PRIx8, affinity->apic_id);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, affinity->flags);
-	fwts_log_info_verbatim(fw, "  Local SAPIC EID:          0x%2.2" PRIx8, affinity->local_sapic_eid);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:  [8:15] 0x%2.2" PRIx8, affinity->proximity_domain_1);
-	fwts_log_info_verbatim(fw, "  Proximity Domain: [16:23] 0x%2.2" PRIx8, affinity->proximity_domain_2);
-	fwts_log_info_verbatim(fw, "  Proximity Domain: [23:31] 0x%2.2" PRIx8, affinity->proximity_domain_3);
-	fwts_log_info_verbatim(fw, "  Clock Domain              0x%8.8" PRIx32, affinity->clock_domain);
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:   [7:0] ", affinity->proximity_domain_0);
+	fwts_log_info_simp_int(fw, "  APIC ID:                  ", affinity->apic_id);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Local SAPIC EID:          ", affinity->local_sapic_eid);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:  [8:15] ", affinity->proximity_domain_1);
+	fwts_log_info_simp_int(fw, "  Proximity Domain: [16:23] ", affinity->proximity_domain_2);
+	fwts_log_info_simp_int(fw, "  Proximity Domain: [23:31] ", affinity->proximity_domain_3);
+	fwts_log_info_simp_int(fw, "  Clock Domain              ", affinity->clock_domain);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_bits_check(fw, "SRAT", "Local APIC/SPAIC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
@@ -109,17 +109,17 @@ static void srat_check_memory_affinity(
 	}
 
 	fwts_log_info_verbatim(fw, "SRAT Memory Affinity Structure:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%8.8" PRIx32, affinity->proximity_domain);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, affinity->reserved1);
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved1);
 	fwts_log_info_verbatim(fw, "  Base Address:             0x%8.8" PRIx32 "%8.8" PRIx32,
 		affinity->base_addr_hi, affinity->base_addr_lo);
 	fwts_log_info_verbatim(fw, "  Length:                   0x%8.8" PRIx32 "%8.8" PRIx32,
 		affinity->length_hi, affinity->length_lo);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, affinity->reserved2);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, affinity->flags);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%16.16" PRIx64, affinity->reserved3);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved2);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved3);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_bits_check(fw, "SRAT", "Memory Affinity Flags", affinity->flags, sizeof(affinity->flags), 3, 31, passed);
@@ -155,14 +155,14 @@ static void srat_check_local_x2apic_affinity(
 	}
 
 	fwts_log_info_verbatim(fw, "SRAT Local x2APIC Affinity Structure:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, affinity->reserved1);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%4.4" PRIx16, affinity->proximity_domain);
-	fwts_log_info_verbatim(fw, "  X2APIC ID:                0x%8.8" PRIx32, affinity->x2apic_id);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, affinity->flags);
-	fwts_log_info_verbatim(fw, "  Clock Domain              0x%8.8" PRIx32, affinity->clock_domain);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, affinity->reserved2);
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved1);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
+	fwts_log_info_simp_int(fw, "  X2APIC ID:                ", affinity->x2apic_id);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Clock Domain              ", affinity->clock_domain);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved2);
 	fwts_log_nl(fw);
 
 	/* Spec states 1st reserved field MUST be zero */
@@ -213,12 +213,12 @@ static void srat_check_gicc_affinity(
 	}
 
 	fwts_log_info_verbatim(fw, "SRAT GICC Affinity Structure:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%8.8" PRIx32, affinity->proximity_domain);
-	fwts_log_info_verbatim(fw, "  ACPI Processor UID:       0x%8.8" PRIx32, affinity->acpi_processor_uid);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, affinity->flags);
-	fwts_log_info_verbatim(fw, "  Clock Domain              0x%8.8" PRIx32, affinity->clock_domain);
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
+	fwts_log_info_simp_int(fw, "  ACPI Processor UID:       ", affinity->acpi_processor_uid);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Clock Domain              ", affinity->clock_domain);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_bits_check(fw, "SRAT", "GICC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
@@ -259,11 +259,11 @@ static void srat_check_its_affinity(
 	}
 
 	fwts_log_info_verbatim(fw, "SRAT ITS Affinity Structure:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%8.8" PRIx32, affinity->proximity_domain);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, affinity->reserved);
-	fwts_log_info_verbatim(fw, "  ITS ID                    0x%8.8" PRIx32, affinity->its_id);
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved);
+	fwts_log_info_simp_int(fw, "  ITS ID                    ", affinity->its_id);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "SRAT", "ITS Affinity Reserved", affinity->reserved, sizeof(affinity->reserved), passed);
@@ -302,21 +302,21 @@ static void srat_check_initiator_affinity(
 	}
 
 	fwts_log_info_verbatim(fw, "SRAT Initiator Affinity Structure:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, affinity->reserved1);
-	fwts_log_info_verbatim(fw, "  Device Handle Type:       0x%2.2" PRIx8, affinity->device_handle_type);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%8.8" PRIx32, affinity->proximity_domain);
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved1);
+	fwts_log_info_simp_int(fw, "  Device Handle Type:       ", affinity->device_handle_type);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
 	fwts_log_info_verbatim(fw, "  Device Handle:");
 	if (affinity->device_handle_type == 0) {
-		fwts_log_info_verbatim(fw, "    ACPI _HID:                0x%16.16" PRIx64, (uint64_t)affinity->device_handle[0]);
-		fwts_log_info_verbatim(fw, "    ACPI _UID:                0x%8.8" PRIx32, (uint32_t)affinity->device_handle[8]);
+		fwts_log_info_simp_int(fw, "    ACPI _HID:                ", (uint64_t)affinity->device_handle[0]);
+		fwts_log_info_simp_int(fw, "    ACPI _UID:                ", (uint32_t)affinity->device_handle[8]);
 	} else if (affinity->device_handle_type == 1) {
-		fwts_log_info_verbatim(fw, "    PCI Segment:              0x%4.4" PRIx16, (uint16_t)affinity->device_handle[0]);
-		fwts_log_info_verbatim(fw, "    PCI BDF Number:           0x%4.4" PRIx16, (uint16_t)affinity->device_handle[2]);
+		fwts_log_info_simp_int(fw, "    PCI Segment:              ", (uint16_t)affinity->device_handle[0]);
+		fwts_log_info_simp_int(fw, "    PCI BDF Number:           ", (uint16_t)affinity->device_handle[2]);
 	}
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%4.4" PRIx16, affinity->flags);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, affinity->reserved2);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved2);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved1, sizeof(affinity->reserved1), passed);

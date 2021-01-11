@@ -99,19 +99,19 @@ static int ecdt_test1(fwts_framework *fw)
 	/* Now we have got some sane data, dump the ECDT */
         fwts_log_info_verbatim(fw, "ECDT Embedded Controller Boot Resources Table:");
         fwts_log_info_verbatim(fw, "  EC_CONTROL:");
-        fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, ecdt->ec_control.address_space_id);
-        fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, ecdt->ec_control.register_bit_width);
-        fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, ecdt->ec_control.register_bit_offset);
-        fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, ecdt->ec_control.access_width);
-        fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, ecdt->ec_control.address);
+        fwts_log_info_simp_int(fw, "    Address Space ID:       ", ecdt->ec_control.address_space_id);
+        fwts_log_info_simp_int(fw, "    Register Bit Width      ", ecdt->ec_control.register_bit_width);
+        fwts_log_info_simp_int(fw, "    Register Bit Offset     ", ecdt->ec_control.register_bit_offset);
+        fwts_log_info_simp_int(fw, "    Access Size             ", ecdt->ec_control.access_width);
+        fwts_log_info_simp_int(fw, "    Address                 ", ecdt->ec_control.address);
         fwts_log_info_verbatim(fw, "  EC_DATA:");
-        fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, ecdt->ec_data.address_space_id);
-        fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, ecdt->ec_data.register_bit_width);
-        fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, ecdt->ec_data.register_bit_offset);
-        fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, ecdt->ec_data.access_width);
-        fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, ecdt->ec_data.address);
-        fwts_log_info_verbatim(fw, "  UID:                      0x%8.8" PRIx32, ecdt->uid);
-        fwts_log_info_verbatim(fw, "  GPE_BIT:                  0x%2.2" PRIx8, ecdt->gpe_bit);
+        fwts_log_info_simp_int(fw, "    Address Space ID:       ", ecdt->ec_data.address_space_id);
+        fwts_log_info_simp_int(fw, "    Register Bit Width      ", ecdt->ec_data.register_bit_width);
+        fwts_log_info_simp_int(fw, "    Register Bit Offset     ", ecdt->ec_data.register_bit_offset);
+        fwts_log_info_simp_int(fw, "    Access Size             ", ecdt->ec_data.access_width);
+        fwts_log_info_simp_int(fw, "    Address                 ", ecdt->ec_data.address);
+        fwts_log_info_simp_int(fw, "  UID:                      ", ecdt->uid);
+        fwts_log_info_simp_int(fw, "  GPE_BIT:                  ", ecdt->gpe_bit);
         fwts_log_info_verbatim(fw, "  EC_ID:                    '%s'", (const char *)ecdt->ec_id);
         fwts_log_nl(fw);
 

@@ -39,12 +39,12 @@ static void iort_node_dump(
 	fwts_acpi_table_iort_node *node)
 {
 	fwts_log_info_verbatim(fw, "%s:", node_name);
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, node->type);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%4.4" PRIx16, node->length);
-	fwts_log_info_verbatim(fw, "  Revision:                 0x%2.2" PRIx8, node->revision);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, node->reserved);
-	fwts_log_info_verbatim(fw, "  Number of ID mappings:    0x%8.8" PRIx32, node->id_mappings_count);
-	fwts_log_info_verbatim(fw, "  Reference to ID Array:    0x%8.8" PRIx32, node->id_array_offset);
+	fwts_log_info_simp_int(fw, "  Type:                     ", node->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", node->length);
+	fwts_log_info_simp_int(fw, "  Revision:                 ", node->revision);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", node->reserved);
+	fwts_log_info_simp_int(fw, "  Number of ID mappings:    ", node->id_mappings_count);
+	fwts_log_info_simp_int(fw, "  Reference to ID Array:    ", node->id_array_offset);
 }
 
 /*
@@ -108,11 +108,11 @@ static void iort_id_mapping_dump(
 	fwts_acpi_table_iort_id_mapping *id_mapping)
 {
 	fwts_log_info_verbatim(fw, "ID Mapping %" PRIu32, i);
-	fwts_log_info_verbatim(fw, "  Input Base:               0x%8.8" PRIx32, id_mapping->input_base);
-	fwts_log_info_verbatim(fw, "  ID Count:                 0x%8.8" PRIx32, id_mapping->id_count);
-	fwts_log_info_verbatim(fw, "  Output Base:              0x%8.8" PRIx32, id_mapping->output_base);
-	fwts_log_info_verbatim(fw, "  Output Reference:         0x%8.8" PRIx32, id_mapping->output_reference);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, id_mapping->flags);
+	fwts_log_info_simp_int(fw, "  Input Base:               ", id_mapping->input_base);
+	fwts_log_info_simp_int(fw, "  ID Count:                 ", id_mapping->id_count);
+	fwts_log_info_simp_int(fw, "  Output Base:              ", id_mapping->output_base);
+	fwts_log_info_simp_int(fw, "  Output Reference:         ", id_mapping->output_reference);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", id_mapping->flags);
 }
 
 /*
@@ -193,8 +193,8 @@ static void iort_smmu_interrupt_dump(
 	for (i = 0; i < count; i++, intr++) {
 		if (sizeof(*intr) + (uint8_t *)intr > data_end)
 			break;
-		fwts_log_info_verbatim(fw, "  GSIV:                     0x%8.8" PRIx32, intr->gsiv);
-		fwts_log_info_verbatim(fw, "  Interrupt Flags:          0x%8.8" PRIx32, intr->flags);
+		fwts_log_info_simp_int(fw, "  GSIV:                     ", intr->gsiv);
+		fwts_log_info_simp_int(fw, "  Interrupt Flags:          ", intr->flags);
 
 	}
 }
@@ -262,10 +262,10 @@ static void iort_smmu_global_interrupt_dump(
 		(fwts_acpi_table_iort_smmu_global_interrupt_array *)(data + offset);
 
 	if (sizeof(*intr) + (uint8_t*)intr <= data_end) {
-		fwts_log_info_verbatim(fw, "  SMMU_NSgIrpt:             0x%8.8" PRIx32, intr->smmu_nsgirpt);
-		fwts_log_info_verbatim(fw, "  SMMU_NSgIrpt Flags:       0x%8.8" PRIx32, intr->smmu_nsgirpt_flags);
-		fwts_log_info_verbatim(fw, "  SMMU_NSgCfgIrpt:          0x%8.8" PRIx32, intr->smmu_nsgcfgirpt);
-		fwts_log_info_verbatim(fw, "  SMMU_NSgCfgIrpt Flags:    0x%8.8" PRIx32, intr->smmu_nsgcfgirpt_flags);
+		fwts_log_info_simp_int(fw, "  SMMU_NSgIrpt:             ", intr->smmu_nsgirpt);
+		fwts_log_info_simp_int(fw, "  SMMU_NSgIrpt Flags:       ", intr->smmu_nsgirpt_flags);
+		fwts_log_info_simp_int(fw, "  SMMU_NSgCfgIrpt:          ", intr->smmu_nsgcfgirpt);
+		fwts_log_info_simp_int(fw, "  SMMU_NSgCfgIrpt Flags:    ", intr->smmu_nsgcfgirpt_flags);
 	}
 }
 
@@ -319,7 +319,7 @@ static void iort_check_its_group(
 	size_t its_id_array_size = node->its_count * sizeof(*its_id);
 
 	iort_node_dump(fw, "IORT ITS Group Node", (fwts_acpi_table_iort_node *)data);
-	fwts_log_info_verbatim(fw, "  Number of ITSs:           0x%8.8" PRIx32, node->its_count);
+	fwts_log_info_simp_int(fw, "  Number of ITSs:           ", node->its_count);
 
 
 	/* Array too big? */
@@ -334,7 +334,7 @@ static void iort_check_its_group(
 		uint32_t i;
 
 		for (i = 0; i < node->its_count; i++, its_id++) {
-			fwts_log_info_verbatim(fw, "  GIC ITS Identifier:       0x%8.8" PRIx32, *its_id);
+			fwts_log_info_simp_int(fw, "  GIC ITS Identifier:       ", *its_id);
 		}
 	}
 	iort_node_check(fw, data, true, true, passed);
@@ -413,12 +413,12 @@ static void iort_check_named_component(
 	uint8_t *obj_name;
 
 	iort_node_dump(fw, "IORT Named Component Node", (fwts_acpi_table_iort_node *)data);
-	fwts_log_info_verbatim(fw, "  Node Flags:               0x%8.8" PRIx32, node->flags);
-	fwts_log_info_verbatim(fw, "  Cache Coherent Attribute: 0x%8.8" PRIx32, node->properties.cache_coherent);
-	fwts_log_info_verbatim(fw, "  Allocation Hints:         0x%2.2" PRIx8, node->properties.allocation_hints);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, node->properties.reserved);
-	fwts_log_info_verbatim(fw, "  Memory Access Flags       0x%2.2" PRIx8, node->properties.memory_access_flags);
-	fwts_log_info_verbatim(fw, "  Device Memory Addr. Size: 0x%2.2" PRIx8, node->device_memory_address_size);
+	fwts_log_info_simp_int(fw, "  Node Flags:               ", node->flags);
+	fwts_log_info_simp_int(fw, "  Cache Coherent Attribute: ", node->properties.cache_coherent);
+	fwts_log_info_simp_int(fw, "  Allocation Hints:         ", node->properties.allocation_hints);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", node->properties.reserved);
+	fwts_log_info_simp_int(fw, "  Memory Access Flags       ", node->properties.memory_access_flags);
+	fwts_log_info_simp_int(fw, "  Device Memory Addr. Size: ", node->device_memory_address_size);
 
 	/* Is object name sane, zero terminated and inside the table? */
 	for (obj_name = node->device_object_name; *obj_name; obj_name++) {
@@ -467,12 +467,12 @@ static void iort_check_pci_root_complex(
 		(fwts_acpi_table_iort_pci_root_complex_node *)data;
 
 	iort_node_dump(fw, "IORT PCI Root Complex Node", (fwts_acpi_table_iort_node *)data);
-	fwts_log_info_verbatim(fw, "  Cache Coherent Attribute: 0x%8.8" PRIx32, node->properties.cache_coherent);
-	fwts_log_info_verbatim(fw, "  Allocation Hints:         0x%2.2" PRIx8, node->properties.allocation_hints);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, node->properties.reserved);
-	fwts_log_info_verbatim(fw, "  Memory Access Flags       0x%4.4" PRIx16, node->properties.memory_access_flags);
-	fwts_log_info_verbatim(fw, "  ATS Attribute:            0x%8.8" PRIx32, node->ats_attribute);
-	fwts_log_info_verbatim(fw, "  PCI Segment Number:       0x%8.8" PRIx32, node->pci_segment_number);
+	fwts_log_info_simp_int(fw, "  Cache Coherent Attribute: ", node->properties.cache_coherent);
+	fwts_log_info_simp_int(fw, "  Allocation Hints:         ", node->properties.allocation_hints);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", node->properties.reserved);
+	fwts_log_info_simp_int(fw, "  Memory Access Flags       ", node->properties.memory_access_flags);
+	fwts_log_info_simp_int(fw, "  ATS Attribute:            ", node->ats_attribute);
+	fwts_log_info_simp_int(fw, "  PCI Segment Number:       ", node->pci_segment_number);
 
 	iort_id_mappings_dump(fw, data, node_end);
 	iort_node_check(fw, data, false, false, passed);
@@ -505,15 +505,15 @@ static void iort_check_smmu(
 		(fwts_acpi_table_iort_smmu_node *)data;
 
 	iort_node_dump(fw, "IORT SMMU node", (fwts_acpi_table_iort_node *)data);
-	fwts_log_info_verbatim(fw, "  Base Address:             0x%16.16" PRIx64, node->base_address);
-	fwts_log_info_verbatim(fw, "  Span:                     0x%16.16" PRIx64, node->span);
-	fwts_log_info_verbatim(fw, "  Model:                    0x%8.8" PRIx32, node->model);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, node->flags);
-	fwts_log_info_verbatim(fw, "  Global Intr. Offset:      0x%8.8" PRIx32, node->global_interrupt_array_offset);
-	fwts_log_info_verbatim(fw, "  Number of Context Intr.:  0x%8.8" PRIx32, node->context_interrupt_count);
-	fwts_log_info_verbatim(fw, "  Context Intr. Offset:     0x%8.8" PRIx32, node->context_interrupt_array_offset);
-	fwts_log_info_verbatim(fw, "  Number of PMU Intr.:      0x%8.8" PRIx32, node->pmu_interrupt_count);
-	fwts_log_info_verbatim(fw, "  PMU Intr. Offset:         0x%8.8" PRIx32, node->pmu_interrupt_array_offset);
+	fwts_log_info_simp_int(fw, "  Base Address:             ", node->base_address);
+	fwts_log_info_simp_int(fw, "  Span:                     ", node->span);
+	fwts_log_info_simp_int(fw, "  Model:                    ", node->model);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", node->flags);
+	fwts_log_info_simp_int(fw, "  Global Intr. Offset:      ", node->global_interrupt_array_offset);
+	fwts_log_info_simp_int(fw, "  Number of Context Intr.:  ", node->context_interrupt_count);
+	fwts_log_info_simp_int(fw, "  Context Intr. Offset:     ", node->context_interrupt_array_offset);
+	fwts_log_info_simp_int(fw, "  Number of PMU Intr.:      ", node->pmu_interrupt_count);
+	fwts_log_info_simp_int(fw, "  PMU Intr. Offset:         ", node->pmu_interrupt_array_offset);
 
 	fwts_log_info_verbatim(fw, "Global Interrupt Array:");
 	iort_smmu_global_interrupt_dump(fw, data, node_end,
@@ -560,15 +560,15 @@ static void iort_check_smmuv3(
 		(fwts_acpi_table_iort_smmuv3_node *)data;
 
 	iort_node_dump(fw, "IORT SMMUv3 node", (fwts_acpi_table_iort_node *)data);
-	fwts_log_info_verbatim(fw, "  Base Address:             0x%16.16" PRIx64, node->base_address);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, node->flags);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, node->reserved);
-	fwts_log_info_verbatim(fw, "  VATOS Address:            0x%16.16" PRIx64, node->vatos_address);
-	fwts_log_info_verbatim(fw, "  Model:                    0x%8.8" PRIx32, node->model);
-	fwts_log_info_verbatim(fw, "  Event:                    0x%8.8" PRIx32, node->event);
-	fwts_log_info_verbatim(fw, "  PRI:                      0x%8.8" PRIx32, node->pri);
-	fwts_log_info_verbatim(fw, "  GERR:                     0x%8.8" PRIx32, node->gerr);
-	fwts_log_info_verbatim(fw, "  Sync:                     0x%8.8" PRIx32, node->sync);
+	fwts_log_info_simp_int(fw, "  Base Address:             ", node->base_address);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", node->flags);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", node->reserved);
+	fwts_log_info_simp_int(fw, "  VATOS Address:            ", node->vatos_address);
+	fwts_log_info_simp_int(fw, "  Model:                    ", node->model);
+	fwts_log_info_simp_int(fw, "  Event:                    ", node->event);
+	fwts_log_info_simp_int(fw, "  PRI:                      ", node->pri);
+	fwts_log_info_simp_int(fw, "  GERR:                     ", node->gerr);
+	fwts_log_info_simp_int(fw, "  Sync:                     ", node->sync);
 
 	iort_id_mappings_dump(fw, data, node_end);
 
@@ -600,9 +600,9 @@ static void iort_check_pmcg(
 		(fwts_acpi_table_iort_pmcg_node *)data;
 
 	iort_node_dump(fw, "IORT PMCG node", (fwts_acpi_table_iort_node *)data);
-	fwts_log_info_verbatim(fw, "  Base Address:             0x%16.16" PRIx64, node->base_address);
-	fwts_log_info_verbatim(fw, "  Overflow interrupt GSIV:  0x%8.8" PRIx32, node->gsiv);
-	fwts_log_info_verbatim(fw, "  Node reference:           0x%8.8" PRIx32, node->node_ref);
+	fwts_log_info_simp_int(fw, "  Base Address:             ", node->base_address);
+	fwts_log_info_simp_int(fw, "  Overflow interrupt GSIV:  ", node->gsiv);
+	fwts_log_info_simp_int(fw, "  Node reference:           ", node->node_ref);
 
 	iort_id_mappings_dump(fw, data, node_end);
 
@@ -647,9 +647,9 @@ static int iort_test1(fwts_framework *fw)
 	data_end = data + table->length;
 
 	fwts_log_info_verbatim(fw, "IORT IO Remapping Table test");
-	fwts_log_info_verbatim(fw, "  Number of IORT Nodes:     0x%4.4" PRIx8, iort->io_rt_nodes_count);
-	fwts_log_info_verbatim(fw, "  IORT Node Array Offset:   0x%4.4" PRIx8, iort->io_rt_offset);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx8, iort->reserved);
+	fwts_log_info_simp_int(fw, "  Number of IORT Nodes:     ", iort->io_rt_nodes_count);
+	fwts_log_info_simp_int(fw, "  IORT Node Array Offset:   ", iort->io_rt_offset);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", iort->reserved);
 	fwts_log_nl(fw);
 
 	data = (uint8_t *)table->data + iort->io_rt_offset;

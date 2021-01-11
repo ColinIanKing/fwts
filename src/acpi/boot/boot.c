@@ -62,10 +62,10 @@ static int boot_test1(fwts_framework *fw)
 	}
 
 	fwts_log_info_verbatim(fw, "BOOT Table:");
-	fwts_log_info_verbatim(fw, "  CMOS Index:               0x%2.2" PRIx8, boot->cmos_index);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, boot->reserved[0]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, boot->reserved[1]);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, boot->reserved[2]);
+	fwts_log_info_simp_int(fw, "  CMOS Index:               ", boot->cmos_index);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", boot->reserved[0]);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", boot->reserved[1]);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", boot->reserved[2]);
 	fwts_log_nl(fw);
 
 	/*
@@ -80,13 +80,13 @@ static int boot_test1(fwts_framework *fw)
 
 		fwts_cmos_read(boot->cmos_index, &val);
 
-		fwts_log_info_verbatim(fw, "CMOS value:             Bit 0x%" PRIx8, val);
-		fwts_log_info_verbatim(fw, "  PnP OS                [0] 0x%" PRIx8, (val >> 0) & 1);
-		fwts_log_info_verbatim(fw, "  Booting Bit           [1] 0x%" PRIx8, (val >> 1) & 1);
-		fwts_log_info_verbatim(fw, "  DIAG Bit              [2] 0x%" PRIx8, (val >> 2) & 1);
-		fwts_log_info_verbatim(fw, "  SUPPRESSBOOTDISPLAY   [3] 0x%" PRIx8, (val >> 3) & 1);
-		fwts_log_info_verbatim(fw, "  RESERVED            [4-6] 0x%" PRIx8, (val >> 4) & 7);
-		fwts_log_info_verbatim(fw, "  PARITY                [7] 0x%" PRIx8, (val >> 7) & 1);
+		fwts_log_info_simp_int(fw, "CMOS value:             Bit ", val);
+		fwts_log_info_simp_int(fw, "  PnP OS                [0] ", (val >> 0) & 1);
+		fwts_log_info_simp_int(fw, "  Booting Bit           [1] ", (val >> 1) & 1);
+		fwts_log_info_simp_int(fw, "  DIAG Bit              [2] ", (val >> 2) & 1);
+		fwts_log_info_simp_int(fw, "  SUPPRESSBOOTDISPLAY   [3] ", (val >> 3) & 1);
+		fwts_log_info_simp_int(fw, "  RESERVED            [4-6] ", (val >> 4) & 7);
+		fwts_log_info_simp_int(fw, "  PARITY                [7] ", (val >> 7) & 1);
 		/* Ignore doing parity check sum */
 	}
 done:

@@ -39,7 +39,7 @@ static int wsmt_test1(fwts_framework *fw)
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "WSMT Windows SMM Security Mitigations Table:");
-	fwts_log_info_verbatim(fw, "  Protection Flags:      0x%8.8" PRIx32, wsmt->protection_flags);
+	fwts_log_info_simp_int(fw, "  Protection Flags:      ", wsmt->protection_flags);
 
 	fwts_acpi_reserved_bits_check(fw, "WSMT", "Protection Flags", wsmt->protection_flags, sizeof(wsmt->protection_flags), 3, 31, &passed);
 

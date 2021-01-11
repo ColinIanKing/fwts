@@ -72,17 +72,17 @@ static void hest_check_ia32_arch_machine_check_exception(
 		   ((uint64_t) exception->reserved2[6] << 48);
 
 	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Machine Check Exception:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, exception->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, exception->source_id);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, exception->reserved1);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, exception->flags);
-	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, exception->enabled);
-	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, exception->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, exception->max_sections_per_record);
-	fwts_log_info_verbatim(fw, "  Global Capability Data:   0x%16.16" PRIx64, exception->global_capability_init_data);
-	fwts_log_info_verbatim(fw, "  Global Control Data:      0x%16.16" PRIx64, exception->global_control_init_data);
-	fwts_log_info_verbatim(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, exception->number_of_hardware_banks);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%16.16" PRIx64, reserved2);
+	fwts_log_info_simp_int(fw, "  Type:                     ", exception->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", exception->source_id);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", exception->reserved1);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", exception->flags);
+	fwts_log_info_simp_int(fw, "  Enabled:                  ", exception->enabled);
+	fwts_log_info_simp_int(fw, "  Number of Records:        ", exception->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max Sections Per Record:  ", exception->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Global Capability Data:   ", exception->global_capability_init_data);
+	fwts_log_info_simp_int(fw, "  Global Control Data:      ", exception->global_control_init_data);
+	fwts_log_info_simp_int(fw, "  Number of Hardware Banks: ", exception->number_of_hardware_banks);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", reserved2);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "MCE Reserved1", exception->reserved1, sizeof(exception->reserved1), passed);
@@ -109,15 +109,15 @@ static void hest_check_ia32_arch_machine_check_exception(
 		fwts_acpi_table_hest_machine_check_bank *bank = &exception->bank[i];
 
 		fwts_log_info_verbatim(fw, "  HEST IA-32 Architecture Machine Check Exception Bank %zd", i);
-		fwts_log_info_verbatim(fw, "    Bank Number:            0x%2.2" PRIx8, bank->bank_number);
-		fwts_log_info_verbatim(fw, "    Clear Status On Init.:  0x%2.2" PRIx8, bank->clear_status_on_initialization);
-		fwts_log_info_verbatim(fw, "    Status Data Format:     0x%2.2" PRIx8, bank->status_data_format);
-		fwts_log_info_verbatim(fw, "    Reserved:               0x%2.2" PRIx8, bank->reserved);
-		fwts_log_info_verbatim(fw, "    Control Reg. MSR Addr:  0x%8.8" PRIx32, bank->control_register_msr_address);
-		fwts_log_info_verbatim(fw, "    Control Init Data:      0x%16.16" PRIx64, bank->control_init_data);
-		fwts_log_info_verbatim(fw, "    Status Reg. MSR Addr:   0x%8.8" PRIx32, bank->status_register_msr_address);
-		fwts_log_info_verbatim(fw, "    Addr Reg. MSR Addr:     0x%8.8" PRIx32, bank->address_register_msr_address);
-		fwts_log_info_verbatim(fw, "    Misc Reg. MSR Addr:     0x%8.8" PRIx32, bank->misc_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Bank Number:            ", bank->bank_number);
+		fwts_log_info_simp_int(fw, "    Clear Status On Init.:  ", bank->clear_status_on_initialization);
+		fwts_log_info_simp_int(fw, "    Status Data Format:     ", bank->status_data_format);
+		fwts_log_info_simp_int(fw, "    Reserved:               ", bank->reserved);
+		fwts_log_info_simp_int(fw, "    Control Reg. MSR Addr:  ", bank->control_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Control Init Data:      ", bank->control_init_data);
+		fwts_log_info_simp_int(fw, "    Status Reg. MSR Addr:   ", bank->status_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Addr Reg. MSR Addr:     ", bank->address_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Misc Reg. MSR Addr:     ", bank->misc_register_msr_address);
 		fwts_log_nl(fw);
 
 		if (bank->clear_status_on_initialization > 1) {
@@ -186,32 +186,32 @@ static void hest_check_ia32_arch_corrected_machine_check(
 		   ((uint32_t) check->reserved2[2] << 16);
 
 	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Machine Check:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, check->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, check->source_id);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, check->reserved1);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, check->flags);
-	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, check->enabled);
-	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, check->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, check->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Type:                     ", check->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", check->source_id);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", check->reserved1);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", check->flags);
+	fwts_log_info_simp_int(fw, "  Enabled:                  ", check->enabled);
+	fwts_log_info_simp_int(fw, "  Number of Records:        ", check->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max Sections Per Record:  ", check->max_sections_per_record);
 	fwts_log_info_verbatim(fw, "  Hardware Error Notification:");
-	fwts_log_info_verbatim(fw, "    Type:                   0x%2.2" PRIx8, check->notification.type);
-	fwts_log_info_verbatim(fw, "    Length:                 0x%2.2" PRIx8, check->notification.length);
-	fwts_log_info_verbatim(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Type:                   ", check->notification.type);
+	fwts_log_info_simp_int(fw, "    Length:                 ", check->notification.length);
+	fwts_log_info_simp_int(fw, "    Config. Write. Enable:  ",
 		check->notification.configuration_write_enable);
-	fwts_log_info_verbatim(fw, "    Poll Interval:          0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Poll Interval:          ",
 		check->notification.poll_interval);
-	fwts_log_info_verbatim(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Interrupt Vector:       ",
 		check->notification.vector);
-	fwts_log_info_verbatim(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Sw. to Polling Value:   ",
 		check->notification.switch_to_polling_threshold_value);
-	fwts_log_info_verbatim(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Sw. to Polling Window:  ",
 		check->notification.switch_to_polling_threshold_window);
-	fwts_log_info_verbatim(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Error: Thresh. Value:   ",
 		check->notification.error_threshold_value);
-	fwts_log_info_verbatim(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Error: Thresh. Window:  ",
 		check->notification.error_threshold_window);
-	fwts_log_info_verbatim(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, check->number_of_hardware_banks);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, reserved2);
+	fwts_log_info_simp_int(fw, "  Number of Hardware Banks: ", check->number_of_hardware_banks);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", reserved2);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "Machine Check Reserved1", check->reserved1, sizeof(check->reserved1), passed);
@@ -248,15 +248,15 @@ static void hest_check_ia32_arch_corrected_machine_check(
 		fwts_acpi_table_hest_machine_check_bank *bank = &check->bank[i];
 
 		fwts_log_info_verbatim(fw, "  HEST IA-32 Architecture Machine Check Bank %zd", i);
-		fwts_log_info_verbatim(fw, "    Bank Number:            0x%2.2" PRIx8, bank->bank_number);
-		fwts_log_info_verbatim(fw, "    Clear Status On Init.:  0x%2.2" PRIx8, bank->clear_status_on_initialization);
-		fwts_log_info_verbatim(fw, "    Status Data Format:     0x%2.2" PRIx8, bank->status_data_format);
-		fwts_log_info_verbatim(fw, "    Reserved:               0x%2.2" PRIx8, bank->reserved);
-		fwts_log_info_verbatim(fw, "    Control Reg. MSR Addr:  0x%8.8" PRIx32, bank->control_register_msr_address);
-		fwts_log_info_verbatim(fw, "    Control Init Data:      0x%16.16" PRIx64, bank->control_init_data);
-		fwts_log_info_verbatim(fw, "    Status Reg. MSR Addr:   0x%8.8" PRIx32, bank->status_register_msr_address);
-		fwts_log_info_verbatim(fw, "    Addr Reg. MSR Addr:     0x%8.8" PRIx32, bank->address_register_msr_address);
-		fwts_log_info_verbatim(fw, "    Misc Reg. MSR Addr:     0x%8.8" PRIx32, bank->misc_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Bank Number:            ", bank->bank_number);
+		fwts_log_info_simp_int(fw, "    Clear Status On Init.:  ", bank->clear_status_on_initialization);
+		fwts_log_info_simp_int(fw, "    Status Data Format:     ", bank->status_data_format);
+		fwts_log_info_simp_int(fw, "    Reserved:               ", bank->reserved);
+		fwts_log_info_simp_int(fw, "    Control Reg. MSR Addr:  ", bank->control_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Control Init Data:      ", bank->control_init_data);
+		fwts_log_info_simp_int(fw, "    Status Reg. MSR Addr:   ", bank->status_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Addr Reg. MSR Addr:     ", bank->address_register_msr_address);
+		fwts_log_info_simp_int(fw, "    Misc Reg. MSR Addr:     ", bank->misc_register_msr_address);
 		fwts_log_nl(fw);
 
 		if (bank->clear_status_on_initialization > 1) {
@@ -311,12 +311,12 @@ static void hest_check_acpi_table_hest_nmi_error(
 	}
 
 	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Non-Maskable Interrupt:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, err->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, err->source_id);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, err->reserved1);
-	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, err->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, err->max_sections_per_record);
-	fwts_log_info_verbatim(fw, "  Max Raw Data Length:      0x%8.8" PRIx32, err->max_raw_data_length);
+	fwts_log_info_simp_int(fw, "  Type:                     ", err->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", err->source_id);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", err->reserved1);
+	fwts_log_info_simp_int(fw, "  Number of Records:        ", err->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max Sections Per Record:  ", err->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Max Raw Data Length:      ", err->max_raw_data_length);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "NMI Reserved", err->reserved1, sizeof(err->reserved1), passed);
@@ -369,23 +369,23 @@ static void hest_check_pci_express_root_port_aer(
 	}
 
 	fwts_log_info_verbatim(fw, "HEST PCI Express Root Port AER:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
-	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
-	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
-	fwts_log_info_verbatim(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
-	fwts_log_info_verbatim(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
-	fwts_log_info_verbatim(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
-	fwts_log_info_verbatim(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved2);
-	fwts_log_info_verbatim(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
-	fwts_log_info_verbatim(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
-	fwts_log_info_verbatim(fw, "  Correctable Error Mask:   0x%8.8" PRIx32, aer->correctable_error_mask);
-	fwts_log_info_verbatim(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
-	fwts_log_info_verbatim(fw, "  Root Error Command:       0x%8.8" PRIx32, aer->root_error_command);
+	fwts_log_info_simp_int(fw, "  Type:                     ", aer->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", aer->source_id);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", aer->reserved1);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", aer->flags);
+	fwts_log_info_simp_int(fw, "  Enabled:                  ", aer->enabled);
+	fwts_log_info_simp_int(fw, "  Number of Records:        ", aer->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max Sections Per Record:  ", aer->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Bus:                      ", aer->bus);
+	fwts_log_info_simp_int(fw, "  Device:                   ", aer->device);
+	fwts_log_info_simp_int(fw, "  Function:                 ", aer->function);
+	fwts_log_info_simp_int(fw, "  Device Control:           ", aer->device_control);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", aer->reserved2);
+	fwts_log_info_simp_int(fw, "  Uncorrectable Mask:       ", aer->uncorrectable_error_mask);
+	fwts_log_info_simp_int(fw, "  Uncorrectable Severity:   ", aer->uncorrectable_error_severity);
+	fwts_log_info_simp_int(fw, "  Correctable Error Mask:   ", aer->correctable_error_mask);
+	fwts_log_info_simp_int(fw, "  Advanced Capabilities:    ", aer->advanced_error_capabilities_and_control);
+	fwts_log_info_simp_int(fw, "  Root Error Command:       ", aer->root_error_command);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
@@ -439,21 +439,21 @@ static void hest_check_pci_express_device_aer(
 	}
 
 	fwts_log_info_verbatim(fw, "HEST PCI Express Device AER:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
-	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
-	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
-	fwts_log_info_verbatim(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
-	fwts_log_info_verbatim(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
-	fwts_log_info_verbatim(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
-	fwts_log_info_verbatim(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
-	fwts_log_info_verbatim(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
-	fwts_log_info_verbatim(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
-	fwts_log_info_verbatim(fw, "  Correctable Error Mask:   0x%8.8" PRIx32, aer->correctable_error_mask);
-	fwts_log_info_verbatim(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
+	fwts_log_info_simp_int(fw, "  Type:                     ", aer->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", aer->source_id);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", aer->reserved1);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", aer->flags);
+	fwts_log_info_simp_int(fw, "  Enabled:                  ", aer->enabled);
+	fwts_log_info_simp_int(fw, "  Number of Records:        ", aer->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max Sections Per Record:  ", aer->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Bus:                      ", aer->bus);
+	fwts_log_info_simp_int(fw, "  Device:                   ", aer->device);
+	fwts_log_info_simp_int(fw, "  Function:                 ", aer->function);
+	fwts_log_info_simp_int(fw, "  Device Control:           ", aer->device_control);
+	fwts_log_info_simp_int(fw, "  Uncorrectable Mask:       ", aer->uncorrectable_error_mask);
+	fwts_log_info_simp_int(fw, "  Uncorrectable Severity:   ", aer->uncorrectable_error_severity);
+	fwts_log_info_simp_int(fw, "  Correctable Error Mask:   ", aer->correctable_error_mask);
+	fwts_log_info_simp_int(fw, "  Advanced Capabilities:    ", aer->advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
@@ -507,25 +507,25 @@ static void hest_heck_pci_express_bridge_aer(
 	}
 
 	fwts_log_info_verbatim(fw, "HEST PCI Express Bridge AER:");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
-	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
-	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
-	fwts_log_info_verbatim(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
-	fwts_log_info_verbatim(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
-	fwts_log_info_verbatim(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
-	fwts_log_info_verbatim(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved2);
-	fwts_log_info_verbatim(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
-	fwts_log_info_verbatim(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
-	fwts_log_info_verbatim(fw, "  Correctable Mask:         0x%8.8" PRIx32, aer->correctable_error_mask);
-	fwts_log_info_verbatim(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
-	fwts_log_info_verbatim(fw, "  2nd Uncorrectable Mask:   0x%8.8" PRIx32, aer->secondary_uncorrectable_error_mask);
-	fwts_log_info_verbatim(fw, "  2nd Uncurrectable Svrity: 0x%8.8" PRIx32, aer->secondary_uncorrectable_error_severity);
-	fwts_log_info_verbatim(fw, "  2nd Advanced Capabilities:0x%8.8" PRIx32, aer->secondary_advanced_error_capabilities_and_control);
+	fwts_log_info_simp_int(fw, "  Type:                     ", aer->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", aer->source_id);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", aer->reserved1);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", aer->flags);
+	fwts_log_info_simp_int(fw, "  Enabled:                  ", aer->enabled);
+	fwts_log_info_simp_int(fw, "  Number of Records:        ", aer->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max Sections Per Record:  ", aer->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Bus:                      ", aer->bus);
+	fwts_log_info_simp_int(fw, "  Device:                   ", aer->device);
+	fwts_log_info_simp_int(fw, "  Function:                 ", aer->function);
+	fwts_log_info_simp_int(fw, "  Device Control:           ", aer->device_control);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", aer->reserved2);
+	fwts_log_info_simp_int(fw, "  Uncorrectable Mask:       ", aer->uncorrectable_error_mask);
+	fwts_log_info_simp_int(fw, "  Uncorrectable Severity:   ", aer->uncorrectable_error_severity);
+	fwts_log_info_simp_int(fw, "  Correctable Mask:         ", aer->correctable_error_mask);
+	fwts_log_info_simp_int(fw, "  Advanced Capabilities:    ", aer->advanced_error_capabilities_and_control);
+	fwts_log_info_simp_int(fw, "  2nd Uncorrectable Mask:   ", aer->secondary_uncorrectable_error_mask);
+	fwts_log_info_simp_int(fw, "  2nd Uncurrectable Svrity: ", aer->secondary_uncorrectable_error_severity);
+	fwts_log_info_simp_int(fw, "  2nd Advanced Capabilities:", aer->secondary_advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
@@ -581,44 +581,44 @@ static void hest_check_generic_error_source(
 	}
 
 	fwts_log_info_verbatim(fw, "HEST Generic Hardware Error Source");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, source->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, source->source_id);
-	fwts_log_info_verbatim(fw, "  Related Source ID:        0x%4.4" PRIx16, source->related_source_id);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, source->flags);
-	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, source->enabled);
-	fwts_log_info_verbatim(fw, "  Num. Records. Prealloc.:  0x%8.8" PRIx32, source->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max. Sections Per Rec.:   0x%8.8" PRIx32, source->max_sections_per_record);
-	fwts_log_info_verbatim(fw, "  Max. Raw Data Length:     0x%8.8" PRIx32, source->max_raw_data_length);
+	fwts_log_info_simp_int(fw, "  Type:                     ", source->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", source->source_id);
+	fwts_log_info_simp_int(fw, "  Related Source ID:        ", source->related_source_id);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", source->flags);
+	fwts_log_info_simp_int(fw, "  Enabled:                  ", source->enabled);
+	fwts_log_info_simp_int(fw, "  Num. Records. Prealloc.:  ", source->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max. Sections Per Rec.:   ", source->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Max. Raw Data Length:     ", source->max_raw_data_length);
 
 	fwts_log_info_verbatim(fw, "  Error Status Address:");
-	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8,
+	fwts_log_info_simp_int(fw, "    Address Space ID:       ",
 		source->error_status_address.address_space_id);
-	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8,
+	fwts_log_info_simp_int(fw, "    Register Bit Width      ",
 		source->error_status_address.register_bit_width);
-	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8,
+	fwts_log_info_simp_int(fw, "    Register Bit Offset     ",
 		source->error_status_address.register_bit_offset);
-	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8,
+	fwts_log_info_simp_int(fw, "    Access Size             ",
 		source->error_status_address.access_width);
-	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64,
+	fwts_log_info_simp_int(fw, "    Address                 ",
 			source->error_status_address.address);
 	fwts_log_info_verbatim(fw, "  Hardware Error Notification:");
-	fwts_log_info_verbatim(fw, "    Type:                   0x%2.2" PRIx8, source->notification.type);
-	fwts_log_info_verbatim(fw, "    Length:                 0x%2.2" PRIx8, source->notification.length);
-	fwts_log_info_verbatim(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Type:                   ", source->notification.type);
+	fwts_log_info_simp_int(fw, "    Length:                 ", source->notification.length);
+	fwts_log_info_simp_int(fw, "    Config. Write. Enable:  ",
 		source->notification.configuration_write_enable);
-	fwts_log_info_verbatim(fw, "    Poll Interval:          0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Poll Interval:          ",
 		source->notification.poll_interval);
-	fwts_log_info_verbatim(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Interrupt Vector:       ",
 		source->notification.vector);
-	fwts_log_info_verbatim(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Sw. to Polling Value:   ",
 		source->notification.switch_to_polling_threshold_value);
-	fwts_log_info_verbatim(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Sw. to Polling Window:  ",
 		source->notification.switch_to_polling_threshold_window);
-	fwts_log_info_verbatim(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Error: Thresh. Value:   ",
 		source->notification.error_threshold_value);
-	fwts_log_info_verbatim(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
+	fwts_log_info_simp_int(fw, "    Error: Thresh. Window:  ",
 		source->notification.error_threshold_window);
-	fwts_log_info_verbatim(fw, "  Error Status Blk. Length: 0x%8.8" PRIx32, source->error_status_block_length);
+	fwts_log_info_simp_int(fw, "  Error Status Blk. Length: ", source->error_status_block_length);
 	fwts_log_nl(fw);
 
 	if (source->number_of_records_to_preallocate < 1) {
@@ -683,57 +683,57 @@ static void hest_check_generic_error_source_v2(
 	}
 
 	fwts_log_info_verbatim(fw, "HEST Generic Hardware Error Source version 2");
-	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, source->type);
-	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, source->source_id);
-	fwts_log_info_verbatim(fw, "  Related Source ID:        0x%4.4" PRIx16, source->related_source_id);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, source->flags);
-	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, source->enabled);
-	fwts_log_info_verbatim(fw, "  Num. Records. Prealloc.:  0x%8.8" PRIx32, source->number_of_records_to_preallocate);
-	fwts_log_info_verbatim(fw, "  Max. Sections Per Rec.:   0x%8.8" PRIx32, source->max_sections_per_record);
-	fwts_log_info_verbatim(fw, "  Max. Raw Data Length:     0x%8.8" PRIx32, source->max_raw_data_length);
+	fwts_log_info_simp_int(fw, "  Type:                     ", source->type);
+	fwts_log_info_simp_int(fw, "  Source ID:                ", source->source_id);
+	fwts_log_info_simp_int(fw, "  Related Source ID:        ", source->related_source_id);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", source->flags);
+	fwts_log_info_simp_int(fw, "  Enabled:                  ", source->enabled);
+	fwts_log_info_simp_int(fw, "  Num. Records. Prealloc.:  ", source->number_of_records_to_preallocate);
+	fwts_log_info_simp_int(fw, "  Max. Sections Per Rec.:   ", source->max_sections_per_record);
+	fwts_log_info_simp_int(fw, "  Max. Raw Data Length:     ", source->max_raw_data_length);
 
         fwts_log_info_verbatim(fw, "  Error Status Address:");
-        fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Address Space ID:       ",
 		source->error_status_address.address_space_id);
-        fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Register Bit Width      ",
 		source->error_status_address.register_bit_width);
-        fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Register Bit Offset     ",
 		source->error_status_address.register_bit_offset);
-        fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Access Size             ",
 		source->error_status_address.access_width);
-        fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64,
+        fwts_log_info_simp_int(fw, "    Address                 ",
 			source->error_status_address.address);
         fwts_log_info_verbatim(fw, "  Hardware Error Notification:");
-        fwts_log_info_verbatim(fw, "    Type:                   0x%2.2" PRIx8, source->notification.type);
-        fwts_log_info_verbatim(fw, "    Length:                 0x%2.2" PRIx8, source->notification.length);
-        fwts_log_info_verbatim(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
+        fwts_log_info_simp_int(fw, "    Type:                   ", source->notification.type);
+        fwts_log_info_simp_int(fw, "    Length:                 ", source->notification.length);
+        fwts_log_info_simp_int(fw, "    Config. Write. Enable:  ",
 		source->notification.configuration_write_enable);
-        fwts_log_info_verbatim(fw, "    Poll Interval:          0x%4.4" PRIx16,
+        fwts_log_info_simp_int(fw, "    Poll Interval:          ",
 		source->notification.poll_interval);
-        fwts_log_info_verbatim(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
+        fwts_log_info_simp_int(fw, "    Interrupt Vector:       ",
 		source->notification.vector);
-        fwts_log_info_verbatim(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
+        fwts_log_info_simp_int(fw, "    Sw. to Polling Value:   ",
 		source->notification.switch_to_polling_threshold_value);
-        fwts_log_info_verbatim(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
+        fwts_log_info_simp_int(fw, "    Sw. to Polling Window:  ",
 		source->notification.switch_to_polling_threshold_window);
-        fwts_log_info_verbatim(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
+        fwts_log_info_simp_int(fw, "    Error: Thresh. Value:   ",
 		source->notification.error_threshold_value);
-        fwts_log_info_verbatim(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
+        fwts_log_info_simp_int(fw, "    Error: Thresh. Window:  ",
 		source->notification.error_threshold_window);
-	fwts_log_info_verbatim(fw, "  Error Status Blk. Length: 0x%8.8" PRIx32, source->error_status_block_length);
+	fwts_log_info_simp_int(fw, "  Error Status Blk. Length: ", source->error_status_block_length);
         fwts_log_info_verbatim(fw, "  Read Ack Register:");
-        fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Address Space ID:       ",
 		source->read_ack_register.address_space_id);
-        fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Register Bit Width      ",
 		source->read_ack_register.register_bit_width);
-        fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Register Bit Offset     ",
 		source->read_ack_register.register_bit_offset);
-        fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8,
+        fwts_log_info_simp_int(fw, "    Access Size             ",
 		source->read_ack_register.access_width);
-        fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64,
+        fwts_log_info_simp_int(fw, "    Address                 ",
 			source->read_ack_register.address);
-	fwts_log_info_verbatim(fw, "  Read Ack Preserve:        0x%16.16" PRIx64, source->read_ack_preserve);
-	fwts_log_info_verbatim(fw, "  Read Ack Write:           0x%16.16" PRIx64, source->read_ack_write);
+	fwts_log_info_simp_int(fw, "  Read Ack Preserve:        ", source->read_ack_preserve);
+	fwts_log_info_simp_int(fw, "  Read Ack Write:           ", source->read_ack_write);
 	fwts_log_nl(fw);
 
 	if (source->number_of_records_to_preallocate < 1) {
@@ -797,7 +797,7 @@ static int hest_test1(fwts_framework *fw)
 	}
 
 	fwts_log_info_verbatim(fw, "HEST Hardware Error Source Table test");
-	fwts_log_info_verbatim(fw, "  Error Source Count:       0x%2.2" PRIx8, hest->error_source_count);
+	fwts_log_info_simp_int(fw, "  Error Source Count:       ", hest->error_source_count);
 	fwts_log_nl(fw);
 
         data += sizeof(fwts_acpi_table_hest);

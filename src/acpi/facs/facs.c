@@ -55,15 +55,15 @@ static int facs_test1(fwts_framework *fw)
 
 	fwts_log_info_verbatim(fw, "FACS Firmware ACPI Control Structure:");
 	fwts_log_info_verbatim(fw, "  Signature:                '%4.4s'", facs->signature);
-	fwts_log_info_verbatim(fw, "  Length:                   0x%8.8" PRIx32, facs->length);
-	fwts_log_info_verbatim(fw, "  Hardware Signature:       0x%8.8" PRIx32, facs->hardware_signature);
-	fwts_log_info_verbatim(fw, "  Firmware Waking Vector:   0x%8.8" PRIx32, facs->firmware_waking_vector);
-	fwts_log_info_verbatim(fw, "  Global Lock:              0x%8.8" PRIx32, facs->global_lock);
-	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, facs->flags);
-	fwts_log_info_verbatim(fw, "  X-Firmware Waking Vector: 0x%16.16" PRIx64, facs->x_firmware_waking_vector);
-	fwts_log_info_verbatim(fw, "  Version:                  0x%2.2" PRIx8, facs->version);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, reserved);
-	fwts_log_info_verbatim(fw, "  OSPM Flags:               0x%8.8" PRIx32, facs->ospm_flags);
+	fwts_log_info_simp_int(fw, "  Length:                   ", facs->length);
+	fwts_log_info_simp_int(fw, "  Hardware Signature:       ", facs->hardware_signature);
+	fwts_log_info_simp_int(fw, "  Firmware Waking Vector:   ", facs->firmware_waking_vector);
+	fwts_log_info_simp_int(fw, "  Global Lock:              ", facs->global_lock);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", facs->flags);
+	fwts_log_info_simp_int(fw, "  X-Firmware Waking Vector: ", facs->x_firmware_waking_vector);
+	fwts_log_info_simp_int(fw, "  Version:                  ", facs->version);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", reserved);
+	fwts_log_info_simp_int(fw, "  OSPM Flags:               ", facs->ospm_flags);
 	for (i = 0; i < 24; i+= 4) {
 		fwts_log_info_verbatim(fw, "  Reserved:                 "
 			"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,

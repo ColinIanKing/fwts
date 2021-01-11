@@ -44,22 +44,22 @@ static int drtm_test1(fwts_framework *fw)
 	uint32_t i;
 
 	fwts_log_info_verbatim(fw, "DRTM D-RTM Resources Table:");
-	fwts_log_info_verbatim(fw, "  DL_Entry_Base:            0x%16.16" PRIx64, drtm->entry_base_address);
-	fwts_log_info_verbatim(fw, "  DL_Entry_Length:          0x%16.16" PRIx64, drtm->entry_length);
-	fwts_log_info_verbatim(fw, "  DL_Entry32:               0x%8.8" PRIx32, drtm->entry_address32);
-	fwts_log_info_verbatim(fw, "  DL_Entry64:               0x%16.16" PRIx64, drtm->entry_address64);
-	fwts_log_info_verbatim(fw, "  DLME_Exit:                0x%16.16" PRIx64, drtm->exit_address);
-	fwts_log_info_verbatim(fw, "  Log_Area_Start:           0x%16.16" PRIx64, drtm->log_area_address);
-	fwts_log_info_verbatim(fw, "  Log_Area_Length:          0x%8.8" PRIx32, drtm->log_area_length);
-	fwts_log_info_verbatim(fw, "  Architecture_Dependent:   0x%16.16" PRIx64, drtm->arch_dependent_address);
-	fwts_log_info_verbatim(fw, "  DRT_Flags:                0x%8.8" PRIx32, drtm->flags);
+	fwts_log_info_simp_int(fw, "  DL_Entry_Base:            ", drtm->entry_base_address);
+	fwts_log_info_simp_int(fw, "  DL_Entry_Length:          ", drtm->entry_length);
+	fwts_log_info_simp_int(fw, "  DL_Entry32:               ", drtm->entry_address32);
+	fwts_log_info_simp_int(fw, "  DL_Entry64:               ", drtm->entry_address64);
+	fwts_log_info_simp_int(fw, "  DLME_Exit:                ", drtm->exit_address);
+	fwts_log_info_simp_int(fw, "  Log_Area_Start:           ", drtm->log_area_address);
+	fwts_log_info_simp_int(fw, "  Log_Area_Length:          ", drtm->log_area_length);
+	fwts_log_info_simp_int(fw, "  Architecture_Dependent:   ", drtm->arch_dependent_address);
+	fwts_log_info_simp_int(fw, "  DRT_Flags:                ", drtm->flags);
 
 	fwts_acpi_reserved_bits_check(fw, "DRTM", "DRT_Flags", drtm->flags, sizeof(drtm->flags), 4, 31, &passed);
 	fwts_log_nl(fw);
 
 	offset = sizeof(fwts_acpi_table_drtm);
 	drtm_vtl = (fwts_acpi_table_drtm_vtl *) (table->data + offset);
-	fwts_log_info_verbatim(fw, "  VTL_Length:               0x%8.8" PRIx32, drtm_vtl->validated_table_count);
+	fwts_log_info_simp_int(fw, "  VTL_Length:               ", drtm_vtl->validated_table_count);
 	offset += sizeof(drtm_vtl->validated_table_count);
 
 	if (drtm->header.length < offset + sizeof(uint64_t) * drtm_vtl->validated_table_count) {
@@ -70,14 +70,14 @@ static int drtm_test1(fwts_framework *fw)
 	}
 
 	for (i = 0; i < drtm_vtl->validated_table_count; i++) {
-		fwts_log_info_verbatim(fw, "  Validated_Tables:         0x%16.16" PRIx64, drtm_vtl->validated_tables[i]);
+		fwts_log_info_simp_int(fw, "  Validated_Tables:         ", drtm_vtl->validated_tables[i]);
 		offset += sizeof(drtm_vtl->validated_tables[i]);
 	}
 
 	fwts_log_nl(fw);
 
 	drtm_rtl = (fwts_acpi_table_drtm_rtl *) (table->data + offset);
-	fwts_log_info_verbatim(fw, "  RL_Length:                0x%8.8" PRIx32, drtm_rtl->resource_count);
+	fwts_log_info_simp_int(fw, "  RL_Length:                ", drtm_rtl->resource_count);
 	offset += sizeof(drtm_rtl->resource_count);
 
 	if (drtm->header.length < offset + sizeof(fwts_acpi_drtm_resource) * drtm_rtl->resource_count) {
@@ -95,9 +95,9 @@ static int drtm_test1(fwts_framework *fw)
 					   ((uint64_t) resource->size[4] << 32) + ((uint64_t) resource->size[5] << 40) +
 					   ((uint64_t) resource->size[6] << 48);
 
-		fwts_log_info_verbatim(fw, "  Resource Size:            0x%16.16" PRIx64, size);
-		fwts_log_info_verbatim(fw, "  Resource Type:            0x%2.2" PRIx8, resource->type);
-		fwts_log_info_verbatim(fw, "  Resource Address:         0x%16.16" PRIx64, resource->address);
+		fwts_log_info_simp_int(fw, "  Resource Size:            ", size);
+		fwts_log_info_simp_int(fw, "  Resource Type:            ", resource->type);
+		fwts_log_info_simp_int(fw, "  Resource Address:         ", resource->address);
 
 		if (resource->type & 0x7C) {
 			passed = false;
@@ -112,7 +112,7 @@ static int drtm_test1(fwts_framework *fw)
 	}
 
 	drtm_dps = (fwts_acpi_table_drtm_dps *) (table->data + offset);
-	fwts_log_info_verbatim(fw, "  DPS_Length:               0x%8.8" PRIx32, drtm_dps->dps_id_length);
+	fwts_log_info_simp_int(fw, "  DPS_Length:               ", drtm_dps->dps_id_length);
 
 	if (drtm->header.length < offset + sizeof(fwts_acpi_table_drtm_dps)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -122,7 +122,7 @@ static int drtm_test1(fwts_framework *fw)
 	}
 
 	for (i = 0; i < sizeof(drtm_dps->dps_id); i++) {
-		fwts_log_info_verbatim(fw, "  DLME Platform Id:         0x%2.2" PRIx8, drtm_dps->dps_id[i]);
+		fwts_log_info_simp_int(fw, "  DLME Platform Id:         ", drtm_dps->dps_id[i]);
 	}
 
 	fwts_log_nl(fw);

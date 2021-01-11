@@ -42,14 +42,14 @@ static int mpst_test1(fwts_framework *fw)
 		   ((uint32_t) mpst->reserved[2] << 16);
 
 	fwts_log_info_verbatim(fw, "MPST Table:");
-	fwts_log_info_verbatim(fw, "  Communication Channel ID:        0x%2.2" PRIx8, mpst->channel_id);
-	fwts_log_info_verbatim(fw, "  Reserved:                        0x%8.8" PRIx32, reserved);
+	fwts_log_info_simp_int(fw, "  Communication Channel ID:        ", mpst->channel_id);
+	fwts_log_info_simp_int(fw, "  Reserved:                        ", reserved);
 
 	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", reserved, sizeof(reserved), &passed);
 
 	node_list = (fwts_acpi_table_mpst_power_node_list *) (table->data + sizeof(fwts_acpi_table_mpst));
-	fwts_log_info_verbatim(fw, "  Memory Power Node Count:         0x%4.4" PRIx16, node_list->count);
-	fwts_log_info_verbatim(fw, "  Reserved:                        0x%4.4" PRIx16, node_list->reserved);
+	fwts_log_info_simp_int(fw, "  Memory Power Node Count:         ", node_list->count);
+	fwts_log_info_simp_int(fw, "  Reserved:                        ", node_list->reserved);
 
 	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", node_list->reserved, sizeof(node_list->reserved), &passed);
 
@@ -66,14 +66,14 @@ static int mpst_test1(fwts_framework *fw)
 		uint32_t node_length;
 
 		fwts_log_info_verbatim(fw, "  MPST Power Node:");
-		fwts_log_info_verbatim(fw, "    Flags:                         0x%2.2" PRIx8, power_node->flags);
-		fwts_log_info_verbatim(fw, "    Reserved:                      0x%2.2" PRIx8, power_node->reserved);
-		fwts_log_info_verbatim(fw, "    Memory Power Node Id:          0x%4.4" PRIx16, power_node->node_id);
-		fwts_log_info_verbatim(fw, "    Power Node Length:             0x%8.8" PRIx32, power_node->length);
-		fwts_log_info_verbatim(fw, "    Base Address:                  0x%16.16" PRIx64, power_node->range_address);
-		fwts_log_info_verbatim(fw, "    Memory Length:                 0x%16.16" PRIx64, power_node->range_length);
-		fwts_log_info_verbatim(fw, "    Number of Power States:        0x%8.8" PRIx32, power_node->num_states);
-		fwts_log_info_verbatim(fw, "    Number of Physical Components: 0x%8.8" PRIx32, power_node->num_components);
+		fwts_log_info_simp_int(fw, "    Flags:                         ", power_node->flags);
+		fwts_log_info_simp_int(fw, "    Reserved:                      ", power_node->reserved);
+		fwts_log_info_simp_int(fw, "    Memory Power Node Id:          ", power_node->node_id);
+		fwts_log_info_simp_int(fw, "    Power Node Length:             ", power_node->length);
+		fwts_log_info_simp_int(fw, "    Base Address:                  ", power_node->range_address);
+		fwts_log_info_simp_int(fw, "    Memory Length:                 ", power_node->range_length);
+		fwts_log_info_simp_int(fw, "    Number of Power States:        ", power_node->num_states);
+		fwts_log_info_simp_int(fw, "    Number of Physical Components: ", power_node->num_components);
 
 		fwts_acpi_reserved_bits_check(fw, "MPST", "Power Node Flags", power_node->flags, sizeof(power_node->flags), 3, 7, &passed);
 		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", power_node->reserved, sizeof(power_node->reserved), &passed);
@@ -100,8 +100,8 @@ static int mpst_test1(fwts_framework *fw)
 
 		for (j = 0; j < power_node->num_states; j++) {
 			fwts_acpi_table_mpst_power_state *state = (fwts_acpi_table_mpst_power_state *) (table->data + node_offset);
-			fwts_log_info_verbatim(fw, "    Power State Value:             0x%2.2" PRIx8, state->value);
-			fwts_log_info_verbatim(fw, "    Power State Information Index: 0x%2.2" PRIx8, state->info_index);
+			fwts_log_info_simp_int(fw, "    Power State Value:             ", state->value);
+			fwts_log_info_simp_int(fw, "    Power State Information Index: ", state->info_index);
 			node_offset += sizeof(fwts_acpi_table_mpst_power_state);
 		}
 
@@ -114,14 +114,14 @@ static int mpst_test1(fwts_framework *fw)
 
 		for (j = 0; j < power_node->num_components; j++) {
 			fwts_acpi_table_mpst_component *component = (fwts_acpi_table_mpst_component *) (table->data + node_offset);
-			fwts_log_info_verbatim(fw, "    Physical Component Id:         0x%2.2" PRIx8, component->id);
+			fwts_log_info_simp_int(fw, "    Physical Component Id:         ", component->id);
 			node_offset +=  sizeof(fwts_acpi_table_mpst_component);
 		}
 	}
 
 	char_list = (fwts_acpi_table_mpst_power_char_list *) (table->data + node_offset);
-	fwts_log_info_verbatim(fw, "  Memory Characteristics Count:    0x%4.4" PRIx16, char_list->count);
-	fwts_log_info_verbatim(fw, "  Reserved:                        0x%4.4" PRIx16, char_list->reserved);
+	fwts_log_info_simp_int(fw, "  Memory Characteristics Count:    ", char_list->count);
+	fwts_log_info_simp_int(fw, "  Reserved:                        ", char_list->reserved);
 
 	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", char_list->reserved, sizeof(char_list->reserved), &passed);
 
@@ -137,13 +137,13 @@ static int mpst_test1(fwts_framework *fw)
 		fwts_acpi_table_mpst_power_char *power_char = (fwts_acpi_table_mpst_power_char *) (table->data + node_offset);
 
 		fwts_log_info_verbatim(fw, "  MPST Power Characteristics:");
-		fwts_log_info_verbatim(fw, "    Power State Structure ID:      0x%2.2" PRIx8, power_char->structure_id);
-		fwts_log_info_verbatim(fw, "    Flags:                         0x%2.2" PRIx8, power_char->flags);
-		fwts_log_info_verbatim(fw, "    Reserved:                      0x%4.4" PRIx16, power_char->reserved1);
-		fwts_log_info_verbatim(fw, "    Average Power Consumed:        0x%8.8" PRIx32, power_char->average_power);
-		fwts_log_info_verbatim(fw, "    Relative Power Saving:         0x%8.8" PRIx32, power_char->power_saving);
-		fwts_log_info_verbatim(fw, "    Exit Latency:                  0x%16.16" PRIx64, power_char->exit_latency);
-		fwts_log_info_verbatim(fw, "    Reserved:                      0x%16.16" PRIx64, power_char->reserved2);
+		fwts_log_info_simp_int(fw, "    Power State Structure ID:      ", power_char->structure_id);
+		fwts_log_info_simp_int(fw, "    Flags:                         ", power_char->flags);
+		fwts_log_info_simp_int(fw, "    Reserved:                      ", power_char->reserved1);
+		fwts_log_info_simp_int(fw, "    Average Power Consumed:        ", power_char->average_power);
+		fwts_log_info_simp_int(fw, "    Relative Power Saving:         ", power_char->power_saving);
+		fwts_log_info_simp_int(fw, "    Exit Latency:                  ", power_char->exit_latency);
+		fwts_log_info_simp_int(fw, "    Reserved:                      ", power_char->reserved2);
 
 		if ((power_char->structure_id & 0x3F) != 1) {
 			passed = false;

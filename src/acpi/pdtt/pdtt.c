@@ -38,9 +38,9 @@ static int pdtt_test1(fwts_framework *fw)
 		   ((uint32_t) pdtt->reserved[2] << 16);
 
 	fwts_log_info_verbatim(fw, "PDTT Platform Debug Trigger Table:");
-	fwts_log_info_verbatim(fw, "  Trigger Count:           0x%2.2" PRIx8, pdtt->trigger_count);
+	fwts_log_info_simp_int(fw, "  Trigger Count:           ", pdtt->trigger_count);
 	fwts_log_info_verbatim(fw, "  Reserved[3]:             0x%6.6" PRIx32, reserved);
-	fwts_log_info_verbatim(fw, "  Trigger ID Array Offset: 0x%2.2" PRIx8, pdtt->array_offset);
+	fwts_log_info_simp_int(fw, "  Trigger ID Array Offset: ", pdtt->array_offset);
 
 	fwts_acpi_reserved_zero_check(fw, "PDTT", "Reserved", reserved, sizeof(reserved), &passed);
 
@@ -60,8 +60,8 @@ static int pdtt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Platform Communication Channel IDs");
 
 	for (i = 0; i < pdtt->trigger_count; i++) {
-		fwts_log_info_verbatim(fw, "    Sub channel ID:          0x%2.2" PRIx8, entry->sub_channel_id);
-		fwts_log_info_verbatim(fw, "    Flags:                   0x%2.2" PRIx8, entry->flags);
+		fwts_log_info_simp_int(fw, "    Sub channel ID:          ", entry->sub_channel_id);
+		fwts_log_info_simp_int(fw, "    Flags:                   ", entry->flags);
 		fwts_acpi_reserved_bits_check(fw, "PDTT", "Flags", entry->flags, sizeof(entry->flags), 3, 7, &passed);
 
 		if ((offset += sizeof(fwts_acpi_table_pdtt_channel)) > table->length) {

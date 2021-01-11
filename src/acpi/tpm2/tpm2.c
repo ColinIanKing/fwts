@@ -36,10 +36,10 @@ static int tpm2_test1(fwts_framework *fw)
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "TPM2 Table:");
-	fwts_log_info_verbatim(fw, "  Platform Class:                  0x%4.4"   PRIx16, tpm2->platform_class);
-	fwts_log_info_verbatim(fw, "  Reserved:                        0x%4.4"   PRIx32, tpm2->reserved);
-	fwts_log_info_verbatim(fw, "  Address of Control Area:         0x%16.16" PRIx64, tpm2->address_of_control_area);
-	fwts_log_info_verbatim(fw, "  Start Method:                    0x%8.8"   PRIx32, tpm2->start_method);
+	fwts_log_info_simp_int(fw, "  Platform Class:                  ", tpm2->platform_class);
+	fwts_log_info_simp_int(fw, "  Reserved:                        ", tpm2->reserved);
+	fwts_log_info_simp_int(fw, "  Address of Control Area:         ", tpm2->address_of_control_area);
+	fwts_log_info_simp_int(fw, "  Start Method:                    ", tpm2->start_method);
 
 	if (tpm2->platform_class != 0 && tpm2->platform_class != 1) {
 		passed = false;

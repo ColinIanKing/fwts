@@ -29,13 +29,13 @@ acpi_table_init(PPTT, &table)
 static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_processor *entry, uint8_t rev, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  Processor hierarchy node structure (Type 0):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%2.2" PRIx8, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
-	fwts_log_info_verbatim(fw, "    Flags:                          0x%8.8" PRIx32, entry->flags);
-	fwts_log_info_verbatim(fw, "    Parent:                         0x%8.8" PRIx32, entry->parent);
-	fwts_log_info_verbatim(fw, "    ACPI Processor ID:              0x%8.8" PRIx32, entry->acpi_processor_id);
-	fwts_log_info_verbatim(fw, "    Number of Private Resources:    0x%8.8" PRIx32, entry->number_priv_resources);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
+	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
+	fwts_log_info_simp_int(fw, "    Parent:                         ", entry->parent);
+	fwts_log_info_simp_int(fw, "    ACPI Processor ID:              ", entry->acpi_processor_id);
+	fwts_log_info_simp_int(fw, "    Number of Private Resources:    ", entry->number_priv_resources);
 
 	if ((entry->header.length - sizeof(fwts_acpi_table_pptt_processor)) / 4 == entry->number_priv_resources) {
 		uint32_t i;
@@ -64,16 +64,16 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 {
 
 	fwts_log_info_verbatim(fw, "  Cache Type Structure (Type 1):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%2.2" PRIx8, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
-	fwts_log_info_verbatim(fw, "    Flags:                          0x%8.8" PRIx32, entry->flags);
-	fwts_log_info_verbatim(fw, "    Next Level of Cache:            0x%8.8" PRIx32, entry->next_level_cache);
-	fwts_log_info_verbatim(fw, "    Size:                           0x%8.8" PRIx32, entry->size);
-	fwts_log_info_verbatim(fw, "    Number of sets:                 0x%8.8" PRIx32, entry->number_sets);
-	fwts_log_info_verbatim(fw, "    Associativity:                  0x%2.2" PRIx8, entry->associativity);
-	fwts_log_info_verbatim(fw, "    Attributes:                     0x%2.2" PRIx8, entry->attributes);
-	fwts_log_info_verbatim(fw, "    Line size:                      0x%4.4" PRIx16, entry->line_size);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
+	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
+	fwts_log_info_simp_int(fw, "    Next Level of Cache:            ", entry->next_level_cache);
+	fwts_log_info_simp_int(fw, "    Size:                           ", entry->size);
+	fwts_log_info_simp_int(fw, "    Number of sets:                 ", entry->number_sets);
+	fwts_log_info_simp_int(fw, "    Associativity:                  ", entry->associativity);
+	fwts_log_info_simp_int(fw, "    Attributes:                     ", entry->attributes);
+	fwts_log_info_simp_int(fw, "    Line size:                      ", entry->line_size);
 
 	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 	fwts_acpi_reserved_bits_check(fw, "PPTT", "Flags", entry->flags, sizeof(entry->flags), 7, 31, passed);
@@ -88,15 +88,15 @@ static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entr
 	vendor_id[4] = 0;
 
 	fwts_log_info_verbatim(fw, "  ID structure (Type 2):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%2.2" PRIx8, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
 	fwts_log_info_verbatim(fw, "    VENDOR_ID:                      %4.4s", vendor_id);
-	fwts_log_info_verbatim(fw, "    LEVEL_1_ID:                     0x%16.16" PRIx64, entry->level1_id);
-	fwts_log_info_verbatim(fw, "    LEVEL_2_ID:                     0x%16.16" PRIx64, entry->level2_id);
-	fwts_log_info_verbatim(fw, "    MAJOR_REV:                      0x%4.4" PRIx16, entry->major_rev);
-	fwts_log_info_verbatim(fw, "    MINOR_REV:                      0x%4.4" PRIx16, entry->minor_rev);
-	fwts_log_info_verbatim(fw, "    SPIN_REV:                       0x%4.4" PRIx16, entry->spin_rev);
+	fwts_log_info_simp_int(fw, "    LEVEL_1_ID:                     ", entry->level1_id);
+	fwts_log_info_simp_int(fw, "    LEVEL_2_ID:                     ", entry->level2_id);
+	fwts_log_info_simp_int(fw, "    MAJOR_REV:                      ", entry->major_rev);
+	fwts_log_info_simp_int(fw, "    MINOR_REV:                      ", entry->minor_rev);
+	fwts_log_info_simp_int(fw, "    SPIN_REV:                       ", entry->spin_rev);
 
 	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 }

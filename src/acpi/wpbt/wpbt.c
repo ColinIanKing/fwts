@@ -39,10 +39,10 @@ static int wpbt_test1(fwts_framework *fw)
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "WPBT Windows Platform Binary Table:");
-	fwts_log_info_verbatim(fw, "  Handoff Memory Size:      0x%8.8" PRIx32, wpbt->handoff_size);
-	fwts_log_info_verbatim(fw, "  Handoff Memory Location:  0x%16.16" PRIx64, wpbt->handoff_address);
-	fwts_log_info_verbatim(fw, "  Content Layout:           0x%2.2" PRIx8, wpbt->layout);
-	fwts_log_info_verbatim(fw, "  Content Type:             0x%2.2" PRIx8, wpbt->type);
+	fwts_log_info_simp_int(fw, "  Handoff Memory Size:      ", wpbt->handoff_size);
+	fwts_log_info_simp_int(fw, "  Handoff Memory Location:  ", wpbt->handoff_address);
+	fwts_log_info_simp_int(fw, "  Content Layout:           ", wpbt->layout);
+	fwts_log_info_simp_int(fw, "  Content Type:             ", wpbt->type);
 
 	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "WPBT", "Layout", wpbt->layout, 1, &passed);
 
@@ -50,7 +50,7 @@ static int wpbt_test1(fwts_framework *fw)
 		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "WPBT", "Type", wpbt->type, 1, &passed);
 	else {
 		fwts_acpi_table_wpbt_type1 *type = (fwts_acpi_table_wpbt_type1 *) (table->data + sizeof(fwts_acpi_table_wpbt));
-		fwts_log_info_verbatim(fw, "  Arguments Length:         0x%4.4" PRIx16, type->arguments_length);
+		fwts_log_info_simp_int(fw, "  Arguments Length:         ", type->arguments_length);
 
 		if (type->arguments_length % 2) {
 			passed = false;

@@ -48,7 +48,7 @@ static int waet_test1(fwts_framework *fw)
 	}
 
 	fwts_log_info_verbatim(fw, "WAET Table:");
-	fwts_log_info_verbatim(fw, "  Emulated Device Flags:    0x%8.8" PRIx32, waet->flags);
+	fwts_log_info_simp_int(fw, "  Emulated Device Flags:    ", waet->flags);
 	fwts_log_info_verbatim(fw, "    Bit [0] RTC Good:       %1" PRIu32, waet->flags & 1);
 	fwts_log_info_verbatim(fw, "    Bit [1] PM Timer Good:  %1" PRIu32, (waet->flags >> 1) & 1);
 	fwts_log_nl(fw);

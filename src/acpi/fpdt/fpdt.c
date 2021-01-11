@@ -36,9 +36,9 @@ static void fpdt_rec_header_dump(
 	fwts_acpi_table_fpdt_header *header)
 {
 	fwts_log_info_verbatim(fw, "  %s:", type_name);
-	fwts_log_info_verbatim(fw, "    Perf Rec Type:	0x%4.4" PRIx16, header->type);
-	fwts_log_info_verbatim(fw, "    Rec Length:	0x%2.2" PRIx8, header->length);
-	fwts_log_info_verbatim(fw, "    Revision:	0x%2.2" PRIx8, header->revision);
+	fwts_log_info_simp_int(fw, "    Perf Rec Type:	", header->type);
+	fwts_log_info_simp_int(fw, "    Rec Length:	", header->length);
+	fwts_log_info_simp_int(fw, "    Revision:	", header->revision);
 }
 
 static void fpdt_dump_raw_data(
@@ -100,8 +100,8 @@ static int fpdt_test1(fwts_framework *fw)
 					fbbpr->fpdt.length, sizeof(fwts_acpi_table_fpdt_basic_boot_perf_ptr));
 			} else {
 				fpdt_rec_header_dump(fw, "  Firmware Basic Boot Performance Pointer Record", fpdt);
-				fwts_log_info_verbatim(fw, "    Reserved:	0x%8.8" PRIx32, fbbpr->reserved);
-				fwts_log_info_verbatim(fw, "    FBPT Pointer:	0x%16.16" PRIx64, fbbpr->fbpt_addr);
+				fwts_log_info_simp_int(fw, "    Reserved:	", fbbpr->reserved);
+				fwts_log_info_simp_int(fw, "    FBPT Pointer:	", fbbpr->fbpt_addr);
 
 				fwts_acpi_reserved_zero_check(fw, "FPDT", "Reserved", fbbpr->reserved, sizeof(fbbpr->reserved), &passed);
 
@@ -127,8 +127,8 @@ static int fpdt_test1(fwts_framework *fw)
 					s3ptpr->fpdt.length, sizeof(fwts_acpi_table_fpdt_s3_perf_ptr));
 			} else {
 				fpdt_rec_header_dump(fw, "S3 Performance Table Pointer Record", fpdt);
-				fwts_log_info_verbatim(fw, "    Reserved:	0x%8.8" PRIx32, s3ptpr->reserved);
-				fwts_log_info_verbatim(fw, "    S3PT Pointer:	0x%16.16" PRIx64, s3ptpr->s3pt_addr);
+				fwts_log_info_simp_int(fw, "    Reserved:	", s3ptpr->reserved);
+				fwts_log_info_simp_int(fw, "    S3PT Pointer:	", s3ptpr->s3pt_addr);
 
 				fwts_acpi_reserved_zero_check(fw, "FPDT", "Reserved", s3ptpr->reserved, sizeof(s3ptpr->reserved), &passed);
 

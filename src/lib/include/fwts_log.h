@@ -146,6 +146,7 @@ void	  fwts_log_section_begin(fwts_log *log, const char *name);
 void	  fwts_log_section_end(fwts_log *log);
 char     *fwts_log_get_filenames(const char *filename, const fwts_log_type type);
 fwts_log_filename_type fwts_log_get_filename_type(const char *name);
+void _fwts_log_info_simp_int(const fwts_framework *fw, const char *message, uint8_t size, uint64_t value);
 
 static inline int fwts_log_type_count(fwts_log_type type)
 {
@@ -187,5 +188,8 @@ static inline int fwts_log_type_count(fwts_log_type type)
 
 #define fwts_log_nl(fw) \
 	fwts_log_printf(fw, LOG_NEWLINE, LOG_LEVEL_NONE, "", "", "", "%s", "")
+
+#define fwts_log_info_simp_int(fw, message, value) \
+	_fwts_log_info_simp_int(fw, message, sizeof(value), value)
 
 #endif

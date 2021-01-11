@@ -40,8 +40,8 @@ static int bert_test1(fwts_framework *fw)
 	size_t len;
 
 	fwts_log_info_verbatim(fw, "Boot Error Record Table:");
-	fwts_log_info_verbatim(fw, "  Error Region Length       0x%8.8" PRIx32, bert->boot_error_region_length);
-	fwts_log_info_verbatim(fw, "  Error Region              0x%16.16" PRIx64, bert->boot_error_region);
+	fwts_log_info_simp_int(fw, "  Error Region Length       ", bert->boot_error_region_length);
+	fwts_log_info_simp_int(fw, "  Error Region              ", bert->boot_error_region);
 	fwts_log_nl(fw);
 
 	/* Sanity check length */
@@ -98,14 +98,10 @@ static int bert_test1(fwts_framework *fw)
 		(region->block_status >> 3) & 1);
 	fwts_log_info_verbatim(fw, "  Block Status:  bit [13:4] 0x%" PRIx32 " (Error Data Entry Count)",
 		(region->block_status >> 4) & 0x3ff);
-	fwts_log_info_verbatim(fw, "  Raw Data Offset:          0x%8.8" PRIx32,
-		region->raw_data_offset);
-	fwts_log_info_verbatim(fw, "  Raw Data Length:          0x%8.8" PRIx32,
-		region->raw_data_length);
-	fwts_log_info_verbatim(fw, "  Data Length:              0x%8.8" PRIx32,
-		region->data_length);
-	fwts_log_info_verbatim(fw, "  Error Severity            0x%8.8" PRIx32,
-		region->error_severity);
+	fwts_log_info_simp_int(fw, "  Raw Data Offset:          ", region->raw_data_offset);
+	fwts_log_info_simp_int(fw, "  Raw Data Length:          ", region->raw_data_length);
+	fwts_log_info_simp_int(fw, "  Data Length:              ", region->data_length);
+	fwts_log_info_simp_int(fw, "  Error Severity            ", region->error_severity);
 
 	/* Sanity check raw data fields */
 	if (region->raw_data_offset >

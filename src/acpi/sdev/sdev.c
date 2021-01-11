@@ -32,13 +32,13 @@ acpi_table_init(SDEV, &table)
 static void sdev_acpi_namespace_device_test(fwts_framework *fw, const fwts_acpi_table_sdev_acpi *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  ACPI Integrated Device (Type 0):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Flags:                          0x%2.2" PRIx8, entry->header.flags);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%4.4" PRIx16, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Device Id Offset:               0x%4.4" PRIx16, entry->device_id_offset);
-	fwts_log_info_verbatim(fw, "    Device Id Length:               0x%4.4" PRIx16, entry->device_id_length);
-	fwts_log_info_verbatim(fw, "    Vendor Specific Data Offset:    0x%4.4" PRIx16, entry->vendor_offset);
-	fwts_log_info_verbatim(fw, "    Vendor Specific Data Length:    0x%4.4" PRIx16, entry->vendor_length);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->header.flags);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    Device Id Offset:               ", entry->device_id_offset);
+	fwts_log_info_simp_int(fw, "    Device Id Length:               ", entry->device_id_length);
+	fwts_log_info_simp_int(fw, "    Vendor Specific Data Offset:    ", entry->vendor_offset);
+	fwts_log_info_simp_int(fw, "    Vendor Specific Data Length:    ", entry->vendor_length);
 
 	fwts_acpi_reserved_bits_check(fw, "SDEV", "Flags", entry->header.flags, sizeof(entry->header.flags), 1, 15, passed);
 }
@@ -46,15 +46,15 @@ static void sdev_acpi_namespace_device_test(fwts_framework *fw, const fwts_acpi_
 static void sdev_pcie_endpoint_device_test(fwts_framework *fw, const fwts_acpi_table_sdev_pcie *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  PCIe Endpoint Device (Type 1):");
-	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->header.type);
-	fwts_log_info_verbatim(fw, "    Flags:                          0x%2.2" PRIx8, entry->header.flags);
-	fwts_log_info_verbatim(fw, "    Length:                         0x%4.4" PRIx16, entry->header.length);
-	fwts_log_info_verbatim(fw, "    PCI Segment Number:             0x%4.4" PRIx16, entry->segment);
-	fwts_log_info_verbatim(fw, "    Start Bus Number:               0x%4.4" PRIx16, entry->start_bus);
-	fwts_log_info_verbatim(fw, "    PCI Path Offset:                0x%4.4" PRIx16, entry->path_offset);
-	fwts_log_info_verbatim(fw, "    PCI Path Length:                0x%4.4" PRIx16, entry->path_length);
-	fwts_log_info_verbatim(fw, "    Vendor Specific Data Offset:    0x%4.4" PRIx16, entry->vendor_offset);
-	fwts_log_info_verbatim(fw, "    Vendor Specific Data Length:    0x%4.4" PRIx16, entry->vendor_length);
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->header.flags);
+	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
+	fwts_log_info_simp_int(fw, "    PCI Segment Number:             ", entry->segment);
+	fwts_log_info_simp_int(fw, "    Start Bus Number:               ", entry->start_bus);
+	fwts_log_info_simp_int(fw, "    PCI Path Offset:                ", entry->path_offset);
+	fwts_log_info_simp_int(fw, "    PCI Path Length:                ", entry->path_length);
+	fwts_log_info_simp_int(fw, "    Vendor Specific Data Offset:    ", entry->vendor_offset);
+	fwts_log_info_simp_int(fw, "    Vendor Specific Data Length:    ", entry->vendor_length);
 
 	fwts_acpi_reserved_bits_check(fw, "SDEV", "Flags", entry->header.flags, sizeof(entry->header.flags), 1, 15, passed);
 }

@@ -21,7 +21,7 @@ pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
 pcct                Max Periodic Access Rate:    0x77777777
-pcct                Min Request Turnaround Time: 0x00008888
+pcct                Min Request Turnaround Time: 0x8888
 pcct            FAILED [HIGH] PCCTBadAddressSpaceId: Test 1, PCCT Subspace
 pcct            Type 0 Space ID must be one of System Memory (0x0) or
 pcct            System I/O (0x1), got PCI Configuration (0x2) instead.
@@ -48,7 +48,7 @@ pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
 pcct                Max Periodic Access Rate:    0x77777777
-pcct                Min Request Turnaround Time: 0x00008888
+pcct                Min Request Turnaround Time: 0x8888
 pcct            
 pcct              PCC Subspace Structure:
 pcct                Type:                        0x02
@@ -72,7 +72,7 @@ pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
 pcct                Max Periodic Access Rate:    0x77777777
-pcct                Min Request Turnaround Time: 0x00008888
+pcct                Min Request Turnaround Time: 0x8888
 pcct                Platform Interrupt Ack Register:
 pcct                  Address Space ID           0x03
 pcct                  Register Bit Width         0x32

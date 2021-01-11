@@ -2,10 +2,10 @@ hest            hest: HEST Hardware Error Source Table test.
 hest            ----------------------------------------------------------
 hest            Test 1 of 1: HEST Hardware Error Source Table test.
 hest            HEST Hardware Error Source Table test
-hest              Error Source Count:       0x03
+hest              Error Source Count:       0x00000003
 hest            
 hest            HEST PCI Express Root Port AER:
-hest              Type:                     0x06
+hest              Type:                     0x0006
 hest              Source ID:                0x0006
 hest              Reserved:                 0x0000
 hest              Flags:                    0x02
@@ -24,7 +24,7 @@ hest              Advanced Capabilities:    0x00000000
 hest              Root Error Command:       0x00000006
 hest            
 hest            HEST PCI Express Device AER:
-hest              Type:                     0x07
+hest              Type:                     0x0007
 hest              Source ID:                0x0007
 hest              Reserved:                 0x0000
 hest              Flags:                    0x02
@@ -41,7 +41,7 @@ hest              Correctable Error Mask:   0x000011c1
 hest              Advanced Capabilities:    0x00000000
 hest            
 hest            HEST PCI Express Bridge AER:
-hest              Type:                     0x08
+hest              Type:                     0x0008
 hest              Source ID:                0x0008
 hest              Reserved:                 0x0000
 hest              Flags:                    0x02

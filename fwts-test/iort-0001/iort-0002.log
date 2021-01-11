@@ -2,9 +2,9 @@ iort            iort: IORT IO Remapping Table test.
 iort            ----------------------------------------------------------
 iort            Test 1 of 1: IORT IO Remapping Table test.
 iort            IORT IO Remapping Table test
-iort              Number of IORT Nodes:     0x0005
-iort              IORT Node Array Offset:   0x0030
-iort              Reserved:                 0x0000
+iort              Number of IORT Nodes:     0x00000005
+iort              IORT Node Array Offset:   0x00000030
+iort              Reserved:                 0x00000000
 iort            
 iort            IORT ITS Group Node:
 iort              Type:                     0x00
@@ -89,7 +89,7 @@ iort              Reference to ID Array:    0x00000020
 iort              Cache Coherent Attribute: 0x000000d1
 iort              Allocation Hints:         0xfe
 iort              Reserved:                 0x8000
-iort              Memory Access Flags       0x0003
+iort              Memory Access Flags       0x03
 iort              ATS Attribute:            0x00000003
 iort              PCI Segment Number:       0xc0bbeeff
 iort            ID Mapping 0

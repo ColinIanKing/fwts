@@ -2,7 +2,7 @@ hmat            hmat: HMAT Heterogeneous Memory Attribute Table test.
 hmat            ----------------------------------------------------------
 hmat            Test 1 of 1: Validate HMAT table.
 hmat            HMAT Heterogeneous Memory Attribute Table:
-hmat              Reserved:        0x00
+hmat              Reserved:        0x00000000
 hmat              Memory Proximity Domain Attributes (Type 0):
 hmat                Type:                           0x0000
 hmat                Reserved:                       0x0000

@@ -2,10 +2,10 @@ hest            hest: HEST Hardware Error Source Table test.
 hest            ----------------------------------------------------------
 hest            Test 1 of 1: HEST Hardware Error Source Table test.
 hest            HEST Hardware Error Source Table test
-hest              Error Source Count:       0x03
+hest              Error Source Count:       0x00000003
 hest            
 hest            HEST PCI Express Root Port AER:
-hest              Type:                     0x06
+hest              Type:                     0x0006
 hest              Source ID:                0x0006
 hest              Reserved:                 0x0000
 hest              Flags:                    0x07
@@ -27,7 +27,7 @@ hest            FAILED [HIGH] HESTReservedBitsNonZero: Test 1, HEST PCI
 hest            Express Root Port Flags Bits [7..2] must be zero, got 0x07
 hest            instead
 hest            HEST PCI Express Device AER:
-hest              Type:                     0x07
+hest              Type:                     0x0007
 hest              Source ID:                0x00ff
 hest              Reserved:                 0x0000
 hest              Flags:                    0x09
@@ -50,7 +50,7 @@ hest            FAILED [HIGH] HESTInvalidRecordsToPreallocate: Test 1,
 hest            HEST PCI Express Device Number of Records to Preallocate
 hest            is 0x0 and must be more than zero.
 hest            HEST PCI Express Bridge AER:
-hest              Type:                     0x08
+hest              Type:                     0x0008
 hest              Source ID:                0x0008
 hest              Reserved:                 0x0000
 hest              Flags:                    0x0f

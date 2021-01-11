@@ -19,9 +19,9 @@ mpst                Power State Value:             0x01
 mpst                Power State Information Index: 0x02
 mpst                Power State Value:             0x03
 mpst                Power State Information Index: 0x04
-mpst                Physical Component Id:         0x00
-mpst                Physical Component Id:         0x01
-mpst                Physical Component Id:         0x02
+mpst                Physical Component Id:         0x0000
+mpst                Physical Component Id:         0x0001
+mpst                Physical Component Id:         0x0002
 mpst              MPST Power Node:
 mpst                Flags:                         0x00
 mpst                Reserved:                      0x00
@@ -33,7 +33,7 @@ mpst                Number of Power States:        0x00000001
 mpst                Number of Physical Components: 0x00000001
 mpst                Power State Value:             0x05
 mpst                Power State Information Index: 0x06
-mpst                Physical Component Id:         0x03
+mpst                Physical Component Id:         0x0003
 mpst              Memory Characteristics Count:    0x0002
 mpst              Reserved:                        0x0000
 mpst              MPST Power Characteristics:

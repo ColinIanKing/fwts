@@ -3,7 +3,7 @@ slit            ----------------------------------------------------------
 slit            Test 1 of 1: SLIT System Locality Distance Information
 slit            test.
 slit            SLIT System Locality Distance Information Table:
-slit              Number of Localities:     0x8
+slit              Number of Localities:     0x0000000000000008
 slit            FAILED [HIGH] SLITBadCornerEntry: Test 1, SLIT Entry[0][0]
 slit            is 0xb, expecting value 0x0a.
 slit            FAILED [HIGH] SLITBadCornerEntry: Test 1, SLIT Entry[7][7]

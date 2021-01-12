@@ -67,6 +67,9 @@
 #define CHASSIS_MOBILE			0x04
 #define CHASSIS_SERVER			0x08
 
+#define dmi_ranges_uint8_check(fw, table, addr, field, hdr, offset, ranges) \
+	 _dmi_ranges_uint8_check(fw, table, addr, field, hdr, offset, ranges, sizeof(ranges))
+
 typedef struct {
 	const char *label;
 	const char *field;
@@ -915,7 +918,7 @@ static void dmi_reserved_uint8_check(fwts_framework *fw,
 	}
 }
 
-static void dmi_ranges_uint8_check(fwts_framework *fw,
+static void _dmi_ranges_uint8_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
 	const char *field,
@@ -1419,11 +1422,11 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_str_check(fw, table, addr, "Internal Reference Designator", hdr, 0x4);
 			fwts_dmi_value_range t8_ranges1[] = {{0, 0x23}, {0xa0, 0xa4}, {0xff, 0xff}};
-			dmi_ranges_uint8_check(fw, table, addr, "Internal Connector Type", hdr, 0x5, t8_ranges1, sizeof(t8_ranges1));
+			dmi_ranges_uint8_check(fw, table, addr, "Internal Connector Type", hdr, 0x5, t8_ranges1);
 			dmi_str_check(fw, table, addr, "External Reference Designator", hdr, 0x6);
-			dmi_ranges_uint8_check(fw, table, addr, "External Connector Type", hdr, 0x7, t8_ranges1, sizeof(t8_ranges1));
+			dmi_ranges_uint8_check(fw, table, addr, "External Connector Type", hdr, 0x7, t8_ranges1);
 			fwts_dmi_value_range t8_ranges2[] = {{0, 0x23}, {0xa0, 0xa1}, {0xff, 0xff}};
-			dmi_ranges_uint8_check(fw, table, addr, "Port Type", hdr, 0x8, t8_ranges2, sizeof(t8_ranges2));
+			dmi_ranges_uint8_check(fw, table, addr, "Port Type", hdr, 0x8, t8_ranges2);
 			break;
 
 		case 9: /* 7.10 */
@@ -1432,7 +1435,7 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_str_check(fw, table, addr, "Slot Designation", hdr, 0x4);
 			fwts_dmi_value_range t9_ranges[] = {{1, 0x28}, {0x30, 0x30}, {0xa0, 0xc6}};
-			dmi_ranges_uint8_check(fw, table, addr, "Slot Type", hdr, 0x5, t9_ranges, sizeof(t9_ranges));
+			dmi_ranges_uint8_check(fw, table, addr, "Slot Type", hdr, 0x5, t9_ranges);
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Data Bus Width", hdr, 0x6, 0x1, 0xe);
 			dmi_min_max_uint8_check(fw, table, addr, "Current Usage", hdr, 0x7, 0x1, 0x5);
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Length", hdr, 0x8, 0x1, 0x6);
@@ -1529,12 +1532,12 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x14)
 				break;
 			fwts_dmi_value_range t15_ranges1[] = {{0, 0x4}, {0x80, 0xff}};
-			dmi_ranges_uint8_check(fw, table, addr, "Access Method", hdr, 0xa, t15_ranges1, sizeof(t15_ranges1));
+			dmi_ranges_uint8_check(fw, table, addr, "Access Method", hdr, 0xa, t15_ranges1);
 			dmi_reserved_bits_check(fw, table, addr, "Log Status", hdr, sizeof(uint8_t), 0xb, 2, 7);
 			if (hdr->length < 0x17)
 				break;
 			fwts_dmi_value_range t15_ranges2[] = {{0, 0x1}, {0x80, 0xff}};
-			dmi_ranges_uint8_check(fw, table, addr, "Log Header Format", hdr, 0x14, t15_ranges2, sizeof(t15_ranges2));
+			dmi_ranges_uint8_check(fw, table, addr, "Log Header Format", hdr, 0x14, t15_ranges2);
 			if (hdr->length < 0x17 + data[0x15] * data[0x16])
 				break;
 			if (data[0x16] >= 0x02) {
@@ -1571,7 +1574,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x0f)
 				break;
 			fwts_dmi_value_range t16_ranges[] = {{0x1, 0xa}, {0xa0, 0xa4}};
-			dmi_ranges_uint8_check(fw, table, addr, "Location", hdr, 0x4, t16_ranges, sizeof(t16_ranges));
+			dmi_ranges_uint8_check(fw, table, addr, "Location", hdr, 0x4, t16_ranges);
 			dmi_min_max_uint8_check(fw, table, addr, "Use", hdr, 0x5, 0x1, 0x7);
 			dmi_min_max_uint8_check(fw, table, addr, "Error Corrrection Type", hdr, 0x6, 0x1, 0x7);
 			dmi_min_max_uint32_check(fw, table, addr, "Maximum Capacity", hdr, 0x7, 0, 0x80000000);
@@ -1684,7 +1687,7 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Type", hdr, 0x4, 0x1, 0x9);
 			fwts_dmi_value_range t21_ranges[] = {{0x1, 0x8}, {0xa0, 0xa2}};
-			dmi_ranges_uint8_check(fw, table, addr, "Interface", hdr, 0x5, t21_ranges, sizeof(t21_ranges));
+			dmi_ranges_uint8_check(fw, table, addr, "Interface", hdr, 0x5, t21_ranges);
 			break;
 
 		case 22: /* 7.23 */
@@ -1829,7 +1832,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			for (i = 4; i <= 9; i++)
 				dmi_reserved_uint8_check(fw, table, addr, "Reserved", hdr, i);
 			fwts_dmi_value_range t32_ranges[] = {{0, 0x8}, {0x80, 0xff}};
-			dmi_ranges_uint8_check(fw, table, addr, "Boot Status", hdr, 0xa, t32_ranges, sizeof(t32_ranges));
+			dmi_ranges_uint8_check(fw, table, addr, "Boot Status", hdr, 0xa, t32_ranges);
 			break;
 
 		case 33: /* 7.34 */

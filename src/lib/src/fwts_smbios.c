@@ -47,13 +47,36 @@ static int fwts_load_file(const char* filename, void *buf, size_t size)
  *  fwts_smbios_find_entry_uefi()
  *	find SMBIOS structure table entry from UEFI systab
  */
-static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type)
+static void *fwts_smbios_find_entry_uefi(
+	fwts_framework *fw,
+	void *entry,
+	fwts_smbios_type *type,
+	uint8_t smb_version)
 {
 	void *addr;
+	size_t size;
+	char *smbios;
+	char *sm;
 
-	if ((addr = fwts_scan_efi_systab("SMBIOS")) != NULL) {
+	switch (smb_version) {
+		case 2:
+			smbios = "SMBIOS";
+			sm = "_SM_";
+			size = sizeof(fwts_smbios_entry);
+			break;
+		case 3:
+			smbios = "SMBIOS3";
+			sm = "_SM3_";
+			size = sizeof(fwts_smbios30_entry);
+			break;
+		default:
+			*type  = FWTS_SMBIOS_UNKNOWN;
+			return NULL;
+			break;
+	}
+
+	if ((addr = fwts_scan_efi_systab(smbios)) != NULL) {
 		fwts_smbios_entry *mapped_entry;
-		const size_t size = sizeof(fwts_smbios_entry);
 
 		if ((mapped_entry = fwts_mmap((off_t)addr, size)) != FWTS_MAP_FAILED) {
 			if (fwts_safe_memcpy(entry, mapped_entry, size) == FWTS_OK) {
@@ -61,53 +84,20 @@ static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *
 				*type  = FWTS_SMBIOS;
 				return addr;
 			} else {
-				fwts_log_error(fw, "Cannot read mmap'd SMBIOS entry at 0x%p\n", addr);
+				fwts_log_error(fw, "Cannot read mmap'd %s entry at 0x%p\n", smbios, addr);
 				(void)fwts_munmap(mapped_entry, size);
 				addr = NULL;
 			}
 		}
 
-		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point",
-				entry, sizeof(fwts_smbios_entry)) == FWTS_OK && !strncmp((char*)entry, "_SM_", 4)) {
-			fwts_log_info(fw, "SMBIOS entry loaded from /sys/firmware/dmi/tables/smbios_entry_point\n");
+		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point", entry, size) == FWTS_OK &&
+		    strncmp((char*)entry, sm, strlen(sm))) {
+			fwts_log_info(fw, "%s entry loaded from /sys/firmware/dmi/tables/smbios_entry_point\n", smbios);
 			*type  = FWTS_SMBIOS;
 			return addr;
 		}
 
-		fwts_log_error(fw, "Cannot mmap SMBIOS entry at 0x%p\n", addr);
-	}
-	return NULL;
-}
-
-/*
- *  fwts_smbios30_find_entry_uefi()
- *	find SMBIOS30 structure table entry from UEFI systab
- */
-static void *fwts_smbios30_find_entry_uefi(fwts_framework *fw, fwts_smbios30_entry *entry)
-{
-	void *addr;
-
-	if ((addr = fwts_scan_efi_systab("SMBIOS3")) != NULL) {
-		fwts_smbios30_entry *mapped_entry;
-		const size_t size = sizeof(fwts_smbios30_entry);
-
-		if ((mapped_entry = fwts_mmap((off_t)addr, size)) != FWTS_MAP_FAILED) {
-			if (fwts_safe_memread(mapped_entry, size) == FWTS_OK) {
-				*entry = *mapped_entry;
-				(void)fwts_munmap(mapped_entry, size);
-				return addr;
-			} else {
-				(void)fwts_munmap(mapped_entry, size);
-			}
-		}
-
-		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point",
-				entry, sizeof(fwts_smbios30_entry)) == FWTS_OK && !strncmp((char*)entry, "_SM3_", 5)) {
-			fwts_log_info(fw, "SMBIOS30 entry loaded from /sys/firmware/dmi/tables/smbios_entry_point\n");
-			return addr;
-		}
-
-		fwts_log_error(fw, "Cannot mmap SMBIOS30 entry at %p\n", addr);
+		fwts_log_error(fw, "Cannot mmap %s entry at 0x%p\n", smbios, addr);
 	}
 	return NULL;
 }
@@ -117,13 +107,17 @@ static void *fwts_smbios30_find_entry_uefi(fwts_framework *fw, fwts_smbios30_ent
  *  fwts_smbios_find_entry_bios()
  *	find SMBIOS structure table entry by scanning memory
  */
-static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type)
+static void *fwts_smbios_find_entry_bios(
+	fwts_framework *fw,
+	void *entry,
+	fwts_smbios_type *type,
+	uint8_t smb_version)
 {
 	uint8_t *mem;
 	void 	*addr = NULL;
 	int 	i;
 
-        if ((mem = fwts_mmap(FWTS_SMBIOS_REGION_START, FWTS_SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
+	if ((mem = fwts_mmap(FWTS_SMBIOS_REGION_START, FWTS_SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
 		fwts_log_error(fw, "Cannot mmap SMBIOS region.");
 		return NULL;
 	}
@@ -131,72 +125,54 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
 	for (i = 0; i < FWTS_SMBIOS_REGION_SIZE; i += 16) {
 		if (fwts_safe_memread(mem + i, 16) != FWTS_OK)
 			continue;
-		/* SMBIOS entry point */
-		if ((*(mem+i)   == '_') &&
-		    (*(mem+i+1) == 'S') &&
-		    (*(mem+i+2) == 'M') &&
-		    (*(mem+i+3) == '_') &&
-		    (fwts_checksum(mem + i, 16) == 0)) {
-			addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
-			memcpy(entry, (void *)(mem + i), sizeof(fwts_smbios_entry));
-			*type  = FWTS_SMBIOS;
-			break;
-		}
-		/* Legacy DMI entry point */
-		if ((*(mem+i)   == '_') &&
-		    (*(mem+i+1) == 'D') &&
-		    (*(mem+i+2) == 'M') &&
-		    (*(mem+i+3) == 'I') &&
-		    (*(mem+i+4) == '_') &&
-		    (fwts_checksum(mem + i, 15) == 0)) {
-			memset(entry, 0, 16);
-			addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
-			memcpy(16 + ((uint8_t *)entry), (void *)(mem + i), 15);
-			*type = FWTS_SMBIOS_DMI_LEGACY;
-			break;
+
+		if (smb_version == 2) {
+			/* SMBIOS entry point */
+			if ((*(mem+i)   == '_') &&
+			    (*(mem+i+1) == 'S') &&
+			    (*(mem+i+2) == 'M') &&
+			    (*(mem+i+3) == '_') &&
+			    (fwts_checksum(mem + i, 16) == 0)) {
+				addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
+				memcpy(entry, (void *)(mem + i), sizeof(fwts_smbios_entry));
+				*type  = FWTS_SMBIOS;
+				break;
+			}
+			/* Legacy DMI entry point */
+			if ((*(mem+i)   == '_') &&
+			    (*(mem+i+1) == 'D') &&
+			    (*(mem+i+2) == 'M') &&
+			    (*(mem+i+3) == 'I') &&
+			    (*(mem+i+4) == '_') &&
+			    (fwts_checksum(mem + i, 15) == 0)) {
+				memset(entry, 0, 16);
+				addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
+				memcpy(16 + ((uint8_t *)entry), (void *)(mem + i), 15);
+				*type = FWTS_SMBIOS_DMI_LEGACY;
+				break;
+			}
+
+		} else if (smb_version == 3) {
+			/* SMBIOS30 entry point */
+			if ((*(mem+i)   == '_') &&
+			    (*(mem+i+1) == 'S') &&
+			    (*(mem+i+2) == 'M') &&
+			    (*(mem+i+3) == '3') &&
+			    (*(mem+i+4) == '_') &&
+			    (fwts_checksum(mem + i, 24 ) == 0)) {
+				addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
+				memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios30_entry));
+				*type  = FWTS_SMBIOS;
+				break;
+			}
 		}
 	}
 
-        (void)fwts_munmap(mem, FWTS_SMBIOS_REGION_SIZE);
+	(void)fwts_munmap(mem, FWTS_SMBIOS_REGION_SIZE);
 
 	return addr;
 }
 
-/*
- *  fwts_smbios30_find_entry_bios()
- *	find SMBIOS30 structure table entry by scanning memory
- */
-static void *fwts_smbios30_find_entry_bios(fwts_framework *fw, fwts_smbios30_entry *entry)
-{
-	uint8_t *mem;
-	void 	*addr = NULL;
-	int 	i;
-
-        if ((mem = fwts_mmap(FWTS_SMBIOS_REGION_START, FWTS_SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap SMBIOS region.");
-		return NULL;
-	}
-
-	for (i = 0; i < FWTS_SMBIOS_REGION_SIZE; i += 16) {
-		if (fwts_safe_memread(mem + i, 16) != FWTS_OK)
-			continue;
-		/* SMBIOS30 entry point */
-		if ((*(mem+i)   == '_') &&
-		    (*(mem+i+1) == 'S') &&
-		    (*(mem+i+2) == 'M') &&
-		    (*(mem+i+3) == '3') &&
-		    (*(mem+i+4) == '_') &&
-		    (fwts_checksum(mem + i, 24 ) == 0)) {
-			addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
-			memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios30_entry));
-			break;
-		}
-	}
-
-        (void)fwts_munmap(mem, FWTS_SMBIOS_REGION_SIZE);
-
-	return addr;
-}
 #endif
 
 /*
@@ -212,14 +188,14 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
 	*type = FWTS_SMBIOS_UNKNOWN;
 
 	/* Check EFI first */
-	addr = fwts_smbios_find_entry_uefi(fw, entry, type);
+	addr = fwts_smbios_find_entry_uefi(fw, entry, type, 2);
 	if (addr) {
 		*version = (entry->major_version << 8) +
 					(entry->minor_version & 0xff);
 	} else {
 #if defined(FWTS_ARCH_INTEL)
 		/* Failed? then scan x86 memory for SMBIOS tag  */
-		addr = fwts_smbios_find_entry_bios(fw, entry, type);
+		addr = fwts_smbios_find_entry_bios(fw, entry, type, 2);
 		if (addr) {
 			switch (*type) {
 			case FWTS_SMBIOS:
@@ -250,16 +226,17 @@ void *fwts_smbios30_find_entry(fwts_framework *fw,
 	uint16_t	  *version)
 {
 	void *addr;
+	fwts_smbios_type type = FWTS_SMBIOS_UNKNOWN;
 
 	/* Check EFI first */
-	addr = fwts_smbios30_find_entry_uefi(fw, entry);
+	addr = fwts_smbios_find_entry_uefi(fw, entry, &type, 3);
 	if (addr) {
 		*version = (entry->major_version << 8) +
 					(entry->minor_version & 0xff);
 	} else {
 #if defined(FWTS_ARCH_INTEL)
 		/* Failed? then scan x86 memory for SMBIOS30 tag  */
-		addr = fwts_smbios30_find_entry_bios(fw, entry);
+		addr = fwts_smbios_find_entry_bios(fw, entry, &type, 3);
 		if (addr) {
 			*version = (entry->major_version << 8) +
 				           (entry->minor_version & 0xff);
@@ -274,7 +251,7 @@ void *fwts_smbios30_find_entry(fwts_framework *fw,
 #else
 /*
  *  fwts_smbios_find_entry()
- *	find SMBIOS structure table entry, currently void for non-x86 specific code
+ *	find SMBIOS structure table entry, currently void for non-x86 & non-aarch64 specific code
  */
 void *fwts_smbios_find_entry(fwts_framework *fw,
 	fwts_smbios_entry *entry,
@@ -293,7 +270,7 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
 
 /*
  *  fwts_smbios30_find_entry()
- *	find SMBIOS30 structure table entry, currently void for non-x86 specific code
+ *	find SMBIOS30 structure table entry, currently void for non-x86 & non-aarch64 specific code
  */
 void *fwts_smbios30_find_entry(fwts_framework *fw,
 	fwts_smbios30_entry *entry,

@@ -4716,7 +4716,11 @@ static void method_test_GPE_return(
 {
 	FWTS_UNUSED(private);
 	FWTS_UNUSED(buf);
-	bool failed = false;
+
+	static const fwts_package_element elem[] = {
+		{ ACPI_TYPE_LOCAL_REFERENCE,	"GPE block device" },
+		{ ACPI_TYPE_INTEGER,		"SCI interrupt" },
+	};
 
 	switch (obj->Type) {
 	case ACPI_TYPE_INTEGER:
@@ -4730,19 +4734,7 @@ static void method_test_GPE_return(
 				name, (uint64_t)obj->Integer.Value);
 		break;
 	case ACPI_TYPE_PACKAGE:
-		if (obj->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
-			failed = true;
-			fwts_failed(fw, LOG_LEVEL_HIGH, "Method_GPEBadSubPackageReturnType",
-			"%s sub-package element 0 is not a reference.",	name);
-		}
-
-		if (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) {
-			failed = true;
-			fwts_failed(fw, LOG_LEVEL_HIGH, "Method_GPEBadSubPackageReturnType",
-			"%s sub-package element 1 is not an integer.", name);
-		}
-
-		if (!failed)
+		if (fwts_method_package_elements_type(fw, name, "_GPE", obj, elem, FWTS_ARRAY_SIZE(elem)) == FWTS_OK)
 			fwts_method_passed_sane(fw, name, "package");
 
 		break;

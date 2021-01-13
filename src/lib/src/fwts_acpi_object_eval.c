@@ -645,6 +645,32 @@ int fwts_method_package_count_equal(
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_method_subpackage_count_equal()
+ *	check that an ACPI subpackage has exactly 'count' elements
+ */
+int fwts_method_subpackage_count_equal(
+	fwts_framework *fw,
+	const char *name,
+	const char *objname,
+	const ACPI_OBJECT *obj,
+	const uint32_t sub,
+	const uint32_t count)
+{
+	if (obj->Package.Count != count) {
+		char tmp[128];
+
+		snprintf(tmp, sizeof(tmp), "Method%sSubPackageElementCount", objname);
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
+			"%s sub-package %" PRIu32 " was expected to have "
+			"%" PRIu32 " element%s, got %" PRIu32 " element%s instead.",
+			name, sub, count, count == 1 ? "" : "s",
+			obj->Package.Count, obj->Package.Count == 1 ? "" : "s");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
 int fwts_method_package_elements_all_type(
 	fwts_framework *fw,
 	const char *name,

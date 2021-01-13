@@ -693,12 +693,7 @@ static void method_test_DLM_return(
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg = &obj->Package.Elements[i];
 
-		if (pkg->Package.Count != 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_DLMSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 2 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_DLM", pkg, i, 2) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -914,12 +909,7 @@ static void method_test_PRT_return(
 		pkg = &obj->Package.Elements[i];
 
 		/* check size of sub-packages */
-		if (pkg->Package.Count != 4) {
-			fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"Method_PRTSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to have 4"
-				"elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_PRT", pkg, i, 4) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -1394,14 +1384,8 @@ static void method_test_PRW_return(
 	if (obj->Package.Elements[0].Type == ACPI_TYPE_PACKAGE) {
 		ACPI_OBJECT *pkg;
 		pkg = &obj->Package.Elements[0];
-		if (pkg->Package.Count != 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PRWSubPackageElementCount",
-				"%s sub-package 0  was expected to have 2"
-				"elements, got %" PRIu32 " elements instead.",
-				name, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_PRW", pkg, 0, 2) != FWTS_OK)
 			failed = true;
-		}
 
 		if (pkg->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -1909,12 +1893,7 @@ static void method_test_CSD_return(
 		/*
 		 *  Currently we expect a package of 6 integers.
 		 */
-		if (pkg->Package.Count != 6) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CSDSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 5 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_CSD", pkg, i, 6) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -2063,12 +2042,7 @@ static void method_test_CST_return(
 
 		pkg = &obj->Package.Elements[i];
 
-		if (pkg->Package.Count != 4) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CSTElementPackageCountInvalid",
-				"%s package element %" PRIu32 " should have "
-				"4 elements, instead it had %" PRIu32 ".",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_CST", pkg, i, 4) != FWTS_OK) {
 			cst_elements_ok[i] = false;
 			failed = true;
 			continue;
@@ -2390,12 +2364,7 @@ static void method_test_PSD_return(
 		bool elements_ok = true;
 
 		pkg = &obj->Package.Elements[i];
-		if (pkg->Package.Count != 5) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PSDSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 5 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_PSD", pkg, i, 5) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -2541,12 +2510,7 @@ static void method_test_TSD_return(
 		/*
 		 *  Currently we expect a package of 5 integers.
 		 */
-		if (pkg->Package.Count != 5) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSDSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 5 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "TSD", pkg, i, 5) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -2666,13 +2630,7 @@ static void method_test_TSS_return(
 		/*
 		 *  We expect a package of 5 integers.
 		 */
-		if (pkg->Package.Count != 5) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSSSubPackageElementCount",
-				"%s sub-package %" PRIu32
-				" was expected to have 5 elements, "
-				"got %" PRIu32" elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_TSS", pkg, i, 5) != FWTS_OK) {
 			tss_elements_ok[i] = false;
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -3034,12 +2992,7 @@ static void method_test_ALR_return(
 		ACPI_OBJECT *pkg;
 
 		pkg = &obj->Package.Elements[i];
-		if (pkg->Package.Count != 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_ALRBadSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 2 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_ALR", pkg, i, 2) != FWTS_OK) {
 			failed = true;
 		} else {
 			/* elements should be listed in monotonically increasing order */
@@ -4284,12 +4237,7 @@ static void method_test_FPS_return(
 		}
 
 		pkg = &obj->Package.Elements[i];
-		if (pkg->Package.Count != 5) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_FPSBadSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 5 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_FPS", pkg, i, 5) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -4493,12 +4441,7 @@ static void method_test_ART_return(
 		}
 
 		pkg = &obj->Package.Elements[i];
-		if (pkg->Package.Count != 13) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_ARTBadSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 13 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_ART", pkg, i, 13) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -4575,12 +4518,7 @@ static void method_test_TRT_return(
 		bool elements_ok = true;
 
 		pkg = &obj->Package.Elements[i];
-		if (pkg->Package.Count != 8) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TRTSubPackageElementCount",
-				"%s sub-package %" PRIu32 " was expected to "
-				"have 8 elements, got %" PRIu32 " elements instead.",
-				name, i, pkg->Package.Count);
+		if (fwts_method_subpackage_count_equal(fw, name, "_TRT", pkg, i, 8) != FWTS_OK) {
 			failed = true;
 			continue;
 		}

@@ -118,6 +118,7 @@ bool fwts_method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2);
 int fwts_method_buffer_size(fwts_framework *fw, const char *name, ACPI_OBJECT *obj, size_t buf_size);
 int fwts_method_package_count_min(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const uint32_t min);
 int fwts_method_package_count_equal(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const uint32_t count);
+int fwts_method_subpackage_count_equal(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const uint32_t sub, const uint32_t count);
 int fwts_method_package_elements_all_type(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const ACPI_OBJECT_TYPE type);
 int fwts_method_package_elements_type(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const fwts_package_element *info, const uint32_t count);
 int fwts_method_test_revision(fwts_framework *fw, const char *name, const uint32_t cur_revision, const uint32_t spec_revision);

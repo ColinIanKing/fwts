@@ -698,14 +698,8 @@ static void method_test_DLM_return(
 			continue;
 		}
 
-		if (pkg->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_DLMBadSubPackageReturnType",
-				"%s sub-package %" PRIu32
-				" element 0 is not a reference.",
-				name, i);
+		if (fwts_method_check_element_type(fw, name, pkg, i, 0, ACPI_TYPE_LOCAL_REFERENCE))
 			failed = true;
-		}
 
 		if (pkg->Package.Elements[1].Type != ACPI_TYPE_LOCAL_REFERENCE &&
 		    pkg->Package.Elements[1].Type != ACPI_TYPE_BUFFER) {
@@ -2371,15 +2365,8 @@ static void method_test_PSD_return(
 
 		/* Elements in Sub-packages are integers */
 		for (j = 0; j < 5; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_PSDBadSubPackageReturnType",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"an integer.",
-					name, i, j);
+			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_INTEGER))
 				elements_ok = false;
-			}
 		}
 
 		if (!elements_ok) {
@@ -4244,15 +4231,8 @@ static void method_test_FPS_return(
 
 		for (j = 0; j < 5; j++) {
 			/* TODO - field 0 and 1 can be related to other control method */
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_FPSBadSubPackageReturnType",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"an integer.",
-					name, i, j);
+			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_INTEGER))
 				elements_ok = false;
-			}
 		}
 
 		if (!elements_ok) {
@@ -4448,27 +4428,14 @@ static void method_test_ART_return(
 
 		/* First two elements are references, and rests are integers */
 		for (j = 0; j < 2; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_LOCAL_REFERENCE) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_ARTBadSubPackageReturnType",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"a reference.",
-					name, i, j);
+			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_LOCAL_REFERENCE))
 				elements_ok = false;
-			}
 		}
 
 		for (j = 2; j < 13; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_ARTBadSubPackageReturnType",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"an integer.",
-					name, i, j);
+			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_INTEGER))
 				elements_ok = false;
-			}
+
 		}
 
 		if (!elements_ok) {
@@ -4525,27 +4492,13 @@ static void method_test_TRT_return(
 
 		/* First two elements are references, and rests are integers */
 		for (j = 0; j < 2; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_LOCAL_REFERENCE) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_TRTBadSubPackageReturnType",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"a reference.",
-					name, i, j);
+			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_LOCAL_REFERENCE))
 				elements_ok = false;
-			}
 		}
 
 		for (j = 2; j < 8; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_TRTBadSubPackageReturnType",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"an integer.",
-					name, i, j);
+			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_INTEGER))
 				elements_ok = false;
-			}
 		}
 
 		if (!elements_ok) {

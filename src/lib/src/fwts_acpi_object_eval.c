@@ -496,6 +496,86 @@ int fwts_method_check_type__(
 }
 
 /*
+ *  get_object_name()
+ *	get objname from full path nanme
+ *		ex. _BCL from _SB.PCI0.GFX0.LCD0._BCL
+ */
+static void get_object_name(char *name, char* obj_name) {
+	/* obj_name must have length of 5 */
+	if (name != NULL && strlen(name) > 4) {
+		memcpy(obj_name, name + strlen(name) - 4, 4);
+		obj_name[4] = '\0';
+	}
+}
+
+/* See references in actypes.h */
+static const char *acpi_object_names[] = {
+	"Any",
+	"Integer",
+	"String",
+	"Buffer",
+	"Package",
+	"Field Unit",
+	"Device",
+	"Event",
+	"Method",
+	"Mutex",
+	"Region",
+	"Power",
+	"Processor",
+	"Thermal",
+	"Buffer Field",
+	"DDB Handle",
+	"Debug Object",
+	"Region Field",
+	"Bank Field",
+	"Index Field",
+	"Reference",
+	"Alias",
+	"Method Alias",
+	"Notify",
+	"Address Handler",
+	"Resource",
+	"Resource Field",
+	"Scope"
+};
+
+/*
+ *  fwts_method_check_element_type()
+ *	check a element type of a sub-package
+ */
+int fwts_method_check_element_type(
+	fwts_framework *fw,
+	char *name,
+	ACPI_OBJECT *obj,
+	uint32_t subpkg,
+	uint32_t element,
+	ACPI_OBJECT_TYPE type)
+{
+	if (obj->Package.Elements[element].Type != type) {
+		char obj_name[5] = "_XYZ";
+		char tmp[128];
+
+		get_object_name(name, obj_name);
+		snprintf(tmp, sizeof(tmp), "Method%sBadSubPackageReturnType", obj_name);
+
+		if (type > FWTS_ARRAY_SIZE(acpi_object_names) - 1) {
+			fwts_warning(fw, "Unknown ACPI object type detected");
+			return FWTS_ERROR;
+		}
+
+		fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
+			"%s sub-package %" PRIu32 " element %" PRIu32 " is a %s, "
+			"expected a %s", name, subpkg, element,
+			acpi_object_names[obj->Package.Elements[element].Type],
+			acpi_object_names[type]);
+
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+/*
  *  Common types that can be returned. This is not a complete
  *  list but it does cover the types we expect to return from
  *  an ACPI evaluation.

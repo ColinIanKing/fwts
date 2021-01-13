@@ -110,6 +110,7 @@ typedef struct {
 	fwts_method_check_type__(fw, name, buf, type, #type)
 
 int fwts_method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT_TYPE type, char *type_name);
+int fwts_method_check_element_type(fwts_framework *fw, char *name, ACPI_OBJECT *obj, uint32_t subpkg, uint32_t element, ACPI_OBJECT_TYPE type);
 const char *fwts_method_type_name(const ACPI_OBJECT_TYPE type);
 void fwts_method_passed_sane(fwts_framework *fw, const char *name, const char *type);
 void fwts_method_passed_sane_uint64(fwts_framework *fw, const char *name, const uint64_t value);

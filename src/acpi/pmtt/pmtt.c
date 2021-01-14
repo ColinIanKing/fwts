@@ -104,6 +104,13 @@ static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 	offset += sizeof(fwts_acpi_table_pmtt_domain) * entry->domain_count;
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
+		if (header->length == 0) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"PMTTBadSubtableLength",
+				"PMTT Controller has a subtable with zero length");
+			break;
+		}
+
 		if (header->type == FWTS_ACPI_PMTT_TYPE_DIMM) {
 			pmtt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) header, passed);
 		} else {
@@ -133,6 +140,13 @@ static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *en
 	offset = sizeof(fwts_acpi_table_pmtt_socket);
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
+		if (header->length == 0) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"PMTTBadSubtableLength",
+				"PMTT Socket has a subtable with zero length");
+			break;
+		}
+
 		if (header->type == FWTS_ACPI_PMTT_TYPE_CONTROLLER) {
 			pmtt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) header, passed);
 		} else {

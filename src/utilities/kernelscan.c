@@ -110,7 +110,7 @@ typedef struct {
 /*
  *  FWTS klog patterns, loaded from a json file
  */
-static klog_pattern *patterns;
+static klog_pattern *klog_patterns;
 
 static unsigned int hash_size;
 
@@ -936,7 +936,7 @@ static int parse_kernel_message(parser *p, token *t)
 			got_string = false;
 
 			if (str) {
-				found |= klog_find(str, patterns);
+				found |= klog_find(str, klog_patterns);
 				free(str);
 				str = NULL;
 			}
@@ -1057,10 +1057,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	patterns = klog_load("firmware_error_warning_patterns");
+	klog_patterns = klog_load("firmware_error_warning_patterns");
 	hash_init();
 	parse_kernel_messages(stdin);
-	klog_free(patterns);
+	klog_free(klog_patterns);
 
 	exit(EXIT_SUCCESS);
 }

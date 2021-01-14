@@ -374,10 +374,11 @@ static void tpmevlogdump_event_dump(fwts_framework *fw, uint8_t *data, size_t le
 {
 
 	uint8_t *pdata = data;
-	char *str_info;
 	fwts_pc_client_pcr_event *pc_event = NULL;
 
 	while (len > 0) {
+		char *str_info;
+
 		/* check the data length for dumping */
 		if (len < sizeof(fwts_pc_client_pcr_event)) {
 			fwts_log_info(fw,
@@ -468,7 +469,6 @@ static int tpmevlogdump_test1(fwts_framework *fw)
 		tpmdir = readdir(dir);
 		if (tpmdir && strstr(tpmdir->d_name, "tpm")) {
 			char path[PATH_MAX];
-			uint8_t *data;
 			int fd;
 			size_t length;
 
@@ -478,6 +478,8 @@ static int tpmevlogdump_test1(fwts_framework *fw)
 			snprintf(path, sizeof(path), FWTS_TPM_LOG_DIR_PATH "/%s/binary_bios_measurements", tpmdir->d_name);
 
 			if ((fd = open(path, O_RDONLY)) >= 0) {
+				uint8_t *data;
+
 				data = tpmevlogdump_load_file(fd, &length);
 				tpm_logfile_found = true;
 				if (data == NULL) {

@@ -103,6 +103,8 @@ static int querycapsulecapabilities_test(fwts_framework *fw, uint32_t multitestt
 	uint64_t maxcapsulesize;
 	uint64_t capsulecount;
 
+	memset(&capsuleheader, 0, sizeof(capsuleheader));
+
 	pcapsuleheaderarray[0] = &capsuleheader;
 	pcapsuleheaderarray[1] = NULL;
 	pcapsuleheaderarray[0]->CapsuleGuid = gEfiCapsuleHeaderGuid;

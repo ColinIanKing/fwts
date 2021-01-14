@@ -256,6 +256,13 @@ static void securebootcert_deployed_mode(fwts_framework *fw, fwts_uefi_var *var,
 	}
 }
 
+static inline bool check_addr_overflow(
+	const void *var_data_addr,
+	const size_t len)
+{
+        return (len > ~(uintptr_t)0 - (uintptr_t)var_data_addr);
+}
+
 static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key, uint32_t key_len)
 {
 	uint8_t *var_data_addr;
@@ -271,7 +278,7 @@ static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key
 		siglist = *((EFI_SIGNATURE_LIST *)var_data_addr);
 
 		/* check for potential overflow */
-		if (var_data_addr + siglist.SignatureListSize < var_data_addr)
+		if (check_addr_overflow(var_data_addr, siglist.SignatureListSize))
 			break;
 
 		if (var_data_addr + siglist.SignatureListSize > var_data + datalen)

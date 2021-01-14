@@ -1664,7 +1664,7 @@ void fwts_acpi_space_id_check(
 
 	strncpy(label, table, 4);	/* ACPI table name is 4 char long */
 	strncpy(label + 4, "BadAddressSpaceId", sizeof(label) - 4);
-	memset(must_be_id, 0, strlen(must_be_id));
+	memset(must_be_id, 0, sizeof(must_be_id));
 
 	va_start(ap, num_type);
 	for (i = 0; i < num_type; i++) {

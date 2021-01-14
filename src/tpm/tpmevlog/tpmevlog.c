@@ -152,8 +152,6 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 	uint8_t *pdata = data;
 	int i = 0;
 	uint8_t vendor_info_size = 0;
-	uint8_t hash_size = 0;
-	uint32_t event_size = 0;
 
 	/* specid_event_check */
 	if (len < sizeof(fwts_pc_client_pcr_event)) {
@@ -270,6 +268,8 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 
 	/* Check the Crypto agile log format event */
 	while (len_remain > 0) {
+		uint32_t event_size;
+
 		if (len_remain < sizeof(fwts_tcg_pcr_event2)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventV2Length",
 					"The length of the event2 is %zd bytes "
@@ -290,8 +290,8 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 		pdata += sizeof(fwts_tcg_pcr_event2);
 		len_remain -= sizeof(fwts_tcg_pcr_event2);
 		for (i = 0; i < pcr_event2->digests_count; i++) {
+			uint8_t hash_size;
 
-			hash_size = 0;
 			TPM2_ALG_ID alg_id = *(TPM2_ALG_ID *)pdata;
 
 			ret = tpmevlog_algid_check(fw, alg_id);
@@ -337,10 +337,11 @@ static int tpmevlog_check(fwts_framework *fw, uint8_t *data, size_t len)
 {
 
 	uint8_t *pdata = data;
-	int ret = FWTS_OK;
 	fwts_pc_client_pcr_event *pc_event = NULL;
 
 	do {
+		int ret;
+
 		if (len < sizeof(fwts_pc_client_pcr_event)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventLength",
 					"The length of the event is %zd bytes "
@@ -439,7 +440,6 @@ static int tpmevlog_test1(fwts_framework *fw)
 		tpmdir = readdir(dir);
 		if (tpmdir && strstr(tpmdir->d_name, "tpm")) {
 			char path[PATH_MAX];
-			uint8_t *data;
 			int fd;
 			size_t length;
 
@@ -449,6 +449,8 @@ static int tpmevlog_test1(fwts_framework *fw)
 			snprintf(path, sizeof(path), FWTS_TPM_LOG_DIR_PATH "/%s/binary_bios_measurements", tpmdir->d_name);
 
 			if ((fd = open(path, O_RDONLY)) >= 0) {
+				uint8_t *data;
+
 				data = tpmevlog_load_file(fd, &length);
 				tpm_logfile_found = true;
 				if (data == NULL) {

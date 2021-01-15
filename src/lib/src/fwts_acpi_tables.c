@@ -1680,9 +1680,9 @@ void fwts_acpi_space_id_check(
 
 		strncat(must_be_id, get_space_id_name(must_be), strlen(get_space_id_name(must_be)));
 		if (i < num_type - 2)
-			strncat(must_be_id, ", ", 2);
+			strncat(must_be_id, ", ", 3);
 		else if (i == num_type - 2)
-			strncat(must_be_id, " or ", 4);
+			strncat(must_be_id, " or ", 5);
 	}
 
 	if (!matched) {

@@ -152,7 +152,7 @@ static void method_test_PIF_return(
 	if (fwts_method_package_count_equal(fw, name, "_PIF", obj, 6) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_PIF", obj, elements, 6) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_PIF", obj, elements) != FWTS_OK)
 		return;
 
 	fwts_acpi_object_dump(fw, obj);

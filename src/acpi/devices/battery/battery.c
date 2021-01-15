@@ -110,7 +110,7 @@ static void method_test_BIF_return(
 	if (fwts_method_package_count_equal(fw, name, "_BIF", obj, 13) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_BIF", obj, elements, 13) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_BIF", obj, elements) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -288,14 +288,14 @@ static void method_test_BIX_return(
 		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements, 20) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements) != FWTS_OK)
 			return;
 		break;
 	case 1:
 		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 21) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements_v1, 21) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements_v1) != FWTS_OK)
 			return;
 		break;
 	default:

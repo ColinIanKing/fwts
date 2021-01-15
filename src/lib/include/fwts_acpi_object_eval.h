@@ -109,6 +109,9 @@ typedef struct {
 #define fwts_method_check_type(fw, name, buf, type) 			\
 	fwts_method_check_type__(fw, name, buf, type, #type)
 
+#define fwts_method_package_elements_type(fw, name, objname, obj, info)	\
+	fwts_method_package_elements_type__(fw, name, objname, obj, info, FWTS_ARRAY_SIZE(info))
+
 int fwts_method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT_TYPE type, char *type_name);
 int fwts_method_check_element_type(fwts_framework *fw, char *name, ACPI_OBJECT *obj, uint32_t subpkg, uint32_t element, ACPI_OBJECT_TYPE type);
 const char *fwts_method_type_name(const ACPI_OBJECT_TYPE type);
@@ -121,7 +124,7 @@ int fwts_method_package_count_min(fwts_framework *fw, const char *name, const ch
 int fwts_method_package_count_equal(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const uint32_t count);
 int fwts_method_subpackage_count_equal(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const uint32_t sub, const uint32_t count);
 int fwts_method_package_elements_all_type(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const ACPI_OBJECT_TYPE type);
-int fwts_method_package_elements_type(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const fwts_package_element *info, const uint32_t count);
+int fwts_method_package_elements_type__(fwts_framework *fw, const char *name, const char *objname, const ACPI_OBJECT *obj, const fwts_package_element *info, const uint32_t count);
 int fwts_method_test_revision(fwts_framework *fw, const char *name, const uint32_t cur_revision, const uint32_t spec_revision);
 
 void fwts_method_test_integer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);

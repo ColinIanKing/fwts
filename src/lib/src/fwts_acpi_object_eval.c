@@ -779,11 +779,11 @@ int fwts_method_package_elements_all_type(
 }
 
 /*
- *  fwts_method_package_elements_type()
+ *  fwts_method_package_elements_type__()
  *	sanity check fields in a package that all have
  *	the same type
  */
-int fwts_method_package_elements_type(
+int fwts_method_package_elements_type__(
 	fwts_framework *fw,
 	const char *name,
 	const char *objname,

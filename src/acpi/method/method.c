@@ -1817,7 +1817,7 @@ static void method_test_CPC_return(
 			return;
 
 		/* For now, just check types */
-		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv1, 17) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv1) != FWTS_OK)
 			return;
 	} else if (revision == 2) {	// acpi 5.1 ~ acpi 6.1a
 		/* Something is really wrong if we don't have any elements in _CPC */
@@ -1825,14 +1825,14 @@ static void method_test_CPC_return(
 			return;
 
 		/* For now, just check types */
-		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv2, 21) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv2) != FWTS_OK)
 			return;
 	} else if (revision == 3) {	// acpi 6.2 and later
 		if (fwts_method_package_count_equal(fw, name, "_CPC", obj, 23) != FWTS_OK)
 			return;
 
 		/* For now, just check types */
-		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv3, 23) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv3) != FWTS_OK)
 			return;
 	} else {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -2892,7 +2892,7 @@ static void method_test_PUR_return(
 	if (fwts_method_package_count_equal(fw, name, "_PUR", obj, 2) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_PUR", obj, elements, 2) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_PUR", obj, elements) != FWTS_OK)
 		return;
 
 	/* RevisionID */
@@ -3480,7 +3480,7 @@ static void method_test_BIF_return(
 	if (fwts_method_package_count_equal(fw, name, "_BIF", obj, 13) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_BIF", obj, elements, 13) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_BIF", obj, elements) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -3649,14 +3649,14 @@ static void method_test_BIX_return(
 		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements, 20) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements) != FWTS_OK)
 			return;
 		break;
 	case 1:
 		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 21) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements_v1, 21) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements_v1) != FWTS_OK)
 			return;
 		break;
 	default:
@@ -3995,7 +3995,7 @@ static void method_test_PIF_return(
 	if (fwts_method_package_count_equal(fw, name, "_PIF", obj, 6) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_PIF", obj, elements, 6) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_PIF", obj, elements) != FWTS_OK)
 		return;
 
 	fwts_acpi_object_dump(fw, obj);
@@ -4687,7 +4687,7 @@ static void method_test_GPE_return(
 				name, (uint64_t)obj->Integer.Value);
 		break;
 	case ACPI_TYPE_PACKAGE:
-		if (fwts_method_package_elements_type(fw, name, "_GPE", obj, elem, FWTS_ARRAY_SIZE(elem)) == FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_GPE", obj, elem) == FWTS_OK)
 			fwts_method_passed_sane(fw, name, "package");
 
 		break;

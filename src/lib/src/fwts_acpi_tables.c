@@ -1668,17 +1668,23 @@ void fwts_acpi_space_id_check(
 
 	va_start(ap, num_type);
 	for (i = 0; i < num_type; i++) {
+		const char *id_name;
+
 		must_be = va_arg(ap, int);
 		if (actual == must_be) {
 			matched = true;
 			break;
 		}
 
-		length += strlen(get_space_id_name(must_be));
+		id_name = get_space_id_name(must_be);
+		if (!id_name)
+			continue;
+
+		length += strlen(id_name);
 		if (length > 255)
 			continue;
 
-		strncat(must_be_id, get_space_id_name(must_be), strlen(get_space_id_name(must_be)));
+		strncat(must_be_id, id_name, strlen(id_name));
 		if (i < num_type - 2)
 			strncat(must_be_id, ", ", 3);
 		else if (i == num_type - 2)

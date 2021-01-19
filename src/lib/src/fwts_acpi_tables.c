@@ -1681,7 +1681,7 @@ void fwts_acpi_space_id_check(
 			continue;
 
 		length += strlen(id_name);
-		if (length > 255)
+		if (length >= sizeof(must_be_id))
 			continue;
 
 		strncat(must_be_id, id_name, strlen(id_name));

@@ -395,7 +395,7 @@ static int cpufreq_test_cpu_performance(fwts_framework *fw)
 
 static int sw_tests_possible(fwts_framework *fw)
 {
-	int i, online_cpus = 0;
+	int i, online_cpus;
 
 #ifndef FWTS_ARCH_INTEL
 	fwts_skipped(fw, "Platform doesn't perform SW_ cpu frequency control");
@@ -408,7 +408,7 @@ static int sw_tests_possible(fwts_framework *fw)
 	}
 
 	/* count the number of CPUs online now */
-	for (i = 0; i < num_cpus; i++)
+	for (online_cpus = 0, i = 0; i < num_cpus; i++)
 		if (cpus[i].online)
 			online_cpus++;
 

@@ -1,3 +1,53 @@
+fwts (21.01.00-0ubuntu1) hirsute; urgency=medium
+
+  [Alex Hung]
+  * cpu: maxfreq: skip when "model name" is not available
+  * acpi: enable & disable acpi tables for arm64
+  * acpi: lib: refactor table _init to a macro function
+  * fwts-test: sync up with XSDT revision changes
+  * Update copyright year to 2021
+  * acpi: check reserved fields by fwts_acpi_reserved_zero_check
+  * fwts-test: sync up with fwts_acpi_reserved_zero_check
+  * acpi: fix incorrect parameter to fwts_acpi_reserved_bits_check
+  * lib: add fwts_acpi_fixed_value_check function to check fixed values
+  * acpi: refactor checks for fixed values by fwts_acpi_fixed_value_check
+  * fwts-test: sync up with fwts_acpi_fixed_value_check
+  * acpi: add fwts_acpi_space_id_check to check GAS adrress space ids
+  * fwts-test: sync up with fwts_acpi_space_id_check
+  * acpi: mcfg: enable only if ACPI is available
+  * cpu: maxfreq: fix build errors on arm32 + gcc10
+  * lib: add fwts_log_info_simp_int to printing integers
+  * fwts-test: sync up with fwts_log_info_simp_int changes
+  * lib: fwts_smbios: merge similar functions
+  * dmicheck: add a marco to shorten dmi_ranges_uint8_check calls
+  * acpi: pmtt: fix infinite loops when length is incorrectly zero
+  * lib: fix compile error for debian + gcc 8.3
+  * acpi: method: add a function to check number of sub-package elements
+  * acpi: method: replace _GPE test by fwts_method_package_elements_type
+  * acpi: method: add a function to check type of sub-package elements
+  * acpi: shorten fwts_method_package_elements_type args by a macro
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20201217
+  * ACPICA: Update to version 20210105
+  * acpi: fix incorrect method of finding string size
+  * uefi: add a helper to check for address overflow
+  * tpmevlog: clean up some minor cppcheck style warnings
+  * tpmevlogdump: clean up some minor cppcheck style warnings
+  * uefi: clean up a cppcheck style warning
+  * kernelscan: fix variable shadowing warning
+  * cpu: cpufreq: initialize online_cpus in for loop
+  * acpi: add null check on calls to get_space_id_name()
+  * acpi: fix check of length overflow
+
+  [Nhi Pham]
+  * acpi: lib: correct revision of the fake XSDT table
+
+  [Rebecca Cran]
+  * dmicheck: Type 4 Processor Characteristics bit 9 is no longer reserved
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 20 Jan 2021 01:31:17 -0700
+
 fwts (20.12.00-0ubuntu1) hirsute; urgency=medium
 
   [Alex Hung]

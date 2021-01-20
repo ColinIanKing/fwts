@@ -4241,8 +4241,6 @@ static void method_test_FPS_return(
 
 	if (!failed)
 		fwts_method_passed_sane(fw, name, "package");
-
-	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_FPS(fwts_framework *fw)

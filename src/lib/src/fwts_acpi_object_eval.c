@@ -2647,4 +2647,427 @@ void fwts_method_test_NIG_return(
 		fwts_method_passed_sane(fw, name, "buffer");
 }
 
+void fwts_method_test_STA_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if ((obj->Integer.Value & 3) == 2) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_STAEnabledNotPresent",
+			"%s indicates that the device is enabled "
+			"but not present, which is impossible.", name);
+		passed = false;
+	}
+	fwts_acpi_reserved_bits_check(fw, "_STA", "Reserved Bits",
+		obj->Integer.Value, sizeof(uint32_t), 5, 31, &passed);
+
+	if (passed)
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
+}
+
+/*
+ *  Section 10.2 Control Method Batteries
+ */
+
+void fwts_method_test_BIF_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Power Unit" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Last Full Charge Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Battery Technology" },
+		{ ACPI_TYPE_INTEGER,	"Design Voltage" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Warning" },
+		{ ACPI_TYPE_INTEGER,	"Design Capactty of Low" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 1" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 2" },
+		{ ACPI_TYPE_STRING,	"Model Number" },
+		{ ACPI_TYPE_STRING,	"Serial Number" },
+		{ ACPI_TYPE_STRING,	"Battery Type" },
+		{ ACPI_TYPE_STRING,	"OEM Information" }
+	};
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_count_equal(fw, name, obj, 13) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
+		return;
+
+	/* Sanity check each field */
+	/* Power Unit */
+	if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIFBadUnits",
+			"%s: Expected Power Unit (Element 0) to be "
+			"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
+			name, (uint64_t)obj->Package.Elements[0].Integer.Value);
+		failed = true;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+	 */
+	/* Design Capacity */
+	if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIFBadCapacity",
+			"%s: Design Capacity (Element 1) is "
+			"unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[1].Integer.Value);
+		failed = true;
+	}
+	/* Last Full Charge Capacity */
+	if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIFChargeCapacity",
+			"%s: Last Full Charge Capacity (Element 2) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[2].Integer.Value);
+		failed = true;
+	}
+#endif
+	/* Battery Technology */
+	if (obj->Package.Elements[3].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BIFBatTechUnit",
+			"%s: Expected Battery Technology Unit "
+			"(Element 3) to be 0 (Primary) or 1 "
+			"(Secondary), got 0x%8.8" PRIx64 ".",
+			name, (uint64_t)obj->Package.Elements[3].Integer.Value);
+		failed = true;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+	 */
+	/* Design Voltage */
+	if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIFDesignVoltage",
+			"%s: Design Voltage (Element 4) is "
+			"unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[4].Integer.Value);
+		failed = true;
+	}
+	/* Design capacity warning */
+	if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIFDesignCapacityE5",
+			"%s: Design Capacity Warning (Element 5) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[5].Integer.Value);
+		failed = true;
+	}
+	/* Design capacity low */
+	if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIFDesignCapacityE6",
+			"%s: Design Capacity Warning (Element 6) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[6].Integer.Value);
+		failed = true;
+	}
+#endif
+	if (failed)
+		fwts_advice(fw,
+			"Battery %s package contains errors. It is "
+			"worth running the firmware test suite "
+			"interactive 'battery' test to see if this "
+			"is problematic.  This is a bug an needs to "
+			"be fixed.", name);
+	else
+		fwts_method_passed_sane(fw, name, "package");
+}
+
+void fwts_method_test_BIX_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+	uint64_t revision = 0;
+
+	/* Revision 0 in ACPI 5.x */
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTEGER,	"Power Unit" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Last Full Charge Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Battery Technology" },
+		{ ACPI_TYPE_INTEGER,	"Design Voltage" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Warning" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Low" },
+		{ ACPI_TYPE_INTEGER,	"Cycle Count" },
+		{ ACPI_TYPE_INTEGER,	"Measurement Accuracy" },
+		{ ACPI_TYPE_INTEGER,	"Max Sampling Time" },
+		{ ACPI_TYPE_INTEGER,	"Min Sampling Time" },
+		{ ACPI_TYPE_INTEGER,	"Max Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Min Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 1" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 2" },
+		{ ACPI_TYPE_STRING,	"Model Number" },
+		{ ACPI_TYPE_STRING,	"Serial Number" },
+		{ ACPI_TYPE_STRING,	"Battery Type" },
+		{ ACPI_TYPE_STRING,	"OEM Information" }
+	};
+
+	/* Revision 1 in ACPI 6.x introduces swapping capability */
+	static const fwts_package_element elements_v1[] = {
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTEGER,	"Power Unit" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Last Full Charge Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Battery Technology" },
+		{ ACPI_TYPE_INTEGER,	"Design Voltage" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Warning" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Low" },
+		{ ACPI_TYPE_INTEGER,	"Cycle Count" },
+		{ ACPI_TYPE_INTEGER,	"Measurement Accuracy" },
+		{ ACPI_TYPE_INTEGER,	"Max Sampling Time" },
+		{ ACPI_TYPE_INTEGER,	"Min Sampling Time" },
+		{ ACPI_TYPE_INTEGER,	"Max Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Min Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 1" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 2" },
+		{ ACPI_TYPE_STRING,	"Model Number" },
+		{ ACPI_TYPE_STRING,	"Serial Number" },
+		{ ACPI_TYPE_STRING,	"Battery Type" },
+		{ ACPI_TYPE_STRING,	"OEM Information" },
+		{ ACPI_TYPE_INTEGER,	"Battery Swapping Capability" }
+	};
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (obj->Package.Count > 1 && obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER)
+		revision = obj->Package.Elements[0].Integer.Value;
+
+	switch (revision) {
+	case 0:
+		if (fwts_method_package_count_equal(fw, name, obj, 20) != FWTS_OK)
+			return;
+
+		if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
+			return;
+		break;
+	case 1:
+		if (fwts_method_package_count_equal(fw, name, obj, 21) != FWTS_OK)
+			return;
+
+		if (fwts_method_package_elements_type(fw, name, obj, elements_v1) != FWTS_OK)
+			return;
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXRevision",
+			"%s: Expected %s (Element 0) to be "
+			"0 or 1, got 0x%8.8" PRIx64 ".",
+			name, elements_v1[0].name,
+			(uint64_t)obj->Package.Elements[0].Integer.Value);
+		return;
+	}
+
+	/* Sanity check each field */
+	/* Power Unit */
+	if (obj->Package.Elements[1].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXPowerUnit",
+			"%s: Expected %s (Element 1) to be "
+			"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
+			name, elements[1].name,
+			(uint64_t)obj->Package.Elements[1].Integer.Value);
+		failed = true;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+	 */
+	/* Design Capacity */
+	if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXDesignCapacity",
+			"%s: %s (Element 2) is "
+			"unknown: 0x%8.8" PRIx64 ".",
+			name, elements[2].name,
+			obj->Package.Elements[2].Integer.Value);
+		failed = true;
+	}
+	/* Last Full Charge Capacity */
+	if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXFullChargeCapacity",
+			"%s: %s (Element 3) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, elements[3].name,
+			obj->Package.Elements[3].Integer.Value);
+		failed = true;
+	}
+#endif
+	/* Battery Technology */
+	if (obj->Package.Elements[4].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BIXBatteryTechUnit",
+			"%s: %s "
+			"(Element 4) to be 0 (Primary) or 1 "
+			"(Secondary), got 0x%8.8" PRIx64 ".",
+			name, elements[4].name,
+			(uint64_t)obj->Package.Elements[4].Integer.Value);
+		failed = true;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+	 */
+	/* Design Voltage */
+	if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXDesignVoltage",
+			"%s: %s (Element 5) is unknown: "
+			"0x%8.8" PRIx64 ".",
+			name, elements[5].name,
+			obj->Package.Elements[5].Integer.Value);
+		failed = true;
+	}
+	/* Design capacity warning */
+	if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXDesignCapacityE6",
+			"%s: %s (Element 6) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, elements[6].name,
+			obj->Package.Elements[6].Integer.Value);
+		failed = true;
+	}
+	/* Design capacity low */
+	if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXDesignCapacityE7",
+			"%s: %s (Element 7) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, elements[7].name,
+			obj->Package.Elements[7].Integer.Value);
+		failed = true;
+	}
+	/* Cycle Count: value = 0 ~ 0xFFFFFFFE or 0xFFFFFFFF (unknown) */
+
+	/* Measurement Accuracy */
+	if (obj->Package.Elements[9].Integer.Value > 100000) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXMeasurementAccuracy",
+			"%s: %s (Element 9) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, elements[9].name,
+			obj->Package.Elements[9].Integer.Value);
+		failed = true;
+	}
+
+#endif
+
+	/* Swapping Capability */
+	if (revision == 1 && obj->Package.Elements[20].Integer.Value > 2) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXSwappingCapability",
+			"%s: %s (Element 20) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, elements_v1[20].name,
+			obj->Package.Elements[20].Integer.Value);
+		failed = true;
+	}
+
+	if (failed)
+		fwts_advice(fw,
+			"Battery %s package contains errors. It is "
+			"worth running the firmware test suite "
+			"interactive 'battery' test to see if this "
+			"is problematic.  This is a bug an needs to "
+			"be fixed.", name);
+	else
+		fwts_method_passed_sane(fw, name, "package");
+}
+
+void fwts_method_test_BST_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_count_equal(fw, name, obj, 4) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	/* Sanity check each field */
+	/* Battery State */
+	if ((obj->Package.Elements[0].Integer.Value) > 7) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BSTBadState",
+			"%s: Expected Battery State (Element 0) to "
+			"be 0..7, got 0x%8.8" PRIx64 ".",
+			name, (uint64_t)obj->Package.Elements[0].Integer.Value);
+		failed = true;
+	}
+	/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
+	if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BSTBadState",
+			"%s: Battery State (Element 0) is "
+			"indicating both charging and discharginng "
+			"which is not allowed. Got value 0x%8.8" PRIx64 ".",
+			name, (uint64_t)obj->Package.Elements[0].Integer.Value);
+		failed = true;
+	}
+	/* Battery Present Rate - cannot check, pulled from EC */
+	/* Battery Remaining Capacity - cannot check, pulled from EC */
+	/* Battery Present Voltage - cannot check, pulled from EC */
+	if (failed)
+		fwts_advice(fw,
+			"Battery %s package contains errors. It is "
+			"worth running the firmware test suite "
+			"interactive 'battery' test to see if this "
+			"is problematic.  This is a bug an needs to "
+			"be fixed.", name);
+		else
+			fwts_method_passed_sane(fw, name, "package");
+}
+
+
 #endif

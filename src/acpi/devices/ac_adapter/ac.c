@@ -116,7 +116,7 @@ static void method_test_PCL_return(fwts_framework *fw,
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PCL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
 	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
@@ -149,10 +149,10 @@ static void method_test_PIF_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_PIF", obj, 6) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 6) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_PIF", obj, elements) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	fwts_acpi_object_dump(fw, obj);
@@ -178,7 +178,7 @@ static void method_test_PRL_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PRL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
 	fwts_method_passed_sane(fw, name, "package");

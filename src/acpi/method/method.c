@@ -686,14 +686,14 @@ static void method_test_DLM_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_DLM", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg = &obj->Package.Elements[i];
 
-		if (fwts_method_subpackage_count_equal(fw, name, "_DLM", pkg, i, 2) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 2) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -894,7 +894,7 @@ static void method_test_PRT_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -903,7 +903,7 @@ static void method_test_PRT_return(
 		pkg = &obj->Package.Elements[i];
 
 		/* check size of sub-packages */
-		if (fwts_method_subpackage_count_equal(fw, name, "_PRT", pkg, i, 4) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 4) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -985,7 +985,7 @@ static void method_test_FIX_return(
 		return;
 
 	/* All elements in the package must be integers */
-	if (fwts_method_package_elements_all_type(fw, name, "_FIX", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	/* And they need to be valid IDs */
@@ -1364,7 +1364,7 @@ static void method_test_PRW_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_min(fw, name, "_PRW", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 2) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER &&
@@ -1378,7 +1378,7 @@ static void method_test_PRW_return(
 	if (obj->Package.Elements[0].Type == ACPI_TYPE_PACKAGE) {
 		ACPI_OBJECT *pkg;
 		pkg = &obj->Package.Elements[0];
-		if (fwts_method_subpackage_count_equal(fw, name, "_PRW", pkg, 0, 2) != FWTS_OK)
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, 0, 2) != FWTS_OK)
 			failed = true;
 
 		if (pkg->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
@@ -1505,14 +1505,12 @@ static void method_test_power_resources_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	char *objname = (char *)private;
-
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, objname,
+	if (fwts_method_package_elements_all_type(fw, name,
 		obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
@@ -1588,10 +1586,10 @@ static void method_test_PRR_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_PRR", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 1) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PRR", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
 	fwts_method_passed_sane(fw, name, "package");
@@ -1813,26 +1811,26 @@ static void method_test_CPC_return(
 
 	if (revision == 1) {		// acpi 5.0
 		/* Something is really wrong if we don't have any elements in _CPC */
-		if (fwts_method_package_count_equal(fw, name, "_CPC", obj, 17) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 17) != FWTS_OK)
 			return;
 
 		/* For now, just check types */
-		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv1) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elementsv1) != FWTS_OK)
 			return;
 	} else if (revision == 2) {	// acpi 5.1 ~ acpi 6.1a
 		/* Something is really wrong if we don't have any elements in _CPC */
-		if (fwts_method_package_count_equal(fw, name, "_CPC", obj, 21) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 21) != FWTS_OK)
 			return;
 
 		/* For now, just check types */
-		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv2) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elementsv2) != FWTS_OK)
 			return;
 	} else if (revision == 3) {	// acpi 6.2 and later
-		if (fwts_method_package_count_equal(fw, name, "_CPC", obj, 23) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 23) != FWTS_OK)
 			return;
 
 		/* For now, just check types */
-		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv3) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elementsv3) != FWTS_OK)
 			return;
 	} else {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -1868,7 +1866,7 @@ static void method_test_CSD_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _CSD */
-	if (fwts_method_package_count_min(fw, name, "_CSD", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -1877,7 +1875,7 @@ static void method_test_CSD_return(
 		uint32_t j;
 		bool elements_ok = true;
 
-		if (fwts_method_package_elements_all_type(fw, name, "_CSD",
+		if (fwts_method_package_elements_all_type(fw, name,
 			obj, ACPI_TYPE_PACKAGE) != FWTS_OK) {
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -1887,7 +1885,7 @@ static void method_test_CSD_return(
 		/*
 		 *  Currently we expect a package of 6 integers.
 		 */
-		if (fwts_method_subpackage_count_equal(fw, name, "_CSD", pkg, i, 6) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 6) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -1991,7 +1989,7 @@ static void method_test_CST_return(
 		return;
 
 	/* _CST has at least two elements */
-	if (fwts_method_package_count_min(fw, name, "_CST", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 2) != FWTS_OK)
 		return;
 
 	/* Element 1 must be an integer */
@@ -2036,7 +2034,7 @@ static void method_test_CST_return(
 
 		pkg = &obj->Package.Elements[i];
 
-		if (fwts_method_subpackage_count_equal(fw, name, "_CST", pkg, i, 4) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 4) != FWTS_OK) {
 			cst_elements_ok[i] = false;
 			failed = true;
 			continue;
@@ -2133,10 +2131,10 @@ static void method_test_PCT_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _PCT */
-	if (fwts_method_package_count_min(fw, name, "_PCT", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 2) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PCT",
+	if (fwts_method_package_elements_all_type(fw, name,
 		obj, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
@@ -2170,7 +2168,7 @@ static void method_test_PSS_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _PSS */
-	if (fwts_method_package_count_min(fw, name, "_PSS", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
 		return;
 
 	element_ok = calloc(obj->Package.Count, sizeof(bool));
@@ -2345,10 +2343,10 @@ static void method_test_PSD_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_PSD", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 1) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PSD", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -2358,7 +2356,7 @@ static void method_test_PSD_return(
 		bool elements_ok = true;
 
 		pkg = &obj->Package.Elements[i];
-		if (fwts_method_subpackage_count_equal(fw, name, "_PSD", pkg, i, 5) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 5) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -2407,10 +2405,10 @@ static void method_test_PTC_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PTC", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_PTC", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 2) != FWTS_OK)
 		return;
 
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -2474,7 +2472,7 @@ static void method_test_TSD_return(
 		return;
 
 	if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_62) {
-		if (fwts_method_package_count_equal(fw, name, "_TSD", obj, 1) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 1) != FWTS_OK)
 			return;
 	}
 
@@ -2497,7 +2495,7 @@ static void method_test_TSD_return(
 		/*
 		 *  Currently we expect a package of 5 integers.
 		 */
-		if (fwts_method_subpackage_count_equal(fw, name, "TSD", pkg, i, 5) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 5) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -2587,7 +2585,7 @@ static void method_test_TSS_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _TSS */
-	if (fwts_method_package_count_min(fw, name, "_TSS", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
 		return;
 
 	tss_elements_ok = calloc(obj->Package.Count, sizeof(bool));
@@ -2617,7 +2615,7 @@ static void method_test_TSS_return(
 		/*
 		 *  We expect a package of 5 integers.
 		 */
-		if (fwts_method_subpackage_count_equal(fw, name, "_TSS", pkg, i, 5) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 5) != FWTS_OK) {
 			tss_elements_ok[i] = false;
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -2710,7 +2708,7 @@ static void method_test_LPI_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_min(fw, name, "_LPI", obj, 3) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 3) != FWTS_OK)
 		return;
 
 	/* first 3 elements are integers, and rests are packages */
@@ -2889,10 +2887,10 @@ static void method_test_PUR_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_PUR", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 2) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_PUR", obj, elements) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	/* RevisionID */
@@ -2979,7 +2977,7 @@ static void method_test_ALR_return(
 		ACPI_OBJECT *pkg;
 
 		pkg = &obj->Package.Elements[i];
-		if (fwts_method_subpackage_count_equal(fw, name, "_ALR", pkg, i, 2) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 2) != FWTS_OK) {
 			failed = true;
 		} else {
 			/* elements should be listed in monotonically increasing order */
@@ -3114,10 +3112,10 @@ static void method_test_UPC_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_UPC", obj, 4) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 4) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_UPC", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	connector_type = obj->Package.Elements[1].Integer.Value;
@@ -3477,10 +3475,10 @@ static void method_test_BIF_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_BIF", obj, 13) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 13) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_BIF", obj, elements) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -3646,17 +3644,17 @@ static void method_test_BIX_return(
 
 	switch (revision) {
 	case 0:
-		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 20) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 			return;
 		break;
 	case 1:
-		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 21) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 21) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements_v1) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elements_v1) != FWTS_OK)
 			return;
 		break;
 	default:
@@ -3829,10 +3827,10 @@ static void method_test_BST_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_BST", obj, 4) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 4) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_BST", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -3992,10 +3990,10 @@ static void method_test_PIF_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_PIF", obj, 6) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 6) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_PIF", obj, elements) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	fwts_acpi_object_dump(fw, obj);
@@ -4041,7 +4039,7 @@ static void method_test_PMC_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_PMC", obj, 14) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 14) != FWTS_OK)
 		return;
 
 	/* check element types */
@@ -4224,7 +4222,7 @@ static void method_test_FPS_return(
 		}
 
 		pkg = &obj->Package.Elements[i];
-		if (fwts_method_subpackage_count_equal(fw, name, "_FPS", pkg, i, 5) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 5) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -4421,7 +4419,7 @@ static void method_test_ART_return(
 		}
 
 		pkg = &obj->Package.Elements[i];
-		if (fwts_method_subpackage_count_equal(fw, name, "_ART", pkg, i, 13) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 13) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -4475,7 +4473,7 @@ static void method_test_TRT_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_TRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -4485,7 +4483,7 @@ static void method_test_TRT_return(
 		bool elements_ok = true;
 
 		pkg = &obj->Package.Elements[i];
-		if (fwts_method_subpackage_count_equal(fw, name, "_TRT", pkg, i, 8) != FWTS_OK) {
+		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 8) != FWTS_OK) {
 			failed = true;
 			continue;
 		}
@@ -4687,7 +4685,7 @@ static void method_test_GPE_return(
 				name, (uint64_t)obj->Integer.Value);
 		break;
 	case ACPI_TYPE_PACKAGE:
-		if (fwts_method_package_elements_type(fw, name, "_GPE", obj, elem) == FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elem) == FWTS_OK)
 			fwts_method_passed_sane(fw, name, "package");
 
 		break;
@@ -4783,10 +4781,10 @@ static void method_test_WAK_return(
 
 	switch (obj->Type) {
 	case ACPI_TYPE_PACKAGE:
-		if (fwts_method_package_count_equal(fw, name, "_WAK", obj, 2) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 2) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_all_type(fw, name, "_WAK", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 			return;
 
 		fwts_method_passed_sane(fw, name, "package");
@@ -4986,10 +4984,10 @@ static void method_test_BCL_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_min(fw, name, "_BCL", obj, 3) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 3) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_BCL", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Integer.Value <

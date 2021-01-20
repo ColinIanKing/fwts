@@ -500,9 +500,9 @@ int fwts_method_check_type__(
  *	get objname from full path nanme
  *		ex. _BCL from _SB.PCI0.GFX0.LCD0._BCL
  */
-static void get_object_name(char *name, char* obj_name) {
+static void get_object_name(const char *name, char* obj_name) {
 	/* obj_name must have length of 5 */
-	if (name != NULL && strlen(name) > 4) {
+	if (name != NULL && strlen(name) >= 4) {
 		memcpy(obj_name, name + strlen(name) - 4, 4);
 		obj_name[4] = '\0';
 	}
@@ -546,7 +546,7 @@ static const char *acpi_object_names[] = {
  */
 int fwts_method_check_element_type(
 	fwts_framework *fw,
-	char *name,
+	const char *name,
 	ACPI_OBJECT *obj,
 	uint32_t subpkg,
 	uint32_t element,
@@ -682,13 +682,14 @@ int fwts_method_buffer_size(
 int fwts_method_package_count_min(
 	fwts_framework *fw,
 	const char *name,
-	const char *objname,
 	const ACPI_OBJECT *obj,
 	const uint32_t min)
 {
 	if (obj->Package.Count < min) {
+		char objname[5] = "_XYZ";
 		char tmp[128];
 
+		get_object_name(name, objname);
 		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 			"%s should return package of at least %" PRIu32
@@ -707,13 +708,14 @@ int fwts_method_package_count_min(
 int fwts_method_package_count_equal(
 	fwts_framework *fw,
 	const char *name,
-	const char *objname,
 	const ACPI_OBJECT *obj,
 	const uint32_t count)
 {
 	if (obj->Package.Count != count) {
+		char objname[5] = "_XYZ";
 		char tmp[128];
 
+		get_object_name(name, objname);
 		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 			"%s should return package of %" PRIu32
@@ -732,14 +734,15 @@ int fwts_method_package_count_equal(
 int fwts_method_subpackage_count_equal(
 	fwts_framework *fw,
 	const char *name,
-	const char *objname,
 	const ACPI_OBJECT *obj,
 	const uint32_t sub,
 	const uint32_t count)
 {
 	if (obj->Package.Count != count) {
+		char objname[5] = "_XYZ";
 		char tmp[128];
 
+		get_object_name(name, objname);
 		snprintf(tmp, sizeof(tmp), "Method%sSubPackageElementCount", objname);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 			"%s sub-package %" PRIu32 " was expected to have "
@@ -754,7 +757,6 @@ int fwts_method_subpackage_count_equal(
 int fwts_method_package_elements_all_type(
 	fwts_framework *fw,
 	const char *name,
-	const char *objname,
 	const ACPI_OBJECT *obj,
 	const ACPI_OBJECT_TYPE type)
 {
@@ -764,6 +766,9 @@ int fwts_method_package_elements_all_type(
 
 	for (i = 0; i < obj->Package.Count; i++) {
 		if (!fwts_method_type_matches(obj->Package.Elements[i].Type, type)) {
+			char objname[5] = "_XYZ";
+
+			get_object_name(name, objname);
 			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
 			fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 				"%s package element %" PRIu32 " was not the expected "
@@ -786,7 +791,6 @@ int fwts_method_package_elements_all_type(
 int fwts_method_package_elements_type__(
 	fwts_framework *fw,
 	const char *name,
-	const char *objname,
 	const ACPI_OBJECT *obj,
 	const fwts_package_element *info,
 	const uint32_t count)
@@ -800,6 +804,9 @@ int fwts_method_package_elements_type__(
 
 	for (i = 0; i < obj->Package.Count; i++) {
 		if (!fwts_method_type_matches(obj->Package.Elements[i].Type, info[i].type)) {
+			char objname[5] = "_XYZ";
+
+			get_object_name(name, objname);
 			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
 			fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 				"%s package element %" PRIu32 " (%s) was not the expected "
@@ -964,12 +971,12 @@ void fwts_method_test_all_reference_package_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	char *objname = (char *)private;
+	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, objname, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
 	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
@@ -1044,22 +1051,18 @@ void fwts_method_test_package_integer_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	char method[5];
 	uint32_t *element_size = (uint32_t *) private;
 
 	if (strlen(name) < 4)
 		return;
 
-	memcpy(method, name + strlen(name) - 4, 4);
-	method[4] = '\0';
-
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, method, obj, *element_size) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, *element_size) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, method, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	fwts_method_passed_sane(fw, name, "package");
@@ -2120,7 +2123,7 @@ void fwts_method_test_CID_return(
 		fwts_method_valid_CID_Type(fw, name, obj);
 		break;
 	case ACPI_TYPE_PACKAGE:
-		if (fwts_method_package_count_min(fw, name, "_CID", obj, 1) != FWTS_OK)
+		if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
 			return;
 
 		for (i = 0; i < obj->Package.Count; i++){
@@ -2240,7 +2243,7 @@ void fwts_method_test_MLS_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_MLS", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -2299,7 +2302,7 @@ void fwts_method_test_PLD_return(
 		return;
 
 	/* All elements in the package must be buffers */
-	if (fwts_method_package_elements_all_type(fw, name, "_PLD", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
 	fwts_method_passed_sane(fw, name, "package");
@@ -2425,10 +2428,10 @@ void fwts_method_test_BMD_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_BMD", obj, 5) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 5) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_BMD", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	fwts_acpi_reserved_bits_check(fw, "_BMD", "Status Flags",

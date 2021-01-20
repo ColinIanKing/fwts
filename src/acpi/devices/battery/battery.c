@@ -107,10 +107,10 @@ static void method_test_BIF_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_BIF", obj, 13) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 13) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_type(fw, name, "_BIF", obj, elements) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -285,17 +285,17 @@ static void method_test_BIX_return(
 
 	switch (revision) {
 	case 0:
-		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 20) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 			return;
 		break;
 	case 1:
-		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 21) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, obj, 21) != FWTS_OK)
 			return;
 
-		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements_v1) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elements_v1) != FWTS_OK)
 			return;
 		break;
 	default:
@@ -477,10 +477,10 @@ static void method_test_BST_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_BST", obj, 4) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, obj, 4) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_BST", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -570,7 +570,7 @@ static void method_test_PCL_return(fwts_framework *fw,
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_PCL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
 	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);

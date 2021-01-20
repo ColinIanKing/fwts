@@ -111,7 +111,7 @@ static void method_test_PRW_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_min(fw, name, "_PRW", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, obj, 2) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER &&

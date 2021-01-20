@@ -1553,15 +1553,16 @@ static void method_test_PRR_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_LOCAL_REFERENCE,	"Power Reset Resource" },
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, obj, 1) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	fwts_method_passed_sane(fw, name, "package");
@@ -2097,17 +2098,17 @@ static void method_test_PCT_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_BUFFER,	"ControlRegister" },
+		{ ACPI_TYPE_BUFFER,	"StatusRegister" },
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	/* Something is really wrong if we don't have any elements in _PCT */
-	if (fwts_method_package_count_min(fw, name, obj, 2) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name,
-		obj, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	fwts_method_passed_sane(fw, name, "package");
@@ -3079,15 +3080,19 @@ static void method_test_UPC_return(
 {
 	uint32_t i, connector_type;
 
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Connectable" },
+		{ ACPI_TYPE_INTEGER,	"Type" },
+		{ ACPI_TYPE_INTEGER,	"Reserved0" },
+		{ ACPI_TYPE_INTEGER,	"Reserved1" },
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, obj, 4) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	connector_type = obj->Package.Elements[1].Integer.Value;
@@ -3612,37 +3617,33 @@ static void method_test_PMC_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	uint32_t i;
 	bool failed = false;
 	ACPI_OBJECT *element;
+
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Supported Capabilities" },
+		{ ACPI_TYPE_INTEGER,	"Measurement" },
+		{ ACPI_TYPE_INTEGER,	"Measurement Type" },
+		{ ACPI_TYPE_INTEGER,	"Measurement Accuracy" },
+		{ ACPI_TYPE_INTEGER,	"Measurement Sampling Time" },
+		{ ACPI_TYPE_INTEGER,	"Minimum Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Maximum Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Hysteresis Margin" },
+		{ ACPI_TYPE_INTEGER,	"Hardware Limit Is Configurable" },
+		{ ACPI_TYPE_INTEGER,	"Min Configurable Hardware Limit" },
+		{ ACPI_TYPE_INTEGER,	"Max Configurable Hardware Limit" },
+		{ ACPI_TYPE_STRING,	"Model Number" },
+		{ ACPI_TYPE_STRING,	"Serial Number" },
+		{ ACPI_TYPE_STRING,	"OEM Information" },
+	};
 
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, obj, 14) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
-
-	/* check element types */
-	for (i = 0; i < 14; i++) {
-		element = &obj->Package.Elements[i];
-		if (i > 10) {
-			if (element->Type != ACPI_TYPE_STRING) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_PMCBadElementType",
-					"%s element %" PRIu32 " is not a string.", name, i);
-				failed = true;
-			}
-		} else {
-				if (element->Type != ACPI_TYPE_INTEGER) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
-						"Method_PMCBadElementType",
-						"%s element %" PRIu32 " is not an integer.", name, i);
-					failed = true;
-				}
-		}
-	}
 
 	/* check element's constraints */
 	element = &obj->Package.Elements[0];
@@ -4356,15 +4357,17 @@ static void method_test_WAK_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Wake Signal" },
+		{ ACPI_TYPE_INTEGER,	"Power Supply S-state" },
+	};
+
 	FWTS_UNUSED(private);
 	FWTS_UNUSED(buf);
 
 	switch (obj->Type) {
 	case ACPI_TYPE_PACKAGE:
-		if (fwts_method_package_count_equal(fw, name, obj, 2) != FWTS_OK)
-			return;
-
-		if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 			return;
 
 		fwts_method_passed_sane(fw, name, "package");

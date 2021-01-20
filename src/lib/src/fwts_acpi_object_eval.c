@@ -799,7 +799,7 @@ int fwts_method_package_elements_type__(
 	bool failed = false;
 	char tmp[128];
 
-	if (obj->Package.Count != count)
+	if (fwts_method_package_count_equal(fw, name, obj, count) != FWTS_OK)
 		return FWTS_ERROR;
 
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -2709,9 +2709,6 @@ void fwts_method_test_BIF_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, obj, 13) != FWTS_OK)
-		return;
-
 	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
@@ -2872,16 +2869,10 @@ void fwts_method_test_BIX_return(
 
 	switch (revision) {
 	case 0:
-		if (fwts_method_package_count_equal(fw, name, obj, 20) != FWTS_OK)
-			return;
-
 		if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 			return;
 		break;
 	case 1:
-		if (fwts_method_package_count_equal(fw, name, obj, 21) != FWTS_OK)
-			return;
-
 		if (fwts_method_package_elements_type(fw, name, obj, elements_v1) != FWTS_OK)
 			return;
 		break;
@@ -3024,15 +3015,19 @@ void fwts_method_test_BST_return(
 {
 	bool failed = false;
 
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Battery State" },
+		{ ACPI_TYPE_INTEGER,	"Battery Rate" },
+		{ ACPI_TYPE_INTEGER,	"Battery Remaining Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Battery Present Voltage" },
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, obj, 4) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */

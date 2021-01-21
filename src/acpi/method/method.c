@@ -1823,81 +1823,92 @@ static int method_test_CPC(fwts_framework *fw)
 		0, method_test_CPC_return, NULL);
 }
 
-static void method_test_CSD_return(
+static void method_test_xSD_return(
 	fwts_framework *fw,
 	char *name,
 	ACPI_BUFFER *buf,
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	uint32_t i;
+	char *objname = (char*) private;
+	uint64_t element_size;
 	bool failed = false;
+	bool is_csd = false;
+	uint32_t i;
 
-	FWTS_UNUSED(private);
+	static const fwts_package_element c_elements[] = {
+		{ ACPI_TYPE_INTEGER,	"NumEntries" },
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTEGER,	"Domain" },
+		{ ACPI_TYPE_INTEGER,	"CoordType" },
+		{ ACPI_TYPE_INTEGER,	"NumProcessors" },
+		{ ACPI_TYPE_INTEGER,	"Index" },
+	};
+
+	static const fwts_package_element tp_elements[] = {
+		{ ACPI_TYPE_INTEGER,	"NumEntries" },
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTEGER,	"Domain" },
+		{ ACPI_TYPE_INTEGER,	"CoordType" },
+		{ ACPI_TYPE_INTEGER,	"NumProcessors" },
+	};
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	/* Something is really wrong if we don't have any elements in _CSD */
-	if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
+	if (objname != NULL && !strncmp("_CSD", objname, strlen("_CSD"))) {
+		is_csd = true;
+		element_size = FWTS_ARRAY_SIZE(c_elements);
+		if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
+			return;
+	} else {	/* for _PSD & _TSD */
+		element_size = FWTS_ARRAY_SIZE(tp_elements);
+		if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_62) {
+			if (fwts_method_package_count_equal(fw, name, obj, 1) != FWTS_OK)
+				return;
+		} else
+			if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
+				return;
+	}
+
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg;
-		uint32_t j;
-		bool elements_ok = true;
-
-		if (fwts_method_package_elements_all_type(fw, name,
-			obj, ACPI_TYPE_PACKAGE) != FWTS_OK) {
-			failed = true;
-			continue;	/* Skip processing sub-package */
-		}
+		char tmp[128];
+		int elements_ok;
 
 		pkg = &obj->Package.Elements[i];
-		/*
-		 *  Currently we expect a package of 6 integers.
-		 */
-		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 6) != FWTS_OK) {
+
+		if (is_csd)
+			elements_ok = fwts_method_package_elements_type(fw, name, pkg, c_elements);
+		else
+			elements_ok = fwts_method_package_elements_type(fw, name, pkg, tp_elements);
+
+		if (elements_ok != FWTS_OK) {
 			failed = true;
 			continue;
 		}
 
-		for (j = 0; j < 6; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_CSDSubPackageElementCount",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"an integer.",
-					name, i, j);
-				elements_ok = false;
-			}
-		}
-
-		if (!elements_ok) {
-			failed = true;
-			continue;
-		}
-
-		/* Element 0 must equal the number elements in the package */
-		if (pkg->Package.Elements[0].Integer.Value != pkg->Package.Count) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CSDSubPackageElement0",
-				"%s sub-package %d element 0 (NumEntries) "
-				"was expected to have value 0x%" PRIx64 ".",
-				name, i,
-				(uint64_t)pkg->Package.Elements[0].Integer.Value);
+		snprintf(tmp, sizeof(tmp), "Method%sSubPackageElement", objname);
+		if (pkg->Package.Elements[0].Integer.Value != element_size) {
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				tmp, "%s sub-package %" PRIu32
+				" element 0 (NumEntries) "
+				"was expected to be %" PRIu64 ", "
+				"got %" PRIu64 " instead.",
+				name, i, element_size,
+				pkg->Package.Elements[0].Integer.Value);
 			failed = true;
 		}
-		/* Element 1 should contain zero */
+
 		if (pkg->Package.Elements[1].Integer.Value != 0) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CSDSubPackageElement1",
-				"%s sub-package %d element 1 (Revision) "
-				"was expected to have value 1, instead it "
-				"was 0x%" PRIx64 ".",
-				name, i,
+				tmp, "%s sub-package %" PRIu32
+				" element 1 (Revision) "
+				"was expected to have value 0, instead it "
+				"was 0x%" PRIx64 ".", name, i,
 				(uint64_t)pkg->Package.Elements[1].Integer.Value);
 			failed = true;
 		}
@@ -1906,8 +1917,8 @@ static void method_test_CSD_return(
 		    (pkg->Package.Elements[3].Integer.Value != 0xfd) &&
 		    (pkg->Package.Elements[3].Integer.Value != 0xfe)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CSDSubPackageElement1",
-				"%s sub-package %d element 3 (CoordType) "
+				tmp, "%s sub-package %" PRIu32
+				" element 3 (CoordType) "
 				"was expected to have value 0xfc (SW_ALL), "
 				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
 				"was 0x%" PRIx64 ".",
@@ -1915,8 +1926,6 @@ static void method_test_CSD_return(
 				(uint64_t)pkg->Package.Elements[3].Integer.Value);
 			failed = true;
 		}
-		/* Element 4 number of processors, skip check */
-		/* Element 5 index, check */
 	}
 
 	if (!failed)
@@ -1926,7 +1935,7 @@ static void method_test_CSD_return(
 static int method_test_CSD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_CSD", NULL, 0, method_test_CSD_return, NULL);
+		"_CSD", NULL, 0, method_test_xSD_return, "_CSD");
 }
 
 static void method_test_CST_return(
@@ -2301,59 +2310,10 @@ static int method_test_PPE(fwts_framework *fw)
 		"_PPE", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
-static void method_test_PSD_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	uint32_t i;
-	bool failed = false;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_count_equal(fw, name, obj, 1) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	/* Could be one or more packages */
-	for (i = 0; i < obj->Package.Count; i++) {
-		ACPI_OBJECT *pkg;
-		uint32_t j;
-		bool elements_ok = true;
-
-		pkg = &obj->Package.Elements[i];
-		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 5) != FWTS_OK) {
-			failed = true;
-			continue;
-		}
-
-		/* Elements in Sub-packages are integers */
-		for (j = 0; j < 5; j++) {
-			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_INTEGER))
-				elements_ok = false;
-		}
-
-		if (!elements_ok) {
-			failed = true;
-			continue;
-		}
-	}
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_PSD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PSD", NULL, 0, method_test_PSD_return, NULL);
+		"_PSD", NULL, 0, method_test_xSD_return, "_PSD");
 }
 
 static int method_test_PDL(fwts_framework *fw)
@@ -2429,115 +2389,10 @@ static int method_test_TPC(fwts_framework *fw)
 		"_TPC", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
-static void method_test_TSD_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	uint32_t i;
-	bool failed = false;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_62) {
-		if (fwts_method_package_count_equal(fw, name, obj, 1) != FWTS_OK)
-			return;
-	}
-
-	/* Could be one or more packages */
-	for (i = 0; i < obj->Package.Count; i++) {
-		ACPI_OBJECT *pkg;
-		uint32_t j;
-		bool elements_ok = true;
-
-		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSDElementType",
-				"%s package element %" PRIu32
-				" was not a package.", name, i);
-			failed = true;
-			continue;	/* Skip processing sub-package */
-		}
-
-		pkg = &obj->Package.Elements[i];
-		/*
-		 *  Currently we expect a package of 5 integers.
-		 */
-		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 5) != FWTS_OK) {
-			failed = true;
-			continue;
-		}
-
-		for (j = 0; j < 5; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_TSDSubPackageElementCount",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"an integer.", name, i, j);
-				elements_ok = false;
-			}
-		}
-
-		if (!elements_ok) {
-			failed = true;
-			continue;
-		}
-
-		/* Element 0 must equal the number elements in the package */
-		if (pkg->Package.Elements[0].Integer.Value != pkg->Package.Count) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSDSubPackageElement0",
-				"%s sub-package %" PRIu32
-				" element 0 (NumEntries) "
-				"was expected to have value 0x%" PRIx64 ".",
-				name, i,
-				(uint64_t)pkg->Package.Elements[0].Integer.Value);
-			failed = true;
-		}
-		/* Element 1 should contain zero */
-		if (pkg->Package.Elements[1].Integer.Value != 0) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSDSubPackageElement1",
-				"%s sub-package %" PRIu32
-				" element 1 (Revision) "
-				"was expected to have value 1, instead it "
-				"was 0x%" PRIx64 ".",
-				name, i,
-				(uint64_t)pkg->Package.Elements[1].Integer.Value);
-			failed = true;
-		}
-		/* Element 3 should contain 0xfc..0xfe */
-		if ((pkg->Package.Elements[3].Integer.Value != 0xfc) &&
-		    (pkg->Package.Elements[3].Integer.Value != 0xfd) &&
-		    (pkg->Package.Elements[3].Integer.Value != 0xfe)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSDSubPackageElement1",
-				"%s sub-package %" PRIu32
-				" element 3 (CoordType) "
-				"was expected to have value 0xfc (SW_ALL), "
-				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
-				"was 0x%" PRIx64 ".",
-				name, i,
-				(uint64_t)pkg->Package.Elements[3].Integer.Value);
-			failed = true;
-		}
-		/* Element 4 number of processors, skip check */
-	}
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_TSD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TSD", NULL, 0, method_test_TSD_return, NULL);
+		"_TSD", NULL, 0, method_test_xSD_return, "_TSD");
 }
 
 static void method_test_TSS_return(

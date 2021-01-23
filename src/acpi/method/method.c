@@ -1024,6 +1024,7 @@ static void method_test_DSD_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	bool failed = false;
 	uint32_t i;
 
 	FWTS_UNUSED(private);
@@ -1048,6 +1049,7 @@ static void method_test_DSD_return(
 				name, i,
 				fwts_method_type_name(ACPI_TYPE_BUFFER),
 				fwts_method_type_name(obj->Package.Elements[i].Type));
+			failed = true;
 		}
 
 		/* Data should be a package */
@@ -1058,8 +1060,12 @@ static void method_test_DSD_return(
 				name, i + 1,
 				fwts_method_type_name(ACPI_TYPE_PACKAGE),
 				fwts_method_type_name(obj->Package.Elements[i + 1].Type));
+			failed = true;
 		}
 	}
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_DSD(fwts_framework *fw)
@@ -1242,6 +1248,8 @@ static void method_test_GLK_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	bool failed = false;
+
 	FWTS_UNUSED(buf);
 	FWTS_UNUSED(private);
 
@@ -1250,17 +1258,24 @@ static void method_test_GLK_return(
 		if (obj->Integer.Value == 0 || obj->Integer.Value == 1)
 			fwts_passed(fw, "%s returned an integer 0x%8.8" PRIx64,
 				name, (uint64_t)obj->Integer.Value);
-		else
+		else {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"MethodGLKInvalidInteger",
 				"%s returned an invalid integer 0x%8.8" PRIx64,
 				name, (uint64_t)obj->Integer.Value);
+			failed = true;
+		}
+
 		break;
 	default:
 		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_GLKBadReturnType",
 			"%s did not return an integer.", name);
+		failed = true;
 		break;
 	}
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "integer");
 }
 
 static int method_test_GLK(fwts_framework *fw)

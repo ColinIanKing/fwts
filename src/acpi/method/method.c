@@ -2100,13 +2100,18 @@ static int method_test_CST(fwts_framework *fw)
 		"_CST", NULL, 0, method_test_CST_return, NULL);
 }
 
-static void method_test_PCT_return(
+static void method_test_PCT_PTC_return(
 	fwts_framework *fw,
 	char *name,
 	ACPI_BUFFER *buf,
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	uint32_t i;
+	bool failed = false;
+	char *objname = (char *)private;
+	char tmp[128];
+
 	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_BUFFER,	"ControlRegister" },
 		{ ACPI_TYPE_BUFFER,	"StatusRegister" },
@@ -2120,13 +2125,36 @@ static void method_test_PCT_return(
 	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
 		return;
 
-	fwts_method_passed_sane(fw, name, "package");
+	snprintf(tmp, sizeof(tmp), "Method%sBadElement", objname);
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_RESOURCE *resource = NULL;
+		ACPI_STATUS   status;
+		ACPI_OBJECT *element_buf = &obj->Package.Elements[i];
+
+		status = AcpiBufferToResource(element_buf->Buffer.Pointer, element_buf->Buffer.Length, &resource);
+		if (ACPI_FAILURE(status) || !resource) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
+				"%s should contain only Resource Descriptors", name);
+			continue;
+		}
+
+		if (resource->Type != ACPI_RESOURCE_TYPE_GENERIC_REGISTER) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
+				"%s should contain only Resource Type 16, got %" PRIu32 "\n",
+					name, resource->Type);
+		}
+	}
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PCT(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PCT", NULL,
-		0, method_test_PCT_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PCT", NULL,	0, method_test_PCT_PTC_return, "_PCT");
 }
 
 static void method_test_PSS_return(
@@ -2303,59 +2331,10 @@ static int method_test_PDL(fwts_framework *fw)
 		"_PDL", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
-
-static void method_test_PTC_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	uint32_t i;
-	bool failed = false;
-
-	FWTS_UNUSED(private);
-
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_BUFFER) != FWTS_OK)
-		return;
-
-	if (fwts_method_package_count_equal(fw, name, obj, 2) != FWTS_OK)
-		return;
-
-	for (i = 0; i < obj->Package.Count; i++) {
-		ACPI_RESOURCE *resource = NULL;
-		ACPI_STATUS   status;
-		ACPI_OBJECT *element_buf = &obj->Package.Elements[i];
-
-		status = AcpiBufferToResource(element_buf->Buffer.Pointer, element_buf->Buffer.Length, &resource);
-		if (ACPI_FAILURE(status) || !resource) {
-			failed = true;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"Method_PTCBadElement",
-				"%s should contain only Resource Descriptors", name);
-			continue;
-		}
-
-		if (resource->Type != ACPI_RESOURCE_TYPE_GENERIC_REGISTER) {
-			failed = true;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"Method_PTCBadElement",
-				"%s should contain only Resource Type 16, got %" PRIu32 "\n",
-					name, resource->Type);
-		}
-	}
-
-	if (!failed)
-		fwts_method_passed_sane(fw, name, "package");
-}
-
 static int method_test_PTC(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PTC", NULL, 0, method_test_PTC_return, NULL);
+		"_PTC", NULL, 0, method_test_PCT_PTC_return, "_PTC");
 }
 
 static int method_test_TDL(fwts_framework *fw)

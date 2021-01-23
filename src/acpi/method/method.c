@@ -1331,6 +1331,11 @@ static void method_test_PRW_return(
 	uint32_t i;
 	bool failed = false;
 
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_LOCAL_REFERENCE,	"DeviceName" },
+		{ ACPI_TYPE_INTEGER,	"Index" },
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -1350,24 +1355,8 @@ static void method_test_PRW_return(
 	if (obj->Package.Elements[0].Type == ACPI_TYPE_PACKAGE) {
 		ACPI_OBJECT *pkg;
 		pkg = &obj->Package.Elements[0];
-		if (fwts_method_subpackage_count_equal(fw, name, pkg, 0, 2) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, pkg, elements) != FWTS_OK)
 			failed = true;
-
-		if (pkg->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PRWBadSubPackageElementType",
-				"%s sub-package 0 element 0 is not "
-				"a reference.",name);
-			failed = true;
-		}
-
-		if (pkg->Package.Elements[1].Type != ACPI_TYPE_INTEGER) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PRWBadSubPackageElementType",
-				"%s sub-package 0 element 0 is not "
-				"an integer.",name);
-			failed = true;
-		}
 	}
 
 	if (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) {

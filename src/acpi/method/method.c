@@ -1610,14 +1610,8 @@ static void method_test_Sx__return(
  	 */
 
 	/* Something is really wrong if we don't have any elements in _Sx_ */
-	if (obj->Package.Count < 1) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_SxElementCount",
-			"The kernel expects a package of at least two "
-			"integers, and %s only returned %" PRIu32
-			" elements in the package.",
-			name, obj->Package.Count);
+	if (fwts_method_package_count_min(fw, name, obj, 1) != FWTS_OK)
 		return;
-	}
 
 	/*
 	 * Oh dear, BIOS is conforming to the spec but won't work in

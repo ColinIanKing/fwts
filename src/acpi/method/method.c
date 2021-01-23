@@ -1945,21 +1945,16 @@ static void method_test_CST_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	uint32_t i, j;
+	uint32_t i;
 	bool failed = false;
 	bool *cst_elements_ok;
 	bool an_element_ok = false;
 
-	typedef struct {
-		const uint32_t	type;
-		const char 	*name;
-	} cstate_info;
-
-	static const cstate_info cstate_types[] = {
-		{ ACPI_TYPE_BUFFER,	"buffer" },
-		{ ACPI_TYPE_INTEGER,	"integer" },
-		{ ACPI_TYPE_INTEGER,	"integer" },
-		{ ACPI_TYPE_INTEGER,	"integer" },
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_BUFFER,	"Register" },
+		{ ACPI_TYPE_INTEGER,	"Type" },
+		{ ACPI_TYPE_INTEGER,	"Latency" },
+		{ ACPI_TYPE_INTEGER,	"Power" },
 	};
 
 	FWTS_UNUSED(private);
@@ -2015,23 +2010,10 @@ static void method_test_CST_return(
 		}
 
 		pkg = &obj->Package.Elements[i];
-
-		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 4) != FWTS_OK) {
+		if (fwts_method_package_elements_type(fw, name, pkg, elements) != FWTS_OK) {
 			cst_elements_ok[i] = false;
 			failed = true;
 			continue;
-		}
-
-		for (j = 0; j < 4; j++) {
-			if (pkg->Package.Elements[j].Type != cstate_types[j].type) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_CSTCStatePackageElementInvalidType",
-					"%s C-State package %" PRIu32 " element %" PRIu32
-					" was not a %s.",
-					name, i, j, cstate_types[j].name);
-				cst_elements_ok[i] = false;
-				failed = true;
-			}
 		}
 
 		/* Some very simple sanity checks on Register Resource Buffer */

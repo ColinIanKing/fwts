@@ -1783,25 +1783,14 @@ static void method_test_CPC_return(
 	revision = obj->Package.Elements[1].Integer.Value;
 
 	if (revision == 1) {		// acpi 5.0
-		/* Something is really wrong if we don't have any elements in _CPC */
-		if (fwts_method_package_count_equal(fw, name, obj, 17) != FWTS_OK)
-			return;
-
 		/* For now, just check types */
 		if (fwts_method_package_elements_type(fw, name, obj, elementsv1) != FWTS_OK)
 			return;
 	} else if (revision == 2) {	// acpi 5.1 ~ acpi 6.1a
-		/* Something is really wrong if we don't have any elements in _CPC */
-		if (fwts_method_package_count_equal(fw, name, obj, 21) != FWTS_OK)
-			return;
-
 		/* For now, just check types */
 		if (fwts_method_package_elements_type(fw, name, obj, elementsv2) != FWTS_OK)
 			return;
 	} else if (revision == 3) {	// acpi 6.2 and later
-		if (fwts_method_package_count_equal(fw, name, obj, 23) != FWTS_OK)
-			return;
-
 		/* For now, just check types */
 		if (fwts_method_package_elements_type(fw, name, obj, elementsv3) != FWTS_OK)
 			return;

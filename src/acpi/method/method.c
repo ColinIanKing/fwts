@@ -2144,6 +2144,15 @@ static void method_test_PSS_return(
 	bool dump_elements = false;
 	bool *element_ok;
 
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"CoreFrequency" },
+		{ ACPI_TYPE_INTEGER,	"Power" },
+		{ ACPI_TYPE_INTEGER,	"Latency" },
+		{ ACPI_TYPE_INTEGER,	"BusMasterLatency" },
+		{ ACPI_TYPE_INTEGER,	"Control" },
+		{ ACPI_TYPE_INTEGER,	"Status" },
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -2159,49 +2168,21 @@ static void method_test_PSS_return(
 		return;
 	}
 
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pstate;
 
-		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PSSElementType",
-				"%s package element %" PRIu32
-				" was not a package.", name, i);
-			failed = true;
-			continue;	/* Skip processing sub-package */
-		}
-
+		element_ok[i] = true;
 		pstate = &obj->Package.Elements[i];
-		if (pstate->Package.Count != 6) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PSSSubPackageElementCount",
-				"%s P-State sub-package %" PRIu32
-				" was expected to "
-				"have 6 elements, got %" PRIu32 " elements instead.",
-				name, i, obj->Package.Count);
-			failed = true;
-			continue;	/* Skip processing sub-package */
-		}
-
-		/* Elements need to be all ACPI integer types */
-		if ((pstate->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
-		    (pstate->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
-		    (pstate->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
-		    (pstate->Package.Elements[3].Type != ACPI_TYPE_INTEGER) ||
-		    (pstate->Package.Elements[4].Type != ACPI_TYPE_INTEGER) ||
-		    (pstate->Package.Elements[5].Type != ACPI_TYPE_INTEGER)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PSSSubPackageElementType",
-				"%s P-State sub-package %" PRIu32 " was expected to "
-				"have 6 Integer elements but didn't", name, i);
+		if (fwts_method_package_elements_type(fw, name, pstate, elements) != FWTS_OK) {
+			element_ok[i] = false;
 			failed = true;
 			continue;
 		}
 
-		/*
-	 	 *  Parses OK, so this element can be dumped out
-		 */
-		element_ok[i] = true;
+		/* At least one element is OK, so the element can be dumped out */
 		dump_elements = true;
 
 		/*
@@ -2407,6 +2388,14 @@ static void method_test_TSS_return(
 	bool *tss_elements_ok;
 	bool an_element_ok = false;
 
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Percent" },
+		{ ACPI_TYPE_INTEGER,	"Power" },
+		{ ACPI_TYPE_INTEGER,	"Latency" },
+		{ ACPI_TYPE_INTEGER,	"CoordType" },
+		{ ACPI_TYPE_INTEGER,	"Status" },
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -2422,56 +2411,29 @@ static void method_test_TSS_return(
 		return;
 	}
 
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg;
-		uint32_t j;
 
 		tss_elements_ok[i] = true;
-
-		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSSElementType",
-				"%s package element %" PRIu32
-				" was not a package.", name, i);
-			tss_elements_ok[i] = false;
-			failed = true;
-			continue;	/* Skip processing sub-package */
-		}
-
 		pkg = &obj->Package.Elements[i];
-		/*
-		 *  We expect a package of 5 integers.
-		 */
-		if (fwts_method_subpackage_count_equal(fw, name, pkg, i, 5) != FWTS_OK) {
+		if (fwts_method_package_elements_type(fw, name, pkg, elements) != FWTS_OK) {
 			tss_elements_ok[i] = false;
-			failed = true;
-			continue;	/* Skip processing sub-package */
-		}
-
-		for (j = 0; j < 5; j++) {
-			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_TSSSubPackageElementCount",
-					"%s sub-package %" PRIu32
-					" element %" PRIu32 " is not "
-					"an integer.", name, i, j);
-				tss_elements_ok[i] = false;
-			}
-		}
-		if (!tss_elements_ok[i]) {
 			failed = true;
 			continue;
 		}
 
-		/* At least one element is OK, so remember that */
+		/* At least one element is OK, so the element can be dumped out */
 		an_element_ok = true;
 
 		/* Element 0 must be 1..100 */
 		if ((pkg->Package.Elements[0].Integer.Value < 1) ||
 		    (pkg->Package.Elements[0].Integer.Value > 100)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_TSDSubPackageElement0",
+				"Method_TSDSubPackageElement",
 				"%s sub-package %" PRIu32 " element 0 "
 				"was expected to have value 1..100, instead "
 				"was %" PRIu64 ".",

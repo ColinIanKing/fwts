@@ -446,7 +446,8 @@ void fwts_acpi_object_evaluate_report_error(
 		break;
 	/* Unknown?! */
 	default:
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "AMLFailedToEvaluate", "Failed to evaluate '%s', got error code %d.", name, status);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "AMLFailedToEvaluate",
+			"Failed to evaluate '%s', got error code %d.", name, status);
 		break;
 	}
 }
@@ -930,7 +931,8 @@ void fwts_method_test_NULL_return(
 	}
 
 	if (buf && buf->Length && buf->Pointer) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing",
+			"%s returned values, but was expected to return nothing.", name);
 		fwts_log_info(fw, "Object returned:");
 		fwts_acpi_object_dump(fw, obj);
 		fwts_advice(fw,

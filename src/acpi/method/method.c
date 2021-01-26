@@ -4562,16 +4562,17 @@ static void method_test_DDC_return(
 
 static int method_test_DDC(fwts_framework *fw)
 {
+	static int values[] = { 128, 256, 384, 512 };
 	ACPI_OBJECT arg[1];
 	uint32_t i;
 
-	for (i = 128; i <= 256; i <<= 1) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {
 		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = 128;
+		arg[0].Integer.Value = values[i];
 
 		if (method_evaluate_method(fw, METHOD_OPTIONAL,
 			"_DDC", arg, 1, method_test_DDC_return,
-			&i) == FWTS_NOT_EXIST)
+			(void *) &values[i]) == FWTS_NOT_EXIST)
 			break;
 	}
 	return FWTS_OK;

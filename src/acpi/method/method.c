@@ -65,6 +65,7 @@
  * _BTM 	 Y
  * _BTP 	 Y
  * _CBA 	 Y
+ * _CBR 	 Y
  * _CCA 	 Y
  * _CDM 	 Y
  * _CID 	 Y
@@ -4607,6 +4608,63 @@ static int method_test_CBA(fwts_framework *fw)
 		"_CBA", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
+static void method_test_CBR_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t version, length;
+	bool passed = true;
+
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Version," },
+		{ ACPI_TYPE_INTEGER,	"Base" },
+		{ ACPI_TYPE_INTEGER,	"Length" }
+	};
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
+		return;
+
+	version = obj->Package.Elements[0].Integer.Value;
+	length = obj->Package.Elements[2].Integer.Value;
+
+	switch (version) {
+	case 0:
+		if (length != 0x2000) /* 8 KB */
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"Method_CBRLength",
+				"CXL 1.1 expects length of 8KB (0x2000), got 0x%" PRIx32 , length);
+		break;
+	case 1:
+		if (length != 0x10000) /* 64 KB */
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"Method_CBRLength",
+				"CXL 2.0 expects length of 64KB (0x10000), got 0x%" PRIx32 , length);
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CBRBadVersion",
+			"Expecting 0 or 1, got 0x%" PRIx8 , version);
+		break;
+	}
+
+	if (passed)
+		fwts_method_passed_sane(fw, name, "package");
+}
+
+static int method_test_CBR(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CBR", NULL, 0, method_test_CBR_return, NULL);
+}
+
 static int method_test_CDM(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -4715,6 +4773,9 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 6.5.10 NVDIMM Label Methods */
 	{ method_test_LSI, "Test _LSI (Label Storage Information)." },
+
+	/* Section 6.5.10 CXL Host Bridge Register Info */
+	{ method_test_CBR, "Test _CBR (CXL Host Bridge Register)." },
 
 	/* Section 7.1 Declaring a Power Resource Object */
 

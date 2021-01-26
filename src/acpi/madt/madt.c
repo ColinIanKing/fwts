@@ -116,9 +116,9 @@
  *
  */
 
-#define FADT_MAX_MAJOR_REVISION	((uint8_t)6)
-#define FADT_MAX_MINOR_REVISION	((uint8_t)2)
-#define MADT_MAX_REVISION	((uint8_t)4)
+#define FADT_MAX_MAJOR_REVISION	((uint8_t)((FWTS_ACPI_VERSION_NOW & 0xF00) >> 8))
+#define FADT_MAX_MINOR_REVISION	((uint8_t)(FWTS_ACPI_VERSION_NOW & 0xF0) >> 4)
+#define MADT_MAX_REVISION	((uint8_t)5)
 
 #define SUBTABLE_UNDEFINED	0x00
 #define SUBTABLE_VARIABLE	0xff

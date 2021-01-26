@@ -329,7 +329,7 @@ static void srat_check_initiator_affinity(
 			h_reserved += affinity->device_handle[i];
 	}
 	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Device Handle Reserve", h_reserved, sizeof(uint32_t), passed);
-	fwts_acpi_reserved_bits_check(fw, "SRAT", "Initiator Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 15, passed);
+	fwts_acpi_reserved_bits_check(fw, "SRAT", "Initiator Affinity Flags", affinity->flags, sizeof(affinity->flags), 2, 31, passed);
 	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved2, sizeof(affinity->reserved2), passed);
 
 done:

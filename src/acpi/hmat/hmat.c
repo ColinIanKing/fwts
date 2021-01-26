@@ -51,6 +51,7 @@ static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table
 static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_locality *entry, bool *passed)
 {
 	uint32_t pd_size;
+	uint16_t reserved1 = (entry->reserved1 << 8) + entry->min_transfer_size;
 
 	fwts_log_info_verbatim(fw, "  System Locality Latency and Bandwidth Information (Type 1):");
 	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
@@ -58,14 +59,18 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	fwts_log_info_simp_int(fw, "    Length:                         ", entry->header.length);
 	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
 	fwts_log_info_simp_int(fw, "    Data Type:                      ", entry->data_type);
-	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved1);
+	if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_64) {
+		fwts_log_info_simp_int(fw, "    MinTransferSize:                ", entry->min_transfer_size);
+		fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved1);
+	} else
+		fwts_log_info_simp_int(fw, "    Reserved:                       ", reserved1);
 	fwts_log_info_simp_int(fw, "    Number of Initiator PDs:        ", entry->num_initiator);
 	fwts_log_info_simp_int(fw, "    Number of Target PDs:           ", entry->num_target);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
 	fwts_log_info_simp_int(fw, "    Entry Base Unit:                ", entry->entry_base_unit);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
-	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 4, 7, passed);
+	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 6, 7, passed);
 
 	if (entry->data_type > 5) {
 		*passed = false;
@@ -75,7 +80,10 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 			"0x%2.2" PRIx8 " instead", entry->data_type);
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
+	if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_64)
+		fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
+	else
+		fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", reserved1, sizeof(reserved1), passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved2, sizeof(entry->reserved2), passed);
 
 	pd_size = (entry->num_initiator + entry->num_target) * 4 +

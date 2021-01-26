@@ -1382,7 +1382,8 @@ typedef struct {
 	fwts_acpi_table_hmat_header	header;
 	uint8_t		flags;
 	uint8_t		data_type;
-	uint16_t	reserved1;
+	uint8_t         min_transfer_size;
+	uint8_t         reserved1;
 	uint32_t	num_initiator;
 	uint32_t	num_target;
 	uint32_t	reserved2;

@@ -56,6 +56,9 @@
  * _BMC 	 Y
  * _BMD 	 Y
  * _BMS 	 Y
+ * _BPC 	 Y
+ * _BPS 	 Y
+ * _BPT 	 Y
  * _BQC 	 Y
  * _BST 	 Y
  * _BTH 	 Y
@@ -3219,6 +3222,40 @@ static int method_test_BMS(fwts_framework *fw)
 		"_BMS", arg, 1, fwts_method_test_passed_failed_return, "_BMS");
 }
 
+static int method_test_BPC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_BPC", NULL, 0, fwts_method_test_BPC_return, NULL);
+}
+
+static int method_test_BPS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_BPS", NULL, 0, fwts_method_test_BPS_return, NULL);
+}
+
+static int method_test_BPT(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[3];
+	uint64_t max = 5;
+	int i;
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+	arg[2].Type = ACPI_TYPE_INTEGER;
+	arg[2].Integer.Value = 0;
+	for (i = 0; i <= 2; i++) {
+		arg[1].Type = ACPI_TYPE_INTEGER;
+		arg[1].Integer.Value = i;
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BPT", arg, 2,
+			fwts_method_test_integer_max_return, &max) == FWTS_NOT_EXIST)
+			break;
+		fwts_log_nl(fw);
+	}
+
+	return FWTS_OK;
+}
+
 static int method_test_BST(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_MOBILE,
@@ -4822,6 +4859,9 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_BMC, "Test _BMC (Battery Maintenance Control)." },
 	{ method_test_BMD, "Test _BMD (Battery Maintenance Data)." },
 	{ method_test_BMS, "Test _BMS (Battery Measurement Sampling Time)." },
+	{ method_test_BPC, "Test _BPC (Battery Power Characteristics)." },
+	{ method_test_BPS, "Test _BPS (Battery Power State)." },
+	{ method_test_BPT, "Test _BPT (Battery Power Threshold)." },
 	{ method_test_BST, "Test _BST (Battery Status)." },
 	{ method_test_BTP, "Test _BTP (Battery Trip Point)." },
 	{ method_test_BTH, "Test _BTH (Battery Throttle Limit)." },

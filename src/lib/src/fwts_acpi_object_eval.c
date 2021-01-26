@@ -3066,5 +3066,76 @@ void fwts_method_test_BST_return(
 			fwts_method_passed_sane(fw, name, "package");
 }
 
+void fwts_method_test_BPC_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Revision," },
+		{ ACPI_TYPE_INTEGER,	"Power Threshold Support" },
+		{ ACPI_TYPE_INTEGER,	"Max Instantaneous Peak Power Threshold" },
+		{ ACPI_TYPE_INTEGER,	"Max Sustainable Peak Power Threshold" }
+	};
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
+		return;
+
+	if (fwts_method_test_revision(fw, name, obj->Package.Elements[0].Integer.Value, 1) != FWTS_OK)
+		passed = false;
+
+	fwts_acpi_reserved_bits_check(fw, "_BPC", "Power Threshold Support Capability",
+		obj->Package.Elements[1].Integer.Value, sizeof(uint32_t), 2, 31, &passed);
+
+	if (!passed)
+		fwts_advice(fw,
+			"Battery %s package contains errors.", name);
+		else
+			fwts_method_passed_sane(fw, name, "package");
+}
+
+void fwts_method_test_BPS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool passed = true;
+
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Revision," },
+		{ ACPI_TYPE_INTEGER,	"Instantaneous Peak Power Level" },
+		{ ACPI_TYPE_INTEGER,	"Instantaneous Peak Power Period" },
+		{ ACPI_TYPE_INTEGER,	"Sustainable Peak Power Level" },
+		{ ACPI_TYPE_INTEGER,	"Sustainable Peak Power Period" },
+	};
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
+		return;
+
+	if (fwts_method_test_revision(fw, name, obj->Package.Elements[0].Integer.Value, 1) != FWTS_OK)
+		passed = false;
+
+	if (!passed)
+		fwts_advice(fw,
+			"Battery %s package contains errors.", name);
+		else
+			fwts_method_passed_sane(fw, name, "package");
+}
 
 #endif

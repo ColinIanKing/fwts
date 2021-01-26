@@ -3328,7 +3328,7 @@ static int method_test_BMD(fwts_framework *fw)
 
 static int method_test_BMC(fwts_framework *fw)
 {
-	static const int values[] = { 0, 1, 2, 4 };
+	static const int values[] = { 0, 1, 2, 4, 8};
 	int i;
 
 	for (i = 0; i < FWTS_ARRAY_SIZE(values); i++) {

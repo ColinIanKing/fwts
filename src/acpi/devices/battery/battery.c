@@ -273,7 +273,7 @@ static int method_test_BMD(fwts_framework *fw)
 
 static int method_test_BMC(fwts_framework *fw)
 {
-	static const int values[] = { 0, 1, 2, 4 };
+	static const int values[] = { 0, 1, 2, 4, 8};
 	ACPI_STATUS status;
 	uint8_t i;
 

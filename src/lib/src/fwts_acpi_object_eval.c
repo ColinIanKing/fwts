@@ -2437,10 +2437,10 @@ void fwts_method_test_BMD_return(
 		return;
 
 	fwts_acpi_reserved_bits_check(fw, "_BMD", "Status Flags",
-		obj->Package.Elements[0].Integer.Value, sizeof(uint32_t), 5, 31, &failed);
+		obj->Package.Elements[0].Integer.Value, sizeof(uint32_t), 7, 31, &failed);
 
 	fwts_acpi_reserved_bits_check(fw, "_BMD", "Capability Flags",
-		obj->Package.Elements[1].Integer.Value, sizeof(uint32_t), 5, 31, &failed);
+		obj->Package.Elements[1].Integer.Value, sizeof(uint32_t), 6, 31, &failed);
 
 	if (!failed)
 		fwts_method_passed_sane(fw, name, "package");
@@ -3034,14 +3034,8 @@ void fwts_method_test_BST_return(
 
 	/* Sanity check each field */
 	/* Battery State */
-	if ((obj->Package.Elements[0].Integer.Value) > 7) {
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"Method_BSTBadState",
-			"%s: Expected Battery State (Element 0) to "
-			"be 0..7, got 0x%8.8" PRIx64 ".",
-			name, (uint64_t)obj->Package.Elements[0].Integer.Value);
-		failed = true;
-	}
+	fwts_acpi_reserved_bits_check(fw, "_BST", "Battery State",
+			obj->Package.Elements[0].Integer.Value, sizeof(uint32_t), 3, 31, &failed);
 	/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
 	if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,

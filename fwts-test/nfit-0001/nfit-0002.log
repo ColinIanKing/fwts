@@ -10,7 +10,7 @@ nfit              NFIT Subtable:
 nfit                Type:                                   0x0000
 nfit                Length:                                 0x0038
 nfit                SPA Range Structure Index:              0x0000
-nfit                Flags:                                  0x0005
+nfit                Flags:                                  0x0009
 nfit                Reserved:                               0x0000000f
 nfit                Proximity Domain:                       0x00000000
 nfit                Address Range Type GUID:                91AF0530-5D86-470E-A6B0-0A2DB9408249
@@ -20,7 +20,7 @@ nfit                Address Range Memory Mapping Attribute: 0x00000000000000ff
 nfit            FAILED [HIGH] NFITBadRangeIndexZero: Test 1, NFIT SPA
 nfit            Range Structure Index must not be zero
 nfit            FAILED [HIGH] NFITReservedBitsNonZero: Test 1, NFIT Flags
-nfit            Bits [15..2] must be zero, got 0x0005 instead
+nfit            Bits [15..3] must be zero, got 0x0009 instead
 nfit            FAILED [HIGH] NFITBadMemoryMappingAttribute: Test 1, NFIT
 nfit            Memory Mapping Attribute must meet UEFI Spec, got
 nfit            0x00000000000000ff instead

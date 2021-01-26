@@ -222,9 +222,17 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
 			     16, 16, 12, 80, 24, 24, 16, 20 }
 	},
-	{ /* for ACPI 6.3 */
+	{ /* for ACPI 6.3 & 6.3a*/
 		.major_version = 6,
 		.minor_version = 3,
+		.madt_version = 5,
+		.num_types = 16,
+		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
+			     16, 16, 12, 80, 24, 24, 16, 20 }
+	},
+	{ /* for ACPI 6.4 */
+		.major_version = 6,
+		.minor_version = 4,
 		.madt_version = 5,
 		.num_types = 16,
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,

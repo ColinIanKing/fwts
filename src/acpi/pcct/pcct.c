@@ -49,11 +49,26 @@ static void gas_messages(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, b
 	fwts_log_info_simp_int(fw, "      Access Size                ", gas->access_width);
 	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
 
-	snprintf(label, 20, "Subspace Type % " PRId8, type);
+	snprintf(label, sizeof(label), "Subspace Type % " PRId8, type);
 	fwts_acpi_space_id_check(fw, "PCCT", label, passed, gas->address_space_id, 3,
 				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
 				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
 				 FWTS_GAS_ADDR_SPACE_ID_FFH);
+}
+
+static void gas_messages2(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, bool *passed)
+{
+	char label[20];
+
+	fwts_log_info_simp_int(fw, "      Address Space ID           ", gas->address_space_id);
+	fwts_log_info_simp_int(fw, "      Register Bit Width         ", gas->register_bit_width);
+	fwts_log_info_simp_int(fw, "      Register Bit Offset        ", gas->register_bit_offset);
+	fwts_log_info_simp_int(fw, "      Access Size                ", gas->access_width);
+	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
+
+	snprintf(label, sizeof(label), "Subspace Type % " PRId8, type);
+	fwts_acpi_space_id_check(fw, "PCCT", label, passed, gas->address_space_id, 2,
+				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 }
 
 static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_range, uint64_t min_length, bool *passed)
@@ -84,7 +99,6 @@ static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_rang
 
 static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_0 *entry, bool *passed)
 {
-	fwts_acpi_gas *gas = &entry->doorbell_register;
 	uint64_t reserved;
 
 	reserved = (uint64_t) entry->reserved[0] + ((uint64_t) entry->reserved[1] << 8) +
@@ -95,19 +109,12 @@ static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	fwts_log_info_simp_int(fw, "    Base Address:                ", entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 8, passed);
 	fwts_log_info_verbatim(fw, "    Doorbell Register:");
-	fwts_log_info_simp_int(fw, "      Address Space ID           ", gas->address_space_id);
-	fwts_log_info_simp_int(fw, "      Register Bit Width         ", gas->register_bit_width);
-	fwts_log_info_simp_int(fw, "      Register Bit Offset        ", gas->register_bit_offset);
-	fwts_log_info_simp_int(fw, "      Access Size                ", gas->access_width);
-	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
+	gas_messages2(fw, entry->header.type, &entry->doorbell_register, passed);
 	fwts_log_info_simp_int(fw, "    Doorbell Preserve:           ", entry->doorbell_preserve);
 	fwts_log_info_simp_int(fw, "    Doorbell Write:              ", entry->doorbell_write);
 	fwts_log_info_simp_int(fw, "    Nominal Latency:             ", entry->nominal_latency);
 	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
 	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
-
-	fwts_acpi_space_id_check(fw, "PCCT", "Subspace Type 0", passed, gas->address_space_id, 2,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 }
 
 static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_1 *entry, bool *passed)
@@ -164,10 +171,10 @@ static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	fwts_log_info_simp_int(fw, "    Nominal Latency:             ", entry->nominal_latency);
 	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
 	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
-	fwts_log_info_verbatim(fw, "    Command Complete Check Register:");
+	fwts_log_info_verbatim(fw, "    Platform Int Ack Register:");
 	gas_messages(fw, entry->header.type, &entry->platform_ack_register, passed);
-	fwts_log_info_simp_int(fw, "    Doorbell Ack Preserve:       ", entry->platform_ack_preserve);
-	fwts_log_info_simp_int(fw, "    Doorbell Ack Write:          ", entry->platform_ack_write);
+	fwts_log_info_verbatim(fw, "    Platform Int Ack Preserve:   0x%16.16" PRIx64, entry->platform_ack_preserve);
+	fwts_log_info_verbatim(fw, "    Platform Int Ack Write:      0x%16.16" PRIx64, entry->platform_ack_write);
 	fwts_log_info_simp_int(fw, "    Reserved:                    ", entry->reserved2);
 	fwts_log_info_verbatim(fw, "    Cmd Complete Check Register:");
 	gas_messages(fw, entry->header.type, &entry->cmd_complete_register, passed);
@@ -181,6 +188,25 @@ static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	fwts_log_info_simp_int(fw, "    Error Status Mask:           ", entry->error_status_mask);
 
 	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
+}
+
+static void hw_registers_based_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_5 *entry, bool *passed)
+{
+	fwts_log_info_simp_int(fw, "    Version:                     ", entry->version);
+	fwts_log_info_simp_int(fw, "    Base Address:                ", entry->base_address);
+	fwts_log_info_simp_int(fw, "    Shared Memory Range Length:  ", entry->shared_memory_range_length);
+	fwts_log_info_verbatim(fw, "    Doorbell Register:");
+	gas_messages2(fw, entry->header.type, &entry->doorbell_register, passed);
+	fwts_log_info_simp_int(fw, "    Doorbell Preserve:           ", entry->doorbell_preserve);
+	fwts_log_info_simp_int(fw, "    Doorbell Write:              ", entry->doorbell_write);
+	fwts_log_info_verbatim(fw, "    Cmd Complete Check Register:");
+	gas_messages2(fw, entry->header.type, &entry->cmd_complete_register, passed);
+	fwts_log_info_simp_int(fw, "    Cmd Complete Check Mask:     ", entry->cmd_complete_mask);
+	fwts_log_info_verbatim(fw, "    Error Status Register:");
+	gas_messages2(fw, entry->header.type, &entry->error_status_register, passed);
+	fwts_log_info_simp_int(fw, "    Error Status Mask:           ", entry->error_status_mask);
+	fwts_log_info_simp_int(fw, "    Nominal Latency:             ", entry->nominal_latency);
+	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 }
 
 static int pcct_test1(fwts_framework *fw)
@@ -264,6 +290,16 @@ static int pcct_test1(fwts_framework *fw)
 			}
 
 			extended_pcc_test(fw, subspace, &passed);
+
+		} else if (pcct_sub->type == 5) {
+			fwts_acpi_table_pcct_subspace_type_5 *subspace = (fwts_acpi_table_pcct_subspace_type_5 *) pcct_sub;
+
+			if(!subspace_length_equal(fw, 0, sizeof(fwts_acpi_table_pcct_subspace_type_5), pcct_sub->length)) {
+				passed = false;
+				break;
+			}
+
+			hw_registers_based_comm_test(fw, subspace, &passed);
 
 		} else {
 			passed = false;

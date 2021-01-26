@@ -1553,6 +1553,22 @@ typedef struct {
 	uint64_t	error_status_mask;
 } __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_3_4;
 
+typedef struct {
+	fwts_acpi_table_pcct_subspace_header	header;
+	uint16_t	version;
+	uint64_t	base_address;
+	uint64_t	shared_memory_range_length;
+	fwts_acpi_gas	doorbell_register;
+	uint64_t	doorbell_preserve;
+	uint64_t	doorbell_write;
+	fwts_acpi_gas	cmd_complete_register;
+	uint64_t	cmd_complete_mask;
+	fwts_acpi_gas	error_status_register;
+	uint64_t	error_status_mask;
+	uint32_t	nominal_latency;
+	uint32_t	min_request_turnaround_time;
+} __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_5;
+
 /*
  * ACPI SPCR (Serial Port Console Redirection Table)
  *  http://msdn.microsoft.com/en-us/library/windows/hardware/dn639132(v=vs.85).aspx

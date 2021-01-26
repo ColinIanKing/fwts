@@ -560,7 +560,8 @@ static const char *madt_sub_names[] = {
 	/* 0x0d */ "GICv2m MSI Frame",
 	/* 0x0e */ "GICR Redistributor",
 	/* 0x0f */ "GIC Interrupt Translation Service (ITS)",
-	/* 0x10 - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
+	/* 0x10 */ "Multiprocessor Wakeup",
+	/* 0x11 - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
 	/* 0x80 - 0xff */ "Reserved for OEM use",
 	NULL
 };
@@ -1382,6 +1383,52 @@ static int madt_gic_its(fwts_framework *fw,
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
+static int madt_mp_wakup(fwts_framework *fw,
+			     fwts_acpi_madt_sub_table_header *hdr,
+			     uint8_t *data)
+{
+	/* specific checks for subtable type 0x10: Multiprocessor Wakeup */
+	fwts_acpi_madt_mp_wakeup *mp_wakeup = (fwts_acpi_madt_mp_wakeup *) data;
+
+	if (mp_wakeup->mail_box_version != 0)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "SPECMADTMPWAKEUPVersion",
+			    "MADT %s mailbox version should be in 0, "
+			    "but instead have 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], mp_wakeup->mail_box_version);
+	else
+		fwts_passed(fw,
+			    "MADT %s mailbox version is in 0.",
+			    madt_sub_names[hdr->type]);
+
+	if (mp_wakeup->reserved)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "SPECMADTMPWAKEUPReservedNonZero",
+			    "MADT %s reserved field should be zero, "
+			    "instead got 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], mp_wakeup->reserved);
+	else
+		fwts_passed(fw,
+			    "MADT %s reserved field is properly set "
+			    "to zero.",
+			    madt_sub_names[hdr->type]);
+
+	if (mp_wakeup->mail_box_address % 0x1000)
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			    "SPECMADTMPWAKEUPAddress",
+			    "MADT %s mailbox adress should be 4K bytes aligned, "
+			    "but instead have 0x%" PRIx64 ".",
+			    madt_sub_names[hdr->type], mp_wakeup->mail_box_address);
+	else
+		fwts_passed(fw,
+			    "MADT %s mailbox version is in 0.",
+			    madt_sub_names[hdr->type]);
+
+
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
 static void madt_ioapic_sapic_compare(fwts_framework *fw,
 				     int num_ioapics,
 				     int num_iosapics)
@@ -1604,15 +1651,19 @@ static int madt_subtables(fwts_framework *fw)
 			skip = madt_gic_its(fw, hdr, data);
 			break;
 
+		case FWTS_ACPI_MADT_MP_WAKEUP:
+			skip = madt_mp_wakup(fw, hdr, data);
+			break;
+
 		case FWTS_ACPI_MADT_RESERVED:
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubReservedID",
 				    "MADT subtable %d (offset 0x%x) is "
 				    "using the reserved value 0x%" PRIx8 " for a "
-				    "type.  Subtable type values 0x10..0x7f "
+				    "type.  Subtable type values 0x%" PRIx8 "..0x7f "
 				    "are reserved; 0x80..0xff can be "
 				    "used by OEMs.",
-				    ii, offset, hdr->type);
+				    ii, offset, hdr->type, FWTS_ACPI_MADT_RESERVED);
 			skip = (hdr->length -
 				sizeof(fwts_acpi_madt_sub_table_header));
 			break;

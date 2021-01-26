@@ -507,22 +507,23 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_madt;
 
 typedef enum {
-        FWTS_ACPI_MADT_LOCAL_APIC = 0,
-        FWTS_ACPI_MADT_IO_APIC,
-        FWTS_ACPI_MADT_INTERRUPT_OVERRIDE,
-        FWTS_ACPI_MADT_NMI_SOURCE,
-        FWTS_ACPI_MADT_LOCAL_APIC_NMI,
-        FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE,
-        FWTS_ACPI_MADT_IO_SAPIC,
-        FWTS_ACPI_MADT_LOCAL_SAPIC,
-        FWTS_ACPI_MADT_INTERRUPT_SOURCE,
-        FWTS_ACPI_MADT_LOCAL_X2APIC,
-        FWTS_ACPI_MADT_LOCAL_X2APIC_NMI,
+	FWTS_ACPI_MADT_LOCAL_APIC = 0,
+	FWTS_ACPI_MADT_IO_APIC,
+	FWTS_ACPI_MADT_INTERRUPT_OVERRIDE,
+	FWTS_ACPI_MADT_NMI_SOURCE,
+	FWTS_ACPI_MADT_LOCAL_APIC_NMI,
+	FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE,
+	FWTS_ACPI_MADT_IO_SAPIC,
+	FWTS_ACPI_MADT_LOCAL_SAPIC,
+	FWTS_ACPI_MADT_INTERRUPT_SOURCE,
+	FWTS_ACPI_MADT_LOCAL_X2APIC,
+	FWTS_ACPI_MADT_LOCAL_X2APIC_NMI,
 	FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE,
 	FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR,
 	FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME,
 	FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR,
 	FWTS_ACPI_MADT_GIC_ITS,
+	FWTS_ACPI_MADT_MP_WAKEUP,
 	FWTS_ACPI_MADT_RESERVED, /* does not have defined structure */
 	FWTS_ACPI_MADT_OEM /* does not have defined structure */
 } fwts_acpi_madt_type;
@@ -674,6 +675,14 @@ typedef struct {
 	uint64_t	physical_base_address;
 	uint32_t	reserved2;
 } __attribute__ ((packed)) fwts_acpi_madt_gic_its;
+
+/* New in ACPI 6.4, Multiprocessor Wakeup structure, 5.2.12.19 */
+/* Type 16, FWTS_ACPI_MADT_MP_WAKEUP */
+typedef struct {
+	uint16_t	mail_box_version;
+	uint32_t	reserved;
+	uint64_t	mail_box_address;
+} __attribute__ ((packed)) fwts_acpi_madt_mp_wakeup;
 
 /*
  * ACPI TCPA (Trusted Computing Platform Alliance Capabilities Table)

@@ -1225,6 +1225,7 @@ typedef struct {
 	uint64_t	address;
 	uint64_t	length;
 	uint64_t	memory_mapping;
+	uint64_t        spa_location_cookie;
 } __attribute__ ((packed)) fwts_acpi_table_nfit_system_memory;
 
 typedef struct {

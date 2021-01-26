@@ -171,6 +171,9 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_simp_int(fw, "    System Physical Address Range Length:   ", nfit_struct->length);
 			fwts_log_info_simp_int(fw, "    Address Range Memory Mapping Attribute: ", nfit_struct->memory_mapping);
 
+			if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_64)
+				fwts_log_info_simp_int(fw, "    SpaLocationCookie:                      ", nfit_struct->spa_location_cookie);
+
 			/* SPA Range Structure Index can be 0 for Virtual CD Region and
 			   Virtual Disk Region (both volatile and persistent) */
 			for (i = 0; i < 4; i++) {
@@ -229,7 +232,7 @@ static int nfit_test1(fwts_framework *fw)
 				}
 			}
 
-			fwts_acpi_reserved_bits_check(fw, "NFIT", "Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 2, 15, &passed);
+			fwts_acpi_reserved_bits_check(fw, "NFIT", "Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 3, 15, &passed);
 
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;

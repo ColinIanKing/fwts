@@ -110,7 +110,7 @@ static int spmi_test1(fwts_framework *fw)
 			spmi->gpe);
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "SPMI", "Reserved2", spmi->reserved2, sizeof(spmi->reserved2), &passed);
+	fwts_acpi_reserved_zero_check("SPMI", "Reserved2", spmi->reserved2, &passed);
 	fwts_acpi_reserved_bits_check("SPMI", "PCI device flag", spmi->pci_device_flag, 1, 7, &passed);
 
 	if (((spmi->interrupt_type & 2) == 0) &&

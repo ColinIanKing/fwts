@@ -103,7 +103,7 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info_simp_int(fw, "    Reserved:	", fbbpr->reserved);
 				fwts_log_info_simp_int(fw, "    FBPT Pointer:	", fbbpr->fbpt_addr);
 
-				fwts_acpi_reserved_zero_check(fw, "FPDT", "Reserved", fbbpr->reserved, sizeof(fbbpr->reserved), &passed);
+				fwts_acpi_reserved_zero_check("FPDT", "Reserved", fbbpr->reserved, &passed);
 
 				/*
 				 * For the moment, only dump the 64-bit processor-relative physical address
@@ -130,7 +130,7 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info_simp_int(fw, "    Reserved:	", s3ptpr->reserved);
 				fwts_log_info_simp_int(fw, "    S3PT Pointer:	", s3ptpr->s3pt_addr);
 
-				fwts_acpi_reserved_zero_check(fw, "FPDT", "Reserved", s3ptpr->reserved, sizeof(s3ptpr->reserved), &passed);
+				fwts_acpi_reserved_zero_check("FPDT", "Reserved", s3ptpr->reserved, &passed);
 
 				/*
 				 * For the moment, only dump 64-bit processor-relative physical

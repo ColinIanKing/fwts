@@ -80,7 +80,7 @@ static void lpit_check_type_0(
 	}
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "LPIT", "Native C-state based LPI structure reserved", lpi->reserved, sizeof(lpi->reserved), passed);
+	fwts_acpi_reserved_zero_check("LPIT", "Native C-state based LPI structure reserved", lpi->reserved, passed);
 	fwts_acpi_reserved_bits_check("LPIT", "LPI structure flags", lpi->flags, 2, 31, passed);
 
 	/* 2.2.1.2, if FFH, then it is a MSR, check GAS fields */

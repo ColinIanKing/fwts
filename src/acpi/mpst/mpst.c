@@ -45,13 +45,13 @@ static int mpst_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Communication Channel ID:        ", mpst->channel_id);
 	fwts_log_info_simp_int(fw, "  Reserved:                        ", reserved);
 
-	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", reserved, sizeof(reserved), &passed);
+	fwts_acpi_reserved_zero_check("MPST", "Reserved", reserved, &passed);
 
 	node_list = (fwts_acpi_table_mpst_power_node_list *) (table->data + sizeof(fwts_acpi_table_mpst));
 	fwts_log_info_simp_int(fw, "  Memory Power Node Count:         ", node_list->count);
 	fwts_log_info_simp_int(fw, "  Reserved:                        ", node_list->reserved);
 
-	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", node_list->reserved, sizeof(node_list->reserved), &passed);
+	fwts_acpi_reserved_zero_check("MPST", "Reserved", node_list->reserved, &passed);
 
 	node_offset = sizeof(fwts_acpi_table_mpst) + (sizeof(fwts_acpi_table_mpst_power_node_list));
 	if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_power_node) * node_list->count) {
@@ -76,7 +76,7 @@ static int mpst_test1(fwts_framework *fw)
 		fwts_log_info_simp_int(fw, "    Number of Physical Components: ", power_node->num_components);
 
 		fwts_acpi_reserved_bits_check("MPST", "Power Node Flags", power_node->flags, 3, 7, &passed);
-		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", power_node->reserved, sizeof(power_node->reserved), &passed);
+		fwts_acpi_reserved_zero_check("MPST", "Reserved", power_node->reserved, &passed);
 
 		node_length = sizeof(fwts_acpi_table_mpst_power_node) +
 			      sizeof(fwts_acpi_table_mpst_power_state) * power_node->num_states +
@@ -123,7 +123,7 @@ static int mpst_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Memory Characteristics Count:    ", char_list->count);
 	fwts_log_info_simp_int(fw, "  Reserved:                        ", char_list->reserved);
 
-	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", char_list->reserved, sizeof(char_list->reserved), &passed);
+	fwts_acpi_reserved_zero_check("MPST", "Reserved", char_list->reserved, &passed);
 
 	node_offset += sizeof(fwts_acpi_table_mpst_power_char_list);
 	if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_power_char) * char_list->count) {
@@ -162,8 +162,8 @@ static int mpst_test1(fwts_framework *fw)
 		}
 
 		fwts_acpi_reserved_bits_check("MPST", "Power Characteristics Flags", power_char->flags, 3, 7, &passed);
-		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved1", power_char->reserved1, sizeof(power_char->reserved1), &passed);
-		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved2", power_char->reserved2, sizeof(power_char->reserved2), &passed);
+		fwts_acpi_reserved_zero_check("MPST", "Reserved1", power_char->reserved1, &passed);
+		fwts_acpi_reserved_zero_check("MPST", "Reserved2", power_char->reserved2, &passed);
 
 		node_offset +=  sizeof(fwts_acpi_table_mpst_power_char);
 	}

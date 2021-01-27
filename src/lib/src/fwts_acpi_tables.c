@@ -1434,10 +1434,10 @@ bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name)
 }
 
 /*
- *  fwts_acpi_reserved_zero_check()
+ *  fwts_acpi_reserved_zero_check_()
  *  verify whether the reserved field is zero
  */
-void fwts_acpi_reserved_zero_check(
+void fwts_acpi_reserved_zero_check_(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,

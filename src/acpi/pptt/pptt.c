@@ -51,7 +51,7 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 			entry->number_priv_resources);
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
+	fwts_acpi_reserved_zero_check("PPTT", "Reserved", entry->reserved, passed);
 
 	if (rev == 1)
 		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 2, 31, passed);
@@ -75,7 +75,7 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 	fwts_log_info_simp_int(fw, "    Attributes:                     ", entry->attributes);
 	fwts_log_info_simp_int(fw, "    Line size:                      ", entry->line_size);
 
-	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
+	fwts_acpi_reserved_zero_check("PPTT", "Reserved", entry->reserved, passed);
 	fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 7, 31, passed);
 	fwts_acpi_reserved_bits_check("PPTT", "Attributes", entry->attributes, 5, 7, passed);
 }
@@ -98,7 +98,7 @@ static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entr
 	fwts_log_info_simp_int(fw, "    MINOR_REV:                      ", entry->minor_rev);
 	fwts_log_info_simp_int(fw, "    SPIN_REV:                       ", entry->spin_rev);
 
-	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
+	fwts_acpi_reserved_zero_check("PPTT", "Reserved", entry->reserved, passed);
 }
 
 static int pptt_test1(fwts_framework *fw)

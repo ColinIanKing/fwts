@@ -1955,8 +1955,8 @@ void fwts_method_test_CRS_large_resource_items(
 		if (!*passed)	/* Too short, abort */
 			break;
 		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 1, 7, passed);
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[11], sizeof(data[11]), passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
 		break;
 	case 0xe: /* 6.4.3.8.2 Serial Bus Connection Descriptors */
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 11, 65535, passed);
@@ -1968,7 +1968,7 @@ void fwts_method_test_CRS_large_resource_items(
 			break;
 
 		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 2, 7, passed);
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
 
 		if (data[6] > 0xd && data[6] < 0x80) {
 			*passed = false;
@@ -1983,7 +1983,7 @@ void fwts_method_test_CRS_large_resource_items(
 				"section 6.4.3.10 of the ACPI spec.");
 		}
 
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[13], sizeof(data[13]), passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
 		break;
 	case 0x10: /* 6.4.3.11 Pin Group Descriptors */
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 13, 65535, passed);
@@ -1991,7 +1991,7 @@ void fwts_method_test_CRS_large_resource_items(
 			break;
 
 		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 1, 7, passed);
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
 
 		break;
 	case 0x11: /* 6.4.3.12 Pin Group Function Descriptors */
@@ -2000,8 +2000,8 @@ void fwts_method_test_CRS_large_resource_items(
 			break;
 
 		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 2, 7, passed);
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[8], sizeof(data[8]), passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Resource Source Index", data[8], passed);
 		break;
 	case 0x12: /* 6.4.3.13 Pin Group Configuration Descriptor */
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 19, 65535, passed);
@@ -2009,7 +2009,7 @@ void fwts_method_test_CRS_large_resource_items(
 			break;
 
 		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 2, 7, passed);
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
 
 		if (data[6] > 0xd && data[6] < 0x80) {
 			*passed = false;
@@ -2024,7 +2024,7 @@ void fwts_method_test_CRS_large_resource_items(
 				"section 6.4.3.10 of the ACPI spec.");
 		}
 
-		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[11], sizeof(data[11]), passed);
+		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
 		break;
 	default:
 		snprintf(tmp, sizeof(tmp), "Method%sUnkownLargeResourceItem", objname);

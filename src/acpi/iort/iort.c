@@ -73,7 +73,7 @@ static void iort_node_check(
 	} else
 		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "IORT", "IORT Node Revision", node->revision, 0, passed);
 
-	fwts_acpi_reserved_zero_check(fw, "IORT", "Node Reserved", node->reserved, sizeof(node->reserved), passed);
+	fwts_acpi_reserved_zero_check("IORT", "Node Reserved", node->reserved, passed);
 
 	if (no_id_mappings && node->id_mappings_count) {
 		*passed = false;
@@ -369,8 +369,7 @@ static void iort_memory_access_properties_check(
 	fwts_acpi_reserved_bits_check("IORT", field, properties->allocation_hints, 4, 7, passed);
 
 	snprintf(field, sizeof(field), "%s Reserved", name);
-	fwts_acpi_reserved_zero_check(fw, "IORT", field, properties->reserved,
-		sizeof(properties->reserved), passed);
+	fwts_acpi_reserved_zero_check("IORT", field, properties->reserved, passed);
 
 	snprintf(field, sizeof(field), "%s  Memory Access Flags", name);
 	fwts_acpi_reserved_bits_check("IORT", field, properties->memory_access_flags, 2, 7, passed);

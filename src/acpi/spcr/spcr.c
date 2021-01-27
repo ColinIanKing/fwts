@@ -143,7 +143,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	reserved1 = spcr->reserved1[0] + (spcr->reserved1[1] << 8) + (spcr->reserved1[2] << 16);
-	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved1", reserved1, sizeof(reserved1), &passed);
+	fwts_acpi_reserved_zero_check("SPCR", "Reserved1", reserved1, &passed);
 
 	if (spcr->interrupt_type == 0) {
 		passed = false;
@@ -233,7 +233,7 @@ static int spcr_test1(fwts_framework *fw)
 			" is a reserved terminal type", spcr->terminal_type);
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved2", spcr->reserved2, sizeof(spcr->reserved2), &passed);
+	fwts_acpi_reserved_zero_check("SPCR", "Reserved2", spcr->reserved2, &passed);
 
 	/* According to the spec, these values indicate NOT a PCI device */
 	if ((spcr->pci_device_id == 0xffff) &&
@@ -272,7 +272,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	fwts_acpi_reserved_bits_check("SPCR", "PCI Flags", spcr->pci_flags, 1, 31, &passed);
-	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved3", spcr->reserved3, sizeof(spcr->reserved3), &passed);
+	fwts_acpi_reserved_zero_check("SPCR", "Reserved3", spcr->reserved3, &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in SPCR table.");

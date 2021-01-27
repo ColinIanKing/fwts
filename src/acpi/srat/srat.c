@@ -266,7 +266,7 @@ static void srat_check_its_affinity(
 	fwts_log_info_simp_int(fw, "  ITS ID                    ", affinity->its_id);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "SRAT", "ITS Affinity Reserved", affinity->reserved, sizeof(affinity->reserved), passed);
+	fwts_acpi_reserved_zero_check("SRAT", "ITS Affinity Reserved", affinity->reserved, passed);
 
 done:
 	*length -= sizeof(fwts_acpi_table_its_affinity);
@@ -319,7 +319,7 @@ static void srat_check_initiator_affinity(
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved2);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved1, sizeof(affinity->reserved1), passed);
+	fwts_acpi_reserved_zero_check("SRAT", "Initiator Affinity Reserved", affinity->reserved1, passed);
 	fwts_acpi_reserved_bits_check("SRAT", "Initiator Affinity Device Handle Type", affinity->device_handle_type, 1, 7, passed);
 	if (affinity->device_handle_type == 0)
 		h_reserved = affinity->device_handle[12];
@@ -328,9 +328,9 @@ static void srat_check_initiator_affinity(
 		for (i = 4; i < 16; i++)
 			h_reserved += affinity->device_handle[i];
 	}
-	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Device Handle Reserve", h_reserved, sizeof(uint32_t), passed);
+	fwts_acpi_reserved_zero_check("SRAT", "Initiator Affinity Device Handle Reserve", h_reserved, passed);
 	fwts_acpi_reserved_bits_check("SRAT", "Initiator Affinity Flags", affinity->flags, 2, 31, passed);
-	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved2, sizeof(affinity->reserved2), passed);
+	fwts_acpi_reserved_zero_check("SRAT", "Initiator Affinity Reserved", affinity->reserved2, passed);
 
 done:
 	*length -= sizeof(fwts_acpi_table_initiator_affinity);

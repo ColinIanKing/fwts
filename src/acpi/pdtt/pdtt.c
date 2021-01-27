@@ -42,7 +42,7 @@ static int pdtt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Reserved[3]:             0x%6.6" PRIx32, reserved);
 	fwts_log_info_simp_int(fw, "  Trigger ID Array Offset: ", pdtt->array_offset);
 
-	fwts_acpi_reserved_zero_check(fw, "PDTT", "Reserved", reserved, sizeof(reserved), &passed);
+	fwts_acpi_reserved_zero_check("PDTT", "Reserved", reserved, &passed);
 
 	offset = pdtt->array_offset;
 	entry = (fwts_acpi_table_pdtt_channel *) (table->data + offset);

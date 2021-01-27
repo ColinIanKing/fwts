@@ -44,7 +44,7 @@ static int erst_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", erst->reserved);
 	fwts_log_info_simp_int(fw, "  Instruction Entry Count:  ", erst->instruction_entry_count);
 
-	fwts_acpi_reserved_zero_check(fw, "ERST", "Reserved", erst->reserved, sizeof(erst->reserved), &passed);
+	fwts_acpi_reserved_zero_check("ERST", "Reserved", erst->reserved, &passed);
 
 	if (erst->serialization_header_size > table->length) {
 		passed = false;

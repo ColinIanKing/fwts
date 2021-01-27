@@ -222,7 +222,7 @@ static int pcct_test1(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_bits_check("PCCT", "Flags", pcct->flags, 1, 31, &passed);
-	fwts_acpi_reserved_zero_check(fw, "PCCT", "Reserved", pcct->reserved, sizeof(pcct->reserved), &passed);
+	fwts_acpi_reserved_zero_check("PCCT", "Reserved", pcct->reserved, &passed);
 
 	offset = sizeof(fwts_acpi_table_pcct);
 	pcct_sub = (fwts_acpi_table_pcct_subspace_header *) (table->data + offset);

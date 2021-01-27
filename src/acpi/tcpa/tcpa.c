@@ -80,9 +80,9 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 	fwts_log_info_simp_int(fw, "  PCI Device:                      ", tcpa->server.pci_dev_number);
 	fwts_log_info_simp_int(fw, "  PCI Function:                    ", tcpa->server.pci_func_number);
 
-	fwts_acpi_reserved_zero_check(fw, "TCPA", "Reserved", tcpa->server.reserved, sizeof(tcpa->server.reserved), &passed);
-	fwts_acpi_reserved_zero_check(fw, "TCPA", "Reserved2", reserved2, sizeof(reserved2), &passed);
-	fwts_acpi_reserved_zero_check(fw, "TCPA", "Reserved3", tcpa->server.reserved3, sizeof(tcpa->server.reserved3), &passed);
+	fwts_acpi_reserved_zero_check("TCPA", "Reserved", tcpa->server.reserved, &passed);
+	fwts_acpi_reserved_zero_check("TCPA", "Reserved2", reserved2, &passed);
+	fwts_acpi_reserved_zero_check("TCPA", "Reserved3", tcpa->server.reserved3, &passed);
 
 	if (tcpa->server.device_flag & 1) {
 		if (!(tcpa->server.interrupt_flag & 2)) {

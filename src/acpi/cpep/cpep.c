@@ -51,7 +51,7 @@ static int cpep_test1(fwts_framework *fw)
 		   ((uint64_t) cpep->reserved[2] << 16) + ((uint64_t) cpep->reserved[3] << 24) +
 		   ((uint64_t) cpep->reserved[4] << 32) + ((uint64_t) cpep->reserved[5] << 40) +
 		   ((uint64_t) cpep->reserved[6] << 48) + ((uint64_t) cpep->reserved[7] << 56);
-	fwts_acpi_reserved_zero_check(fw, "CPEP", "Reserved", reserved, sizeof(reserved), &passed);
+	fwts_acpi_reserved_zero_check("CPEP", "Reserved", reserved, &passed);
 
 	n = (table->length - sizeof(fwts_acpi_table_cpep)) /
 		sizeof(fwts_acpi_cpep_processor_info);

@@ -82,7 +82,7 @@ static int dbgp_test1(fwts_framework *fw)
 			dbgp->interface_type);
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "DBGP", "Reserved", reserved, sizeof(reserved), &passed);
+	fwts_acpi_reserved_zero_check("DBGP", "Reserved", reserved, &passed);
 
 	if (dbgp->base_address.register_bit_width == 0) {
 		passed = false;

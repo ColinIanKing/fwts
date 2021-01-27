@@ -126,7 +126,7 @@ static int nfit_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", nfit->reserved);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved", nfit->reserved, sizeof(nfit->reserved), &passed);
+	fwts_acpi_reserved_zero_check("NFIT", "Reserved", nfit->reserved, &passed);
 
 	offset = sizeof(fwts_acpi_table_nfit);
 	entry = (fwts_acpi_table_nfit_struct_header *)(nfit_table->data + offset);
@@ -491,7 +491,7 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_simp_int(fw, "    Capabilities:                           ", nfit_struct->cap);
 			fwts_log_info_simp_int(fw, "    Reserved2:                              ", nfit_struct->reserved2);
 
-			fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved1", reserved1, sizeof(reserved1), &passed);
+			fwts_acpi_reserved_zero_check("NFIT", "Reserved1", reserved1, &passed);
 			fwts_acpi_reserved_bits_check("NFIT", "Capabilities", nfit_struct->cap, 3, 31, &passed);
 
 			if ((nfit_struct->cap & 0x1) && !(nfit_struct->cap & 0x2)) {
@@ -514,7 +514,7 @@ static int nfit_test1(fwts_framework *fw)
 				entry->type);
 		}
 
-		fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved", reserved_passed, sizeof(reserved_passed), &passed);
+		fwts_acpi_reserved_zero_check("NFIT", "Reserved", reserved_passed, &passed);
 		fwts_log_nl(fw);
 		offset += entry->length;
 		entry = (fwts_acpi_table_nfit_struct_header *)(nfit_table->data + offset);

@@ -85,7 +85,7 @@ static void hest_check_ia32_arch_machine_check_exception(
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", reserved2);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "MCE Reserved1", exception->reserved1, sizeof(exception->reserved1), passed);
+	fwts_acpi_reserved_zero_check("HEST", "MCE Reserved1", exception->reserved1, passed);
 
 	if (exception->flags & ~0x5) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -103,7 +103,7 @@ static void hest_check_ia32_arch_machine_check_exception(
 		*passed = false;
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "MCE Reserved2", reserved2, sizeof(reserved2), passed);
+	fwts_acpi_reserved_zero_check("HEST", "MCE Reserved2", reserved2, passed);
 
 	for (i = 0; i < exception->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &exception->bank[i];
@@ -214,7 +214,7 @@ static void hest_check_ia32_arch_corrected_machine_check(
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", reserved2);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "Machine Check Reserved1", check->reserved1, sizeof(check->reserved1), passed);
+	fwts_acpi_reserved_zero_check("HEST", "Machine Check Reserved1", check->reserved1, passed);
 
 	if (check->flags & ~0x5) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -242,7 +242,7 @@ static void hest_check_ia32_arch_corrected_machine_check(
 			check->notification.type);
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "Machine Check Reserved2", reserved2, sizeof(reserved2), passed);
+	fwts_acpi_reserved_zero_check("HEST", "Machine Check Reserved2", reserved2, passed);
 
 	for (i = 0; i < check->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &check->bank[i];
@@ -319,7 +319,7 @@ static void hest_check_acpi_table_hest_nmi_error(
 	fwts_log_info_simp_int(fw, "  Max Raw Data Length:      ", err->max_raw_data_length);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "NMI Reserved", err->reserved1, sizeof(err->reserved1), passed);
+	fwts_acpi_reserved_zero_check("HEST", "NMI Reserved", err->reserved1, passed);
 
 	if (err->number_of_records_to_preallocate < 1) {
 		*passed = false;
@@ -388,9 +388,9 @@ static void hest_check_pci_express_root_port_aer(
 	fwts_log_info_simp_int(fw, "  Root Error Command:       ", aer->root_error_command);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
+	fwts_acpi_reserved_zero_check("HEST", "PCI Express Root Port Reserved1", aer->reserved1, passed);
 	fwts_acpi_reserved_bits_check("HEST", "PCI Express Root Port Flags", aer->flags, 2, 7, passed);
-	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
+	fwts_acpi_reserved_zero_check("HEST", "PCI Express Root Port Reserved2", aer->reserved2, passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
 		*passed = false;
@@ -456,9 +456,9 @@ static void hest_check_pci_express_device_aer(
 	fwts_log_info_simp_int(fw, "  Advanced Capabilities:    ", aer->advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
+	fwts_acpi_reserved_zero_check("HEST", "PCI Express Device Reserved1", aer->reserved1, passed);
 	fwts_acpi_reserved_bits_check("HEST", "PCI Express Device Flags", aer->flags, 2, 7, passed);
-	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
+	fwts_acpi_reserved_zero_check("HEST", "PCI Express Device Reserved2", aer->reserved2, passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
 		*passed = false;
@@ -528,9 +528,9 @@ static void hest_heck_pci_express_bridge_aer(
 	fwts_log_info_simp_int(fw, "  2nd Advanced Capabilities:", aer->secondary_advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
+	fwts_acpi_reserved_zero_check("HEST", "PCI Express Bridge Reserved1", aer->reserved1, passed);
 	fwts_acpi_reserved_bits_check("HEST", "PCI Express Bridge Flags", aer->flags, 2, 7, passed);
-	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
+	fwts_acpi_reserved_zero_check("HEST", "PCI Express Bridge Reserved2", aer->reserved2, passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
 		*passed = false;

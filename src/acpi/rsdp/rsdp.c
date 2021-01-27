@@ -207,7 +207,7 @@ static int rsdp_test1(fwts_framework *fw)
 		value += *ptr++;
 
 	passed = true;
-	fwts_acpi_reserved_zero_check(fw, "RSDP", "Reserved", value, sizeof(value), &passed);
+	fwts_acpi_reserved_zero_check("RSDP", "Reserved", value, &passed);
 	if (passed)
 		fwts_passed(fw, "RSDP: the reserved field is zero.");
 

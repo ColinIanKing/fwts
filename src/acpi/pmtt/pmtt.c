@@ -35,7 +35,7 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
 
-	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved1", entry->reserved1, sizeof(entry->reserved1), passed);
+	fwts_acpi_reserved_zero_check("PMTT", "Reserved1", entry->reserved1, passed);
 	fwts_acpi_reserved_bits_check("PMTT", "Flags", entry->flags, 4, 15, passed);
 
 	if ((entry->flags & 0x0C) == 0x0C) {
@@ -45,7 +45,7 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 			"PMTT Flags's Bits[3..2] must not be 11b");
 	}
 
-	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved2", entry->reserved2, sizeof(entry->reserved2), passed);
+	fwts_acpi_reserved_zero_check("PMTT", "Reserved2", entry->reserved2, passed);
 }
 
 static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmtt_physical_component *entry, bool *passed)
@@ -56,7 +56,7 @@ static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmt
 	fwts_log_info_simp_int(fw, "    Size of DIMM:                   ", entry->memory_size);
 	fwts_log_info_simp_int(fw, "    SMBIOS Handle:                  ", entry->bios_handle);
 
-	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
+	fwts_acpi_reserved_zero_check("PMTT", "Reserved", entry->reserved, passed);
 
 	if ((entry->bios_handle & 0xFFFF0000) != 0 && entry->bios_handle != 0xFFFFFFFF) {
 		*passed = false;
@@ -83,7 +83,7 @@ static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
 	fwts_log_info_simp_int(fw, "    Number of Proximity Domains:    ", entry->domain_count);
 
-	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
+	fwts_acpi_reserved_zero_check("PMTT", "Reserved", entry->reserved, passed);
 
 	offset = sizeof(fwts_acpi_table_pmtt_controller);
 	if (entry->header.length < offset + sizeof(fwts_acpi_table_pmtt_domain) * entry->domain_count) {
@@ -135,7 +135,7 @@ static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *en
 	fwts_log_info_simp_int(fw, "    Socket Identifier:              ", entry->socket_id);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
 
-	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
+	fwts_acpi_reserved_zero_check("PMTT", "Reserved", entry->reserved, passed);
 
 	offset = sizeof(fwts_acpi_table_pmtt_socket);
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
@@ -172,7 +172,7 @@ static int pmtt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "PMTT Table:");
 	fwts_log_info_simp_int(fw, "  Reserved:                         ", pmtt->reserved);
 
-	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", pmtt->reserved, sizeof(pmtt->reserved), &passed);
+	fwts_acpi_reserved_zero_check("PMTT", "Reserved", pmtt->reserved, &passed);
 
 	entry = (fwts_acpi_table_pmtt_header *) (table->data + sizeof(fwts_acpi_table_pmtt));
 	offset = sizeof(fwts_acpi_table_pmtt);

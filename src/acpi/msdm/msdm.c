@@ -50,8 +50,8 @@ static int msdm_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Data Reserved:            ", msdm->data_reserved);
 	fwts_log_info_simp_int(fw, "  Data Length:              ", msdm->data_length);
 
-	fwts_acpi_reserved_zero_check(fw, "MSDM", "Reserved", msdm->reserved, sizeof(msdm->reserved), &passed);
-	fwts_acpi_reserved_zero_check(fw, "MSDM", "Data Reserved", msdm->data_reserved, sizeof(msdm->data_reserved), &passed);
+	fwts_acpi_reserved_zero_check("MSDM", "Reserved", msdm->reserved, &passed);
+	fwts_acpi_reserved_zero_check("MSDM", "Data Reserved", msdm->data_reserved, &passed);
 
 	/* Now check table is big enough for the data payload */
 	if (table->length < sizeof(fwts_acpi_table_msdm) + msdm->data_length) {

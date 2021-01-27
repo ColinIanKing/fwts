@@ -26,7 +26,11 @@
 
 #define ACPI_MAX_TABLES		(128)
 
-#define fwts_acpi_revision_check(table, actual, must_be, passed) fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, table, "Revision", actual, must_be, passed)
+#define fwts_acpi_revision_check(table, actual, must_be, passed) \
+	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, table, "Revision", actual, must_be, passed)
+
+#define fwts_acpi_reserved_bits_check(table, field, value, min, max, passed) \
+	fwts_acpi_reserved_bits_check_(fw, table, field, value, sizeof(value), min, max, passed)
 
 typedef enum {
 	FWTS_ACPI_TABLE_FROM_FIRMWARE,	/* directly from firmware */
@@ -65,7 +69,7 @@ fwts_bool fwts_acpi_is_reduced_hardware(fwts_framework *fw);
 
 void fwts_acpi_reserved_zero_check(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, bool *passed);
 void fwts_acpi_reserved_zero_array_check(fwts_framework *fw, const char *table, const char *field, uint8_t* data, uint8_t length, bool *passed);
-void fwts_acpi_reserved_bits_check(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, uint8_t min, uint8_t max, bool *passed);
+void fwts_acpi_reserved_bits_check_(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, uint8_t min, uint8_t max, bool *passed);
 void fwts_acpi_reserved_type_check(fwts_framework *fw, const char *table, uint8_t value, uint8_t min, uint8_t reserved, bool *passed);
 bool fwts_acpi_table_length_check(fwts_framework *fw, const char *table, uint32_t length, uint32_t size);
 bool fwts_acpi_structure_length_check(fwts_framework *fw, const char *table, uint8_t subtable_type, uint32_t subtable_length, uint32_t size);

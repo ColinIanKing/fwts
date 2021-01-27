@@ -47,7 +47,7 @@ static int einj_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Reserved:              ", reserved);
 	fwts_log_info_simp_int(fw, "  Injection Entry Count: ", einj->count);
 
-	fwts_acpi_reserved_bits_check(fw, "EINJ", "Injection Flags", einj->flags, sizeof(einj->flags), 0, 31, &passed);
+	fwts_acpi_reserved_bits_check("EINJ", "Injection Flags", einj->flags, 0, 31, &passed);
 	fwts_acpi_reserved_zero_check(fw, "EINJ", "Reserved", reserved, sizeof(reserved), &passed);
 
 	fwts_log_nl(fw);

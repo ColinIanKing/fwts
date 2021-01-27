@@ -97,7 +97,7 @@ static int spmi_test1(fwts_framework *fw)
 	}
 
 	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "SPMI", "Reserved1", spmi->reserved1, 1, &passed);
-	fwts_acpi_reserved_bits_check(fw, "SPMI", "Interrupt type", spmi->interrupt_type, sizeof(spmi->interrupt_type), 2, 7, &passed);
+	fwts_acpi_reserved_bits_check("SPMI", "Interrupt type", spmi->interrupt_type, 2, 7, &passed);
 
 	/* Check for zero GPE on specific condition of interrupt type */
 	if (((spmi->interrupt_type & 1) == 0) &&
@@ -111,7 +111,7 @@ static int spmi_test1(fwts_framework *fw)
 	}
 
 	fwts_acpi_reserved_zero_check(fw, "SPMI", "Reserved2", spmi->reserved2, sizeof(spmi->reserved2), &passed);
-	fwts_acpi_reserved_bits_check(fw, "SPMI", "PCI device flag", spmi->pci_device_flag, sizeof(spmi->pci_device_flag), 1, 7, &passed);
+	fwts_acpi_reserved_bits_check("SPMI", "PCI device flag", spmi->pci_device_flag, 1, 7, &passed);
 
 	if (((spmi->interrupt_type & 2) == 0) &&
 	    (spmi->global_system_interrupt != 0)) {

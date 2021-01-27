@@ -40,7 +40,7 @@ static void sdev_acpi_namespace_device_test(fwts_framework *fw, const fwts_acpi_
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Offset:    ", entry->vendor_offset);
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Length:    ", entry->vendor_length);
 
-	fwts_acpi_reserved_bits_check(fw, "SDEV", "Flags", entry->header.flags, sizeof(entry->header.flags), 1, 15, passed);
+	fwts_acpi_reserved_bits_check("SDEV", "Flags", entry->header.flags, 1, 15, passed);
 }
 
 static void sdev_pcie_endpoint_device_test(fwts_framework *fw, const fwts_acpi_table_sdev_pcie *entry, bool *passed)
@@ -56,7 +56,7 @@ static void sdev_pcie_endpoint_device_test(fwts_framework *fw, const fwts_acpi_t
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Offset:    ", entry->vendor_offset);
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Length:    ", entry->vendor_length);
 
-	fwts_acpi_reserved_bits_check(fw, "SDEV", "Flags", entry->header.flags, sizeof(entry->header.flags), 1, 15, passed);
+	fwts_acpi_reserved_bits_check("SDEV", "Flags", entry->header.flags, 1, 15, passed);
 }
 
 static int sdev_test1(fwts_framework *fw)

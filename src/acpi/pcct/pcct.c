@@ -132,7 +132,7 @@ static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_
 	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
 	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 
-	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
+	fwts_acpi_reserved_bits_check("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
 static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_2 *entry, bool *passed)
@@ -154,7 +154,7 @@ static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_
 	fwts_log_info_simp_int(fw, "    Platform Ack Preserve:       ", entry->platform_ack_preserve);
 	fwts_log_info_simp_int(fw, "    Platform Ack Write:          ", entry->platform_ack_write);
 
-	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
+	fwts_acpi_reserved_bits_check("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
 static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_3_4 *entry, bool *passed)
@@ -187,7 +187,7 @@ static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	gas_messages(fw, entry->header.type, &entry->error_status_register, passed);
 	fwts_log_info_simp_int(fw, "    Error Status Mask:           ", entry->error_status_mask);
 
-	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
+	fwts_acpi_reserved_bits_check("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
 static void hw_registers_based_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_5 *entry, bool *passed)
@@ -221,7 +221,7 @@ static int pcct_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Reserved:  ", pcct->reserved);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_bits_check(fw, "PCCT", "Flags", pcct->flags, sizeof(pcct->flags), 1, 31, &passed);
+	fwts_acpi_reserved_bits_check("PCCT", "Flags", pcct->flags, 1, 31, &passed);
 	fwts_acpi_reserved_zero_check(fw, "PCCT", "Reserved", pcct->reserved, sizeof(pcct->reserved), &passed);
 
 	offset = sizeof(fwts_acpi_table_pcct);

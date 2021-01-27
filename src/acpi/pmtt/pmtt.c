@@ -36,7 +36,7 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
 
 	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved1", entry->reserved1, sizeof(entry->reserved1), passed);
-	fwts_acpi_reserved_bits_check(fw, "PMTT", "Flags", entry->flags, sizeof(entry->flags), 4, 15, passed);
+	fwts_acpi_reserved_bits_check("PMTT", "Flags", entry->flags, 4, 15, passed);
 
 	if ((entry->flags & 0x0C) == 0x0C) {
 		*passed = false;

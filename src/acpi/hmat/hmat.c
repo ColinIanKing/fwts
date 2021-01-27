@@ -41,7 +41,7 @@ static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved4);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
-	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 1, 15, passed);
+	fwts_acpi_reserved_bits_check("HMAT", "Flags", entry->flags, 1, 15, passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved2, sizeof(entry->reserved2), passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved3, sizeof(entry->reserved3), passed);
@@ -70,7 +70,7 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	fwts_log_info_simp_int(fw, "    Entry Base Unit:                ", entry->entry_base_unit);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
-	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 6, 7, passed);
+	fwts_acpi_reserved_bits_check("HMAT", "Flags", entry->flags, 6, 7, passed);
 
 	if (entry->data_type > 5) {
 		*passed = false;

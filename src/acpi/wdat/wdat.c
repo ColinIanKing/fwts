@@ -102,7 +102,7 @@ static int wdat_test1(fwts_framework *fw)
 	 * this does sanity check that somebody has not set these
 	 * bits accidentally.  This is a LOW issue.
 	 */
-	fwts_acpi_reserved_bits_check(fw, "WDAT", "Watchdog Flags", wdat->watchdog_flags, sizeof(wdat->watchdog_flags), 1, 6, &passed);
+	fwts_acpi_reserved_bits_check("WDAT", "Watchdog Flags", wdat->watchdog_flags, 1, 6, &passed);
 
 	total_length = sizeof(fwts_acpi_table_wdat) +
 		(wdat->number_of_entries * sizeof(fwts_acpi_table_wdat_instr_entries));

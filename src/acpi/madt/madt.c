@@ -576,7 +576,7 @@ static void check_madt_apic_flags(fwts_framework *fw, uint8_t type, uint32_t fla
 	if (madt->header.revision < 5)
 		head = 1;
 
-	fwts_acpi_reserved_bits_check(fw, "MADT", "Local APIC Flags", flags, sizeof(flags), head, 31, &passed);
+	fwts_acpi_reserved_bits_check("MADT", "Local APIC Flags", flags, head, 31, &passed);
 
 	if (passed)
 		fwts_passed(fw, "MADT %s flags field, bits %" PRIu8

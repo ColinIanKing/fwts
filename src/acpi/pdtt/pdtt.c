@@ -62,7 +62,7 @@ static int pdtt_test1(fwts_framework *fw)
 	for (i = 0; i < pdtt->trigger_count; i++) {
 		fwts_log_info_simp_int(fw, "    Sub channel ID:          ", entry->sub_channel_id);
 		fwts_log_info_simp_int(fw, "    Flags:                   ", entry->flags);
-		fwts_acpi_reserved_bits_check(fw, "PDTT", "Flags", entry->flags, sizeof(entry->flags), 3, 7, &passed);
+		fwts_acpi_reserved_bits_check("PDTT", "Flags", entry->flags, 3, 7, &passed);
 
 		if ((offset += sizeof(fwts_acpi_table_pdtt_channel)) > table->length) {
 			passed = false;

@@ -1536,10 +1536,10 @@ void fwts_acpi_fixed_value_check(
 }
 
 /*
- *  fwts_acpi_reserved_bits_check()
+ *  fwts_acpi_reserved_bits_check_()
  *  verify whether the reserved bits are zero
  */
-void fwts_acpi_reserved_bits_check(
+void fwts_acpi_reserved_bits_check_(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,

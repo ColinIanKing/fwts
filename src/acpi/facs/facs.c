@@ -115,8 +115,8 @@ static int facs_test1(fwts_framework *fw)
 	}
 
 	fwts_acpi_reserved_zero_check(fw, "FACS", "Reserved", reserved, sizeof(reserved), &passed);
-	fwts_acpi_reserved_bits_check(fw, "FACS", "Flags", facs->flags, sizeof(facs->flags), 2, 31, &passed);
-	fwts_acpi_reserved_bits_check(fw, "FACS", "OSPM Flags", facs->ospm_flags, sizeof(facs->ospm_flags), 1, 31, &passed);
+	fwts_acpi_reserved_bits_check("FACS", "Flags", facs->flags, 2, 31, &passed);
+	fwts_acpi_reserved_bits_check("FACS", "OSPM Flags", facs->ospm_flags, 1, 31, &passed);
 
 	for (i = 0; i < 24; i++) {
 		if (facs->reserved2[i]) {

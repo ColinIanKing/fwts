@@ -166,7 +166,7 @@ static void iort_id_mappings_check(
 		}
 
 		snprintf(field, sizeof(field), "ID Mapping %" PRIu32 " flags", i);
-		fwts_acpi_reserved_bits_check(fw, "IORT", field, id_mapping->flags, sizeof(id_mapping->flags), 1, 31, passed);
+		fwts_acpi_reserved_bits_check("IORT", field, id_mapping->flags, 1, 31, passed);
 	}
 }
 
@@ -209,7 +209,7 @@ static void iort_smmu_interrupt_flags_check(
 	uint32_t flags,
 	bool *passed)
 {
-	fwts_acpi_reserved_bits_check(fw, "IORT", name, flags, sizeof(flags), 1, 31, passed);
+	fwts_acpi_reserved_bits_check("IORT", name, flags, 1, 31, passed);
 }
 
 /*
@@ -366,16 +366,14 @@ static void iort_memory_access_properties_check(
 	}
 
 	snprintf(field, sizeof(field), "%s Allocation Hints", name);
-	fwts_acpi_reserved_bits_check(fw, "IORT", field, properties->allocation_hints,
-		sizeof(properties->allocation_hints), 4, 7, passed);
+	fwts_acpi_reserved_bits_check("IORT", field, properties->allocation_hints, 4, 7, passed);
 
 	snprintf(field, sizeof(field), "%s Reserved", name);
 	fwts_acpi_reserved_zero_check(fw, "IORT", field, properties->reserved,
 		sizeof(properties->reserved), passed);
 
 	snprintf(field, sizeof(field), "%s  Memory Access Flags", name);
-	fwts_acpi_reserved_bits_check(fw, "IORT", field, properties->memory_access_flags,
-		sizeof(properties->memory_access_flags), 2, 7, passed);
+	fwts_acpi_reserved_bits_check("IORT", field, properties->memory_access_flags, 2, 7, passed);
 
 	cca = properties->cache_coherent & 1;
 	cpm = properties->memory_access_flags & 1;
@@ -543,7 +541,7 @@ static void iort_check_smmu(
 			"a model value 0 to 5.", node->model);
 	}
 
-	fwts_acpi_reserved_bits_check(fw, "IORT", "SMMU Reserved Flags", node->flags, sizeof(node->flags), 2, 31, passed);
+	fwts_acpi_reserved_bits_check("IORT", "SMMU Reserved Flags", node->flags, 2, 31, passed);
 	fwts_log_nl(fw);
 }
 
@@ -583,7 +581,7 @@ static void iort_check_smmuv3(
 			"a model value of 0.", node->model);
 	}
 
-	fwts_acpi_reserved_bits_check(fw, "IORT", "SMMUv3 Reserved Flags", node->flags, sizeof(node->flags), 2, 31, passed);
+	fwts_acpi_reserved_bits_check("IORT", "SMMUv3 Reserved Flags", node->flags, 2, 31, passed);
 	fwts_log_nl(fw);
 }
 

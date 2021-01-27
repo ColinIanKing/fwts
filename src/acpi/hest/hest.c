@@ -389,7 +389,7 @@ static void hest_check_pci_express_root_port_aer(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
-	fwts_acpi_reserved_bits_check(fw, "HEST", "PCI Express Root Port Flags", aer->flags, sizeof(aer->flags), 2, 7, passed);
+	fwts_acpi_reserved_bits_check("HEST", "PCI Express Root Port Flags", aer->flags, 2, 7, passed);
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
@@ -457,7 +457,7 @@ static void hest_check_pci_express_device_aer(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
-	fwts_acpi_reserved_bits_check(fw, "HEST", "PCI Express Device Flags", aer->flags, sizeof(aer->flags), 2, 7, passed);
+	fwts_acpi_reserved_bits_check("HEST", "PCI Express Device Flags", aer->flags, 2, 7, passed);
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
@@ -529,7 +529,7 @@ static void hest_heck_pci_express_bridge_aer(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
-	fwts_acpi_reserved_bits_check(fw, "HEST", "PCI Express Bridge Flags", aer->flags, sizeof(aer->flags), 2, 7, passed);
+	fwts_acpi_reserved_bits_check("HEST", "PCI Express Bridge Flags", aer->flags, 2, 7, passed);
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
@@ -649,9 +649,8 @@ static void hest_check_generic_error_source(
 			source->notification.type);
 	}
 
-	fwts_acpi_reserved_bits_check(fw, "HEST", "HEST Configuration Write Enabled",
-		source->notification.configuration_write_enable,
-		sizeof(source->notification.configuration_write_enable), 6, 31, passed);
+	fwts_acpi_reserved_bits_check("HEST", "HEST Configuration Write Enabled",
+		source->notification.configuration_write_enable, 6, 31, passed);
 
 	*length -= sizeof(fwts_acpi_table_hest_generic_hardware_error_source);
 	*data += sizeof(fwts_acpi_table_hest_generic_hardware_error_source);
@@ -764,9 +763,8 @@ static void hest_check_generic_error_source_v2(
 			source->notification.type);
 	}
 
-	fwts_acpi_reserved_bits_check(fw, "HEST", "HEST Configuration Write Enabled",
-		source->notification.configuration_write_enable,
-		sizeof(source->notification.configuration_write_enable), 6, 31, passed);
+	fwts_acpi_reserved_bits_check("HEST", "HEST Configuration Write Enabled",
+		source->notification.configuration_write_enable, 6, 31, passed);
 
 	*length -= sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2);
 	*data += sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2);

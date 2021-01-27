@@ -232,7 +232,7 @@ static int nfit_test1(fwts_framework *fw)
 				}
 			}
 
-			fwts_acpi_reserved_bits_check(fw, "NFIT", "Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 3, 15, &passed);
+			fwts_acpi_reserved_bits_check("NFIT", "Flags", nfit_struct->flags, 3, 15, &passed);
 
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;
@@ -271,7 +271,7 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_simp_int(fw, "    NVDIMM State Flags:                     ", nfit_struct->flags);
 			fwts_log_info_simp_int(fw, "    Reserved:                               ", nfit_struct->reserved);
 
-			fwts_acpi_reserved_bits_check(fw, "NFIT", "NVDIMM State Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 7, 15, &passed);
+			fwts_acpi_reserved_bits_check("NFIT", "NVDIMM State Flags", nfit_struct->flags, 7, 15, &passed);
 
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;
@@ -383,7 +383,7 @@ static int nfit_test1(fwts_framework *fw)
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;
 
-			fwts_acpi_reserved_bits_check(fw, "NFIT", "Valid", nfit_struct->valid_fields, sizeof(nfit_struct->valid_fields), 1, 7, &passed);
+			fwts_acpi_reserved_bits_check("NFIT", "Valid", nfit_struct->valid_fields, 1, 7, &passed);
 
 			if (entry->length >= sizeof(*nfit_struct)) {
 				uint64_t reserved1;
@@ -406,7 +406,7 @@ static int nfit_test1(fwts_framework *fw)
 				fwts_log_info_simp_int(fw, "    NVDIMM Control Region Flag:             ", nfit_struct->flags);
 				fwts_log_info_simp_int(fw, "    Reserved:                               ", reserved1);
 
-				fwts_acpi_reserved_bits_check(fw, "NFIT", "NVDIMM Control Region Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 1, 15, &passed);
+				fwts_acpi_reserved_bits_check("NFIT", "NVDIMM Control Region Flags", nfit_struct->flags, 1, 15, &passed);
 				fwts_log_info_simp_int(fw, "    NVDIMM Control Region Structure Index:  ", nfit_struct->region_index);
 			}
 
@@ -492,7 +492,7 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_simp_int(fw, "    Reserved2:                              ", nfit_struct->reserved2);
 
 			fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved1", reserved1, sizeof(reserved1), &passed);
-			fwts_acpi_reserved_bits_check(fw, "NFIT", "Capabilities", nfit_struct->cap, sizeof(nfit_struct->cap), 3, 31, &passed);
+			fwts_acpi_reserved_bits_check("NFIT", "Capabilities", nfit_struct->cap, 3, 31, &passed);
 
 			if ((nfit_struct->cap & 0x1) && !(nfit_struct->cap & 0x2)) {
 				passed = false;

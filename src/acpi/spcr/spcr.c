@@ -204,7 +204,7 @@ static int spcr_test1(fwts_framework *fw)
 
 	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "SPCR", "Parity", spcr->parity, 0, &passed);
 	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "SPCR", "Stop", spcr->stop_bits, 1, &passed);
-	fwts_acpi_reserved_bits_check(fw, "SPCR", "Flow control", spcr->flow_control, sizeof(spcr->flow_control), 3, 7, &passed);
+	fwts_acpi_reserved_bits_check("SPCR", "Flow control", spcr->flow_control, 3, 7, &passed);
 
 	reserved = false;
 	switch (spcr->terminal_type) {
@@ -271,7 +271,7 @@ static int spcr_test1(fwts_framework *fw)
 		}
 	}
 
-	fwts_acpi_reserved_bits_check(fw, "SPCR", "PCI Flags", spcr->pci_flags, sizeof(spcr->pci_flags), 1, 31, &passed);
+	fwts_acpi_reserved_bits_check("SPCR", "PCI Flags", spcr->pci_flags, 1, 31, &passed);
 	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved3", spcr->reserved3, sizeof(spcr->reserved3), &passed);
 
 	if (passed)

@@ -67,7 +67,7 @@ static void srat_check_local_apic_sapic_affinity(
 	fwts_log_info_simp_int(fw, "  Clock Domain              ", affinity->clock_domain);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_bits_check(fw, "SRAT", "Local APIC/SPAIC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
+	fwts_acpi_reserved_bits_check("SRAT", "Local APIC/SPAIC Affinity Flags", affinity->flags, 1, 31, passed);
 
 	/*
 	 * Not clear of bits 0..7 of Proximity Domain are reserved or not
@@ -122,7 +122,7 @@ static void srat_check_memory_affinity(
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved3);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_bits_check(fw, "SRAT", "Memory Affinity Flags", affinity->flags, sizeof(affinity->flags), 3, 31, passed);
+	fwts_acpi_reserved_bits_check("SRAT", "Memory Affinity Flags", affinity->flags, 3, 31, passed);
 
 done:
 	*length -= sizeof(fwts_acpi_table_memory_affinity);
@@ -175,7 +175,7 @@ static void srat_check_local_x2apic_affinity(
 		*passed = false;
 	}
 
-	fwts_acpi_reserved_bits_check(fw, "SRAT", "Local x2APIC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
+	fwts_acpi_reserved_bits_check("SRAT", "Local x2APIC Affinity Flags", affinity->flags, 1, 31, passed);
 
 	/*
 	 *  Clock domain probably needs deeper sanity checking, for now
@@ -221,7 +221,7 @@ static void srat_check_gicc_affinity(
 	fwts_log_info_simp_int(fw, "  Clock Domain              ", affinity->clock_domain);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_bits_check(fw, "SRAT", "GICC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
+	fwts_acpi_reserved_bits_check("SRAT", "GICC Affinity Flags", affinity->flags, 1, 31, passed);
 
 	/*
 	 *  Clock domain probably needs deeper sanity checking, for now
@@ -320,7 +320,7 @@ static void srat_check_initiator_affinity(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved1, sizeof(affinity->reserved1), passed);
-	fwts_acpi_reserved_bits_check(fw, "SRAT", "Initiator Affinity Device Handle Type", affinity->device_handle_type, sizeof(affinity->device_handle_type), 1, 7, passed);
+	fwts_acpi_reserved_bits_check("SRAT", "Initiator Affinity Device Handle Type", affinity->device_handle_type, 1, 7, passed);
 	if (affinity->device_handle_type == 0)
 		h_reserved = affinity->device_handle[12];
 	else if (affinity->device_handle_type == 1) {
@@ -329,7 +329,7 @@ static void srat_check_initiator_affinity(
 			h_reserved += affinity->device_handle[i];
 	}
 	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Device Handle Reserve", h_reserved, sizeof(uint32_t), passed);
-	fwts_acpi_reserved_bits_check(fw, "SRAT", "Initiator Affinity Flags", affinity->flags, sizeof(affinity->flags), 2, 31, passed);
+	fwts_acpi_reserved_bits_check("SRAT", "Initiator Affinity Flags", affinity->flags, 2, 31, passed);
 	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved2, sizeof(affinity->reserved2), passed);
 
 done:

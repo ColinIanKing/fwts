@@ -139,7 +139,6 @@ static fwts_option fwts_framework_options[] = {
 	{ "ifv",		"",   0, "Run tests in firmware-vendor modes." },
 	{ "clog",		"",   1, "Specify a coreboot logfile dump" },
 	{ "ebbr",		"",   0, "Run ARM EBBR tests." },
-	{ "dump-acpi-from-sysfs","",  0, "Specify dumping acpi table log default from sysfs." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1358,9 +1357,6 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fprintf(stderr, "option not available on this architecture\n");
 			return FWTS_ERROR;
 #endif
-		case 50: /* --dump-acpi-from-sysfs */
-			fw->flags |= FWTS_FLAG_DUMP_ACPI_FROM_SYSFS;
-			break;
 		}
 		break;
 	case 'a': /* --all */

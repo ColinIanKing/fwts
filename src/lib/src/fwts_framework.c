@@ -1337,8 +1337,13 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 				return FWTS_ERROR;
 			break;
 		case 46: /* --sbbr */
+#if defined(FWTS_ARCH_AARCH64)
 			fw->flags |= FWTS_FLAG_TEST_SBBR;
 			break;
+#else
+			fprintf(stderr, "option not available on this architecture\n");
+			return FWTS_ERROR;
+#endif
 		case 47: /* --ifv */
 			fw->flags |= FWTS_FLAG_FIRMWARE_VENDOR;
 			break;
@@ -1346,8 +1351,13 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_strdup(&fw->clog, optarg);
 			break;
 		case 49: /* --ebbr */
+#if defined(FWTS_ARCH_AARCH64)
 			fw->flags |= FWTS_FLAG_TEST_EBBR;
 			break;
+#else
+			fprintf(stderr, "option not available on this architecture\n");
+			return FWTS_ERROR;
+#endif
 		case 50: /* --dump-acpi-from-sysfs */
 			fw->flags |= FWTS_FLAG_DUMP_ACPI_FROM_SYSFS;
 			break;

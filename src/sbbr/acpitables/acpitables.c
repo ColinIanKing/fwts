@@ -16,7 +16,8 @@
  */
 #include "fwts.h"
 
-#if defined(FWTS_HAS_ACPI)
+#if defined(FWTS_HAS_ACPI) && (FWTS_ARCH_AARCH64)
+
 #include "acpi.h"
 #include "accommon.h"
 #include "acnamesp.h"

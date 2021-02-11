@@ -145,7 +145,8 @@ static int maxreadreq_test1(fwts_framework *fw)
 			"Express bus. Some drivers (for example the Brocade Fibre Channel driver) "
 			"allow one to override the firmware settings. Where possible, this BIOS "
 			"configuration setting is worth increasing it a little more for better "
-			"performance at a small reduction of bus sharing.");
+			"performance at a small reduction of bus sharing. Note it is safe to "
+			"ignore this failure if the register is hardwired to zero per PCIe spec.");
 	} else
 		fwts_passed(fw, "All devices have MaxReadReq set > 128.");
 

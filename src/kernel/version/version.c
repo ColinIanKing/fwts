@@ -89,8 +89,7 @@ static int version_test4(fwts_framework *fw)
 {
 	char *str;
 
-	if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
-	    ((str = fwts_get("/proc/acpi/info")) == NULL))
+	if ((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL)
 		fwts_log_info(fw,
 			"Cannot get ACPI version info from "
 			"/sys/module/acpi/parameters/acpica_version "

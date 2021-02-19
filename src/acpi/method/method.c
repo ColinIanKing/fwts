@@ -2169,8 +2169,10 @@ static void method_test_PSS_return(
 		return;
 	}
 
-	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK) {
+		free(element_ok);
 		return;
+	}
 
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pstate;
@@ -2363,8 +2365,10 @@ static void method_test_TSS_return(
 		return;
 	}
 
-	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_PACKAGE) != FWTS_OK) {
+		free(tss_elements_ok);
 		return;
+	}
 
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {

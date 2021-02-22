@@ -1244,13 +1244,13 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 		ret = fwts_acpi_load_tables_from_acpidump(fw);
 		require_fixup = true;
 	} else if (fwts_check_root_euid(fw, true) == FWTS_OK) {
-		ret = fwts_acpi_load_tables_from_firmware(fw);
+		ret = fwts_acpi_load_tables_from_sysfs(fw);
 
-		/* Load from memory failed (e.g. no /dev/mem), so try sysfs */
-		if (ret != FWTS_OK) {
-			ret = fwts_acpi_load_tables_from_sysfs(fw);
+		/* Load from sysfs failed (e.g. no /sys/firmware/acpi/tables), so try memory */
+		if (ret != FWTS_OK)
+			ret = fwts_acpi_load_tables_from_firmware(fw);
+		else
 			require_fixup = true;
-		}
 	} else {
 		ret = FWTS_ERROR_NO_PRIV;
 	}

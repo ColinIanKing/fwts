@@ -22,9 +22,6 @@
 -d, --dump                   Dump out dmesg,
                              dmidecode, lspci,
                              ACPI tables to logs.
---dump-acpi-from-sysfs       Specify dumping acpi
-                             table log default
-                             from sysfs.
 --dumpfile                   Load ACPI tables
                              using file generated
                              by acpidump, e.g.
@@ -269,7 +266,3 @@
 -u, --utils                  Run Utility 'tests'.
                              (Vxx.xx.xx).
 
-Some of this work - Copyright (c) 1999 - 2018, Intel Corp. All rights reserved.
-Some of this work - Copyright (c) 2010 - 2018, Canonical.
-Some of this work - Copyright (c) 2016 - 2018, IBM.
-Some of this work - Copyright (c) 2017 - 2018, ARM Ltd.

@@ -1,3 +1,51 @@
+fwts (21.02.00-0ubuntu1) hirsute; urgency=medium
+
+  [Alex Hung]
+  * acpi: replace objname by get_object_name() in various functions
+  * acpi: method: remove a redundant passed message
+  * acpi: move acpi battery common methods to lib
+  * acpi: method: check fixed package by fwts_method_package_elements_type
+  * acpi: method: merge and refine _CSD, _PSD and _TSD return tests
+  * lib: fwts_acpi_object_eval: add returns to long lines
+  * acpi: method: refine _PSS and _TSS method tests
+  * acpi: method: merge _PCT & _PTC method tests
+  * acpi: method: refine tests sub-package elements
+  * acpi: method: remove redundant count_equal checks in _CPC test
+  * acpi: method: refine _Sx count checks by fwts_method_package_count_min
+  * acpi: method: refine _PRW method tests
+  * acpi: method: add passed messages to _GLK and _DSD tests
+  * acpi: update ACPI version to 6.4
+  * acpi/madt: add ACPI 6.4 to madt_revision test
+  * lib: fwts_acpi_tables: update fwts_get_acpi_version (mantis: 2105)
+  * acpitables: update ACPI table revsion test to ACPI 6.4
+  * acpi: nfit: add Spa Location Cookie as in ACPI 6.4 (mantis 1988)
+  * acpi: srat/hmat: update fields of sub-structures (mantis 1991)
+  * acpi: battery/method: add _BPC, _BPS and _BPT tests (mantis 1997)
+  * fwts-test: sync up with _BPC, _BPS, _BPT, NFIT and HMAT tests
+  * acpi: pcct: add type 5 according to ACPI 6.4 (manti 2010)
+  * fwts-tests: sync up with pcct updates
+  * acpi: method: add _CBR test (mantis 2045/2077)
+  * fwts-test: sync up with _CBR test
+  * acpi: madt: add Multiprocessor Wakeup support (mantis 2087)
+  * acpi: battery: add Battery Charge Limiting (mantis 2090)
+  * acpi: method: update _DDC argument size (mantis 2137)
+  * acpi: madt: update fadt and madt revisions to ACPI 6.4
+  * lib: acpi: add a macro to fwts_acpi_reserved_bits_check
+  * lib: acpi: add a macro to fwts_acpi_reserved_zero_check
+  * fwts_framework: skip sbbr & ebbr on non-aarch64 systems
+  * sbbr: disable SBBR tests on non-aarch64 systems
+  * pci: maxreadreq: Add "safe to ignore ... message"
+  * version: remove /proc/acpi/info
+  * Revert "lib: fwts_acpi_tables: add option for dump acpi table from sysfs"
+  * lib: acpi: load acpi tables from sysfs by default
+  * fwts-test: sync up with removal of dump-acpi-from-sysfs
+
+  [Colin Ian King]
+  * acpi: method: fix two memory leaks on error return paths
+  * lib: fwts_acpi_tables: use bit-wise & rather than logical &&
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Tue, 23 Feb 2021 11:49:17 -0700
+
 fwts (21.01.00-0ubuntu1) hirsute; urgency=medium
 
   [Alex Hung]

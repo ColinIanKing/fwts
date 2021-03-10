@@ -154,6 +154,7 @@ fwts_SOURCES = main.c 				\
 	bios/ebda_region/ebda_region.c 		\
 	bios/ebdadump/ebdadump.c 		\
 	bios/hdaaudio/hdaaudio.c 		\
+	bios/interrupt/interrupt.c		\
 	bios/memmapdump/memmapdump.c 		\
 	bios/mtrr/mtrr.c 			\
 	bios/multiproc/mpcheck.c 		\

@@ -550,14 +550,14 @@ bool fwts_uefi_efivars_iface_exist(void)
  *	this bitmask can be read via an IOCTL call. Before Linux 5.11 the value
  *	cannot be determined.
  */
-void fwts_uefi_rt_support_status_get(int fd, bool *have_rtsupported, uint32_t *var_rtsupported)
+void fwts_uefi_rt_support_status_get(int fd, bool *have_rtsupported, uint32_t *rtservicessupported)
 {
 	long ioret;
 
-	ioret = ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, var_rtsupported);
+	ioret = ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, rtservicessupported);
 	if (ioret == -1) {
 		*have_rtsupported = false;
-		*var_rtsupported = EFI_RT_SUPPORTED_ALL;
+		*rtservicessupported = EFI_RT_SUPPORTED_ALL;
 	} else {
 		*have_rtsupported = true;
 	}

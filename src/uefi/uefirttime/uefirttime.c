@@ -38,6 +38,9 @@
 static int fd;
 static const uint32_t dayofmonth[12] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
+static bool have_rtsupported;
+static uint32_t runtimeservicessupported;
+
 static bool dayvalid(EFI_TIME *Time)
 {
 	if (Time->Day < 1)
@@ -171,6 +174,9 @@ static int uefirttime_init(fwts_framework *fw)
 {
 	if (fwts_lib_efi_runtime_module_init(fw, &fd) == FWTS_ABORTED)
 		return FWTS_ABORTED;
+
+	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
+			&runtimeservicessupported);
 
 	return FWTS_OK;
 }
@@ -1142,8 +1148,6 @@ static int uefirttime_test37(fwts_framework *fw)
 static int uefirttime_test38(fwts_framework *fw)
 {
 	long ioret;
-	bool have_rtsupported;
-	uint32_t runtimeservicessupported;
 
 	struct efi_settime settime;
 	uint64_t status = ~0ULL;
@@ -1154,9 +1158,6 @@ static int uefirttime_test38(fwts_framework *fw)
 
 	EFI_TIME efi_time;
 	EFI_TIME_CAPABILITIES efi_time_cap;
-
-	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
-			&runtimeservicessupported);
 
 	if (!have_rtsupported) {
 		fwts_skipped(fw, "Cannot get the RuntimeServicesSupported "

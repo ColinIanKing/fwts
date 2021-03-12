@@ -64,6 +64,9 @@ static uint16_t variablenametest[] = {'T', 'e', 's', 't', 'v', 'a', 'r', '\0'};
 static uint16_t variablenametest2[] = {'T', 'e', 's', 't', 'v', 'a', 'r', ' ', '\0'};
 static uint16_t variablenametest3[] = {'T', 'e', 's', 't', 'v', 'a', '\0'};
 
+static bool have_rtsupported;
+static uint32_t runtimeservicessupported;
+
 static void uefirtvariable_env_cleanup(void)
 {
 	struct efi_setvariable setvariable;
@@ -99,6 +102,9 @@ static int uefirtvariable_init(fwts_framework *fw)
 		return FWTS_ABORTED;
 
 	uefirtvariable_env_cleanup();
+
+	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
+			&runtimeservicessupported);
 
 	return FWTS_OK;
 }
@@ -2020,9 +2026,6 @@ static int uefirtvariable_test9(fwts_framework *fw)
 {
 	long ioret;
 
-	bool have_rtsupported;
-	uint32_t runtimeservicessupported;
-
 	struct efi_getvariable getvariable;
 	struct efi_setvariable setvariable;
 	struct efi_getnextvariablename getnextvariablename;
@@ -2040,9 +2043,6 @@ static int uefirtvariable_test9(fwts_framework *fw)
 	uint8_t testdata[MAX_DATA_LENGTH];
 	uint64_t getdatasize = sizeof(testdata);
 	uint32_t attr;
-
-	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
-			&runtimeservicessupported);
 
 	if (!have_rtsupported) {
 		fwts_skipped(fw, "Cannot get the RuntimeServicesSupported "

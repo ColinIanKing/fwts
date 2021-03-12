@@ -43,10 +43,16 @@
 static int fd;
 static EFI_GUID gEfiCapsuleHeaderGuid = EFI_CAPSULE_GUID;
 
+static bool have_rtsupported;
+static uint32_t runtimeservicessupported;
+
 static int uefirtmisc_init(fwts_framework *fw)
 {
 	if (fwts_lib_efi_runtime_module_init(fw, &fd) == FWTS_ABORTED)
 		return FWTS_ABORTED;
+
+	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
+			&runtimeservicessupported);
 
 	return FWTS_OK;
 }
@@ -247,14 +253,10 @@ static int uefirtmisc_test4(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	bool have_rtsupported;
-	uint32_t runtimeservicessupported;
 
 	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount;
 	uint32_t highcount;
 
-	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
-			&runtimeservicessupported);
 	if (!have_rtsupported) {
 		fwts_skipped(fw, "Cannot get the RuntimeServicesSupported "
 				 "mask from the kernel. This IOCTL was "

@@ -139,6 +139,7 @@ void fwts_method_test_package_integer_return(fwts_framework *fw, char *name, ACP
 void fwts_method_test_passed_failed_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_polling_return( fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 
+void method_evaluate_found_method(fwts_framework *fw, char *name, fwts_method_return check_func, void *private, ACPI_OBJECT_LIST *arg_list);
 void fwts_evaluate_found_method(fwts_framework *fw, ACPI_HANDLE *parent, char *name, fwts_method_return check_func, void *private, ACPI_OBJECT_LIST *arg_list);
 int fwts_evaluate_method(fwts_framework *fw, uint32_t test_type, ACPI_HANDLE *parent, char *name, ACPI_OBJECT *args, uint32_t num_args, fwts_method_return check_func, void *private);
 

@@ -140,6 +140,7 @@ fwts_SOURCES = main.c 				\
 	acpi/tcpa/tcpa.c 			\
 	acpi/tpm2/tpm2.c 			\
 	acpi/uefi/uefi.c			\
+	acpi/uniqueid/uniqueid.c		\
 	acpi/waet/waet.c			\
 	acpi/wakealarm/wakealarm.c 		\
 	acpi/wdat/wdat.c			\

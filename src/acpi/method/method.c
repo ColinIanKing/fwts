@@ -278,9 +278,6 @@ static int method_test ## name(fwts_framework *fw)		\
 		NULL, 0, fwts_method_test_integer_return, # name); 	\
 }
 
-typedef void (*method_test_return)(fwts_framework *fw, char *name,
-	ACPI_BUFFER *ret_buff, ACPI_OBJECT *ret_obj, void *private);
-
 /*
  * Helper functions to facilitate the evaluations
  */
@@ -340,10 +337,10 @@ static int method_deinit(fwts_framework *fw)
  *  method_evaluate_found_method
  *	find a given object name and evaluate it
  */
-static void method_evaluate_found_method(
+void method_evaluate_found_method(
 	fwts_framework *fw,
 	char *name,
-	method_test_return check_func,
+	fwts_method_return check_func,
 	void *private,
 	ACPI_OBJECT_LIST *arg_list)
 {
@@ -393,7 +390,7 @@ static int method_evaluate_method(fwts_framework *fw,
 	char *name,
 	ACPI_OBJECT *args,
 	int num_args,
-	method_test_return check_func,
+	fwts_method_return check_func,
 	void *private)
 {
 	fwts_list *methods;

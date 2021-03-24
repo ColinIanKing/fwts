@@ -148,7 +148,7 @@ static int wrap_pmutils_do_s4(fwts_pm_method_vars *fwts_settings,
 	int *duration,
 	const char *command)
 {
-	int status;
+	int status = 0;
 
 	fwts_progress_message(fwts_settings->fw, percent, "(Hibernating)");
 	time(&(fwts_settings->t_start));

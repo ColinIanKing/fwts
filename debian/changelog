@@ -1,3 +1,24 @@
+fwts (21.03.00-0ubuntu1) hirsute; urgency=medium
+
+  [Alex Hung]
+  * pci: move pci_device struct to fwts_pci.h
+  * bios: smm: add a test to check SMM lock bits
+  * bios: interrupt: add a test to check ACPI SCI per second
+  * acpi: uniqueid: add tests for _HID/_CID vs. _UID
+
+  [Colin Ian King]
+  * acpi: s3,s4: ensure status is initialized
+
+  [Heinrich Schuchardt]
+  * uefi: update header for EFI runtime services
+  * uefi: fix fwts_uefi_rt_support_status_get()
+
+  [Ivan Hu]
+  * uefi: remove the var_ prefix
+  * uefi: move fwts_uefi_rt_support_status_get to init function
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 29 Mar 2021 16:55:04 +0800
+
 fwts (21.02.00-0ubuntu1) hirsute; urgency=medium
 
   [Alex Hung]

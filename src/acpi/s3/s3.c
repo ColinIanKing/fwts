@@ -236,7 +236,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 {
 	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
-	int duration;
+	int duration = 0;
 	int differences;
 	int rc = FWTS_OK;
 	char *command = NULL;

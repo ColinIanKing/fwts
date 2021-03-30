@@ -36,7 +36,7 @@ static int get_xscom_property(fwts_framework *fw,
 	char *prop_string = strstr(my_path, "/xscom");
 
 	if (prop_string) {
-		int prop_len;
+		int prop_len = 0;
 		int node = fdt_path_offset(fw->fdt, prop_string);
 
 		if (node >= 0) {

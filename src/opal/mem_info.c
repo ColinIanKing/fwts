@@ -43,7 +43,7 @@ static int get_dimm_property(
 
 		if (node >= 0) {
 			const char *prop_buf;
-			int prop_len;
+			int prop_len = 0;
 
 			prop_buf = fdt_getprop(fw->fdt, node,
 					property,

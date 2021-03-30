@@ -265,7 +265,7 @@ static bool machine_matches_reference_model(fwts_framework *fw,
 
 static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 {
-	int node, compat_len, model_len;
+	int node, compat_len = 0, model_len = 0;
 
 	node = fdt_path_offset(fw->fdt, "/");
 	if (node < 0) {

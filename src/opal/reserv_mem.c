@@ -128,7 +128,7 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 	const char *region_names;
 	const uint64_t *ranges;
 	reserve_region_t *regions;
-	int  offset, len, nr_regions, rc, j;
+	int  offset, len = 0, nr_regions, rc, j;
 	plat_config_t configstruct = {0, 0, 0};
 
 	get_config(fw, CONFIG_FILENAME, &configstruct);

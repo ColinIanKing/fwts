@@ -186,7 +186,7 @@ int fwts_dt_property_read_u32(
 	const char *pname,
 	int *value)
 {
-	int len;
+	int len = 0;
 	const int *buf;
 
 	buf = fdt_getprop(fdt, offset, pname, &len);

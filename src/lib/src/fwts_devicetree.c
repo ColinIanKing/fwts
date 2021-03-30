@@ -76,7 +76,7 @@ bool check_status_property_okay(fwts_framework *fw,
 	char *prop_string = strstr(my_path, my_prop_string);
 
 	if (prop_string) {
-		int prop_len;
+		int prop_len = 0;
 		int node = fdt_path_offset(fw->fdt, prop_string);
 
 		if (node >= 0) {
@@ -85,7 +85,7 @@ bool check_status_property_okay(fwts_framework *fw,
 			prop_buf = fdt_getprop(fw->fdt, node,
 					property,
 					&prop_len);
-			if (prop_len > 0) {
+			if (prop_buf && (prop_len > 0)) {
 				if ((!strcmp(prop_buf, "okay")) ||
 					(!strcmp(prop_buf, "ok"))) {
 					return true;

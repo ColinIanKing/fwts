@@ -883,7 +883,8 @@ static int madt_local_sapic(fwts_framework *fw,
 	}
 
 	for (tmp = 0, ii = 0; ii < 3; tmp |= lsapic->reserved[ii], ii++)
-		continue;
+		;
+
 	if (tmp)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTLSAPICReservedNonZero",

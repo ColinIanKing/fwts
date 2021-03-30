@@ -3620,10 +3620,8 @@ static void method_test_FPS_return(
 				elements_ok = false;
 		}
 
-		if (!elements_ok) {
+		if (!elements_ok)
 			failed = true;
-			continue;
-		}
 	}
 
 	if (!failed)
@@ -3821,10 +3819,8 @@ static void method_test_ART_return(
 
 		}
 
-		if (!elements_ok) {
+		if (!elements_ok)
 			failed = true;
-			continue;
-		}
 	}
 
 	if (!failed)
@@ -3884,10 +3880,8 @@ static void method_test_TRT_return(
 				elements_ok = false;
 		}
 
-		if (!elements_ok) {
+		if (!elements_ok)
 			failed = true;
-			continue;
-		}
 	}
 
 	if (!failed)

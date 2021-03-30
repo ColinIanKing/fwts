@@ -59,9 +59,10 @@ void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data)
 	memcpy(hdr, data, sizeof(fwts_acpi_table_header));
 }
 
-bool fwts_acpi_data_zero(const void *data, const size_t len) {
+bool fwts_acpi_data_zero(const void *data, const size_t len)
+{
 	uint8_t *ptr = (uint8_t *) data;
-	uint8_t i;
+	size_t i;
 
 	for (i = 0; i < len; i++)
 		if (*ptr++)

@@ -64,7 +64,7 @@ static int uniqueid_evaluate_method(fwts_framework *fw,
 	void *private)
 {
 	fwts_list *methods;
-	size_t name_len = strlen(name);
+	const size_t name_len = strlen(name);
 
 	if ((methods = fwts_acpi_object_get_names()) != NULL) {
 		fwts_list_link	*item;
@@ -148,7 +148,8 @@ static void unique_HID_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	char *uid_name = (char*) malloc(strlen(name) + 1);
+	const size_t name_len = strlen(name) + 1;
+	char uid_name[name_len];
 	ACPI_OBJECT *hid_obj, *uid_obj;
 	ACPI_BUFFER hid_buf, uid_buf;
 	fwts_list_link *item;
@@ -160,8 +161,8 @@ static void unique_HID_return(
 	FWTS_UNUSED(obj);
 	FWTS_UNUSED(private);
 
-	strlcpy(uid_name, name, strlen(name) + 1);
-	uid_name[strlen(name) - 3] = 'U';
+	strlcpy(uid_name, name, name_len);
+	uid_name[name_len - 4] = 'U';
 
 	status = fwts_acpi_object_evaluate(fw, name, NULL, &hid_buf);
 	if (ACPI_FAILURE(status))
@@ -173,15 +174,17 @@ static void unique_HID_return(
 		return;
 	uid_obj = uid_buf.Pointer;
 
-	if ((obj1 = (acpi_ids*)calloc(1, sizeof(acpi_ids))) != NULL) {
-		obj1->hid_name = name;
-		obj1->hid_obj = hid_obj;
-		obj1->uid_obj = uid_obj;
-	}
+	obj1 = (acpi_ids *)calloc(1, sizeof(acpi_ids));
+	if (!obj1)
+		return;
+
+	obj1->hid_name = name;
+	obj1->hid_obj = hid_obj;
+	obj1->uid_obj = uid_obj;
 
 	fwts_list_foreach(item, hid_list) {
 		acpi_ids *obj2 = fwts_list_data(acpi_ids*, item);
-		if(is_uniqueid_equal(obj1, obj2)) {
+		if (is_uniqueid_equal(obj1, obj2)) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH, "HardwareIDNotUnique",
 				"%s/_UID conflict with %s/_UID", name, obj2->hid_name);
@@ -189,10 +192,11 @@ static void unique_HID_return(
 		}
 	}
 
-	free(uid_name);
 	if (passed) {
 		fwts_list_append(hid_list, obj1);
 		fwts_passed(fw, "%s/_UID is unique.", name);
+	} else {
+		free(obj1);
 	}
 }
 

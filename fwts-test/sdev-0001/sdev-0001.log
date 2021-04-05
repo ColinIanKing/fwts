@@ -3,24 +3,26 @@ sdev            ----------------------------------------------------------
 sdev            Test 1 of 1: Validate SDEV table.
 sdev            SDEV Secure Devices Table:
 sdev              ACPI Integrated Device (Type 0):
-sdev                Type:                           0x00
-sdev                Flags:                          0x01
-sdev                Length:                         0x002a
-sdev                Device Id Offset:               0x000c
-sdev                Device Id Length:               0x0016
-sdev                Vendor Specific Data Offset:    0x0022
-sdev                Vendor Specific Data Length:    0x0008
+sdev                Type:                             0x00
+sdev                Flags:                            0x03
+sdev                Length:                           0x0041
+sdev                Device Id Offset:                 0x0023
+sdev                Device Id Length:                 0x0016
+sdev                Vendor Specific Data Offset:      0x0039
+sdev                Vendor Specific Data Length:      0x0008
+sdev                Secure Access Components Offset:  0x0010
+sdev                Secure Access Components Length:  0x0013
 sdev            
 sdev              PCIe Endpoint Device (Type 1):
-sdev                Type:                           0x01
-sdev                Flags:                          0x01
-sdev                Length:                         0x0024
-sdev                PCI Segment Number:             0x0010
-sdev                Start Bus Number:               0x0020
-sdev                PCI Path Offset:                0x0010
-sdev                PCI Path Length:                0x0004
-sdev                Vendor Specific Data Offset:    0x0014
-sdev                Vendor Specific Data Length:    0x0010
+sdev                Type:                             0x01
+sdev                Flags:                            0x01
+sdev                Length:                           0x0024
+sdev                PCI Segment Number:               0x0010
+sdev                Start Bus Number:                 0x0020
+sdev                PCI Path Offset:                  0x0010
+sdev                PCI Path Length:                  0x0004
+sdev                Vendor Specific Data Offset:      0x0014
+sdev                Vendor Specific Data Length:      0x0010
 sdev            
 sdev            
 sdev            PASSED: Test 1, No issues found in SDEV table.

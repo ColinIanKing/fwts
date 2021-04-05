@@ -1345,6 +1345,8 @@ typedef struct {
 	uint16_t	device_id_length;
 	uint16_t	vendor_offset;
 	uint16_t	vendor_length;
+	uint16_t	secure_access_offset;
+	uint16_t	secure_access_length;
 } fwts_acpi_table_sdev_acpi;
 
 typedef struct {
@@ -1356,6 +1358,39 @@ typedef struct {
 	uint16_t	vendor_offset;
 	uint16_t	vendor_length;
 } fwts_acpi_table_sdev_pcie;
+
+typedef enum {
+	FWTS_ACPI_SDEV_ID_BASE_SECURE_ACCESS	= 0,
+	FWTS_ACPI_SDEV_MEM_BASE_SECURE_ACCESS	= 1,
+	FWTS_ACPI_SDEV_RESERVED_SECURE_ACCESS	= 2,
+} fwts_acpi_sdev_acpi_type;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		flags;
+	uint16_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_sdev_acpi_header;
+
+typedef struct {
+	fwts_acpi_table_sdev_acpi_header	header;
+	uint16_t	hw_id_offset;
+	uint16_t	hw_id_length;
+	uint16_t	subsys_id_offset;
+	uint16_t	subsys_id_length;
+	uint16_t	hw_revision;
+	uint8_t		hw_revision_present;
+	uint8_t		class_code_present;
+	uint8_t		pci_comp_class;
+	uint8_t		pci_comp_subclass;
+	uint8_t		pci_comp_interface;
+} fwts_acpi_table_sdev_acpi_id;
+
+typedef struct {
+	fwts_acpi_table_sdev_acpi_header	header;
+	uint32_t	reserved;
+	uint64_t	base_addr;
+	uint64_t	mem_length;
+} fwts_acpi_table_sdev_acpi_memory;
 
 /*
  * ACPI HMAT (Heterogeneous Memory Attribute Table), 5.2.27

@@ -1498,6 +1498,7 @@ typedef struct {
 	uint8_t		associativity;
 	uint8_t		attributes;
 	uint16_t	line_size;
+	uint32_t	cache_id;
 } __attribute__ ((packed)) fwts_acpi_table_pptt_cache;
 
 typedef struct {

@@ -55,12 +55,12 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 
 	if (rev == 1)
 		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 2, 31, passed);
-	else if (rev == 2)
+	else
 		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 5, 31, passed);
 
 }
 
-static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache *entry, bool *passed)
+static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache *entry, uint8_t rev, bool *passed)
 {
 
 	fwts_log_info_verbatim(fw, "  Cache Type Structure (Type 1):");
@@ -74,9 +74,16 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 	fwts_log_info_simp_int(fw, "    Associativity:                  ", entry->associativity);
 	fwts_log_info_simp_int(fw, "    Attributes:                     ", entry->attributes);
 	fwts_log_info_simp_int(fw, "    Line size:                      ", entry->line_size);
+	if (rev >= 3)
+		fwts_log_info_simp_int(fw, "    Cache ID:                       ", entry->cache_id);
 
 	fwts_acpi_reserved_zero_check("PPTT", "Reserved", entry->reserved, passed);
-	fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 7, 31, passed);
+
+	if (rev == 1 || rev == 2)
+		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 7, 31, passed);
+	else
+		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 8, 31, passed);
+
 	fwts_acpi_reserved_bits_check("PPTT", "Attributes", entry->attributes, 5, 7, passed);
 }
 
@@ -129,8 +136,10 @@ static int pptt_test1(fwts_framework *fw)
 			type_length = sizeof(fwts_acpi_table_pptt_processor) +
 				      ((fwts_acpi_table_pptt_processor *) entry)->number_priv_resources * 4;
 		} else if (entry->type == FWTS_ACPI_PPTT_CACHE) {
-			pptt_cache_test(fw, (fwts_acpi_table_pptt_cache *) entry, &passed);
+			pptt_cache_test(fw, (fwts_acpi_table_pptt_cache *) entry, pptt->header.revision, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_cache);
+			if (pptt->header.revision < 3)
+				type_length -= sizeof(((fwts_acpi_table_pptt_cache *) entry)->cache_id);
 		} else if (entry->type == FWTS_ACPI_PPTT_ID) {
 			fwts_log_warning(fw, "PPTT type 2 is depreciated since ACPI 6.3 Errata A.");
 			pptt_id_test(fw, (fwts_acpi_table_pptt_id *) entry, &passed);

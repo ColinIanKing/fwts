@@ -489,9 +489,11 @@ static int tpmevlogdump_test1(fwts_framework *fw)
 					return FWTS_ABORTED;
 				} else {
 					/* check if the TPM2 eventlog */
-					if (strstr((char *)(data + sizeof(fwts_pc_client_pcr_event)), FWTS_TPM_EVENTLOG_V2_SIGNATURE))
+					if (strstr((char *)(data + sizeof(fwts_pc_client_pcr_event)), FWTS_TPM_EVENTLOG_V2_SIGNATURE)) {
+						fwts_log_info_verbatim(fw, "Crypto agile log format (TPM2.0):");
 						tpmevlogdump_parser(fw, data, length);
-					else {
+					} else {
+						fwts_log_info_verbatim(fw, "SHA1 log format (TPM1.2):");
 						(void)tpmevlogdump_event_dump(fw, data, length);
 					}
 					free(data);

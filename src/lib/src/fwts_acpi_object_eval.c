@@ -474,10 +474,10 @@ ACPI_STATUS fwts_acpi_object_evaluate(fwts_framework *fw,
 
 int fwts_method_check_type__(
 	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT_TYPE type,
-	char *type_name)
+	const char *name,
+	const ACPI_BUFFER *buf,
+	const ACPI_OBJECT_TYPE type,
+	const char *type_name)
 {
 	ACPI_OBJECT *obj;
 
@@ -548,10 +548,10 @@ static const char *acpi_object_names[] = {
 int fwts_method_check_element_type(
 	fwts_framework *fw,
 	const char *name,
-	ACPI_OBJECT *obj,
-	uint32_t subpkg,
-	uint32_t element,
-	ACPI_OBJECT_TYPE type)
+	const ACPI_OBJECT *obj,
+	const uint32_t subpkg,
+	const uint32_t element,
+	const ACPI_OBJECT_TYPE type)
 {
 	if (obj->Package.Elements[element].Type != type) {
 		char obj_name[5] = "_XYZ";
@@ -642,7 +642,9 @@ void fwts_method_failed_null_object(
 		"return %s.", name, type);
 }
 
-bool fwts_method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2)
+bool fwts_method_type_matches(
+	const ACPI_OBJECT_TYPE t1,
+	const ACPI_OBJECT_TYPE t2)
 {
 	if (t1 == ACPI_TYPE_INTBUF &&
 	    (t2 == ACPI_TYPE_INTEGER || t2 == ACPI_TYPE_BUFFER))
@@ -662,8 +664,8 @@ bool fwts_method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2)
 int fwts_method_buffer_size(
 	fwts_framework *fw,
 	const char *name,
-	ACPI_OBJECT *obj,
-	size_t buf_size)
+	const ACPI_OBJECT *obj,
+	const size_t buf_size)
 {
 	if (obj->Buffer.Length != buf_size) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
@@ -1176,7 +1178,7 @@ void fwts_evaluate_found_method(
 }
 
 int fwts_evaluate_method(fwts_framework *fw,
-	uint32_t test_type,  /* Manditory or optional */
+	const uint32_t test_type,  /* Manditory or optional */
 	ACPI_HANDLE *parent,
 	char *name,
 	ACPI_OBJECT *args,
@@ -1210,7 +1212,7 @@ int fwts_evaluate_method(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-bool fwts_method_valid_HID_string(char *str)
+bool fwts_method_valid_HID_string(const char *str)
 {
 	if (strlen(str) == 7) {
 		/* PNP ID, must be 3 capitals followed by 4 hex */
@@ -1240,7 +1242,10 @@ bool fwts_method_valid_HID_string(char *str)
 	return false;
 }
 
-bool fwts_method_valid_EISA_ID(uint32_t id, char *buf, size_t buf_len)
+bool fwts_method_valid_EISA_ID(
+	const uint32_t id,
+	char *buf,
+	const size_t buf_len)
 {
 	snprintf(buf, buf_len, "%c%c%c%02" PRIX32 "%02" PRIX32,
 		0x40 + ((id >> 2) & 0x1f),

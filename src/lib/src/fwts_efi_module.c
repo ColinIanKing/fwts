@@ -179,7 +179,7 @@ int fwts_lib_efi_runtime_open(void)
  *  fwts_lib_efi_runtime_close()
  *	close the device
  */
-int fwts_lib_efi_runtime_close(int fd)
+int fwts_lib_efi_runtime_close(const int fd)
 {
 	return close(fd);
 }

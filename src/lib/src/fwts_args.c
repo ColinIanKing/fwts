@@ -125,7 +125,7 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 		options_table = fwts_list_data(fwts_options_table *, item);
 
 		for (i = 0; i < options_table->num_options; i++, n++) {
-			char *short_name = options_table->options[i].short_name;
+			const char *short_name = options_table->options[i].short_name;
 			size_t len;
 
 			long_options[n].name    = options_table->options[i].long_name;

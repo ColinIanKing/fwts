@@ -26,10 +26,10 @@
 #include <getopt.h>
 
 typedef struct {
-	char		*long_name;	/* e.g. "quiet", long name */
-	char		*short_name;	/* e.g. "q", short help info */
-	int		has_arg;
-	char		*explanation;	/* explanation: "Enabled quiet mode..." */
+	const char *long_name;		/* e.g. "quiet", long name */
+	const char *short_name;		/* e.g. "q", short help info */
+	const int  has_arg;
+	const char *explanation;	/* explanation: "Enabled quiet mode..." */
 } fwts_option;
 
 #include "fwts.h"

@@ -30,8 +30,7 @@
 
 #include "fwts_types.h"
 
-typedef struct
-{
+typedef struct {
 	fwts_framework *fw;
 	time_t t_start;
 	time_t t_end;
@@ -53,32 +52,19 @@ typedef struct
 #define FWTS_HIBERNATE		"FWTS_HIBERNATE"
 #define FWTS_RESUME		"FWTS_RESUME"
 
-static inline void free_pm_method_vars(fwts_pm_method_vars *var)
-{
-	if (!var)
-		return;
-#if FWTS_ENABLE_LOGIND
-	if (var->logind_proxy)
-		g_object_unref(var->logind_proxy);
-	if (var->logind_connection)
-		g_object_unref(var->logind_connection);
-	if (var->gmainloop)
-		g_main_loop_unref(var->gmainloop);
-	if (var->action)
-		free(var->action);
-#endif
-	free(var);
-}
-
+void free_pm_method_vars(fwts_pm_method_vars *var);
 int fwts_logind_init_proxy(fwts_pm_method_vars *fwts_settings);
-int fwts_logind_wait_for_resume_from_action(fwts_pm_method_vars *fwts_settings,	const char *action,	int minimum_delay);
+int fwts_logind_wait_for_resume_from_action(
+	fwts_pm_method_vars *fwts_settings, const char *action,
+	int minimum_delay);
 bool fwts_logind_can_suspend(fwts_pm_method_vars *fwts_settings);
 bool fwts_logind_can_hybrid_suspend(fwts_pm_method_vars *fwts_settings);
 bool fwts_logind_can_hibernate(fwts_pm_method_vars *fwts_settings);
 bool fwts_sysfs_can_suspend(const fwts_pm_method_vars *fwts_settings);
 bool fwts_sysfs_can_hybrid_suspend(const fwts_pm_method_vars *fwts_settings);
 bool fwts_sysfs_can_hibernate(const fwts_pm_method_vars *fwts_settings);
-int fwts_sysfs_do_suspend(const fwts_pm_method_vars *fwts_settings, bool s3_hybrid);
+int fwts_sysfs_do_suspend(const fwts_pm_method_vars *fwts_settings,
+	const bool s3_hybrid);
 int fwts_sysfs_do_hibernate(const fwts_pm_method_vars *fwts_settings);
 
 #endif

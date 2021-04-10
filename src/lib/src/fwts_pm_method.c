@@ -415,7 +415,7 @@ bool fwts_sysfs_can_hibernate(const fwts_pm_method_vars *fwts_settings)
  */
 int fwts_sysfs_do_suspend(
 	const fwts_pm_method_vars *fwts_settings,
-	bool s3_hybrid)
+	const bool s3_hybrid)
 {
 	int status;
 
@@ -446,3 +446,19 @@ int fwts_sysfs_do_hibernate(const fwts_pm_method_vars *fwts_settings)
 		"/sys/power/state", "disk");
 }
 
+void free_pm_method_vars(fwts_pm_method_vars *var)
+{
+	if (!var)
+		return;
+#if FWTS_ENABLE_LOGIND
+	if (var->logind_proxy)
+		g_object_unref(var->logind_proxy);
+	if (var->logind_connection)
+		g_object_unref(var->logind_connection);
+	if (var->gmainloop)
+		g_main_loop_unref(var->gmainloop);
+	if (var->action)
+		free(var->action);
+#endif
+	free(var);
+}

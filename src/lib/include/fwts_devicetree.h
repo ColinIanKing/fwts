@@ -28,16 +28,16 @@
 #define FWTS_HAS_DEVICETREE 0
 #endif
 
-#define DT_FS_PATH "/sys/firmware/devicetree/base"
-#define DT_LINUX_PCI_DEVICES "/sys/bus/pci/devices"
-#define DT_PROPERTY_OPAL_PCI_SLOT "ibm,slot-label"
-#define DT_PROPERTY_OPAL_SLOT_LOC "ibm,slot-location-code"
-#define DT_PROPERTY_OPAL_PART_NUM "part-number"
-#define DT_PROPERTY_OPAL_SERIAL_NUM "serial-number"
+#define DT_FS_PATH 			 "/sys/firmware/devicetree/base"
+#define DT_LINUX_PCI_DEVICES		 "/sys/bus/pci/devices"
+#define DT_PROPERTY_OPAL_PCI_SLOT	 "ibm,slot-label"
+#define DT_PROPERTY_OPAL_SLOT_LOC	 "ibm,slot-location-code"
+#define DT_PROPERTY_OPAL_PART_NUM	 "part-number"
+#define DT_PROPERTY_OPAL_SERIAL_NUM	 "serial-number"
 #define DT_PROPERTY_OPAL_MANUFACTURER_ID "manufacturer-id"
-#define DT_PROPERTY_OPAL_STATUS "status"
-#define DT_PROPERTY_OPAL_VENDOR "vendor"
-#define DT_PROPERTY_OPAL_BOARD_INFO "board-info"
+#define DT_PROPERTY_OPAL_STATUS		 "status"
+#define DT_PROPERTY_OPAL_VENDOR		 "vendor"
+#define DT_PROPERTY_OPAL_BOARD_INFO	 "board-info"
 
 #if FWTS_HAS_DEVICETREE
 
@@ -139,7 +139,7 @@ bool check_status_property_okay(fwts_framework *fw,
 	const char *my_path, const char *my_prop_string, const char *property);
 
 int check_property_printable(fwts_framework *fw,
-	const char *name, const char *buf, size_t len);
+	const char *name, const char *buf, const size_t len);
 
 char *hidewhitespace(char *name);
 

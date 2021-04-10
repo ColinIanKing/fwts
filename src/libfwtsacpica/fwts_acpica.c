@@ -1321,7 +1321,7 @@ static ACPI_STATUS fwts_acpi_walk_for_object_names(
  *  fwts_acpica_get_object_names()
  *	fetch a list of object names that match a specified type
  */
-fwts_list *fwts_acpica_get_object_names(int type)
+fwts_list *fwts_acpica_get_object_names(const int type)
 {
 	fwts_list *list;
 

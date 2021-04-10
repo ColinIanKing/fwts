@@ -27,7 +27,7 @@ typedef void (*fwts_acpica_log_callback)(fwts_framework *fw, const char *buffer)
 void fwts_acpica_set_fwts_framework(fwts_framework *fw);
 int  fwts_acpica_init(fwts_framework *fw);
 int  fwts_acpica_deinit(void);
-fwts_list *fwts_acpica_get_object_names(int type);
+fwts_list *fwts_acpica_get_object_names(const int type);
 void fwts_acpica_sem_count_clear(void);
 void fwts_acpica_sem_count_get(int *acquired, int *released);
 void fwts_acpi_region_handler_called_set(const bool val);

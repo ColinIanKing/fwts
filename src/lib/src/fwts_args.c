@@ -67,8 +67,8 @@ int fwts_args_init(void)
  */
 int fwts_args_add_options(
 	fwts_option *options,
-	fwts_args_optarg_handler handler,
-	fwts_args_optarg_check check)
+	const fwts_args_optarg_handler handler,
+	const fwts_args_optarg_check check)
 {
 	int n;
 	fwts_options_table *options_table;

@@ -34,11 +34,15 @@ typedef struct {
 
 #include "fwts.h"
 
-typedef int (*fwts_args_optarg_handler)(fwts_framework *framework, int argc, char * const argv[], int option_char, int long_index);
+typedef int (*fwts_args_optarg_handler)(fwts_framework *framework,
+	const int argc, char * const argv[], const int option_char,
+	const int long_index);
 typedef int (*fwts_args_optarg_check)(fwts_framework *framework);
 
 int fwts_args_init(void);
-int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler, fwts_args_optarg_check check);
+int fwts_args_add_options(fwts_option *options,
+	const fwts_args_optarg_handler handler,
+	const fwts_args_optarg_check check);
 int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[]);
 void fwts_args_show_options(void);
 int fwts_args_free(void);

@@ -36,7 +36,7 @@ static char *module_name = NULL;
  */
 static int check_module_loaded_no_dev(
 	fwts_framework *fw,
-	char *module)
+	const char *module)
 {
 	bool loaded;
 

@@ -29,7 +29,6 @@ fwts_list* fwts_coreboot_cbmem_log(void)
 	char *console;
 
 	console = fwts_coreboot_cbmem_console_dump();
-
 	if (!console)
 		return NULL;
 
@@ -44,7 +43,7 @@ fwts_list* fwts_coreboot_cbmem_log(void)
 fwts_list* fwts_coreboot_cbmem_log(void)
 {
 	/*
-	 * TODO: add arm plattform support
+	 * TODO: add arm platform support
 	 */
 	return NULL;
 }

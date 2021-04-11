@@ -1,0 +1,59 @@
+phat            phat: PHAT Platform Health Assessment Table test.
+phat            ----------------------------------------------------------
+phat            Test 1 of 1: Validate PHAT table.
+phat            PHAT Platform Health Assessment Table:
+phat              Firmware Version Data Record (Type 0):
+phat                Type:                           0x0000
+phat                Record Length:                  0x0028
+phat                Revision:                       0x00
+phat                Reserved:                       0x00000000
+phat                Record Count:                   0x00000001
+phat                Component ID:                   91AF0530-5D86-470E-A6B0-0A2DB9408249
+phat                Version:                        0x0102030405060708
+phat                Producer ID:                    0x090a0b0c
+phat            
+phat              Firmware Version Data Record (Type 0):
+phat                Type:                           0x0000
+phat                Record Length:                  0x0028
+phat                Revision:                       0x00
+phat                Reserved:                       0x00123456
+phat                Record Count:                   0x00000001
+phat                Component ID:                   1E2E733C-790D-4644-B28B-E6AAF1C7352E
+phat                Version:                        0x0f0e0d0c0b0a0908
+phat                Producer ID:                    0x03040506
+phat            FAILED [MEDIUM] PHATReservedNonZero: Test 1, PHAT Reserved
+phat            field must be zero, got 0x00123456 instead
+phat            
+phat             Firmware Health Data Record (Type 1):
+phat                Type:                           0x0001
+phat                Record Length:                  0x002f
+phat                Revision:                       0x00
+phat                Reserved:                       0xabcd
+phat                AmHealthy:                      0x00
+phat                Device Signature:               91AF0530-5D86-470E-A6B0-0A2DB9408249
+phat                Device-specific Data Offset:    0x0000002b
+phat                Device Path:                    \_SB.PCI0.ABCD
+phat                Vendor Data:                    0xff
+phat                Vendor Data:                    0x11
+phat                Vendor Data:                    0x55
+phat                Vendor Data:                    0xaa
+phat            FAILED [MEDIUM] PHATReservedNonZero: Test 1, PHAT Reserved
+phat            field must be zero, got 0xabcd instead
+phat            
+phat             Firmware Health Data Record (Type 1):
+phat                Type:                           0x0001
+phat                Record Length:                  0x0037
+phat                Revision:                       0x00
+phat                Reserved:                       0x0000
+phat                AmHealthy:                      0x00
+phat                Device Signature:               18D5DD11-BA12-4924-A75A-46D251ECB593
+phat                Device-specific Data Offset:    0x00000055
+phat                Device Path:                    \_SB.PCI0.GFX0.XYZ
+phat            FAILED [CRITICAL] PHATOutOfRangeOffset: Test 1, PHAT Type
+phat            1's Data Offset is out of range
+phat            
+phat            
+phat            ==========================================================
+phat            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0
+phat            info only.
+phat            ==========================================================

@@ -158,6 +158,9 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/pcct-0001/test-0002.sh \
 	fwts-test/pdtt-0001/test-0001.sh \
 	fwts-test/pdtt-0001/test-0002.sh \
+	fwts-test/phat-0001/test-0001.sh \
+	fwts-test/phat-0001/test-0002.sh \
+	fwts-test/phat-0001/test-0003.sh \
 	fwts-test/pmtt-0001/test-0001.sh \
 	fwts-test/pmtt-0001/test-0002.sh \
 	fwts-test/pptt-0001/test-0001.sh \

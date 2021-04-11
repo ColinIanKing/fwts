@@ -1413,6 +1413,7 @@ bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name)
 	/* Search for object */
 	fwts_list_foreach(item, objects) {
 		char *name = fwts_list_data(char*, item);
+
 		if (strcmp(expanded, name) == 0) {
 			found = true;
 			break;
@@ -1437,6 +1438,7 @@ void fwts_acpi_reserved_zero_check_(
 {
 	if (value != 0) {
 		char label[20];
+
 		strncpy(label, table, 4);	/* ACPI table name is 4 char long */
 		strncpy(label + 4, "ReservedNonZero", sizeof(label) - 4);
 
@@ -1591,6 +1593,7 @@ void fwts_acpi_reserved_type_check(
 {
 	if (value < min || value >= reserved) {
 		char label[20];
+
 		strncpy(label, table, 4);	/* ACPI name is 4 char long */
 		strncpy(label + 4, "BadSubTableType", sizeof(label) - 4);
 
@@ -1707,6 +1710,7 @@ bool fwts_acpi_table_length_check(
 {
 	if (length < size) {
 		char label[30];
+
 		strncpy(label, table, 4);	/* ACPI name is 4 char long */
 		strncpy(label + 4, "TooShort", sizeof(label) - 4);
 		fwts_failed(fw, LOG_LEVEL_HIGH, label,
@@ -1731,6 +1735,7 @@ bool fwts_acpi_structure_length_check(
 {
 	if (length != size) {
 		char label[30];
+
 		strncpy(label, table, 4);	/* ACPI name is 4 char long */
 		strncpy(label + 4, "BadStructureLength", sizeof(label) - 4);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, label,

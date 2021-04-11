@@ -43,7 +43,7 @@ static const struct fwts_arch_info arch_name[] = {
 
 static char *arch_names;
 
-static fwts_architecture __fwts_arch_get_arch(const char *name)
+static fwts_architecture fwts_arch_get_arch_by_name(const char *name)
 {
 	const struct fwts_arch_info *ptr;
 
@@ -61,12 +61,12 @@ fwts_architecture fwts_arch_get_host(void)
 	if (uname(&buf))
 		return FWTS_ARCH_OTHER;
 
-	return __fwts_arch_get_arch(buf.machine);
+	return fwts_arch_get_arch_by_name(buf.machine);
 }
 
 fwts_architecture fwts_arch_get_arch(const char *name)
 {
-	return __fwts_arch_get_arch(name);
+	return fwts_arch_get_arch_by_name(name);
 }
 
 char *fwts_arch_names(void)

@@ -1742,6 +1742,52 @@ bool fwts_acpi_structure_length_check(
 	return true;
 }
 
+/*
+ *  fwts_acpi_structure_length_zero_check()
+ *  verify whether sub structure length is zero
+ */
+bool fwts_acpi_structure_length_zero_check(
+	fwts_framework *fw,
+	const char *table,
+	const uint16_t length,
+	const uint32_t offset)
+{
+	if (length == 0) {
+		char label[30];
+
+		strncpy(label, table, 4);	/* ACPI name is 4 char long */
+		strncpy(label + 4, "StructLengthZero", sizeof(label) - 4);
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, label,
+			"%4.4s structure (offset 0x%4.4" PRIx32 ") "
+			"length cannot be 0", table, offset);
+		return true;
+	}
+	return false;
+}
+
+/*
+ *  fwts_acpi_structure_range_check()
+ *  verify whether sub structure is out of table range
+ */
+bool fwts_acpi_structure_range_check(
+	fwts_framework *fw,
+	const char *table,
+	const uint32_t table_length,
+	const uint32_t offset)
+{
+	if (offset > table_length) {
+		char label[30];
+
+		strncpy(label, table, 4);	/* ACPI name is 4 char long */
+		strncpy(label + 4, "BadTableLength", sizeof(label) - 4);
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, label,
+			"%4.4s has more subtypes than its size can handle", table);
+
+		return true;
+	}
+	return false;
+}
+
 static uint32_t acpi_version;
 /*
  *  fwts_get_acpi_version()

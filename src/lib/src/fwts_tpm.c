@@ -24,14 +24,18 @@
  *  fwts_tpm_data_hexdump
  *	hex dump of a tpm event log data
  */
-void fwts_tpm_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size, char *str)
+void fwts_tpm_data_hexdump(
+	fwts_framework *fw,
+	const uint8_t *data,
+	const size_t size,
+	const char *str)
 {
 	size_t i;
 
 	fwts_log_info_verbatim(fw, "%s: ", str);
 	for (i = 0; i < size; i += 16) {
 		char buffer[128];
-		size_t left = size - i;
+		const size_t left = size - i;
 
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
 		fwts_log_info_verbatim(fw, "%s", buffer + 2);
@@ -42,7 +46,7 @@ void fwts_tpm_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size, char 
  *  fwts_tpm_evlog_type_to_string
  *	get hash size
  */
-uint8_t fwts_tpm_get_hash_size (TPM2_ALG_ID hash)
+uint8_t fwts_tpm_get_hash_size(const TPM2_ALG_ID hash)
 {
 	uint8_t sz;
 

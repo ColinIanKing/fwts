@@ -24,8 +24,8 @@
 #include "fwts.h"
 
 typedef struct {
-	char *test;		/* test that found the error */
-	char *text;		/* text of failure message */
+	char *test;	/* test that found the error */
+	char *text;	/* text of failure message */
 } fwts_summary_item;
 
 enum {
@@ -36,22 +36,6 @@ enum {
 	SUMMARY_UNKNOWN,
 
 	SUMMARY_MAX = SUMMARY_UNKNOWN+1
-};
-
-static const char *summary_names[] = {
-	"Critical",
-	"High",
-	"Medium",
-	"Low",
-	"Other"
-};
-
-static const int summary_levels[] = {
-	LOG_LEVEL_CRITICAL,
-	LOG_LEVEL_HIGH,
-	LOG_LEVEL_MEDIUM,
-	LOG_LEVEL_LOW,
-	LOG_LEVEL_NONE
 };
 
 /* list of summary items per error level */
@@ -186,6 +170,22 @@ static void fwts_summary_format_field(
  */
 int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 {
+	static const char *summary_names[] = {
+		"Critical",
+		"High",
+		"Medium",
+		"Low",
+		"Other"
+	};
+
+	static const int summary_levels[] = {
+		LOG_LEVEL_CRITICAL,
+		LOG_LEVEL_HIGH,
+		LOG_LEVEL_MEDIUM,
+		LOG_LEVEL_LOW,
+		LOG_LEVEL_NONE
+	};
+
 	int i;
 
 	fwts_log_summary(fw, "Test Failure Summary");

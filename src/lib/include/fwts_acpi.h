@@ -1512,6 +1512,46 @@ typedef struct {
 	uint16_t	spin_rev;
 } __attribute__ ((packed)) fwts_acpi_table_pptt_id;
 
+/*
+ * ACPI PHAT (Platform Health Assessment Table), 5.2.30
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+} __attribute__ ((packed)) fwts_acpi_table_phat;
+
+typedef enum {
+	FWTS_ACPI_PHAT_VERSION	= 0,
+	FWTS_ACPI_PHAT_HEALTH	= 1,
+	FWTS_ACPI_PHAT_RESERVED
+} fwts_acpi_phat_type;
+
+typedef struct {
+	uint16_t	type;
+	uint16_t	length;
+	uint8_t		revision;
+} __attribute__ ((packed)) fwts_acpi_table_phat_header;
+
+/* 0: Firmware Version Data Record */
+typedef struct {
+	fwts_acpi_table_phat_header	header;
+	uint8_t		reserved[3];
+	uint32_t	element_count;
+} __attribute__ ((packed)) fwts_acpi_table_phat_version;
+
+typedef struct {
+	uint8_t		component_id[16];
+	uint64_t	version;
+	uint32_t	producer_id;
+} __attribute__ ((packed)) fwts_acpi_table_phat_version_elem;
+
+/* 1: Firmware Health Data Record */
+typedef struct {
+	fwts_acpi_table_phat_header	header;
+	uint16_t	reserved;
+	uint8_t		healthy;
+	uint8_t		data_signature[16];
+	uint32_t	data_offset;
+} __attribute__ ((packed)) fwts_acpi_table_phat_health;
 
 /*
  * ACPI PCCT (Platform Communications Channel Table), 14.1

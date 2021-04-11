@@ -1604,30 +1604,34 @@ void fwts_acpi_reserved_type_check(
 }
 
 /*
- *  Space Id defined for Generic Address Structure (GAS)
- *  See Table 5.1: Generic Address Structure (GAS) in ACPI spec
- *  Also see fwts_acpi.h
+ *  get_space_id_name()
+ *  convert Generic Address Structure to a string, NULL if undefined
  */
-static const char *gas_space_id_names[] = {
-	"System Memory (0x0)",
-	"System I/O (0x1)",
-	"PCI Configuration (0x2)",
-	"Embedded Controller (0x3)",
-	"SMBus (0x4)",
-	"SystemCMOS (0x5)",
-	"PciBarTarget (0x6)",
-	"IPMI (0x7)",
-	"General PurposeIO (0x8)",
-	"GenericSerialBus (0x9)",
-	"Platform Communications Channel (0xa)",
-	"Functional Fixed Hardware (0x7f)",
-};
+static const char *get_space_id_name(const uint8_t id)
+{
+	/*
+	 *  Space Id defined for Generic Address Structure (GAS)
+	 *  See Table 5.1: Generic Address Structure (GAS) in ACPI spec
+	 *  Also see fwts_acpi.h
+	 */
+	static const char *gas_space_id_names[] = {
+		"System Memory (0x0)",
+		"System I/O (0x1)",
+		"PCI Configuration (0x2)",
+		"Embedded Controller (0x3)",
+		"SMBus (0x4)",
+		"SystemCMOS (0x5)",
+		"PciBarTarget (0x6)",
+		"IPMI (0x7)",
+		"General PurposeIO (0x8)",
+		"GenericSerialBus (0x9)",
+		"Platform Communications Channel (0xa)"
+	};
 
-static const char *get_space_id_name(uint8_t id) {
-	if (id <= 0x0a)
+	if (id < FWTS_ARRAY_SIZE(gas_space_id_names))
 		return gas_space_id_names[id];
 	else if (id == 0x7f)
-		return gas_space_id_names[0x0b];
+		return "Functional Fixed Hardware (0x7f)";
 	else
 		return NULL;
 }

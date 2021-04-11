@@ -509,38 +509,6 @@ static void get_object_name(const char *name, char* obj_name) {
 	}
 }
 
-/* See references in actypes.h */
-static const char *acpi_object_names[] = {
-	"Any",
-	"Integer",
-	"String",
-	"Buffer",
-	"Package",
-	"Field Unit",
-	"Device",
-	"Event",
-	"Method",
-	"Mutex",
-	"Region",
-	"Power",
-	"Processor",
-	"Thermal",
-	"Buffer Field",
-	"DDB Handle",
-	"Debug Object",
-	"Region Field",
-	"Bank Field",
-	"Index Field",
-	"Reference",
-	"Alias",
-	"Method Alias",
-	"Notify",
-	"Address Handler",
-	"Resource",
-	"Resource Field",
-	"Scope"
-};
-
 /*
  *  fwts_method_check_element_type()
  *	check a element type of a sub-package
@@ -553,6 +521,38 @@ int fwts_method_check_element_type(
 	const uint32_t element,
 	const ACPI_OBJECT_TYPE type)
 {
+	/* See references in actypes.h */
+	static const char *acpi_object_names[] = {
+		"Any",
+		"Integer",
+		"String",
+		"Buffer",
+		"Package",
+		"Field Unit",
+		"Device",
+		"Event",
+		"Method",
+		"Mutex",
+		"Region",
+		"Power",
+		"Processor",
+		"Thermal",
+		"Buffer Field",
+		"DDB Handle",
+		"Debug Object",
+		"Region Field",
+		"Bank Field",
+		"Index Field",
+		"Reference",
+		"Alias",
+		"Method Alias",
+		"Notify",
+		"Address Handler",
+		"Resource",
+		"Resource Field",
+		"Scope"
+	};
+
 	if (obj->Package.Elements[element].Type != type) {
 		char obj_name[5] = "_XYZ";
 		char tmp[128];

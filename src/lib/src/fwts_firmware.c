@@ -26,15 +26,6 @@
 static fwts_firmware_type firmware_type;
 static bool firmware_type_valid;
 
-static const struct {
-	fwts_firmware_feature feature;
-	const char name[16];
-} feature_names[] = {
-	{ FWTS_FW_FEATURE_ACPI,		"ACPI" },
-	{ FWTS_FW_FEATURE_DEVICETREE,	"devicetree" },
-	{ FWTS_FW_FEATURE_IPMI,		"IPMI" },
-};
-
 /*
  *  fwts_memory_map_entry_compare()
  *	callback used to sort memory_map entries on start address
@@ -86,6 +77,15 @@ int fwts_firmware_features(void)
 
 const char *fwts_firmware_feature_string(const fwts_firmware_feature features)
 {
+	static const struct {
+		const fwts_firmware_feature feature;
+		const char name[16];
+	} feature_names[] = {
+		{ FWTS_FW_FEATURE_ACPI,		"ACPI" },
+		{ FWTS_FW_FEATURE_DEVICETREE,	"devicetree" },
+		{ FWTS_FW_FEATURE_IPMI,		"IPMI" },
+	};
+
 	const int n = FWTS_ARRAY_SIZE(feature_names);
 	static const char sep[] = ", ";
 	static char str[60];

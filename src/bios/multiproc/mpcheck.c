@@ -27,7 +27,7 @@ static bool fwts_mp_not_used = false;
 
 #define LEVEL(level)	fwts_mp_not_used ? LOG_LEVEL_LOW : level
 
-static bool mpcheck_find_bus(uint8_t id, int depth)
+static bool mpcheck_find_bus(const uint8_t id, const int depth)
 {
 	fwts_list_link	*entry;
 
@@ -36,6 +36,7 @@ static bool mpcheck_find_bus(uint8_t id, int depth)
 
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
+
 		if (*data == FWTS_MP_BUS_ENTRY) {
 			fwts_mp_bus_entry *bus_entry =
 				fwts_list_data(fwts_mp_bus_entry *, entry);
@@ -63,12 +64,13 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 
 	fwts_list_foreach(entry1, &mp_data.entries) {
 		uint8_t *data1 = fwts_list_data(uint8_t *, entry1);
+
 		if (*data1 == FWTS_MP_CPU_ENTRY) {
 			fwts_list_link	*entry2;
 			int m = 0;
-
 			uint32_t phys_addr1 = mp_data.phys_addr +
 				((void *)data1 - (void *)mp_data.header);
+
 			fwts_mp_processor_entry *cpu_entry1 =
 				fwts_list_data(fwts_mp_processor_entry *, entry1);
 
@@ -147,34 +149,34 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static const char *const bus_types[] = {
-	"CBUS",
-	"CBUSII",
-	"EISA",
-	"FUTURE",
-	"INTERN",
-	"ISA",
-	"MBI",
-	"MBII",
-	"MCA",
-	"MPI",
-	"MPSA",
-	"NUBUS",
-	"PCI",
-	"PCMCIA",
-	"TC",
-	"VL",
-	"VME",
-	"XPRESS",
-	NULL,
-};
-
 static int mpcheck_test_bus_entries(fwts_framework *fw)
 {
 	bool failed = false;
 	int n = 0;
 	fwts_list_link	*entry;
 	int prev_bus_id = -1;
+
+	static const char *const bus_types[] = {
+		"CBUS",
+		"CBUSII",
+		"EISA",
+		"FUTURE",
+		"INTERN",
+		"ISA",
+		"MBI",
+		"MBII",
+		"MCA",
+		"MPI",
+		"MPSA",
+		"NUBUS",
+		"PCI",
+		"PCMCIA",
+		"TC",
+		"VL",
+		"VME",
+		"XPRESS",
+		NULL,
+	};
 
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
@@ -271,7 +273,7 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static bool mpcheck_find_io_apic(uint8_t id)
+static bool mpcheck_find_io_apic(const uint8_t id)
 {
 	fwts_list_link	*entry;
 

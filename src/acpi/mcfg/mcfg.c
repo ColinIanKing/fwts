@@ -201,7 +201,7 @@ static int mcfg_test1(fwts_framework *fw)
 				"optionally defined in the %s if ACPI MCFG is "
 				"present. Linux checks if the region is reserved "
 				"in the memory map table and will reject the "
-				"MMCONFIG if there is a discrepency between MCFG "
+				"MMCONFIG if there is a discrepancy between MCFG "
 				"and the memory map table for the PCI Express region. "
 				"[See arch/x86/pci/mmconfig-shared.c pci_mmcfg_reject_broken()]. "
 				"It is recommended that this is defined in the "

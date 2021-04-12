@@ -84,7 +84,7 @@ static int bios32_test1(fwts_framework *fw)
 				bios32->signature);
 			fwts_log_info_verbatim(fw, "  Entry Point: 0x%8.8" PRIx32,
 				bios32->entry_point);
-			fwts_log_info_verbatim(fw, "  Revsion    : 0x%2.2" PRIx8,
+			fwts_log_info_verbatim(fw, "  Revision   : 0x%2.2" PRIx8,
 				bios32->revision_level);
 			fwts_log_info_verbatim(fw, "  Length     : 0x%2.2" PRIx8,
 				bios32->length);

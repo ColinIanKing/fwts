@@ -194,7 +194,7 @@ static const acpi_eval_error errors[] = {
 		"A method attempted to use an empty element in an ACPI package."
 	},
 	{ AE_AML_NUMERIC_OVERFLOW, 	LOG_LEVEL_HIGH,		"AEAMLNumericOverflow",	"Numeric overflow",
-		"A numeric overflow occurred, for example when coverting a BCD value."
+		"A numeric overflow occurred, for example when converting a BCD value."
 	},
 	{ AE_AML_REGION_LIMIT, 		LOG_LEVEL_CRITICAL,	"AEAMLRegionLimit",	"Region limit",
 		"An attempt to access beyond the end of an ACPI Operation Region occurred."
@@ -206,7 +206,7 @@ static const acpi_eval_error errors[] = {
 		"An attempt to access beyond the endof an ACPI package occurred."
 	},
 	{ AE_AML_DIVIDE_BY_ZERO, 	LOG_LEVEL_CRITICAL,	"AEAMLDivideByZero",	"Division by zero",
-		"A division by zero error occurred while excuting the AML Divide op-code"
+		"A division by zero error occurred while executing the AML Divide op-code"
 	},
 	{ AE_AML_NAME_NOT_FOUND, 	LOG_LEVEL_HIGH,		"AEAMLNameNotFound",	"Name not found",
 		"An ACPI named reference could not be resolved."
@@ -234,7 +234,7 @@ static const acpi_eval_error errors[] = {
 	{ AE_AML_MUTEX_ORDER, 		LOG_LEVEL_HIGH,		"AEAMLMutexOrder",	"Mutex order",
 		"Deadlock prevention has detected that the current mutex sync level is too large."
 	},
-	{ AE_AML_MUTEX_NOT_ACQUIRED, 	LOG_LEVEL_HIGH,		"AEAMLMutexNotAcq",	"Mutux not acquired",
+	{ AE_AML_MUTEX_NOT_ACQUIRED, 	LOG_LEVEL_HIGH,		"AEAMLMutexNotAcq",	"Mutex not acquired",
 		"An attempt was made to release a mutex that had not been acquired."
 	},
 	{ AE_AML_INVALID_RESOURCE_TYPE, LOG_LEVEL_HIGH,		"AEAMLInvResourceType", "Invalid resource type",
@@ -245,7 +245,7 @@ static const acpi_eval_error errors[] = {
 		"ArgN or LocalN were N was out of range."
 	},
 	{ AE_AML_REGISTER_LIMIT, 	LOG_LEVEL_HIGH,		"AEAMLRegisterLimit",	"Register limit",
-		"An attempt to use a bank value that is beyong the capacity of a register occurred."
+		"An attempt to use a bank value that is beyond the capacity of a register occurred."
 	},
 	{ AE_AML_NO_WHILE, 		LOG_LEVEL_CRITICAL,	"AEAMLNoWhile",		"No while",
 		"A Break or Continue op-code was reached without a matching While op-code."
@@ -905,7 +905,7 @@ void fwts_method_test_reference_return(
 
 /*
  *  fwts_method_test_NULL_return
- *	check if no object was retuned
+ *	check if no object was returned
  */
 void fwts_method_test_NULL_return(
 	fwts_framework *fw,
@@ -1096,7 +1096,7 @@ void fwts_method_test_passed_failed_return(
 			fwts_advice(fw,
 				"Method %s should be returning the correct "
 				"0 or 1 return values. "
-				"Unexpected behaviour may occur becauses of "
+				"Unexpected behaviour may occur because of "
 				"this error, the AML code does not conform to "
 				"the ACPI specification and should be fixed.",
 				method);
@@ -1760,7 +1760,7 @@ void fwts_method_test_CRS_large_resource_items(
 		"WORD Address Space Descriptor",
 		"Extended IRQ Descriptor",
 		"QWORD Address Space Descriptor",
-		"Extended Addresss Space Descriptor",
+		"Extended Address Space Descriptor",
 		"GPIO Connection Descriptor",
 		"Reserved",
 		"Generic Serial Bus Connection Descriptor",

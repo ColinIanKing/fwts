@@ -297,7 +297,7 @@ static int hpet_check_test2(fwts_framework *fw)
 		fwts_advice(fw,
 			"Bogus HPET base address can be worked around "
 			"by using the kernel parameter 'hpet=force' if "
-			"the base addess is 0xfed0000000000000. "
+			"the base address is 0xfed0000000000000. "
 			"This will make the kernel shift the address "
 			"down 32 bits to 0xfed00000.");
 		passed = false;
@@ -332,7 +332,7 @@ static int hpet_check_test2(fwts_framework *fw)
 		(hpet->event_timer_block_id >> 15) & 1);
 	fwts_log_info_verbatim(fw, "  COUNT_SIZE_CAP counter size: %" PRIu32,
 		(hpet->event_timer_block_id >> 13) & 1);
-	fwts_log_info_verbatim(fw, "  Number of comparitors      : %" PRIu32,
+	fwts_log_info_verbatim(fw, "  Number of comparators      : %" PRIu32,
 		(hpet->event_timer_block_id >> 8) & 0x1f);
 	fwts_log_info_verbatim(fw, "  Hardwre Revision ID        : 0x%" PRIx8,
 		hpet->event_timer_block_id & 0xff);

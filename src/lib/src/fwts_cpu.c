@@ -51,7 +51,7 @@ static pid_t *fwts_cpu_pids;
 
 /*
  *  fwts_cpu_readmsr()
- *	Read a given msr on a specificied CPU
+ *	Read a given msr on a specified CPU
  */
 int fwts_cpu_readmsr(
 	fwts_framework *fw,

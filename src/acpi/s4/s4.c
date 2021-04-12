@@ -280,7 +280,7 @@ static int s4_hibernate(fwts_framework *fw,
 
 		if (differences > 0) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterS4",
-				"Found %d differences in device configuation during S4 cycle.", differences);
+				"Found %d differences in device configuration during S4 cycle.", differences);
 			(*hw_errors)++;
 		}
 	}

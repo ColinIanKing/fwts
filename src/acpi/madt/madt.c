@@ -49,7 +49,7 @@
  * and made a pact to keep their own counter.  Every time the MADT found a
  * new subtable, or a subtable grew up, the wizards promised they would
  * increment their counter.  Well, wizards being the forgetful sort, they
- * didn't alway do that.  And, since there quite a lot of them, they
+ * didn't always do that.  And, since there quite a lot of them, they
  * couldn't always remember who was supposed to keep track of the MADT,
  * especially if dinner was coming up soon.  Their counter was called the
  * spec version.
@@ -1417,7 +1417,7 @@ static int madt_mp_wakup(fwts_framework *fw,
 	if (mp_wakeup->mail_box_address % 0x1000)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			    "SPECMADTMPWAKEUPAddress",
-			    "MADT %s mailbox adress should be 4K bytes aligned, "
+			    "MADT %s mailbox address should be 4K bytes aligned, "
 			    "but instead have 0x%" PRIx64 ".",
 			    madt_sub_names[hdr->type], mp_wakeup->mail_box_address);
 	else

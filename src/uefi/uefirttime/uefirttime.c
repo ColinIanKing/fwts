@@ -847,7 +847,7 @@ static int uefirttime_test23(fwts_framework *fw)
 
 	if (*getwakeuptime.Pending != false) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTimePending",
-			"Get error alarm signle status.");
+			"Get error alarm signal status.");
 		return FWTS_ERROR;
 	}
 
@@ -1342,7 +1342,7 @@ static int uefirttime_test38(fwts_framework *fw)
 		}
 	} else {
 		if (status != EFI_SUCCESS ){
-			fwts_skipped(fw, "Unknow error occurred, skip test.");
+			fwts_skipped(fw, "Unknown error occurred, skip test.");
 			return FWTS_SKIP;
 		}
 		if (runtimeservicessupported & EFI_RT_SUPPORTED_GET_WAKEUP_TIME) {
@@ -1362,7 +1362,7 @@ static int uefirttime_test38(fwts_framework *fw)
 static fwts_framework_minor_test uefirttime_tests[] = {
 	{ uefirttime_test1, "Test UEFI RT service get time interface." },
 	{ uefirttime_test2, "Test UEFI RT service get time interface, NULL time parameter." },
-	{ uefirttime_test3, "Test UEFI RT service get time interface, NULL time and NULL capabilties parameters." },
+	{ uefirttime_test3, "Test UEFI RT service get time interface, NULL time and NULL capabilities parameters." },
 
 	{ uefirttime_test4, "Test UEFI RT service set time interface." },
 	{ uefirttime_test5, "Test UEFI RT service set time interface, invalid year 1899." },

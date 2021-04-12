@@ -219,7 +219,7 @@ static ACPI_STATUS fwts_exception_handler(
 	if (AcpiGbl_IgnoreErrors) {
 		if (AmlStatus != AE_OK) {
 			fwts_log_info(fwts_acpica_fw,
-				"ACPICA Exception override, forcing AE_OK for execption %s",
+				"ACPICA Exception override, forcing AE_OK for exception %s",
 				exception);
 			AmlStatus = AE_OK;
 		}

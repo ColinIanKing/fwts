@@ -74,7 +74,7 @@ static int uefi_test1(fwts_framework *fw)
 	if (memcmp(uefi->uuid, guid_smm, 16) == 0) {
 		fwts_acpi_table_uefi_smmcomm *uefi_smmcomm = (fwts_acpi_table_uefi_smmcomm *)table->data;
 
-		/* chekc the dataoffset for SMM Comm table */
+		/* check the dataoffset for SMM Comm table */
 		if (uefi_smmcomm->boot.dataoffset != 54) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,

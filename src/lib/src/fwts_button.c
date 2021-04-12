@@ -47,7 +47,7 @@ static inline void fwts_button_path(
 /*
  *  fwts_button_match_state_proc()
  *	find matching button state and keep count of matching
- *	any non-matching states found, via proc iterface
+ *	any non-matching states found, via proc interface
  */
 static int fwts_button_match_state_proc(
 	const uint32_t button,

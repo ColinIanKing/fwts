@@ -107,7 +107,7 @@ static const char *shape[] = {
 	"Square",
 	"Vertical Rectangle",
 	"Horizontal Rectangle",
-	"Veritical Trapezoid",
+	"Vertical Trapezoid",
 	"Horizontal Trapezoid",
 	"Unknown",
 	"Chamfered",

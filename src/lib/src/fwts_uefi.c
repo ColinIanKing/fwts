@@ -147,7 +147,7 @@ static int fwts_uefi_get_interface(char **path)
 
 /*
  *  fwts_uefi_str_to_str16()
- *	convert 8 bit C string to 16 bit sring.
+ *	convert 8 bit C string to 16 bit string.
  */
 void fwts_uefi_str_to_str16(uint16_t *dst, const size_t len, const char *src)
 {

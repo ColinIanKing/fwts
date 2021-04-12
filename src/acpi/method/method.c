@@ -2207,7 +2207,7 @@ static void method_test_PSS_return(
 				"power dissipation setting than the previous "
 				"sub-package.", name, i);
 			fwts_advice(fw,
-				"_PSS P-States must be ordered in decending "
+				"_PSS P-States must be ordered in descending "
 				"order of power dissipation, so that the "
 				"zero'th entry has the highest power "
 				"dissipation level and the Nth has the "
@@ -3701,7 +3701,7 @@ static void method_test_THERM_return(
 				"hard-coded thermal value which is "
 				"out of range because fwts did not "
 				"detect any ACPI region handler "
-				"accesses of I/O or system memeory "
+				"accesses of I/O or system memory "
 				"to evaluate the thermal value. "
 				"It is worth sanity checking these "
 				"values in "
@@ -4934,7 +4934,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 10.4 Power Meters */
 	{ method_test_GAI, "Test _GAI (Get Averaging Level)." },
-	{ method_test_GHL, "Test _GHL (Get Harware Limit)." },
+	{ method_test_GHL, "Test _GHL (Get Hardware Limit)." },
 	/* { method_test_PAI, "Test _PAI (Power Averaging Interval)." }, */
 	{ method_test_PMC, "Test _PMC (Power Meter Capabilities)." },
 	{ method_test_PMD, "Test _PMD (Power Meter Devices)." },

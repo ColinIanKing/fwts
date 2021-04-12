@@ -309,7 +309,7 @@ static int tpmevlog_v2_check(
 			hash_size = fwts_tpm_get_hash_size(alg_id);
 			if (!hash_size) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventV2HashSize",
-						"The hash sie of the event2 is %zd bytes "
+						"The hash size of the event2 is %zd bytes "
 						"is smaller than the tcg pcr event2 %zd bytes.",
 						len_remain,
 						sizeof(fwts_tcg_pcr_event2));

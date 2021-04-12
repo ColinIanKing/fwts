@@ -55,7 +55,7 @@ static int slit_test1(fwts_framework *fw)
 	/*
 	 *  ACPI table length is 32 bits, so maximum matrix of entries size is
 	 *  is 2^32 - sizeof(fwts_acpi_table_slit) = 2^32 - 44 = 4294967252
-	 *  and table is a N x N matrix, so maxium number of localities is
+	 *  and table is a N x N matrix, so maximum number of localities is
 	 *  limited to int(sqrt(4294967252)) = 65535.
 	 */
 	if (n > 0xffff) {

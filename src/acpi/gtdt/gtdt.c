@@ -250,7 +250,7 @@ static int gtdt_test1(fwts_framework *fw)
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"GTDTInvalidType",
-				"GTDT platform timer strucuture %" PRIu32
+				"GTDT platform timer structure %" PRIu32
 				" has an invalid type: 0x%" PRIx8, i, *ptr);
 			/* Can't determine field length, so end of parsing */
 			goto done;

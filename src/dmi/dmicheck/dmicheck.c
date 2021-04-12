@@ -2029,7 +2029,7 @@ static void dmi_scan_tables(fwts_framework *fw,
 		/* Sanity check */
 		if (hdr.length < 4) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_ENTRY_LENGTH,
-				"Invald header length of entry #%d, "
+				"Invalid header length of entry #%d, "
 				"length was 0x%2.2" PRIx8 ".",
 				i, hdr.length);
 			fwts_advice(fw,
@@ -2148,7 +2148,7 @@ static void dmi_scan_smbios30_table(fwts_framework *fw,
 		/* Sanity check */
 		if (hdr.length < 4) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_ENTRY_LENGTH,
-				"Invald header length of entry #%d, "
+				"Invalid header length of entry #%d, "
 				"length was 0x%2.2" PRIx8 ".",
 				i, hdr.length);
 			fwts_advice(fw,

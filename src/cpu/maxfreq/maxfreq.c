@@ -62,7 +62,7 @@ static int maxfreq_test1(fwts_framework *fw)
 
 	fwts_log_info(fw,
 		"This test checks the maximum CPU frequency as detected by "
-		"the kernel for each CPU against maxiumum frequency as "
+		"the kernel for each CPU against maximum frequency as "
 		"specified by the BIOS frequency scaling settings.");
 
 	cpuinfo = fwts_file_open_and_read(CPU_INFO_PATH);

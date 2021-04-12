@@ -55,7 +55,7 @@ const char *brightness_get_path(void)
 /*
  *  brightness_init()
  *	generic brightness test init, if successful
- *	it opens a diretory for the /sys interface
+ *	it opens a directory for the /sys interface
  */
 int brightness_init(fwts_framework *fw)
 {

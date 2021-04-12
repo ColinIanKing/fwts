@@ -60,7 +60,7 @@ git push
 git push --tags
 
 Next, create a directory for creating the tarball and checksum and run the mktar.sh script.
-Upload the generated tarball and SHA256SUMS to the desired localtion for the releasing.
+Upload the generated tarball and SHA256SUMS to the desired location for the releasing.
 
 Next, create an auto-packager directory somewhere and run the mkpackage.sh script from within it. E.g
 
@@ -82,7 +82,7 @@ one that gets periodically uploaded to universe in the current release until we 
 
 And dput these into the  ppa:firmware-testing-team/ppa-fwts-unstable-crack PPA
 
-Let it shake out - build + test etc.  Get users to test against this. Onece you are OK with it,
+Let it shake out - build + test etc.  Get users to test against this. Once you are OK with it,
 copy the packages into ppa:firmware-testing-team/ppa-fwts-devel
 
 Every so often during the distro release cycle copy the stable current package into universe. You can either do this on every version number bump or when you deem that a new version is really stable.

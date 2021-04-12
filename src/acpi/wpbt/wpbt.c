@@ -56,7 +56,7 @@ static int wpbt_test1(fwts_framework *fw)
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"WPBTBadArgumentLength",
-				"WPBT arugments length must be multiple of 2, got "
+				"WPBT arguments length must be multiple of 2, got "
 				"0x%4.4" PRIx16 " instead", type->arguments_length);
 		}
 	}

@@ -22,7 +22,7 @@
 
 /*
  *  coreboot logfile exposed by Google firmware module
- *  Kernel option nessesary (GOOGLE_MEMCONSOLE_COREBOOT=m/y)
+ *  Kernel option necessary (GOOGLE_MEMCONSOLE_COREBOOT=m/y)
  */
 #define GOOGLE_MEMCONSOLE_COREBOOT_PATH	"/sys/firmware/log"
 

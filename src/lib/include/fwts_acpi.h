@@ -886,7 +886,7 @@ typedef struct {
 	uint8_t		device_scope[0];
 } __attribute__ ((packed)) fwts_acpi_table_dmar_hardware_unit;
 
-/* Reserved Memory Defininition */
+/* Reserved Memory Definition */
 typedef struct {
 	fwts_acpi_table_dmar_header header;
 	uint16_t	reserved;

@@ -99,7 +99,7 @@ static int cmosdump_test1(fwts_framework *fw)
 
 	static const char *const rate_selection[16] = {
 		"none",
-		"3.90625 millseconds",
+		"3.90625 milliseconds",
 		"7.8215 milliseconds",
 		"122.070 microseconds",
 		"244.141 microseconds",

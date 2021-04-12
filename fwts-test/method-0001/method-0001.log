@@ -900,7 +900,7 @@ method          Test 150 of 207: Test _GAI (Get Averaging Level).
 method          SKIPPED: Test 150, Skipping test for non-existent object
 method          _GAI.
 method          
-method          Test 151 of 207: Test _GHL (Get Harware Limit).
+method          Test 151 of 207: Test _GHL (Get Hardware Limit).
 method          SKIPPED: Test 151, Skipping test for non-existent object
 method          _GHL.
 method          

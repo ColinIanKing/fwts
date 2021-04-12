@@ -70,7 +70,7 @@ static int sbst_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test sbst_tests[] = {
-	{ sbst_test1, "SBST Smart Battery Specificiation Table test." },
+	{ sbst_test1, "SBST Smart Battery Specification Table test." },
 	{ NULL, NULL }
 };
 

@@ -181,13 +181,13 @@ static int auto_brightness_test2(fwts_framework *fw)
 			}
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"BrightnessMismatch",
-				"%d brightness levels did not match the brightnesss level "
+				"%d brightness levels did not match the brightness level "
 				"just set for backlight %s.",
 				failures, entry->d_name);
 			fwts_log_info(fw, "The failed brightness levels were:%s.", msg);
 			free(msg);
 		} else
-			fwts_passed(fw, "Actual brightness matches the brightnesss level for "
+			fwts_passed(fw, "Actual brightness matches the brightness level for "
 				"all %d levels for backlight %s.", max_brightness, entry->d_name);
 
 		free(brightness_fail);

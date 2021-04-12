@@ -242,7 +242,7 @@ static const char *crs_address_space_id(const uint64_t val)
 	case 0x7f:
 		return "Functional Fixed Hardware";
 	default:
-		return "Uknown";
+		return "Unknown";
 	}
 }
 

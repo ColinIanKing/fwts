@@ -88,8 +88,10 @@ static inline void cpu_mkpath(
 			name ? name : "");
 }
 
-static int cpu_set_governor(fwts_framework *fw, struct cpu *cpu,
-		const char *governor)
+static int cpu_set_governor(
+	fwts_framework *fw,
+	const struct cpu *cpu,
+	const char *governor)
 {
 	char path[PATH_MAX], *tmp;
 	int rc;
@@ -111,8 +113,10 @@ out:
 	return rc;
 }
 
-static int cpu_set_frequency(fwts_framework *fw, struct cpu *cpu,
-		uint64_t freq_hz)
+static int cpu_set_frequency(
+	fwts_framework *fw,
+	const struct cpu *cpu,
+	const uint64_t freq_hz)
 {
 	char path[PATH_MAX], *tmp;
 	char buffer[64];
@@ -136,12 +140,16 @@ out:
 	return rc;
 }
 
-static inline int cpu_set_lowest_frequency(fwts_framework *fw, struct cpu *cpu)
+static inline int cpu_set_lowest_frequency(
+	fwts_framework *fw,
+	const struct cpu *cpu)
 {
 	return cpu_set_frequency(fw, cpu, cpu->freqs[0].Hz);
 }
 
-static inline int cpu_set_highest_frequency(fwts_framework *fw, struct cpu *cpu)
+static inline int cpu_set_highest_frequency(
+	fwts_framework *fw,
+	const struct cpu *cpu)
 {
 	return cpu_set_frequency(fw, cpu, cpu->freqs[cpu->n_freqs-1].Hz);
 }
@@ -276,8 +284,11 @@ static uint64_t get_bios_limit(struct cpu *cpu)
 	return value;
 }
 
-static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
-		int cpu_idx, int n_online_cpus)
+static int test_one_cpu_performance(
+	fwts_framework *fw,
+	struct cpu *cpu,
+	const int cpu_idx,
+	const int n_online_cpus)
 {
 	uint64_t cpu_top_perf = 1;
 	int i;
@@ -309,6 +320,7 @@ static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
 		"-----------+----------------+------------+-----------");
 	for (i = 0; i < cpu->n_freqs; i++) {
 		char *turbo = "";
+
 #ifdef FWTS_ARCH_INTEL
 		if ((i == 0) && (cpu->n_freqs > 1) &&
 			(hz_almost_equal(cpu->freqs[i].Hz, cpu->freqs[i + 1].Hz)))
@@ -506,7 +518,7 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 	ok = true;
 
 	for (i = 0; i < num_cpus; i++) {
-		struct cpu *cpu = &cpus[i];
+		const struct cpu *cpu = &cpus[i];
 
 		if (!cpu->online)
 			continue;
@@ -564,8 +576,10 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int cpufreq_compare_freqs(fwts_framework *fw, struct cpu *c1,
-		struct cpu *c2)
+static int cpufreq_compare_freqs(
+	fwts_framework *fw,
+	const struct cpu *c1,
+	const struct cpu *c2)
 {
 	int i;
 
@@ -741,11 +755,14 @@ static int cpu_freq_compare(const void *v1, const void *v2)
 {
 	const fwts_cpu_freq *f1 = v1;
 	const fwts_cpu_freq *f2 = v2;
+
 	return f1->Hz - f2->Hz;
 }
 
-static int parse_cpu_info(fwts_framework *fw,
-		struct cpu *cpu, struct dirent *dir)
+static int parse_cpu_info(
+	fwts_framework *fw,
+	struct cpu *cpu,
+	const struct dirent *dir)
 {
 	char *end, path[PATH_MAX+1], *str, *tmp;
 	struct stat statbuf;
@@ -784,7 +801,8 @@ static int parse_cpu_info(fwts_framework *fw,
 	/* cpu driver like intel_pstate has no scaling_available_frequencies */
 	if (str != NULL) {
 		for (tmp = str; ; tmp = NULL) {
-			char *tok = strtok(tmp, " ");
+			const char *tok = strtok(tmp, " ");
+
 			if (!tok)
 				break;
 			if (!isdigit(tok[0]))
@@ -803,7 +821,7 @@ static int parse_cpu_info(fwts_framework *fw,
 
 	if (str) {
 		for (tmp = str; ; tmp = NULL) {
-			char *tok = strtok(tmp, " ");
+			const char *tok = strtok(tmp, " ");
 
 			if (!tok)
 				break;
@@ -847,7 +865,6 @@ static int cpufreq_init(fwts_framework *fw)
 		}
 
 		rc = cpu_set_governor(fw, &cpus[i], "userspace");
-
 		if (rc != FWTS_OK) {
 			fwts_log_info(fw, "Cannot initialize cpufreq "
 					"to set CPU speed for CPU %d", i);
@@ -864,7 +881,7 @@ static int cpufreq_deinit(fwts_framework *fw)
 	int i;
 
 	for (i = 0; i < num_cpus; i++) {
-		struct cpu *cpu = &cpus[i];
+		const struct cpu *cpu = &cpus[i];
 
 		if (cpu->orig_governor) {
 			cpu_set_governor(fw, cpu, cpu->orig_governor);

@@ -301,7 +301,10 @@ static const fwts_dmi_type_length type_info[] = {
 	{ 0, 0, 0, 0 } /* terminator */
 };
 
-static int dmi_load_file(const char* filename, void *buf, size_t size)
+static int dmi_load_file(
+	const char *filename,
+	void *buf,
+	const size_t size)
 {
 	int fd;
 	ssize_t ret;
@@ -312,12 +315,16 @@ static int dmi_load_file(const char* filename, void *buf, size_t size)
 		return FWTS_ERROR;
 	ret = read(fd, buf, size);
 	(void)close(fd);
+
 	if (ret != (ssize_t)size)
 		return FWTS_ERROR;
 	return FWTS_OK;
 }
 
-static int dmi_load_file_variable_size(const char* filename, void *buf, size_t *size)
+static int dmi_load_file_variable_size(
+	const char *filename,
+	void *buf,
+	size_t *size)
 {
 	int fd;
 	char *p;
@@ -442,13 +449,16 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 	return NULL;
 }
 
-static void dmi_table_free(void* table)
+static void dmi_table_free(void *table)
 {
 	if (table)
 		free(table);
 }
 
-static void dmi_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type type)
+static void dmi_dump_entry(
+	fwts_framework *fw,
+	const fwts_smbios_entry *entry,
+	const fwts_smbios_type type)
 {
 	if (type == FWTS_SMBIOS) {
 		fwts_log_info_verbatim(fw, "SMBIOS Entry Point Structure:");
@@ -468,7 +478,7 @@ static void dmi_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_sm
 		fwts_log_info_verbatim(fw, "Legacy DMI Entry Point Structure:");
 
 	/* Common to SMBIOS and SMBIOS_DMI_LEGACY */
-	fwts_log_info_verbatim(fw, "  Intermediate Anchor    : %5.5s", (char *)entry->anchor_string);
+	fwts_log_info_verbatim(fw, "  Intermediate Anchor    : %5.5s", (const char *)entry->anchor_string);
 	fwts_log_info_simp_int(fw, "  Intermediate Checksum  : ", entry->intermediate_checksum);
 	fwts_log_info_simp_int(fw, "  Structure Table Length : ", entry->struct_table_length);
 	fwts_log_info_simp_int(fw, "  Structure Table Address: ", entry->struct_table_address);
@@ -478,9 +488,10 @@ static void dmi_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_sm
 		fwts_log_info_verbatim(fw, "    BCD Revision 00 indicates compliance with specification stated in Major/Minor Version.");
 }
 
-static void dmi_dump_entry30(fwts_framework *fw, fwts_smbios30_entry *entry)
+static void dmi_dump_entry30(
+	fwts_framework *fw,
+	const fwts_smbios30_entry *entry)
 {
-
 	fwts_log_info_verbatim(fw, "SMBIOS30 Entry Point Structure:");
 	fwts_log_info_verbatim(fw, "  Anchor String          : %5.5s", entry->signature);
 	fwts_log_info_simp_int(fw, "  Checksum               : ", entry->checksum);
@@ -789,7 +800,7 @@ static int dmicheck_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static bool dmi_used_by_kernel(uint8_t type, uint8_t offset)
+static bool dmi_used_by_kernel(const uint8_t type, const uint8_t offset)
 {
 	int i;
 
@@ -802,13 +813,14 @@ static bool dmi_used_by_kernel(uint8_t type, uint8_t offset)
 	return false;
 }
 
-static uint16_t dmi_remap_version(fwts_framework *fw, uint16_t old)
+static uint16_t dmi_remap_version(fwts_framework *fw, const uint16_t old)
 {
 	int i;
 
 	for (i = 0; dmi_versions[i].old != 0; i++) {
 		if (old == dmi_versions[i].old) {
-			uint16_t new = dmi_versions[i].new;
+			const uint16_t new = dmi_versions[i].new;
+
 			fwts_warning(fw,
 				"Detected a buggy DMI version number "
 				"%" PRIu16 ".%" PRIu16 "remapping to "
@@ -823,7 +835,10 @@ static uint16_t dmi_remap_version(fwts_framework *fw, uint16_t old)
 	return old;
 }
 
-static void dmi_out_of_range_advice(fwts_framework *fw, uint8_t type, uint8_t offset)
+static void dmi_out_of_range_advice(
+	fwts_framework *fw,
+	const uint8_t type,
+	const uint8_t offset)
 {
 	if (dmi_used_by_kernel(type, offset))
 		fwts_advice(fw,
@@ -840,15 +855,16 @@ static void dmi_out_of_range_advice(fwts_framework *fw, uint8_t type, uint8_t of
 			"problems.");
 }
 
-static void dmi_reserved_bits_check(fwts_framework *fw,
+static void dmi_reserved_bits_check(
+	fwts_framework *fw,
 	const char *table,
-	uint32_t addr,
+	const uint32_t addr,
 	const char *field,
 	const fwts_dmi_header *hdr,
-	size_t size,
-	uint8_t offset,
-	uint8_t min,
-	uint8_t max)
+	const size_t size,
+	const uint8_t offset,
+	const uint8_t min,
+	const uint8_t max)
 {
 	uint64_t mask = 0;
 	uint64_t val;
@@ -902,12 +918,13 @@ static void dmi_reserved_bits_check(fwts_framework *fw,
 	}
 }
 
-static void dmi_reserved_uint8_check(fwts_framework *fw,
+static void dmi_reserved_uint8_check(
+	fwts_framework *fw,
 	const char *table,
-	uint32_t addr,
+	const uint32_t addr,
 	const char *field,
 	const fwts_dmi_header *hdr,
-	uint8_t offset)
+	const uint8_t offset)
 {
 	if (hdr->data[offset] != 0) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_OFFSET_NONZERO,
@@ -918,20 +935,22 @@ static void dmi_reserved_uint8_check(fwts_framework *fw,
 	}
 }
 
-static void _dmi_ranges_uint8_check(fwts_framework *fw,
+static void _dmi_ranges_uint8_check(
+	fwts_framework *fw,
 	const char *table,
-	uint32_t addr,
+	const uint32_t addr,
 	const char *field,
 	const fwts_dmi_header *hdr,
-	uint8_t offset,
-	fwts_dmi_value_range* ranges,
-	uint32_t range_size)
+	const uint8_t offset,
+	const fwts_dmi_value_range *ranges,
+	const uint32_t range_size)
 {
 	uint16_t i;
 	uint8_t val = hdr->data[offset];
 
 	for (i = 0; i < range_size / sizeof(fwts_dmi_value_range); i++) {
-		fwts_dmi_value_range *range = ranges + i;
+		const fwts_dmi_value_range *range = ranges + i;
+
 		if ((val >= range->min) && (val <= range->max))
 			return;
 	}

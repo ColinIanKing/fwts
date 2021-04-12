@@ -17,8 +17,6 @@
 #
 
 AM_CPPFLAGS = -Wall -Werror -Wextra -DDATAROOTDIR=\"$(datarootdir)\" 	\
-	`pkg-config --silence-errors --cflags json`			\
-	`pkg-config --silence-errors --cflags json-c`			\
 	-I$(srcdir)/../lib/include
 
 bin_PROGRAMS = kernelscan

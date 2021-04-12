@@ -26,8 +26,6 @@ AM_CPPFLAGS = 						\
 	-I$(top_srcdir)/src/lib/include			\
 	-I$(srcdir)/../acpica/source/include		\
 	-I$(srcdir)/../acpica/source/tools/acpiexec	\
-	`pkg-config --silence-errors --cflags json`	\
-	`pkg-config --silence-errors --cflags json-c`	\
 	-Wall -fno-strict-aliasing			\
 	-Wno-address-of-packed-member
 

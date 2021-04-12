@@ -48,7 +48,6 @@ static int tpmevlog_pcrindex_value_check(fwts_framework *fw, const uint32_t pcr)
 
 static int tpmevlog_eventtype_check(fwts_framework *fw, const fwts_tpmlog_event_type event_type)
 {
-
 	switch (event_type) {
 	case EV_PREBOOT_CERT:
 	case EV_POST_CODE:
@@ -93,7 +92,6 @@ static int tpmevlog_eventtype_check(fwts_framework *fw, const fwts_tpmlog_event_
 
 static int tpmevlog_algid_check(fwts_framework *fw, const TPM2_ALG_ID hash)
 {
-
 	switch (hash) {
 	case TPM2_ALG_RSA:
 	case TPM2_ALG_TDES:
@@ -145,13 +143,19 @@ static int tpmevlog_algid_check(fwts_framework *fw, const TPM2_ALG_ID hash)
 	return FWTS_OK;
 }
 
-static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
+static int tpmevlog_v2_check(
+	fwts_framework *fw,
+	uint8_t *data,
+	const size_t len)
 {
 	int ret = FWTS_OK;
 	size_t len_remain = len;
 	uint8_t *pdata = data;
 	int i = 0;
 	uint8_t vendor_info_size = 0;
+	fwts_pc_client_pcr_event *pc_event;
+	fwts_efi_spec_id_event *specid_evcent;
+	fwts_spec_id_event_alg_sz *alg_sz;
 
 	/* specid_event_check */
 	if (len < sizeof(fwts_pc_client_pcr_event)) {
@@ -163,7 +167,7 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 		return FWTS_ERROR;
 	}
 
-	fwts_pc_client_pcr_event *pc_event = (fwts_pc_client_pcr_event *)pdata;
+	pc_event = (fwts_pc_client_pcr_event *)pdata;
 	ret = tpmevlog_pcrindex_value_check(fw, pc_event->pcr_index);
 	if (ret != FWTS_OK)
 		return ret;
@@ -191,7 +195,7 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 		return FWTS_ERROR;
 	}
 
-	fwts_efi_spec_id_event *specid_evcent = (fwts_efi_spec_id_event *)pdata;
+	specid_evcent = (fwts_efi_spec_id_event *)pdata;
 	if (strcmp((char *)specid_evcent->signature, FWTS_TPM_EVENTLOG_V2_SIGNATURE) != 0) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "SpecIdEvSignature",
 			"The signature of SpecId event is not the same as expected "
@@ -230,7 +234,7 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 
 	pdata += sizeof(fwts_efi_spec_id_event);
 	len_remain -= sizeof(fwts_efi_spec_id_event);
-	fwts_spec_id_event_alg_sz *alg_sz = (fwts_spec_id_event_alg_sz *)pdata;
+	alg_sz = (fwts_spec_id_event_alg_sz *)pdata;
 	for (i = 0; i < specid_evcent->number_of_alg; i++) {
 		if (len_remain < sizeof(fwts_spec_id_event_alg_sz)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "SpecidEventLength",
@@ -269,6 +273,7 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 	/* Check the Crypto agile log format event */
 	while (len_remain > 0) {
 		uint32_t event_size;
+		fwts_tcg_pcr_event2 *pcr_event2;
 
 		if (len_remain < sizeof(fwts_tcg_pcr_event2)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventV2Length",
@@ -279,7 +284,7 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 			return FWTS_ERROR;
 		}
 
-		fwts_tcg_pcr_event2 *pcr_event2 = (fwts_tcg_pcr_event2 *)pdata;
+		pcr_event2 = (fwts_tcg_pcr_event2 *)pdata;
 		ret = tpmevlog_pcrindex_value_check(fw, pcr_event2->pcr_index);
 		if (ret != FWTS_OK)
 			return ret;
@@ -316,7 +321,6 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 		}
 
 		event_size = *(uint32_t *)pdata;
-
 		if (len_remain < event_size) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventV2Length",
 					"The remain length of the event2 is %zd bytes "
@@ -335,7 +339,6 @@ static int tpmevlog_v2_check(fwts_framework *fw, uint8_t *data, size_t len)
 
 static int tpmevlog_check(fwts_framework *fw, uint8_t *data, size_t len)
 {
-
 	uint8_t *pdata = data;
 	fwts_pc_client_pcr_event *pc_event = NULL;
 
@@ -387,7 +390,7 @@ static uint8_t *tpmevlog_load_file(const int fd, size_t *length)
 	*length = 0;
 
 	for (;;) {
-		ssize_t n = read(fd, buffer, sizeof(buffer));
+		const ssize_t n = read(fd, buffer, sizeof(buffer));
 
 		if (n == 0)
 			break;

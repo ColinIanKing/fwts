@@ -83,7 +83,7 @@
   },
   {
    "id": "ASL_MSG_CORE_EXCEPTION",
-   "advice": "An internel compiler core execption error has occurred performing a name space lookuop."
+   "advice": "An internal compiler core exception error has occurred performing a name space lookuop."
   },
   {
    "id": "ASL_MSG_DEBUG_FILE_OPEN",
@@ -276,7 +276,7 @@
   },
   {
    "id": "ASL_MSG_SERIALIZED",
-   "advice": "A method needs to be marked Serialized because of the wat Switch() has been implemented (multiple threads cannot execute the method concurrently since local temporary names need to be created which could lead to race condtions).  This should be explicity specified in the original code to avoid potential run time race conditions."
+   "advice": "A method needs to be marked Serialized because of the wat Switch() has been implemented (multiple threads cannot execute the method concurrently since local temporary names need to be created which could lead to race conditions).  This should be explicitly  specified in the original code to avoid potential run time race conditions."
   },
   {
    "id": "ASL_MSG_SOME_NO_RETVAL",

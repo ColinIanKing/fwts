@@ -55,7 +55,6 @@ static fwts_cpuinfo_x86 *fwts_cpuinfo;
 #define MTRR_ENABLE		0x800
 #define FIXED_MTRR_ENABLE	0x400
 
-
 static	uint64_t mtrr_default;
 static	uint64_t amd_tom2_addr;
 static	bool amd_Tom2ForceMemTypeWB = false;
@@ -71,6 +70,7 @@ struct mtrr_entry {
 static char *cache_to_string(int type)
 {
 	static char str[1024];
+
 	memset(str, 0, 1024);
 
 	if (type & UNCACHED || type == 0)
@@ -231,7 +231,7 @@ static int get_default_mtrr(fwts_framework *fw)
 	return FWTS_ERROR;
 }
 
-static int cache_types(uint64_t start, uint64_t end)
+static int cache_types(const uint64_t start, uint64_t end)
 {
 	fwts_list_link *item;
 	struct mtrr_entry *entry;
@@ -279,8 +279,8 @@ restart:
 
 static int check_prefetchable(
 	fwts_framework *fw,
-	char *device,
-	uint64_t address,
+	const char *device,
+	const uint64_t address,
 	bool *pref)
 {
 	char path[PATH_MAX];
@@ -354,10 +354,10 @@ static int check_prefetchable(
 
 static int guess_cache_type(
 	fwts_framework *fw,
-	char *string,
+	const char *string,
 	int *must,
 	int *mustnot,
-	uint64_t address)
+	const uint64_t address)
 {
 	*must = 0;
 	*mustnot = 0;

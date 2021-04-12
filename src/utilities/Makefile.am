@@ -16,13 +16,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 
-AM_CPPFLAGS = -Wall -Werror -Wextra -DDATAROOTDIR=\"$(datarootdir)\" \
-	`pkg-config --silence-errors --cflags json` \
-	`pkg-config --silence-errors --cflags json-c` \
-	-I../lib/include
+AM_CPPFLAGS = -Wall -Werror -Wextra -DDATAROOTDIR=\"$(datarootdir)\" 	\
+	`pkg-config --silence-errors --cflags json`			\
+	`pkg-config --silence-errors --cflags json-c`			\
+	-I$(srcdir)/../lib/include
 
 bin_PROGRAMS = kernelscan
-kernelscan_SOURCES = kernelscan.c ../lib/src/fwts_json.c
+kernelscan_SOURCES = kernelscan.c $(srcdir)/../lib/src/fwts_json.c
 
 
 -include $(top_srcdir)/git.mk

@@ -34,8 +34,10 @@ static fwts_list *hotkeys_list;
 static char *hotkey_dev;
 static char *hotkey_keymap;
 
-static int hotkey_check_key(fwts_framework *fw,
-	struct input_event *ev, fwts_list *hotkeys)
+static int hotkey_check_key(
+	fwts_framework *fw,
+	const struct input_event *ev,
+	const fwts_list *hotkeys)
 {
 	static int scancode = 0;
 
@@ -49,8 +51,8 @@ static int hotkey_check_key(fwts_framework *fw,
 		int found = 0;
 
 		fwts_list_foreach(item, hotkeys) {
-			fwts_keycode *keycode =
-				fwts_list_data(fwts_keycode*, item);
+			const fwts_keycode *keycode =
+				fwts_list_data(const fwts_keycode *, item);
 			if (keycode->scancode == scancode) {
 				fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x (%s) '%s'\n",
 					scancode, ev->code,
@@ -67,7 +69,10 @@ static int hotkey_check_key(fwts_framework *fw,
 }
 
 
-static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
+static int hotkey_test(
+	fwts_framework *fw,
+	const char *dev,
+	const fwts_list *hotkeys)
 {
 	struct input_event ev;
 	char path[PATH_MAX];
@@ -89,7 +94,7 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 	}
 
 	for (;;) {
-		ssize_t ret = read(fd, &ev, sizeof(ev));
+		const ssize_t ret = read(fd, &ev, sizeof(ev));
 
 		if (ret < (ssize_t)sizeof(ev))
 			break;
@@ -112,7 +117,7 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 	return FWTS_OK;
 }
 
-static char *hotkey_device(char *path)
+static char *hotkey_device(const char *path)
 {
 	DIR *scan;
 	struct dirent *scan_entry;
@@ -124,6 +129,7 @@ static char *hotkey_device(char *path)
 	while ((scan_entry = readdir(scan)) != NULL) {
 		if (strncmp("event", scan_entry->d_name, 5) == 0) {
 			char filename[PATH_MAX];
+
 			snprintf(filename, sizeof(filename),
 				"input/%s", scan_entry->d_name);
 			dev = strdup(filename);
@@ -135,7 +141,7 @@ static char *hotkey_device(char *path)
 	return dev;
 }
 
-static char *hotkey_find_keyboard(char *path)
+static char *hotkey_find_keyboard(const char *path)
 {
 	DIR *dir;
 	struct dirent *entry;
@@ -175,7 +181,7 @@ static char *hotkey_find_keyboard(char *path)
 	return dev;
 }
 
-static char *hotkey_find_keymap(char *device)
+static char *hotkey_find_keymap(const char *device)
 {
 	fwts_list *output;
 	fwts_list_link *item;
@@ -190,9 +196,11 @@ static char *hotkey_find_keymap(char *device)
 
 	snprintf(buffer, sizeof(buffer), "keymap %s", device);
 	fwts_list_foreach(item, output) {
-		char *text = fwts_text_list_text(item);
+		const char *text = (const char *)fwts_text_list_text(item);
+
 		if ((text = strstr(text, buffer)) != NULL) {
 			char *ptr;
+
 			text += strlen(buffer) + 1;
 			if ((ptr = strstr(text, "'")) != NULL)
 				*ptr = '\0';

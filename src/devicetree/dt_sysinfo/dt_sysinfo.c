@@ -51,10 +51,10 @@ static struct reference_platform {
 		FWTS_ARRAY_SIZE(garrison_models)},
 };
 
-
-static int dt_sysinfo_get_version(fwts_framework *fw,
-				int node,
-				char *firmware)
+static int dt_sysinfo_get_version(
+	fwts_framework *fw,
+	const int node,
+	const char *firmware)
 {
 	int version_len;
 
@@ -145,7 +145,7 @@ static int dt_sysinfo_check_version(fwts_framework *fw)
 static int dt_sysinfo_check_root_property(
 	fwts_framework *fw,
 	const char *name,
-	bool print_flag)
+	const bool print_flag)
 {
 	int node, len;
 	const char *buf;
@@ -194,11 +194,12 @@ static int dt_sysinfo_check_system_id(fwts_framework *fw)
 	return dt_sysinfo_check_root_property(fw, "system-id", true);
 }
 
-static bool dt_fdt_stringlist_contains_last(const char *strlist,
-	int listlen,
+static bool dt_fdt_stringlist_contains_last(
+	const char *strlist,
+	const int listlen,
 	const char *str)
 {
-	int len = strlen(str);
+	const int len = strlen(str);
 	const char *p;
 
 	/* checking for either str only or last in string */
@@ -217,7 +218,7 @@ static bool dt_fdt_stringlist_contains_last(const char *strlist,
 
 static bool machine_matches_reference_model(fwts_framework *fw,
 	const char *compatible,
-	int compat_len,
+	const int compat_len,
 	const char *model)
 {
 	bool compatible_is_reference = false, model_is_reference = false;

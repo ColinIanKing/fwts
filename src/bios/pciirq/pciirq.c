@@ -59,7 +59,7 @@ typedef struct {
 	slot_entry	slots[0];
 }  __attribute__ ((packed)) pci_irq_routing_table;
 
-static const char *pciirq_reserved(uint8_t *data)
+static const char *pciirq_reserved(const uint8_t *data)
 {
 	static char buf[1+ (RESERVED_SIZE * 5)];
 	char tmp[6];

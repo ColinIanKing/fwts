@@ -25,8 +25,8 @@
 #include <limits.h>
 
 typedef struct {
-	char *dmi_field;
-	char *label;
+	const char *dmi_field;
+	const char *label;
 } fwts_bios_info;
 
 static const fwts_bios_info bios_info[] = {

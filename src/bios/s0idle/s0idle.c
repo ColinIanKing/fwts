@@ -51,7 +51,7 @@ static int s0idle_init(fwts_framework *fw)
 
 static int s0idle_test1(fwts_framework *fw)
 {
-	fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*) table->data;
+	const fwts_acpi_table_fadt *fadt = (const fwts_acpi_table_fadt *)table->data;
 
 	if (fadt->flags & FWTS_FACP_FLAG_LOW_POWER_S0_IDLE_CAPABLE)
 		fwts_passed(fw, "LOW_POWER_S0_IDLE_CAPABLE is set in ACPI FADT.");

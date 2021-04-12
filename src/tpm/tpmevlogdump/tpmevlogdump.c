@@ -28,9 +28,8 @@
 
 #define FWTS_TPM_LOG_DIR_PATH	"/sys/kernel/security"
 
-static char *tpmevlogdump_evtype_to_string (fwts_tpmlog_event_type event_type)
+static char *tpmevlogdump_evtype_to_string(const fwts_tpmlog_event_type event_type)
 {
-
 	char *str;
 
 	switch (event_type) {
@@ -132,9 +131,8 @@ static char *tpmevlogdump_evtype_to_string (fwts_tpmlog_event_type event_type)
 	return str;
 }
 
-static char *tpmevlogdump_hash_to_string (TPM2_ALG_ID hash)
+static char *tpmevlogdump_hash_to_string(const TPM2_ALG_ID hash)
 {
-
 	char *str;
 
 	switch (hash) {
@@ -157,9 +155,9 @@ static char *tpmevlogdump_hash_to_string (TPM2_ALG_ID hash)
 
 	return str;
 }
-static char *tpmevlogdump_pcrindex_to_string (uint32_t pcr)
-{
 
+static char *tpmevlogdump_pcrindex_to_string(const uint32_t pcr)
+{
 	char *str;
 
 	switch (pcr) {
@@ -211,20 +209,26 @@ static char *tpmevlogdump_pcrindex_to_string (uint32_t pcr)
 	return str;
 }
 
-static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, size_t len)
+static size_t tpmevlogdump_specid_event_dump(
+	fwts_framework *fw,
+	uint8_t *data,
+	const size_t len)
 {
-
 	uint32_t i;
 	size_t len_remain = len;
 	uint8_t *pdata = data;
+	uint8_t vendor_info_size;
 	char *str_info;
+	fwts_pc_client_pcr_event *pc_event;
+	fwts_efi_spec_id_event *specid_evcent;
+	fwts_spec_id_event_alg_sz *alg_sz;
 
 	/* check the data length for dumping */
 	if (len_remain < sizeof(fwts_pc_client_pcr_event)) {
 		fwts_log_info(fw, "Cannot get enough length for dumping data.");
 		return 0;
 	}
-	fwts_pc_client_pcr_event *pc_event = (fwts_pc_client_pcr_event *)pdata;
+	pc_event = (fwts_pc_client_pcr_event *)pdata;
 	str_info = tpmevlogdump_pcrindex_to_string(pc_event->pcr_index);
 	fwts_log_info_verbatim(fw, "PCRIndex:                    0x%8.8" PRIx32 "(%s)", pc_event->pcr_index, str_info);
 	str_info = tpmevlogdump_evtype_to_string(pc_event->event_type);
@@ -240,7 +244,8 @@ static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, 
 		fwts_log_info(fw, "Cannot get enough length for dumping data.");
 		return 0;
 	}
-	fwts_efi_spec_id_event *specid_evcent = (fwts_efi_spec_id_event *)pdata;
+
+	specid_evcent = (fwts_efi_spec_id_event *)pdata;
 	fwts_log_info_verbatim(fw, "EfiSpecIdEvent:");
 	fwts_log_info_verbatim(fw, "  Signature:                 %s", (char *)specid_evcent->signature);
 	fwts_log_info_verbatim(fw, "  platformClass:             0x%8.8" PRIx32, specid_evcent->platform_class);
@@ -252,7 +257,7 @@ static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, 
 
 	pdata += sizeof(fwts_efi_spec_id_event);
 	len_remain -= sizeof(fwts_efi_spec_id_event);
-	fwts_spec_id_event_alg_sz *alg_sz = (fwts_spec_id_event_alg_sz *)pdata;
+	alg_sz = (fwts_spec_id_event_alg_sz *)pdata;
 	for (i = 0; i < specid_evcent->number_of_alg; i++) {
 		/* check the data length for dumping */
 		if (len_remain < sizeof(fwts_spec_id_event_alg_sz)) {
@@ -267,7 +272,7 @@ static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, 
 		alg_sz = (fwts_spec_id_event_alg_sz *)pdata;
 	}
 
-	uint8_t	vendor_info_size = *(uint8_t *)pdata;
+	vendor_info_size = *(uint8_t *)pdata;
 	fwts_log_info_verbatim(fw, "  vendorInfoSize:            0x%" PRIx8, vendor_info_size);
 	pdata += sizeof(vendor_info_size);
 	len_remain -= sizeof(vendor_info_size);
@@ -284,19 +289,24 @@ static size_t tpmevlogdump_specid_event_dump(fwts_framework *fw, uint8_t *data, 
 	return len_remain;
 }
 
-static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size_t len)
+static size_t tpmevlogdump_event_v2_dump(
+	fwts_framework *fw,
+	uint8_t *data,
+	const size_t len)
 {
 	uint32_t i;
+	uint32_t event_size;
 	uint8_t *pdata = data;
 	size_t len_remain = len;
 	char *str_info;
+	fwts_tcg_pcr_event2 *pcr_event2;
 
 	/* check the data length for dumping */
 	if (len_remain < sizeof(fwts_tcg_pcr_event2)) {
 		fwts_log_info(fw, "Cannot get enough length for dumping data.");
 		return 0;
 	}
-	fwts_tcg_pcr_event2 *pcr_event2 = (fwts_tcg_pcr_event2 *)pdata;
+	pcr_event2 = (fwts_tcg_pcr_event2 *)pdata;
 	str_info = tpmevlogdump_pcrindex_to_string(pcr_event2->pcr_index);
 	fwts_log_info_verbatim(fw, "PCRIndex:           0x%8.8" PRIx32 "(%s)", pcr_event2->pcr_index, str_info);
 	str_info = tpmevlogdump_evtype_to_string(pcr_event2->event_type);
@@ -304,10 +314,10 @@ static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size
 	fwts_log_info_verbatim(fw, "Digests Count :     0x%8.8" PRIx32, pcr_event2->digests_count);
 	pdata += sizeof(fwts_tcg_pcr_event2);
 	len_remain -= sizeof(fwts_tcg_pcr_event2);
-	for (i = 0; i < pcr_event2->digests_count; i++) {
 
+	for (i = 0; i < pcr_event2->digests_count; i++) {
 		uint8_t hash_size = 0;
-		TPM2_ALG_ID alg_id = *(TPM2_ALG_ID *)pdata;
+		const TPM2_ALG_ID alg_id = *(TPM2_ALG_ID *)pdata;
 
 		/* check the data length for dumping */
 		if (len_remain < sizeof(TPM2_ALG_ID)) {
@@ -333,8 +343,7 @@ static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size
 		len_remain -= hash_size;
 	}
 
-	uint32_t event_size = *(uint32_t *)pdata;
-
+	event_size = *(uint32_t *)pdata;
 	/* check the data length for dumping */
 	if (len_remain < event_size + sizeof(event_size)) {
 		fwts_log_info(fw, "Cannot get enough length for dumping data.");
@@ -352,7 +361,10 @@ static size_t tpmevlogdump_event_v2_dump(fwts_framework *fw, uint8_t *data, size
 	return len_remain;
 }
 
-static void tpmevlogdump_parser(fwts_framework *fw, uint8_t *data, size_t len)
+static void tpmevlogdump_parser(
+	fwts_framework *fw,
+	uint8_t *data,
+	const size_t len)
 {
 	size_t t_len = len;
 	size_t len_remain = 0;
@@ -370,9 +382,11 @@ static void tpmevlogdump_parser(fwts_framework *fw, uint8_t *data, size_t len)
 	return;
 }
 
-static void tpmevlogdump_event_dump(fwts_framework *fw, uint8_t *data, size_t len)
+static void tpmevlogdump_event_dump(
+	fwts_framework *fw,
+	uint8_t *data,
+	size_t len)
 {
-
 	uint8_t *pdata = data;
 	fwts_pc_client_pcr_event *pc_event = NULL;
 
@@ -403,7 +417,6 @@ static void tpmevlogdump_event_dump(fwts_framework *fw, uint8_t *data, size_t le
 		len -= (sizeof(fwts_pc_client_pcr_event) + pc_event->event_data_size);
 	}
 	return;
-
 }
 
 
@@ -416,7 +429,7 @@ static uint8_t *tpmevlogdump_load_file(const int fd, size_t *length)
 	*length = 0;
 
 	for (;;) {
-		ssize_t n = read(fd, buffer, sizeof(buffer));
+		const ssize_t n = read(fd, buffer, sizeof(buffer));
 
 		if (n == 0)
 			break;

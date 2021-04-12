@@ -50,14 +50,7 @@ typedef struct {
 	uint32_t	PM_data_addr;
 }  __attribute__ ((packed)) pnp_header;
 
-static char *pnp_control_field[] = {
-	"Not supported",
-	"Handled by polling",
-	"Asynchronous",
-	"Invalid"
-};
-
-static char *oem_device_id(uint32_t id)
+static char *oem_device_id(const uint32_t id)
 {
 	static char buf[12];
 
@@ -79,6 +72,13 @@ static int pnp_test1(fwts_framework *fw)
 	uint8_t *mem;
 	int i;
 	int found = 0;
+
+	static const char *pnp_control_field[] = {
+		"Not supported",
+		"Handled by polling",
+		"Asynchronous",
+		"Invalid"
+	};
 
 	fwts_log_info(fw,
 		"This test tries to find and sanity check the "

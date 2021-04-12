@@ -66,7 +66,10 @@ static const char *mpdump_yes_no[] = {
 	"Yes"
 };
 
-static void mpdump_dump_header(fwts_framework *fw, fwts_mp_config_table_header *header, uint32_t phys_addr)
+static void mpdump_dump_header(
+	fwts_framework *fw,
+	const fwts_mp_config_table_header *header,
+	const uint32_t phys_addr)
 {
 	fwts_log_info_verbatim(fw,"MultiProcessor Header: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw,"  Signature:          %4.4s\n", header->signature);
@@ -80,9 +83,11 @@ static void mpdump_dump_header(fwts_framework *fw, fwts_mp_config_table_header *
 	fwts_log_nl(fw);
 }
 
-static void mpdump_dump_cpu_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void mpdump_dump_cpu_entry(fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_processor_entry *cpu_entry = (fwts_mp_processor_entry *)data;
+	const fwts_mp_processor_entry *cpu_entry = (const fwts_mp_processor_entry *)data;
 
 	fwts_log_info_verbatim(fw, "CPU Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Local APIC ID:      0x%2.2x", cpu_entry->local_apic_id);
@@ -114,9 +119,12 @@ static void mpdump_dump_cpu_entry(fwts_framework *fw, void *data, uint32_t phys_
 	fwts_log_nl(fw);
 }
 
-static void mpdump_dump_bus_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void mpdump_dump_bus_entry(
+	fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_bus_entry *bus_entry = (fwts_mp_bus_entry *)data;
+	const fwts_mp_bus_entry *bus_entry = (const fwts_mp_bus_entry *)data;
 
 	fwts_log_info_verbatim(fw, "Bus Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Bus ID:             0x%2.2x", bus_entry->bus_id);
@@ -124,9 +132,12 @@ static void mpdump_dump_bus_entry(fwts_framework *fw, void *data, uint32_t phys_
 	fwts_log_nl(fw);
 }
 
-static void mpdump_dump_io_apic_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void mpdump_dump_io_apic_entry(
+	fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_io_apic_entry *io_apic_entry = (fwts_mp_io_apic_entry *)data;
+	const fwts_mp_io_apic_entry *io_apic_entry = (const fwts_mp_io_apic_entry *)data;
 
 	fwts_log_info_verbatim(fw, "IO APIC Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  IO APIC ID:         0x%2.2x", io_apic_entry->id);
@@ -136,9 +147,12 @@ static void mpdump_dump_io_apic_entry(fwts_framework *fw, void *data, uint32_t p
 	fwts_log_nl(fw);
 }
 
-static void mpdump_dump_io_interrupt_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void mpdump_dump_io_interrupt_entry(
+	fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_io_interrupt_entry *io_interrupt_entry = (fwts_mp_io_interrupt_entry *)data;
+	const fwts_mp_io_interrupt_entry *io_interrupt_entry = (const fwts_mp_io_interrupt_entry *)data;
 
 	fwts_log_info_verbatim(fw, "IO Interrupt Assignment Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Interrupt Type:     0x%2.2x (%s)", io_interrupt_entry->type,
@@ -155,9 +169,12 @@ static void mpdump_dump_io_interrupt_entry(fwts_framework *fw, void *data, uint3
 	fwts_log_nl(fw);
 }
 
-static void mpdump_dump_local_interrupt_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void mpdump_dump_local_interrupt_entry(
+	fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_local_interrupt_entry *local_interrupt_entry = (fwts_mp_local_interrupt_entry *)data;
+	const fwts_mp_local_interrupt_entry *local_interrupt_entry = (const fwts_mp_local_interrupt_entry *)data;
 
 	fwts_log_info_verbatim(fw, "Local Interrupt Assignment Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Interrupt Type:     0x%2.2x (%s)", local_interrupt_entry->type,
@@ -174,9 +191,12 @@ static void mpdump_dump_local_interrupt_entry(fwts_framework *fw, void *data, ui
 	fwts_log_nl(fw);
 }
 
-static void mpdump_dump_sys_addr_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void mpdump_dump_sys_addr_entry(
+	fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_system_address_space_entry *sys_addr_entry = (fwts_mp_system_address_space_entry *)data;
+	const fwts_mp_system_address_space_entry *sys_addr_entry = (const fwts_mp_system_address_space_entry *)data;
 
 	fwts_log_info_verbatim(fw, "System Address Space Mapping Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Bus ID:             0x%2.2x", sys_addr_entry->bus_id);
@@ -191,9 +211,12 @@ static void mpdump_dump_sys_addr_entry(fwts_framework *fw, void *data, uint32_t 
 	fwts_log_nl(fw);
 }
 
-static void mpdump_dump_bus_hierarchy_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void mpdump_dump_bus_hierarchy_entry(
+	fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_bus_hierarchy_entry *bus_hierarchy_entry = (fwts_mp_bus_hierarchy_entry*)data;
+	const fwts_mp_bus_hierarchy_entry *bus_hierarchy_entry = (const fwts_mp_bus_hierarchy_entry*)data;
 
 	fwts_log_info_verbatim(fw, "Bus Hierarchy Descriptor Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Bus ID:             0x%2.2x", bus_hierarchy_entry->bus_id);
@@ -202,9 +225,12 @@ static void mpdump_dump_bus_hierarchy_entry(fwts_framework *fw, void *data, uint
 	fwts_log_nl(fw);
 }
 
-static void multproc_dump_compat_bus_address_space_entry(fwts_framework *fw, void *data, uint32_t phys_addr)
+static void multproc_dump_compat_bus_address_space_entry(
+	fwts_framework *fw,
+	const void *data,
+	const uint32_t phys_addr)
 {
-	fwts_mp_compat_bus_address_space_entry *compat_bus_entry = (fwts_mp_compat_bus_address_space_entry*)data;
+	const fwts_mp_compat_bus_address_space_entry *const compat_bus_entry = (const fwts_mp_compat_bus_address_space_entry*)data;
 
 	fwts_log_info_verbatim(fw, "Compatible Bus Hierarchy Descriptor Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Bus ID:             0x%2.2x", compat_bus_entry->bus_id);
@@ -233,8 +259,8 @@ static int mpdump_deinit(fwts_framework *fw)
 
 static int mpdump_compare_bus(void *data1, void *data2)
 {
-	fwts_mp_bus_entry *bus_entry1 = (fwts_mp_bus_entry *)data1;
-	fwts_mp_bus_entry *bus_entry2 = (fwts_mp_bus_entry *)data2;
+	const fwts_mp_bus_entry *bus_entry1 = (const fwts_mp_bus_entry *)data1;
+	const fwts_mp_bus_entry *bus_entry2 = (const fwts_mp_bus_entry *)data2;
 
 	return bus_entry1->bus_id - bus_entry2->bus_id;
 }
@@ -248,6 +274,7 @@ static void mpdump_dump_bus(fwts_framework *fw)
 
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
+
 		if (*data == FWTS_MP_BUS_ENTRY)
 			fwts_list_add_ordered(&sorted, data, mpdump_compare_bus);
 	}
@@ -265,8 +292,8 @@ static void mpdump_dump_bus(fwts_framework *fw)
 
 static int mpdump_compare_io_irq(void *data1, void *data2)
 {
-	fwts_mp_io_interrupt_entry *entry1 = (fwts_mp_io_interrupt_entry*)data1;
-	fwts_mp_io_interrupt_entry *entry2 = (fwts_mp_io_interrupt_entry*)data2;
+	const fwts_mp_io_interrupt_entry *entry1 = (const fwts_mp_io_interrupt_entry*)data1;
+	const fwts_mp_io_interrupt_entry *entry2 = (const fwts_mp_io_interrupt_entry*)data2;
 
 	return (entry1->source_bus_irq + (entry1->source_bus_id * 256)) -
 	       (entry2->source_bus_irq + (entry2->source_bus_id * 256));
@@ -274,8 +301,8 @@ static int mpdump_compare_io_irq(void *data1, void *data2)
 
 static int mpdump_compare_local_irq(void *data1, void *data2)
 {
-	fwts_mp_local_interrupt_entry *entry1 = (fwts_mp_local_interrupt_entry*)data1;
-	fwts_mp_local_interrupt_entry *entry2 = (fwts_mp_local_interrupt_entry*)data2;
+	const fwts_mp_local_interrupt_entry *entry1 = (const fwts_mp_local_interrupt_entry*)data1;
+	const fwts_mp_local_interrupt_entry *entry2 = (const fwts_mp_local_interrupt_entry*)data2;
 
 	return entry1->source_bus_irq - entry2->source_bus_irq;
 }
@@ -295,7 +322,7 @@ static char *mpdump_find_bus_name(uint8_t bus_id)
 	return "Unknown";
 }
 
-static char *mpdump_dst_io_apic(uint8_t apic)
+static char *mpdump_dst_io_apic(const uint8_t apic)
 {
 	if (apic == 255)
 		return "all";
@@ -307,16 +334,16 @@ static char *mpdump_dst_io_apic(uint8_t apic)
 	}
 }
 
-static uint8_t mpdump_get_apic_id(void *data)
+static uint8_t mpdump_get_apic_id(const void *data)
 {
-	uint8_t *which = (uint8_t*)data;
+	const uint8_t *which = (const uint8_t*)data;
 
 	if (*which == FWTS_MP_CPU_ENTRY) {
-		fwts_mp_processor_entry *cpu_entry = (fwts_mp_processor_entry *)data;
+		const fwts_mp_processor_entry *cpu_entry = (const fwts_mp_processor_entry *)data;
 		return cpu_entry->local_apic_id;
 	}
 	if (*which == FWTS_MP_IO_APIC_ENTRY) {
-		fwts_mp_io_apic_entry *io_apic_entry = (fwts_mp_io_apic_entry *)data;
+		const fwts_mp_io_apic_entry *io_apic_entry = (const fwts_mp_io_apic_entry *)data;
 		return io_apic_entry->id;
 	}
 	return 0xff;
@@ -324,8 +351,8 @@ static uint8_t mpdump_get_apic_id(void *data)
 
 static int mpdump_compare_apic_id(void *data1, void *data2)
 {
-	uint8_t val1 = mpdump_get_apic_id(data1);
-	uint8_t val2 = mpdump_get_apic_id(data2);
+	const uint8_t val1 = mpdump_get_apic_id(data1);
+	const uint8_t val2 = mpdump_get_apic_id(data2);
 
 	return (int)val1 - (int)val2;
 }
@@ -364,6 +391,7 @@ static void mpdump_dump_irq_table(fwts_framework *fw)
 	fwts_list_init(&sorted);
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
+
 		if (*data == FWTS_MP_IO_INTERRUPT_ENTRY)
 			fwts_list_add_ordered(&sorted, data, mpdump_compare_io_irq);
 	}
@@ -390,6 +418,7 @@ static void mpdump_dump_irq_table(fwts_framework *fw)
 	fwts_list_init(&sorted);
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
+
 		if (*data == FWTS_MP_LOCAL_INTERRUPT_ENTRY)
 			fwts_list_add_ordered(&sorted, data, mpdump_compare_local_irq);
 	}
@@ -419,13 +448,11 @@ static void mpdump_dump_irq_table(fwts_framework *fw)
 
 static int mpdump_compare_system_address_space(void *data1, void *data2)
 {
-	int64_t diff;
-	fwts_mp_system_address_space_entry *sys_addr_entry1 =
-		(fwts_mp_system_address_space_entry *)data1;
-	fwts_mp_system_address_space_entry *sys_addr_entry2 =
-		(fwts_mp_system_address_space_entry *)data2;
-
-	diff = sys_addr_entry1->address_base - sys_addr_entry2->address_base;
+	const fwts_mp_system_address_space_entry *sys_addr_entry1 =
+		(const fwts_mp_system_address_space_entry *)data1;
+	const fwts_mp_system_address_space_entry *sys_addr_entry2 =
+		(const fwts_mp_system_address_space_entry *)data2;
+	const int64_t diff = sys_addr_entry1->address_base - sys_addr_entry2->address_base;
 
 	if (diff == 0)
 		return 0;
@@ -444,6 +471,7 @@ static void mpdump_dump_system_address_table(fwts_framework *fw)
 
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
+
 		if (*data == 128)
 			fwts_list_add_ordered(&sorted, data, mpdump_compare_system_address_space);
 	}
@@ -476,6 +504,7 @@ static int mpdump_test1(fwts_framework *fw)
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
 		uint32_t phys_addr = mp_data.phys_addr + ((void *)data - (void *)mp_data.header);
+
 		switch (*data) {
 		case FWTS_MP_CPU_ENTRY:
 			mpdump_dump_cpu_entry(fw, data, phys_addr);

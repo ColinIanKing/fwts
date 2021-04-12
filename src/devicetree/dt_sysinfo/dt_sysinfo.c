@@ -199,21 +199,21 @@ static bool dt_fdt_stringlist_contains_last(
 	const int listlen,
 	const char *str)
 {
-	const int len = strlen(str);
+	const size_t len = strlen(str);
 	const char *p;
 
 	/* checking for either str only or last in string */
 	if (listlen < 2) /* need at least one byte plus nul */
 		return false;
 
-	p = memrchr(strlist, '\0', listlen-1);
+	p = memrchr(strlist, '\0', listlen - 1);
 	if (p) {
 		p++;
 	} else {
 		p = strlist;
 	}
 
-	return !memcmp(str, p, len+1);
+	return !memcmp(str, p, len + 1);
 }
 
 static bool machine_matches_reference_model(fwts_framework *fw,

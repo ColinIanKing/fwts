@@ -23,10 +23,15 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
+static void pmtt_memory_device(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry, uint32_t offset, bool *passed);
+
 static fwts_acpi_table_info *table;
 acpi_table_init(PMTT, &table)
 
-static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry, bool *passed)
+static void pmtt_subtable_header_test(
+	fwts_framework *fw,
+	fwts_acpi_table_pmtt_header *entry,
+	bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  PMTT Subtable:");
 	fwts_log_info_simp_int(fw, "    Type:                           ", entry->type);
@@ -48,15 +53,13 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 	fwts_acpi_reserved_zero_check("PMTT", "Reserved2", entry->reserved2, passed);
 }
 
-static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmtt_physical_component *entry, bool *passed)
+static void pmtt_physical_component_test(
+	fwts_framework *fw,
+	fwts_acpi_table_pmtt_physical_component *entry,
+	bool *passed)
 {
 	pmtt_subtable_header_test(fw, &entry->header, passed);
-	fwts_log_info_simp_int(fw, "    Physical Component Identifier:  ", entry->component_id);
-	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
-	fwts_log_info_simp_int(fw, "    Size of DIMM:                   ", entry->memory_size);
 	fwts_log_info_simp_int(fw, "    SMBIOS Handle:                  ", entry->bios_handle);
-
-	fwts_acpi_reserved_zero_check("PMTT", "Reserved", entry->reserved, passed);
 
 	if ((entry->bios_handle & 0xFFFF0000) != 0 && entry->bios_handle != 0xFFFFFFFF) {
 		*passed = false;
@@ -67,43 +70,30 @@ static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmt
 	}
 }
 
-static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_controller *entry, bool *passed)
+static void pmtt_controller_test(
+	fwts_framework *fw,
+	fwts_acpi_table_pmtt_controller *entry,
+	uint32_t entry_offset,
+	bool *passed)
 {
 	fwts_acpi_table_pmtt_header *header;
 	uint32_t offset = 0;
-	size_t i;
 
 	pmtt_subtable_header_test(fw, &entry->header, passed);
-	fwts_log_info_simp_int(fw, "    Read Latency:                   ", entry->read_latency);
-	fwts_log_info_simp_int(fw, "    Write latency:                  ", entry->write_latency);
-	fwts_log_info_simp_int(fw, "    Read Bandwidth:                 ", entry->read_bandwidth);
-	fwts_log_info_simp_int(fw, "    Write Bandwidth:                ", entry->write_bandwidth);
-	fwts_log_info_simp_int(fw, "    Optimal Access Unit:            ", entry->access_width);
-	fwts_log_info_simp_int(fw, "    Optimal Access Alignment:       ", entry->alignment);
+	fwts_log_info_simp_int(fw, "    Memory Controller ID            ", entry->memory_controller_id);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
-	fwts_log_info_simp_int(fw, "    Number of Proximity Domains:    ", entry->domain_count);
 
 	fwts_acpi_reserved_zero_check("PMTT", "Reserved", entry->reserved, passed);
 
 	offset = sizeof(fwts_acpi_table_pmtt_controller);
-	if (entry->header.length < offset + sizeof(fwts_acpi_table_pmtt_domain) * entry->domain_count) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PMTTOutOfBound",
-			"PMTT's length is too small to contain all fields");
-		return;
-	}
-
-	fwts_acpi_table_pmtt_domain *domain = (fwts_acpi_table_pmtt_domain *)(((char *) entry) + offset);
-	for (i = 0; i < entry->domain_count; i++) {
-		fwts_log_info_simp_int(fw, "    Proximity Domain:               ", domain->proximity_domain);
-		domain++;
-		/* TODO cross check proximity domain with SRAT table*/
-	}
-
-	offset += sizeof(fwts_acpi_table_pmtt_domain) * entry->domain_count;
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
+		/* stop if sub-structure is outside the table */
+		if (fwts_acpi_structure_range_check(fw, "PMTT", table->length, entry_offset + offset)) {
+			*passed = false;
+			break;
+		}
+
 		if (header->length == 0) {
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"PMTTBadSubtableLength",
@@ -111,22 +101,18 @@ static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 			break;
 		}
 
-		if (header->type == FWTS_ACPI_PMTT_TYPE_DIMM) {
-			pmtt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) header, passed);
-		} else {
-			*passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"PMTTBadSubtableType",
-				"PMTT Controller must have subtable with Type 2, got "
-				"0x%4.4" PRIx16 " instead", header->type);
-		}
+		pmtt_memory_device(fw, header, entry_offset + offset, passed);
 
 		offset += header->length;
 		header = (fwts_acpi_table_pmtt_header *)(((char *) entry) + offset);
 	}
 }
 
-static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *entry, bool *passed)
+static void pmtt_socket_test(
+	fwts_framework *fw,
+	fwts_acpi_table_pmtt_socket *entry,
+	uint32_t entry_offset,
+	bool *passed)
 {
 	fwts_acpi_table_pmtt_header *header;
 	uint32_t offset;
@@ -140,6 +126,12 @@ static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *en
 	offset = sizeof(fwts_acpi_table_pmtt_socket);
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
+		/* stop if sub-structure is outside the table */
+		if (fwts_acpi_structure_range_check(fw, "PMTT", table->length, entry_offset + offset)) {
+			*passed = false;
+			break;
+		}
+
 		if (header->length == 0) {
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"PMTTBadSubtableLength",
@@ -147,18 +139,39 @@ static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *en
 			break;
 		}
 
-		if (header->type == FWTS_ACPI_PMTT_TYPE_CONTROLLER) {
-			pmtt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) header, passed);
-		} else {
-			*passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"PMTTBadSubtableType",
-				"PMTT Socket must have subtable with Type 1, got "
-				"0x%4.4" PRIx16 " instead", header->type);
-		}
+		pmtt_memory_device(fw, header, entry_offset + offset, passed);
 
 		offset += header->length;
 		header = (fwts_acpi_table_pmtt_header *)(((char *) entry) + offset);
+	}
+}
+
+static void pmtt_memory_device(
+	fwts_framework *fw,
+	fwts_acpi_table_pmtt_header *entry,
+	uint32_t offset,
+	bool *passed)
+{
+	switch(entry->type) {
+		case FWTS_ACPI_PMTT_TYPE_SOCKET:
+			pmtt_socket_test(fw, (fwts_acpi_table_pmtt_socket *) entry, offset, passed);
+			break;
+		case FWTS_ACPI_PMTT_TYPE_CONTROLLER:
+			pmtt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) entry, offset, passed);
+			break;
+		case FWTS_ACPI_PMTT_TYPE_DIMM:
+			pmtt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) entry, passed);
+			break;
+		case FWTS_ACPI_PMTT_TYPE_VENDOR_SPECIFIC:
+			/* no tests for vendor-specific type */
+			break;
+		default:
+			*passed = false;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"PMTTBadSubtableType",
+				"PMTT must have subtable with Type 1..2 or 0xFF, got "
+				"0x%4.4" PRIx16 " instead", entry->type);
+			break;
 	}
 }
 
@@ -169,10 +182,14 @@ static int pmtt_test1(fwts_framework *fw)
 	uint32_t offset;
 	bool passed = true;
 
-	fwts_log_info_verbatim(fw, "PMTT Table:");
-	fwts_log_info_simp_int(fw, "  Reserved:                         ", pmtt->reserved);
+	if (pmtt->header.revision < 2) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, "PMTTDeprecatedRevision",
+			"PMTT Revision 1 has been deprecated in ACPI 6.4");
+		return FWTS_OK;
+	}
 
-	fwts_acpi_reserved_zero_check("PMTT", "Reserved", pmtt->reserved, &passed);
+	fwts_log_info_verbatim(fw, "PMTT Table:");
+	fwts_log_info_simp_int(fw, "  Number of Memory Devices:         ", pmtt->num_devices);
 
 	entry = (fwts_acpi_table_pmtt_header *) (table->data + sizeof(fwts_acpi_table_pmtt));
 	offset = sizeof(fwts_acpi_table_pmtt);
@@ -186,29 +203,12 @@ static int pmtt_test1(fwts_framework *fw)
 			break;
 		}
 
-		switch(entry->type) {
-			case FWTS_ACPI_PMTT_TYPE_SOCKET:
-				pmtt_socket_test(fw, (fwts_acpi_table_pmtt_socket *) entry, &passed);
-				break;
-			case FWTS_ACPI_PMTT_TYPE_CONTROLLER:
-				pmtt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) entry, &passed);
-				break;
-			case FWTS_ACPI_PMTT_TYPE_DIMM:
-				pmtt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) entry, &passed);
-				break;
-			default:
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PMTTBadSubtableType",
-					"PMTT must have subtable with Type 1..2, got "
-					"0x%4.4" PRIx16 " instead", entry->type);
-				break;
-		}
+		pmtt_memory_device(fw, entry, offset, &passed);
 
 		offset += entry->length;
 		entry = (fwts_acpi_table_pmtt_header *) (table->data + offset);
+		fwts_log_nl(fw);
 	}
-	fwts_log_nl(fw);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in PMTT table.");

@@ -2,116 +2,67 @@ pmtt            pmtt: PMTT Memory Topology Table test.
 pmtt            ----------------------------------------------------------
 pmtt            Test 1 of 1: Validate PMTT table.
 pmtt            PMTT Table:
-pmtt              Reserved:                         0x02000000
-pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT Reserved
-pmtt            field must be zero, got 0x02000000 instead
+pmtt              Number of Memory Devices:         0x00000008
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x00
-pmtt                Reserved:                       0x01
-pmtt                Length:                         0x0098
-pmtt                Flags:                          0x0001
-pmtt                Reserved:                       0x0003
-pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
-pmtt            Reserved1 field must be zero, got 0x01 instead
-pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
-pmtt            Reserved2 field must be zero, got 0x0003 instead
+pmtt                Reserved:                       0x00
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x000d
+pmtt                Reserved:                       0x0000
+pmtt            FAILED [HIGH] PMTTBadFlags: Test 1, PMTT Flags's
+pmtt            Bits[3..2] must not be 11b
 pmtt                Socket Identifier:              0x0001
-pmtt                Reserved:                       0x0400
-pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT Reserved
-pmtt            field must be zero, got 0x0400 instead
+pmtt                Reserved:                       0x0000
+pmtt            
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x01
-pmtt                Reserved:                       0x05
-pmtt                Length:                         0x006c
-pmtt                Flags:                          0x0005
-pmtt                Reserved:                       0x0000
-pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
-pmtt            Reserved1 field must be zero, got 0x05 instead
-pmtt                Read Latency:                   0x0000f000
-pmtt                Write latency:                  0x0000e000
-pmtt                Read Bandwidth:                 0x0000d000
-pmtt                Write Bandwidth:                0x0000c000
-pmtt                Optimal Access Unit:            0x0004
-pmtt                Optimal Access Alignment:       0x0008
-pmtt                Reserved:                       0x0600
-pmtt                Number of Proximity Domains:    0x0004
-pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT Reserved
-pmtt            field must be zero, got 0x0600 instead
-pmtt                Proximity Domain:               0x00001000
-pmtt                Proximity Domain:               0x00002000
-pmtt                Proximity Domain:               0x00003000
-pmtt                Proximity Domain:               0x00004000
-pmtt              PMTT Subtable:
-pmtt                Type:                           0x02
-pmtt                Reserved:                       0x07
-pmtt                Length:                         0x0014
+pmtt                Reserved:                       0x00
+pmtt                Length:                         0x0010
 pmtt                Flags:                          0x0002
 pmtt                Reserved:                       0x0000
-pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
-pmtt            Reserved1 field must be zero, got 0x07 instead
-pmtt                Physical Component Identifier:  0x0000
+pmtt                Memory Controller ID            0x4444
 pmtt                Reserved:                       0x0000
-pmtt                Size of DIMM:                   0xa0000000
-pmtt                SMBIOS Handle:                  0x0000000a
+pmtt            
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x02
 pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0014
-pmtt                Flags:                          0x0002
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x000c
 pmtt                Reserved:                       0x0000
-pmtt                Physical Component Identifier:  0x0001
-pmtt                Reserved:                       0x0000
-pmtt                Size of DIMM:                   0xb0000000
-pmtt                SMBIOS Handle:                  0x3412000b
+pmtt            FAILED [HIGH] PMTTBadFlags: Test 1, PMTT Flags's
+pmtt            Bits[3..2] must not be 11b
+pmtt                SMBIOS Handle:                  0x56781234
 pmtt            FAILED [HIGH] PMTTBADSMBIOSHandle: Test 1, PMTT upper 2
-pmtt            bytes must be zero, got 0x3412000b instead
-pmtt              PMTT Subtable:
-pmtt                Type:                           0x02
-pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0014
-pmtt                Flags:                          0x0002
-pmtt                Reserved:                       0x0000
-pmtt                Physical Component Identifier:  0x0001
-pmtt                Reserved:                       0x0000
-pmtt                Size of DIMM:                   0xc0000000
-pmtt                SMBIOS Handle:                  0xffffffff
-pmtt              PMTT Subtable:
-pmtt                Type:                           0x01
-pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0020
-pmtt                Flags:                          0x0001
-pmtt                Reserved:                       0x0000
-pmtt                Read Latency:                   0x00001000
-pmtt                Write latency:                  0x00002000
-pmtt                Read Bandwidth:                 0x00003000
-pmtt                Write Bandwidth:                0x00004000
-pmtt                Optimal Access Unit:            0x0004
-pmtt                Optimal Access Alignment:       0x0008
-pmtt                Reserved:                       0x0000
-pmtt                Number of Proximity Domains:    0x0000
+pmtt            bytes must be zero, got 0x56781234 instead
+pmtt            
+pmtt            
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x00
 pmtt                Reserved:                       0x00
-pmtt                Length:                         0x000c
-pmtt                Flags:                          0x0013
-pmtt                Reserved:                       0x0000
-pmtt            FAILED [HIGH] PMTTReservedBitsNonZero: Test 1, PMTT Flags
-pmtt            Bits [15..4] must be zero, got 0x0013 instead
-pmtt                Socket Identifier:              0x0002
-pmtt                Reserved:                       0x0000
-pmtt              PMTT Subtable:
-pmtt                Type:                           0x00
-pmtt                Reserved:                       0x00
-pmtt                Length:                         0x000c
+pmtt                Length:                         0x0010
 pmtt                Flags:                          0x000f
 pmtt                Reserved:                       0x0000
 pmtt            FAILED [HIGH] PMTTBadFlags: Test 1, PMTT Flags's
 pmtt            Bits[3..2] must not be 11b
-pmtt                Socket Identifier:              0x0003
+pmtt                Socket Identifier:              0x0001
 pmtt                Reserved:                       0x0000
 pmtt            
+pmtt              PMTT Subtable:
+pmtt                Type:                           0x01
+pmtt                Reserved:                       0x00
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x0005
+pmtt                Reserved:                       0x0000
+pmtt                Memory Controller ID            0x0000
+pmtt                Reserved:                       0x0000
+pmtt            
+pmtt            FAILED [HIGH] PMTTBadSubtableType: Test 1, PMTT must have
+pmtt            subtable with Type 1..2 or 0xFF, got 0x0004 instead
+pmtt            
+pmtt            FAILED [HIGH] PMTTLengthZero: Test 1, PMTT Subtable
+pmtt            (offset 0x00ab) length cannot be 0
 pmtt            
 pmtt            ==========================================================
-pmtt            0 passed, 10 failed, 0 warning, 0 aborted, 0 skipped, 0
+pmtt            0 passed, 6 failed, 0 warning, 0 aborted, 0 skipped, 0
 pmtt            info only.
 pmtt            ==========================================================

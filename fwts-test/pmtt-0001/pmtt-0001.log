@@ -2,93 +2,67 @@ pmtt            pmtt: PMTT Memory Topology Table test.
 pmtt            ----------------------------------------------------------
 pmtt            Test 1 of 1: Validate PMTT table.
 pmtt            PMTT Table:
-pmtt              Reserved:                         0x00000000
+pmtt              Number of Memory Devices:         0x00000008
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x00
 pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0098
+pmtt                Length:                         0x0010
 pmtt                Flags:                          0x0001
 pmtt                Reserved:                       0x0000
 pmtt                Socket Identifier:              0x0001
 pmtt                Reserved:                       0x0000
+pmtt            
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x01
 pmtt                Reserved:                       0x00
-pmtt                Length:                         0x006c
-pmtt                Flags:                          0x0005
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x0002
 pmtt                Reserved:                       0x0000
-pmtt                Read Latency:                   0x0000f000
-pmtt                Write latency:                  0x0000e000
-pmtt                Read Bandwidth:                 0x0000d000
-pmtt                Write Bandwidth:                0x0000c000
-pmtt                Optimal Access Unit:            0x0004
-pmtt                Optimal Access Alignment:       0x0008
+pmtt                Memory Controller ID            0x4444
 pmtt                Reserved:                       0x0000
-pmtt                Number of Proximity Domains:    0x0004
-pmtt                Proximity Domain:               0x00001000
-pmtt                Proximity Domain:               0x00002000
-pmtt                Proximity Domain:               0x00003000
-pmtt                Proximity Domain:               0x00004000
+pmtt            
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x02
 pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0014
-pmtt                Flags:                          0x0002
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x0004
 pmtt                Reserved:                       0x0000
-pmtt                Physical Component Identifier:  0x0000
-pmtt                Reserved:                       0x0000
-pmtt                Size of DIMM:                   0xa0000000
-pmtt                SMBIOS Handle:                  0x0000000a
-pmtt              PMTT Subtable:
-pmtt                Type:                           0x02
-pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0014
-pmtt                Flags:                          0x0002
-pmtt                Reserved:                       0x0000
-pmtt                Physical Component Identifier:  0x0001
-pmtt                Reserved:                       0x0000
-pmtt                Size of DIMM:                   0xb0000000
-pmtt                SMBIOS Handle:                  0x0000000b
-pmtt              PMTT Subtable:
-pmtt                Type:                           0x02
-pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0014
-pmtt                Flags:                          0x0002
-pmtt                Reserved:                       0x0000
-pmtt                Physical Component Identifier:  0x0001
-pmtt                Reserved:                       0x0000
-pmtt                Size of DIMM:                   0xc0000000
-pmtt                SMBIOS Handle:                  0xffffffff
-pmtt              PMTT Subtable:
-pmtt                Type:                           0x01
-pmtt                Reserved:                       0x00
-pmtt                Length:                         0x0020
-pmtt                Flags:                          0x0001
-pmtt                Reserved:                       0x0000
-pmtt                Read Latency:                   0x00001000
-pmtt                Write latency:                  0x00002000
-pmtt                Read Bandwidth:                 0x00003000
-pmtt                Write Bandwidth:                0x00004000
-pmtt                Optimal Access Unit:            0x0004
-pmtt                Optimal Access Alignment:       0x0008
-pmtt                Reserved:                       0x0000
-pmtt                Number of Proximity Domains:    0x0000
+pmtt                SMBIOS Handle:                  0x00001234
+pmtt            
+pmtt            
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x00
 pmtt                Reserved:                       0x00
-pmtt                Length:                         0x000c
+pmtt                Length:                         0x0010
 pmtt                Flags:                          0x0003
 pmtt                Reserved:                       0x0000
-pmtt                Socket Identifier:              0x0002
+pmtt                Socket Identifier:              0x0001
 pmtt                Reserved:                       0x0000
+pmtt            
 pmtt              PMTT Subtable:
-pmtt                Type:                           0x00
+pmtt                Type:                           0x01
 pmtt                Reserved:                       0x00
-pmtt                Length:                         0x000c
-pmtt                Flags:                          0x0007
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x0005
 pmtt                Reserved:                       0x0000
-pmtt                Socket Identifier:              0x0003
+pmtt                Memory Controller ID            0x0000
 pmtt                Reserved:                       0x0000
+pmtt            
+pmtt              PMTT Subtable:
+pmtt                Type:                           0x02
+pmtt                Reserved:                       0x00
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x0006
+pmtt                Reserved:                       0x0000
+pmtt                SMBIOS Handle:                  0x00001234
+pmtt            
+pmtt              PMTT Subtable:
+pmtt                Type:                           0x02
+pmtt                Reserved:                       0x00
+pmtt                Length:                         0x0010
+pmtt                Flags:                          0x0009
+pmtt                Reserved:                       0x0000
+pmtt                SMBIOS Handle:                  0x00005678
 pmtt            
 pmtt            PASSED: Test 1, No issues found in PMTT table.
 pmtt            

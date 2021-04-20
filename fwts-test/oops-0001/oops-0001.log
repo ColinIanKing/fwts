@@ -760,6 +760,49 @@ oops              RIP  [<ffffffff8107f19e>] kfifo_alloc+0x2e/0xb0
 oops               RSP <ffff880138739d08>
 oops              CR2: 0000000000000000
 oops            
+oops            Found OOPS (19):
+oops              kernel BUG at /build/buildd/linux-2.6.35/drivers/md/dm.c:2190!
+oops              invalid opcode: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/virtual/bdi/252:0/uevent
+oops              CPU 2 
+oops              Modules linked in: dm_raid45 xor usbhid hid sky2 pata_jmicron ahci libahci
+oops              
+oops              Pid: 581, comm: dmraid Tainted: G   M        2.6.35-19-generic #28-Ubuntu EVGA Classified SR-2/To Be Filled By O.E.M.
+oops              RIP: 0010:[<ffffffff81455aa2>]  [<ffffffff81455aa2>] dm_put+0x112/0x120
+oops              RSP: 0018:ffff880236e79be8  EFLAGS: 00010202
+oops              RAX: ffff880236f08000 RBX: ffff8802374c5800 RCX: 02000000000040c1
+oops              RDX: 000000000000001a RSI: ffffea0007c18a00 RDI: ffff8802374c5800
+oops              RBP: ffff880236e79c08 R08: 0000000000000067 R09: 0000000000000000
+oops              R10: ffff8802383a3200 R11: 0000000000000000 R12: ffff880237e09000
+oops              R13: ffff8802374c5800 R14: ffffc9001280e040 R15: 0000000000000020
+oops              FS:  00007f258130c7a0(0000) GS:ffff880001e40000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: 00007ff6c84d3000 CR3: 0000000237e8b000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process dmraid (pid: 581, threadinfo ffff880236e78000, task ffff880236d58000)
+oops              Stack:
+oops               ffffc9001280e040 0000000000000003 ffff880237e09000 ffff8802374c5800
+oops              <0> ffff880236e79d38 ffffffffa008edd6 ffff880237d2c600 00000001000000d2
+oops              <0> 0000000000000000 ffff880236e79ca0 00000000ffffffff 0000000000000001
+oops              Call Trace:
+oops               [<ffffffffa008edd6>] raid_ctr+0x5f6/0xa50 [dm_raid45]
+oops               [<ffffffff81458855>] ? dm_split_args+0x75/0x140
+oops               [<ffffffff81458a1f>] dm_table_add_target+0xff/0x240
+oops               [<ffffffff8145acf5>] populate_table+0x85/0x140
+oops               [<ffffffff8145ae3f>] table_load+0x8f/0x1f0
+oops               [<ffffffff8145adb0>] ? table_load+0x0/0x1f0
+oops               [<ffffffff8145bf05>] ctl_ioctl+0x1a5/0x250
+oops               [<ffffffff8145bfc3>] dm_ctl_ioctl+0x13/0x20
+oops               [<ffffffff8116172d>] vfs_ioctl+0x3d/0xd0
+oops               [<ffffffff81162001>] do_vfs_ioctl+0x81/0x340
+oops               [<ffffffff81162341>] sys_ioctl+0x81/0xa0
+oops               [<ffffffff8158831e>] ? do_device_not_available+0xe/0x10
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 00 00 48 89 df e8 2f e3 ff ff e9 44 ff ff ff eb 08 90 90 90 90 90 90 90 90 4c 89 e7 e8 98 15 00 00 4c 89 e7 e8 b0 15 00 00 eb 85 <0f> 0b eb fe eb 08 90 90 90 90 90 90 90 90 55 48 89 e5 0f 1f 44 
+oops              RIP  [<ffffffff81455aa2>] dm_put+0x112/0x120
+oops               RSP <ffff880236e79be8>
+oops            
 oops            Found WARNING (1):
 oops              WARNING: at /build/buildd/linux-2.6.35/lib/kobject.c:595 kobject_put+0x50/0x60()
 oops              Hardware name: To Be Filled By O.E.M.
@@ -783,7 +826,7 @@ oops               [<ffffffff8158b4ae>] ? do_page_fault+0x15e/0x350
 oops               [<ffffffff81162341>] sys_ioctl+0x81/0xa0
 oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
 oops            
-oops            Found OOPS (19):
+oops            Found OOPS (20):
 oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
 oops              IP: [<ffffffff81182189>] bdput+0x9/0x20
 oops              PGD 2220c7067 PUD 2220c6067 PMD 0 
@@ -828,7 +871,87 @@ oops              RIP  [<ffffffff81182189>] bdput+0x9/0x20
 oops               RSP <ffff8803b5031d98>
 oops              CR2: 0000000000000008
 oops            
-oops            Found OOPS (20):
+oops            Found OOPS (21):
+oops              kernel BUG at /build/buildd/linux-2.6.35/drivers/md/dm.c:2190!
+oops              invalid opcode: 0000 [#3] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:1f.2/host4/target4:0:0/4:0:0:0/block/sda/sda3/alignment_offset
+oops              CPU 12 
+oops              Modules linked in: ip6table_filter ip6_tables nf_nat_irc nf_conntrack_irc snd_hda_intel(+) nf_nat_ftp nf_nat snd_hda_codec snd_ctxfi nf_conntrack_ipv4 nf_defrag_ipv4 nf_conntrack_ftp nf_conntrack snd_hwdep snd_pcm snd_seq_midi snd_rawmidi iptable_filter snd_seq_midi_event ip_tables snd_seq snd_timer nouveau snd_seq_device ttm drm_kms_helper snd drm x_tables soundcore i2c_algo_bit snd_page_alloc joydev shpchp lp xhci_hcd psmouse i7core_edac serio_raw edac_core parport dm_raid45 xor usbhid hid sky2 pata_jmicron ahci libahci
+oops              
+oops              Pid: 1303, comm: dmraid Tainted: G   M  D W   2.6.35-19-generic #28-Ubuntu EVGA Classified SR-2/To Be Filled By O.E.M.
+oops              RIP: 0010:[<ffffffff81455aa2>]  [<ffffffff81455aa2>] dm_put+0x112/0x120
+oops              RSP: 0018:ffff8803b2217dc8  EFLAGS: 00010202
+oops              RAX: 0000000000000000 RBX: ffff8802374c5800 RCX: 00000000000000ff
+oops              RDX: 0000000000000286 RSI: 0000000000000286 RDI: ffff8802374c5800
+oops              RBP: ffff8803b2217de8 R08: ffff8803b566cac0 R09: ffff8803b2217bb4
+oops              R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+oops              R13: ffffc90013bda000 R14: 0000000000004000 R15: 0000000000000000
+oops              FS:  00007f583ee767a0(0000) GS:ffff880245680000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 00007fffe736bff8 CR3: 00000003b4492000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process dmraid (pid: 1303, threadinfo ffff8803b2216000, task ffff8803b611adc0)
+oops              Stack:
+oops               0000000000000000 ffff8802374c5800 0000000000000000 ffffc90013bda000
+oops              <0> ffff8803b2217e28 ffffffff8145a864 ffff8803b2217e00 ffff8803b611adc0
+oops              <0> 0000000000ed0620 ffffffff8145a810 000000000000000c 0000000000000000
+oops              Call Trace:
+oops               [<ffffffff8145a864>] table_status+0x54/0xa0
+oops               [<ffffffff8145a810>] ? table_status+0x0/0xa0
+oops               [<ffffffff8145bf05>] ctl_ioctl+0x1a5/0x250
+oops               [<ffffffff8111b26b>] ? do_anonymous_page+0x11b/0x330
+oops               [<ffffffff8145bfc3>] dm_ctl_ioctl+0x13/0x20
+oops               [<ffffffff8116172d>] vfs_ioctl+0x3d/0xd0
+oops               [<ffffffff81162001>] do_vfs_ioctl+0x81/0x340
+oops               [<ffffffff8158b4ae>] ? do_page_fault+0x15e/0x350
+oops               [<ffffffff81162341>] sys_ioctl+0x81/0xa0
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 00 00 48 89 df e8 2f e3 ff ff e9 44 ff ff ff eb 08 90 90 90 90 90 90 90 90 4c 89 e7 e8 98 15 00 00 4c 89 e7 e8 b0 15 00 00 eb 85 <0f> 0b eb fe eb 08 90 90 90 90 90 90 90 90 55 48 89 e5 0f 1f 44 
+oops              RIP  [<ffffffff81455aa2>] dm_put+0x112/0x120
+oops               RSP <ffff8803b2217dc8>
+oops            
+oops            Found OOPS (22):
+oops              kernel BUG at /build/buildd/linux-2.6.35/drivers/md/dm.c:2190!
+oops              invalid opcode: 0000 [#4] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:1f.2/host4/target4:0:0/4:0:0:0/block/sda/sda3/alignment_offset
+oops              CPU 12 
+oops              Modules linked in: ip6table_filter ip6_tables nf_nat_irc nf_conntrack_irc snd_hda_intel(+) nf_nat_ftp nf_nat snd_hda_codec snd_ctxfi nf_conntrack_ipv4 nf_defrag_ipv4 nf_conntrack_ftp nf_conntrack snd_hwdep snd_pcm snd_seq_midi snd_rawmidi iptable_filter snd_seq_midi_event ip_tables snd_seq snd_timer nouveau snd_seq_device ttm drm_kms_helper snd drm x_tables soundcore i2c_algo_bit snd_page_alloc joydev shpchp lp xhci_hcd psmouse i7core_edac serio_raw edac_core parport dm_raid45 xor usbhid hid sky2 pata_jmicron ahci libahci
+oops              
+oops              Pid: 1301, comm: dmraid Tainted: G   M  D W   2.6.35-19-generic #28-Ubuntu EVGA Classified SR-2/To Be Filled By O.E.M.
+oops              RIP: 0010:[<ffffffff81455aa2>]  [<ffffffff81455aa2>] dm_put+0x112/0x120
+oops              RSP: 0018:ffff880222b05dc8  EFLAGS: 00010202
+oops              RAX: 0000000000000000 RBX: ffff8802374c5800 RCX: 00000000000000ff
+oops              RDX: 0000000000000286 RSI: 0000000000000286 RDI: ffff8802374c5800
+oops              RBP: ffff880222b05de8 R08: ffff8803b566cae0 R09: ffff880222b05bb4
+oops              R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+oops              R13: ffffc90013be0000 R14: 0000000000004000 R15: 0000000000000000
+oops              FS:  00007fbbd52417a0(0000) GS:ffff880245680000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 00007fffaeec7ed8 CR3: 00000003b2e62000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process dmraid (pid: 1301, threadinfo ffff880222b04000, task ffff8802382e0000)
+oops              Stack:
+oops               0000000000000000 ffff8802374c5800 0000000000000000 ffffc90013be0000
+oops              <0> ffff880222b05e28 ffffffff8145a864 ffff880222b05e00 ffff8802382e0000
+oops              <0> 0000000001dfa620 ffffffff8145a810 000000000000000c 0000000000000000
+oops              Call Trace:
+oops               [<ffffffff8145a864>] table_status+0x54/0xa0
+oops               [<ffffffff8145a810>] ? table_status+0x0/0xa0
+oops               [<ffffffff8145bf05>] ctl_ioctl+0x1a5/0x250
+oops               [<ffffffff8111b26b>] ? do_anonymous_page+0x11b/0x330
+oops               [<ffffffff8145bfc3>] dm_ctl_ioctl+0x13/0x20
+oops               [<ffffffff8116172d>] vfs_ioctl+0x3d/0xd0
+oops               [<ffffffff81162001>] do_vfs_ioctl+0x81/0x340
+oops               [<ffffffff8158b4ae>] ? do_page_fault+0x15e/0x350
+oops               [<ffffffff81162341>] sys_ioctl+0x81/0xa0
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 00 00 48 89 df e8 2f e3 ff ff e9 44 ff ff ff eb 08 90 90 90 90 90 90 90 90 4c 89 e7 e8 98 15 00 00 4c 89 e7 e8 b0 15 00 00 eb 85 <0f> 0b eb fe eb 08 90 90 90 90 90 90 90 90 55 48 89 e5 0f 1f 44 
+oops              RIP  [<ffffffff81455aa2>] dm_put+0x112/0x120
+oops               RSP <ffff880222b05dc8>
+oops            
+oops            Found OOPS (23):
 oops              BUG: unable to handle kernel paging request at f8147540
 oops              IP: [<c0400abe>] driver_register+0xfe/0x130
 oops              *pde = 3716d067 *pte = 00000000 
@@ -860,7 +983,7 @@ oops              Code: 89 f0 e8 86 ea ff ff 83 c4 10 89 f8 5b 5e 5f 5d c3 8b 06
 oops              EIP: [<c0400abe>] driver_register+0xfe/0x130 SS:ESP 0068:f6899f18
 oops              CR2: 00000000f8147540
 oops            
-oops            Found OOPS (21):
+oops            Found OOPS (24):
 oops              BUG: unable to handle kernel paging request at ffffc900102b8000
 oops              IP: [<ffffffffa014ac76>] azx_create+0x36b/0x73d [snd_hda_intel]
 oops              PGD 1d897067 PUD 1d898067 PMD 1693c067 PTE 800000fd00000173
@@ -901,7 +1024,7 @@ oops              RIP  [<ffffffffa014ac76>] azx_create+0x36b/0x73d [snd_hda_inte
 oops               RSP <ffff88001a7d7e20>
 oops              CR2: ffffc900102b8000
 oops            
-oops            Found OOPS (22):
+oops            Found OOPS (25):
 oops              BUG: unable to handle kernel NULL pointer dereference at (null)
 oops              IP: [<c05cb14a>] __mutex_lock_slowpath+0x9a/0x140
 oops              *pde = df469067 
@@ -933,7 +1056,7 @@ oops              Code: 83 79 18 63 7f b3 8d 76 00 8d 73 04 89 f0 e8 5e 11 00 00
 oops              EIP: [<c05cb14a>] __mutex_lock_slowpath+0x9a/0x140 SS:ESP 0068:f6a71eb4
 oops              CR2: 0000000000000000
 oops            
-oops            Found OOPS (23):
+oops            Found OOPS (26):
 oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
 oops              IP: [<ffffffffa012d3c6>] ips_detect_cpu+0x76/0x1d0 [intel_ips]
 oops              PGD 130ef4067 PUD 130ef3067 PMD 0 
@@ -989,7 +1112,7 @@ oops              RIP  [<ffffffffa012d3c6>] ips_detect_cpu+0x76/0x1d0 [intel_ips
 oops               RSP <ffff88012d92bc48>
 oops              CR2: 0000000000000008
 oops            
-oops            Found OOPS (24):
+oops            Found OOPS (27):
 oops              BUG: unable to handle kernel NULL pointer dereference at 00000008
 oops              IP: [<f88f5452>] ips_detect_cpu+0x62/0x180 [intel_ips]
 oops              *pdpt = 0000000035926001 *pde = 0000000000000000 
@@ -1040,7 +1163,7 @@ oops              Code: d5 83 c7 90 ba f5 6d 8f f8 b8 8c 42 85 c0 e8 56 ea a6 c7
 oops              EIP: [<f88f5452>] ips_detect_cpu+0x62/0x180 [intel_ips] SS:ESP 0068:f5965de4
 oops              CR2: 0000000000000008
 oops            
-oops            Found OOPS (25):
+oops            Found OOPS (28):
 oops              BUG: unable to handle kernel paging request at ffffc90000360000
 oops              IP: [<ffffffffa0098c76>] azx_create+0x36b/0x73d [snd_hda_intel]
 oops              PGD 75417067 PUD 75418067 PMD 75522067 PTE 800000fd00000173
@@ -1081,7 +1204,7 @@ oops              RIP  [<ffffffffa0098c76>] azx_create+0x36b/0x73d [snd_hda_inte
 oops               RSP <ffff880073aa5e20>
 oops              CR2: ffffc90000360000
 oops            
-oops            Found OOPS (26):
+oops            Found OOPS (29):
 oops              BUG: unable to handle kernel paging request at ffffc90422101ffc
 oops              IP: [<ffffffffa03e0f7c>] evergreen_cp_start+0x4c/0x570 [radeon]
 oops              PGD 157c0c067 PUD 0 
@@ -1143,7 +1266,7 @@ oops              RIP  [<ffffffffa03e0f7c>] evergreen_cp_start+0x4c/0x570 [radeo
 oops               RSP <ffff880145bcbb48>
 oops              CR2: ffffc90422101ffc
 oops            
-oops            Found OOPS (27):
+oops            Found OOPS (30):
 oops              BUG: unable to handle kernel NULL pointer dereference at (null)
 oops              IP: [<(null)>] (null)
 oops              *pde = 00000000 
@@ -1172,7 +1295,7 @@ oops              Code:  Bad EIP value.
 oops              EIP: [<00000000>] 0x0 SS:ESP 0068:f5a61f78
 oops              CR2: 0000000000000000
 oops            
-oops            Found OOPS (28):
+oops            Found OOPS (31):
 oops              BUG: unable to handle kernel NULL pointer dereference at 0000018e
 oops              IP: [<c12aafb5>] fb_release+0x25/0x60
 oops              *pde = 00000000 
@@ -1202,7 +1325,7 @@ oops              Code: b4 26 00 00 00 00 55 89 e5 83 ec 08 89 1c 24 89 74 24 04
 oops              EIP: [<c12aafb5>] fb_release+0x25/0x60 SS:ESP 0068:f6df7f38
 oops              CR2: 000000000000018e
 oops            
-oops            Found OOPS (29):
+oops            Found OOPS (32):
 oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
 oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
@@ -1241,7 +1364,7 @@ oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops               RSP <ffff8801194a3d80>
 oops              CR2: ffffffffa0c8d860
 oops            
-oops            Found OOPS (30):
+oops            Found OOPS (33):
 oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
 oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
@@ -1279,7 +1402,7 @@ oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops               RSP <ffff88011bb7dd80>
 oops              CR2: ffffffffa0c8d860
 oops            
-oops            Found OOPS (31):
+oops            Found OOPS (34):
 oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
 oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
@@ -1317,7 +1440,7 @@ oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops               RSP <ffff88011ac0dd80>
 oops              CR2: ffffffffa0c8d860
 oops            
-oops            Found OOPS (32):
+oops            Found OOPS (35):
 oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
 oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
@@ -1355,7 +1478,7 @@ oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops               RSP <ffff880127ea7d80>
 oops              CR2: ffffffffa0c8d860
 oops            
-oops            Found OOPS (33):
+oops            Found OOPS (36):
 oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
 oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
@@ -1393,7 +1516,7 @@ oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops               RSP <ffff88011976dd80>
 oops              CR2: ffffffffa0c8d860
 oops            
-oops            Found OOPS (34):
+oops            Found OOPS (37):
 oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
 oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
@@ -1431,7 +1554,7 @@ oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
 oops               RSP <ffff880116f57d80>
 oops              CR2: ffffffffa0c8d860
 oops            
-oops            Found OOPS (35):
+oops            Found OOPS (38):
 oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000065
 oops              IP: [<ffffffffa0111689>] ReadVBIOSTablData+0x29/0x410 [xgifb]
 oops              PGD 20b5aa067 PUD 20b5a9067 PMD 0 
@@ -1488,7 +1611,7 @@ oops              RIP  [<ffffffffa0111689>] ReadVBIOSTablData+0x29/0x410 [xgifb]
 oops               RSP <ffff88020c81f8c8>
 oops              CR2: 0000000000000065
 oops            
-oops            Found OOPS (36):
+oops            Found OOPS (39):
 oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
 oops              IP: [<ffffffffa01ed840>] ses_enclosure_data_process+0x1a0/0x3a0 [ses]
 oops              PGD 13361f067 PUD 133627067 PMD 0 
@@ -1535,7 +1658,7 @@ oops              RIP  [<ffffffffa01ed840>] ses_enclosure_data_process+0x1a0/0x3
 oops               RSP <ffff8801035e9d88>
 oops              CR2: 0000000000000008
 oops            
-oops            FAILED [CRITICAL] KernelOops: Test 1, Found 36 oopses in
+oops            FAILED [CRITICAL] KernelOops: Test 1, Found 39 oopses in
 oops            kernel log.
 oops            FAILED [HIGH] KernelWarnOns: Test 1, Found 1 WARN_ON
 oops            warnings in kernel log.

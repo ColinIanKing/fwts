@@ -5,7 +5,7 @@ summary         Test Failure Summary
 summary         ==========================================================================================================================================================================================================================================================================================================================================================================================
 summary         
 summary         Critical failures: 1
-summary          oops: Found 36 oopses in kernel log.
+summary          oops: Found 39 oopses in kernel log.
 summary         
 summary         High failures: 1
 summary          oops: Found 1 WARN_ON warnings in kernel log.

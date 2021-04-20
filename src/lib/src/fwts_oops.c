@@ -57,6 +57,8 @@ static void fwts_klog_stack_dump(
 
 		if (strstr(line, "Oops:"))
 			dumpable |= FWTS_OOPS_GOT_OOPS;
+		if (strstr(line, "kernel BUG at"))
+			dumpable |= FWTS_OOPS_GOT_OOPS;
 		if (strstr(line, "WARNING: at"))
 			dumpable |= FWTS_OOPS_GOT_WARN_ON;
 		if (strstr(line, "Call Trace:"))
@@ -129,6 +131,7 @@ int fwts_oops_check(fwts_framework *fw, fwts_list *klog, int *oopses, int *warn_
 	fwts_list_foreach(item, klog) {
 		char *line = fwts_klog_remove_timestamp(fwts_list_data(char *, item));
 		if ((strncmp("BUG:", line, 4) == 0) ||
+		    (strncmp("kernel BUG", line, 10) == 0) ||
 		    (strncmp("WARNING:", line, 8) == 0))
 			fwts_klog_stack_dump(fw, item, oopses, warn_ons);
 	}

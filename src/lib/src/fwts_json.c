@@ -262,6 +262,18 @@ int json_get_keyword(json_file *jfile, json_token *token)
 }
 
 /*
+ *  json_free_token()
+ *	free any heap allocated members in token when required
+ */
+void json_free_token(json_token *token)
+{
+	if (token->type == token_string) {
+		free(token->u.str);
+		token->u.str = NULL;
+	}
+}
+
+/*
  *  json_get_token()
  *	read next input character(s) and return a matching token
  */
@@ -363,10 +375,14 @@ json_object *json_parse_array(json_file *jfile)
 		obj = json_parse_object(jfile);
 		if (!obj) {
 			json_parse_error_where(jfile);
-			free(array_obj);
+			json_object_put(array_obj);
 			return NULL;
 		}
-		json_object_array_add(array_obj, obj);
+		if (json_object_array_add(array_obj, obj) < 0) {
+			json_object_put(array_obj);
+			json_object_put(obj);
+			return NULL;
+		}
 
 		switch (json_get_token(jfile, &token)) {
 		case token_rbracket:
@@ -376,9 +392,11 @@ json_object *json_parse_array(json_file *jfile)
 		default:
 			if (json_unget_token(jfile, &token) != 0) {
 				fprintf(stderr, "json_parser: failed to unget a token\n");
-				free(array_obj);
+				json_object_put(array_obj);
+				json_free_token(&token);
 				return NULL;
 			}
+			json_free_token(&token);
 			break;
 		}
 	}
@@ -393,10 +411,10 @@ json_object *json_parse_object(json_file *jfile)
 {
 	json_token token;
 	json_object *obj, *val_obj;
-	char *key = NULL;
 
 	if (json_get_token(jfile, &token) != token_lbrace) {
 		fprintf(stderr, "json_parser: expecting '{', got %s instead\n", json_token_string(&token));
+		json_free_token(&token);
 		return NULL;
 	}
 
@@ -405,59 +423,76 @@ json_object *json_parse_object(json_file *jfile)
 		goto err_nomem;
 
 	for (;;) {
+		char *key = NULL;
+
 		switch (json_get_token(jfile, &token)) {
 		case token_rbrace:
+			json_free_token(&token);
 			return obj;
 		case token_string:
-			key = token.u.str;
+			key = strdup(token.u.str);
 			if (!key)
 				goto err_nomem;
-			token.u.str = NULL;
+			json_free_token(&token);
 			break;
 		default:
 			fprintf(stderr, "json_parser: expecting } or key literal string, got %s instead\n", json_token_string(&token));
 			goto err_free;
 		}
+
+		json_free_token(&token);
 		if (json_get_token(jfile, &token) != token_colon) {
 			fprintf(stderr, "json_parser: expecting ':', got %s instead\n", json_token_string(&token));
+			free(key);
 			goto err_free;
 		}
 		switch (json_get_token(jfile, &token)) {
 		case token_string:
 			val_obj = json_object_new_string(token.u.str);
-			if (!val_obj)
+			if (!val_obj) {
+				free(key);
 				goto err_nomem;
+			}
 			json_object_object_add(obj, key, val_obj);
-			free(key);
 			break;
 		case token_int:
 			val_obj = json_object_new_int(token.u.intval);
-			if (!val_obj)
+			if (!val_obj) {
+				free(key);
 				goto err_nomem;
+			}
 			json_object_object_add(obj, key, val_obj);
-			free(key);
 			break;
 		case token_lbracket:
 			val_obj = json_parse_array(jfile);
-			if (!val_obj)
+			if (!val_obj) {
+				free(key);
 				goto err_nomem;
+			}
 			json_object_object_add(obj, key, val_obj);
 			break;
 		case token_lbrace:
 			fprintf(stderr, "json_parser: nested objects not supported\n");
+			free(key);
 			goto err_free;
 		case token_true:
 		case token_false:
 		case token_null:
 			fprintf(stderr, "json_parser: tokens %s not supported\n", json_token_string(&token));
+			free(key);
 			goto err_free;
 		default:
 			fprintf(stderr, "json_parser: unexpected token %s\n", json_token_string(&token));
 		}
+		free(key);
+
+		json_free_token(&token);
 		switch (json_get_token(jfile, &token)) {
 		case token_comma:
+			json_free_token(&token);
 			continue;
 		case token_rbrace:
+			json_free_token(&token);
 			return obj;
 		default:
 			fprintf(stderr, "json_parser: expected , or }, got %s instead\n", json_token_string(&token));
@@ -470,6 +505,7 @@ err_nomem:
 	json_parse_error_where(jfile);
 err_free:
 	free(obj);
+	json_free_token(&token);
 	return NULL;
 }
 
@@ -880,6 +916,7 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 					return NULL;
 				}
 				str = str_append(str, obj_str);
+				free(obj_str);
 				if (!str)
 					return NULL;
 			}
@@ -919,6 +956,7 @@ static char *json_object_to_json_string_indent(json_object *obj, int indent)
 					return NULL;
 				}
 				str = str_append(str, obj_str);
+				free(obj_str);
 				if (!str)
 					return NULL;
 			}

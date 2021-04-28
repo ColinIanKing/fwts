@@ -305,7 +305,7 @@ static ssize_t memconsole_coreboot_read(
 char *fwts_coreboot_cbmem_console_dump(void)
 {
 	unsigned int j;
-	off_t cbmem_console_addr;
+	off_t cbmem_console_addr = (off_t)-1;
 	unsigned long long possible_base_addresses[] = { 0, 0xf0000 };
 	struct cbmem_console *console_p;
 	struct cbmem_console *console;
@@ -317,7 +317,7 @@ char *fwts_coreboot_cbmem_console_dump(void)
 		if (!parse_cbtable(possible_base_addresses[j], 0, &cbmem_console_addr))
 			break;
 	}
-	if (j == FWTS_ARRAY_SIZE(possible_base_addresses))
+	if (cbmem_console_addr == (off_t)-1)
 		return NULL;
 
 	console_p = map_memory(cbmem_console_addr, sizeof(*console_p));

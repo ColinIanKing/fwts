@@ -64,7 +64,6 @@ static uint16_t variablenametest[] = {'T', 'e', 's', 't', 'v', 'a', 'r', '\0'};
 static uint16_t variablenametest2[] = {'T', 'e', 's', 't', 'v', 'a', 'r', ' ', '\0'};
 static uint16_t variablenametest3[] = {'T', 'e', 's', 't', 'v', 'a', '\0'};
 
-static bool have_rtsupported;
 static uint32_t runtimeservicessupported;
 
 static void uefirtvariable_env_cleanup(void)
@@ -103,8 +102,7 @@ static int uefirtvariable_init(fwts_framework *fw)
 
 	uefirtvariable_env_cleanup();
 
-	fwts_uefi_rt_support_status_get(fd, &have_rtsupported,
-			&runtimeservicessupported);
+	fwts_uefi_rt_support_status_get(fd, &runtimeservicessupported);
 
 	return FWTS_OK;
 }

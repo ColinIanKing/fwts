@@ -682,7 +682,7 @@ char *fwts_uefi_attribute_info(uint32_t attr);
 
 bool fwts_uefi_efivars_iface_exist(void);
 
-void fwts_uefi_rt_support_status_get(int fd, bool *have_rtsupported, uint32_t *rtservicessupported);
+void fwts_uefi_rt_support_status_get(int fd, uint32_t *rtservicessupported);
 PRAGMA_POP
 
 #endif

@@ -177,6 +177,9 @@ static int spcr_test1(fwts_framework *fw)
 
 	reserved = false;
 	switch (spcr->baud_rate) {
+	case 0x00:
+		str = "preconfigured in firmware";
+		break;
 	case 0x03:
 		str = "9600";
 		break;

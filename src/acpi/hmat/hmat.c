@@ -199,13 +199,12 @@ static int hmat_test1(fwts_framework *fw)
 			break;
 		}
 
-		if ((offset += entry->length) > table->length) {
+		offset += entry->length;
+		if (fwts_acpi_structure_range_check(fw, "HMAT", table->length, offset)) {
 			passed = false;
-			fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"HMATBadTableLength",
-				"HMAT has more subtypes than its size can handle");
 			break;
 		}
+
 		entry = (fwts_acpi_table_hmat_header *) (table->data + offset);
 		fwts_log_nl(fw);
 	}

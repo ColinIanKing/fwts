@@ -516,7 +516,13 @@ static int nfit_test1(fwts_framework *fw)
 
 		fwts_acpi_reserved_zero_check("NFIT", "Reserved", reserved_passed, &passed);
 		fwts_log_nl(fw);
+
 		offset += entry->length;
+		if (fwts_acpi_structure_range_check(fw, "NFIT", nfit_table->length, offset)) {
+			passed = false;
+			break;
+		}
+
 		entry = (fwts_acpi_table_nfit_struct_header *)(nfit_table->data + offset);
 	}
 

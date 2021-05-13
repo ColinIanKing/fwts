@@ -206,6 +206,11 @@ static int pmtt_test1(fwts_framework *fw)
 		pmtt_memory_device(fw, entry, offset, &passed);
 
 		offset += entry->length;
+		if (fwts_acpi_structure_range_check(fw, "PMTT", table->length, offset)) {
+			passed = false;
+			break;
+		}
+
 		entry = (fwts_acpi_table_pmtt_header *) (table->data + offset);
 		fwts_log_nl(fw);
 	}

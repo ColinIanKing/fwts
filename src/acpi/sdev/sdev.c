@@ -104,11 +104,9 @@ static int sdev_test1(fwts_framework *fw)
 			break;
 		}
 
-		if ((offset += entry->length) > table->length) {
+		offset += entry->length;
+		if (fwts_acpi_structure_range_check(fw, "SDEV", table->length, offset)) {
 			passed = false;
-			fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"SDEVBadTableLength",
-				"SDEV has more subtypes than its size can handle");
 			break;
 		}
 

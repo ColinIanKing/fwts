@@ -54,6 +54,8 @@ static const uint32_t attributes =
 
 static uint16_t variablenametest[] = {'A', 'u', 't', 'h', 'V', 'a', 'r', 'T', 'e', 's', 't', '\0'};
 
+static uint32_t runtimeservicessupported;
+
 static long setvar(
 	EFI_GUID *guid,
 	uint32_t var_attributes,
@@ -117,6 +119,18 @@ static int uefirtauthvar_init(fwts_framework *fw)
 {
 	if (fwts_lib_efi_runtime_module_init(fw, &fd) == FWTS_ABORTED)
 		return FWTS_ABORTED;
+
+	fwts_uefi_rt_support_status_get(fd, &runtimeservicessupported);
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	} else if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, GetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	uefirtvariable_env_cleanup();
 

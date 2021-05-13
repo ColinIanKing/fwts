@@ -134,6 +134,12 @@ static int getvariable_test(
 	uint8_t data[datasize];
 	uint32_t i;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
 
@@ -167,6 +173,12 @@ static int getvariable_test(
 			"Failed to set variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
+	}
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, GetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
 	}
 
 	getvariable.VariableName = varname;
@@ -311,6 +323,12 @@ static int getnextvariable_test1(fwts_framework *fw)
 	bool found_name = false, found_guid = false;
 	int ret = FWTS_OK;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
 
@@ -344,6 +362,12 @@ static int getnextvariable_test1(fwts_framework *fw)
 			"Failed to set variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
+	}
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
+		fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
 	}
 
 	variablename = malloc(sizeof(uint16_t) * variablenamesize);
@@ -496,6 +520,12 @@ static int getnextvariable_test2(fwts_framework *fw)
 	uint16_t *variablename;
 	EFI_GUID vendorguid;
 	int ret = FWTS_OK;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
+		fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	variablename = malloc(sizeof(uint16_t) * variablenamesize);
 	if (!variablename) {
@@ -662,6 +692,12 @@ static int getnextvariable_test3(fwts_framework *fw)
 	EFI_GUID vendorguid;
 	int ret;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
+		fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	variablename = malloc(sizeof(uint16_t) * variablenamesize);
 	if (!variablename) {
 		fwts_skipped(fw, "Unable to alloc memory for variable name");
@@ -795,6 +831,12 @@ static int getnextvariable_test4(fwts_framework *fw)
 	uint16_t variablename[MAX_DATA_LENGTH];
 	EFI_GUID vendorguid;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
+		fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	getnextvariablename.VariableNameSize = &variablenamesize;
 	getnextvariablename.VendorGuid = &vendorguid;
 	getnextvariablename.status = &status;
@@ -912,6 +954,12 @@ static int setvariable_insertvariable(
 
 	uint8_t data[datasize + 1];
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex + datadiff;
 
@@ -987,6 +1035,12 @@ static int setvariable_checkvariable(
 	uint64_t getdatasize = sizeof(testdata);
 	uint32_t attributestest;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, GetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	getvariable.VariableName = varname;
 	getvariable.VendorGuid = gtestguid;
 	getvariable.Attributes = &attributestest;
@@ -1047,6 +1101,12 @@ static int setvariable_checkvariable_notfound(
 	uint64_t getdatasize = sizeof(testdata);
 	uint32_t attributestest;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, GetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	getvariable.VariableName = varname;
 	getvariable.VendorGuid = gtestguid;
 	getvariable.Attributes = &attributestest;
@@ -1085,6 +1145,13 @@ static int setvariable_invalidattr(
 	uint64_t status = ~0ULL;
 	uint64_t dataindex;
 	uint8_t data[datasize];
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex + datadiff;
@@ -1437,6 +1504,12 @@ static int setvariable_test8(fwts_framework *fw)
 	uint8_t data = 1;
 	uint64_t status = ~0ULL;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = &gtestguid1;
 	setvariable.Attributes = attr;
@@ -1500,6 +1573,12 @@ static int getnextvariable_multitest(
 	uint16_t variablename[MAX_DATA_LENGTH];
 	EFI_GUID vendorguid;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
 
@@ -1532,6 +1611,12 @@ static int getnextvariable_multitest(
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
 		return FWTS_ERROR;
+	}
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
+		fwts_skipped(fw, "Skipping test, GetNextVariableName runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
 	}
 
 	getnextvariablename.VariableNameSize = &variablenamesize;
@@ -1697,6 +1782,12 @@ static int uefirtvariable_test4(fwts_framework *fw)
 	uint64_t remvarstoragesize;
 	uint64_t maxvariablesize;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
+		fwts_skipped(fw, "Skipping test, QueryVariableInfo runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	if (do_queryvariableinfo(&status, &remvarstoragesize, &maxvariablesize) == FWTS_ERROR) {
 		if (status == EFI_UNSUPPORTED) {
 			fwts_skipped(fw,
@@ -1846,6 +1937,12 @@ static int uefirtvariable_test7(fwts_framework *fw)
 	fwts_log_info(fw, "Testing QueryVariableInfo on querying the variable %" PRIu32
 		" times.", uefi_query_variable_multiple);
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
+		fwts_skipped(fw, "Skipping test, QueryVariableInfo runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	/* first check if the firmware support QueryVariableInfo interface */
 	if (do_queryvariableinfo(&status, &remvarstoragesize, &maxvariablesize) == FWTS_ERROR) {
 		if (status == EFI_UNSUPPORTED) {
@@ -1890,6 +1987,12 @@ static void getvariable_test_invalid(
 {
 	long ioret;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, GetVariable runtime service "
+			"is not supported on this platform.");
+		return;
+	}
+
 	fwts_log_info(fw, "Testing GetVariable with %s.", test);
 	*(getvariable->status) = ~0ULL;
 
@@ -1932,6 +2035,12 @@ static int uefirtvariable_test8(fwts_framework *fw)
 	uint64_t getdatasize = sizeof(data);
 	uint32_t attr;
 	int ioret;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_VARIABLE)) {
+		fwts_skipped(fw, "Skipping test, SetVariable runtime service "
+			"is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	for (dataindex = 0; dataindex < sizeof(data); dataindex++)
 		data[dataindex] = (uint8_t)dataindex;

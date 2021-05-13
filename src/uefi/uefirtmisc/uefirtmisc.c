@@ -72,6 +72,12 @@ static int getnexthighmonotoniccount_test(fwts_framework *fw, uint32_t multitest
 	uint32_t highcount;
 	uint32_t i;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT)) {
+		fwts_skipped(fw, "Skipping test, GetNextHighMonotonicCount "
+			"runtime service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	getnexthighmonotoniccount.HighCount = &highcount;
 	getnexthighmonotoniccount.status = &status;
 
@@ -106,6 +112,12 @@ static int querycapsulecapabilities_test(fwts_framework *fw, uint32_t multitestt
 	EFI_CAPSULE_HEADER capsuleheader;
 	uint64_t maxcapsulesize;
 	uint64_t capsulecount;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_QUERY_CAPSULE_CAPABILITIES)) {
+		fwts_skipped(fw, "Skipping test, QueryCapsuleCapabilities "
+			"runtime service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	memset(&capsuleheader, 0, sizeof(capsuleheader));
 
@@ -162,10 +174,9 @@ static int uefirtmisc_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "Testing UEFI runtime service GetNextHighMonotonicCount interface.");
 	ret = getnexthighmonotoniccount_test(fw, multitesttime);
-	if (ret != FWTS_OK)
-		return ret;
-
-	fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount interface test passed.");
+	if (ret == FWTS_OK)
+		fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount"
+			" interface test passed.");
 
 	fwts_log_info(fw, "Testing UEFI runtime service QueryCapsuleCapabilities interface.");
 	for (i = 0; i < (sizeof(flag)/(sizeof flag[0])); i++) {
@@ -175,10 +186,12 @@ static int uefirtmisc_test1(fwts_framework *fw)
 		if (ret != FWTS_OK)
 			return ret;
 
-		fwts_passed(fw, "UEFI runtime service QueryCapsuleCapabilities interface test with flag value 0x%"PRIx32 " passed.", flag[i]);
+		fwts_passed(fw, "UEFI runtime service QueryCapsuleCapabilities"
+			" interface test with flag value 0x%"PRIx32 " passed.",
+			flag[i]);
 	}
 
-	return FWTS_OK;
+	return ret;
 }
 
 static int uefirtmisc_test2(fwts_framework *fw)
@@ -195,12 +208,23 @@ static int uefirtmisc_test2(fwts_framework *fw)
 		CAPSULE_FLAGS_PERSIST_ACROSS_RESET | CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE | CAPSULE_FLAGS_INITIATE_RESET
 	};
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT)) {
+		fwts_skipped(fw, "Skipping test, GetNextHighMonotonicCount "
+			"runtime service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	fwts_log_info(fw, "Stress testing for UEFI runtime service GetNextHighMonotonicCount interface.");
 	ret = getnexthighmonotoniccount_test(fw, multitesttime);
-	if (ret != FWTS_OK)
-		return ret;
+	if (ret == FWTS_OK)
+		fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount"
+			" interface test passed.");
 
-	fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount interface stress test passed.");
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_QUERY_CAPSULE_CAPABILITIES)) {
+		fwts_skipped(fw, "Skipping test, QueryCapsuleCapabilities "
+			"runtime service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	fwts_log_info(fw, "Stress testing UEFI runtime service QueryCapsuleCapabilities interface.");
 	for (i = 0; i < (sizeof(flag)/(sizeof flag[0])); i++) {
@@ -209,11 +233,13 @@ static int uefirtmisc_test2(fwts_framework *fw)
 			continue;
 		if (ret != FWTS_OK)
 			return ret;
-		fwts_passed(fw, "UEFI runtime service QueryCapsuleCapabilities interface stress test with flag value 0x%" PRIx32 " passed.", flag[i]);
 
+		fwts_passed(fw, "UEFI runtime service QueryCapsuleCapabilities"
+			" interface test with flag value 0x%"PRIx32 " passed.",
+			flag[i]);
 	}
 
-	return FWTS_OK;
+	return ret;
 }
 
 static int uefirtmisc_test3(fwts_framework *fw)
@@ -221,6 +247,12 @@ static int uefirtmisc_test3(fwts_framework *fw)
 	uint64_t status = ~0ULL;
 	long ioret;
 	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT)) {
+		fwts_skipped(fw, "Skipping test, GetNextHighMonotonicCount "
+			"runtime service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	getnexthighmonotoniccount.HighCount = NULL;
 	getnexthighmonotoniccount.status = &status;

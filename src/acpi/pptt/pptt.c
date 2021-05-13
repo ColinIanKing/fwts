@@ -145,11 +145,7 @@ static int pptt_test1(fwts_framework *fw)
 			pptt_id_test(fw, (fwts_acpi_table_pptt_id *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_id);
 		} else {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"PPTTBadSubtableType",
-				"PPTT must have subtable with Type 0..2, got "
-				"0x%2.2" PRIx8 " instead", entry->type);
+			fwts_acpi_reserved_type_check(fw, "PPTT", entry->type, 0, FWTS_ACPI_PPTT_RESERVED - 1, &passed);
 			break;
 		}
 

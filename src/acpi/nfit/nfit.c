@@ -506,12 +506,8 @@ static int nfit_test1(fwts_framework *fw)
 				reserved_passed = nfit_struct->reserved2;
 
 		} else {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"NFITBadSubType",
-				"NFIT Structure supports type 0..%" PRId8 ", got "
-				"0x%4.4" PRIx16 " instead", FWTS_ACPI_NFIT_TYPE_RESERVED - 1,
-				entry->type);
+			fwts_acpi_reserved_type_check(fw, "NFIT", entry->type, 0, FWTS_ACPI_NFIT_TYPE_RESERVED - 1, &passed);
+			break;
 		}
 
 		fwts_acpi_reserved_zero_check("NFIT", "Reserved", reserved_passed, &passed);

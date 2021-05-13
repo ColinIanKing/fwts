@@ -1393,6 +1393,7 @@ typedef enum {
 	FWTS_ACPI_HMAT_TYPE_PROXIMITY_DOMAIN	= 0,
 	FWTS_ACPI_HMAT_TYPE_LOCALITY		= 1,
 	FWTS_ACPI_HMAT_TYPE_CACHE		= 2,
+	FWTS_ACPI_HMAT_TYPE_RESERVED
 } fwts_acpi_hmat_type;
 
 typedef struct {
@@ -1460,6 +1461,7 @@ typedef enum {
 	FWTS_ACPI_PPTT_PROCESSOR	= 0,
 	FWTS_ACPI_PPTT_CACHE		= 1,
 	FWTS_ACPI_PPTT_ID		= 2,
+	FWTS_ACPI_PPTT_RESERVED
 } fwts_acpi_pptt_type;
 
 typedef struct {

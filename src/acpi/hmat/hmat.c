@@ -181,11 +181,7 @@ static int hmat_test1(fwts_framework *fw)
 			type_length = sizeof(fwts_acpi_table_hmat_cache) +
 			              ((fwts_acpi_table_hmat_cache *) entry)->num_smbios * 2;
 		} else {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"HMATBadSubtableType",
-				"HMAT must have subtable with Type 0..2, got "
-				"0x%2.2" PRIx8 " instead", entry->type);
+			fwts_acpi_reserved_type_check(fw, "HMAT", entry->type, 0, FWTS_ACPI_HMAT_TYPE_RESERVED - 1, &passed);
 			break;
 		}
 

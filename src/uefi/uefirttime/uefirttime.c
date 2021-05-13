@@ -199,6 +199,12 @@ static int uefirttime_test1(fwts_framework *fw)
 	EFI_TIME_CAPABILITIES efi_time_cap;
 	uint64_t status = ~0ULL;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	gettime.Capabilities = &efi_time_cap;
 	gettime.Time = &efi_time;
 	gettime.status = &status;
@@ -233,6 +239,12 @@ static int uefirttime_test_gettime_invalid(
 	long ioret;
 	struct efi_gettime gettime;
 	uint64_t status = ~0ULL;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	gettime.Capabilities = efi_time_cap;
 	gettime.Time = efi_time;
@@ -286,6 +298,12 @@ static int uefirttime_test4(fwts_framework *fw)
 	EFI_TIME time;
 	EFI_TIME_CAPABILITIES efi_time_cap;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	gettime.Capabilities = &efi_time_cap;
 	gettime.Time = &oldtime;
 	gettime.status = &status;
@@ -329,6 +347,12 @@ static int uefirttime_test4(fwts_framework *fw)
 	else
 		/* Unspecified timezone, local time */
 		time.TimeZone = 2047;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_TIME)) {
+		fwts_skipped(fw, "Skipping test, SetTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	settime.Time = &time;
 	status = ~0ULL;
@@ -424,6 +448,12 @@ static int uefirttime_test_settime_invalid(
 	long ioret;
 	static uint64_t status;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_TIME)) {
+		fwts_skipped(fw, "Skipping test, SetTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	status = ~0ULL;
 	settime->status = &status;
 
@@ -459,6 +489,12 @@ static int uefirttime_test_settime_invalid_time(
 	EFI_TIME oldtime, newtime;
 	uint64_t status = ~0ULL;
 	int ret, ioret;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	gettime.Time = &oldtime;
 	gettime.status = &status;
@@ -499,6 +535,9 @@ static int uefirttime_test_settime_invalid_time(
 	settime.status = &status;
 
 	ret = uefirttime_test_settime_invalid(fw, &settime);
+
+	if (ret == FWTS_SKIP)
+		return ret;
 
 	/* Restore original time */
 	settime.Time = &oldtime;
@@ -654,6 +693,12 @@ static int uefirttime_test18(fwts_framework *fw)
 	uint8_t enabled, pending;
 	EFI_TIME efi_time;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_WAKEUP_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	getwakeuptime.Enabled = &enabled;
 	getwakeuptime.Pending = &pending;
 	getwakeuptime.Time = &efi_time;
@@ -686,6 +731,12 @@ static int uefirttime_test_getwaketime_invalid(
 {
 	long ioret;
 	static uint64_t status;
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_WAKEUP_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	status = ~0ULL;
 	getwakeuptime->status = &status;
@@ -777,6 +828,12 @@ static int uefirttime_test23(fwts_framework *fw)
 	struct efi_getwakeuptime getwakeuptime;
 	uint8_t enabled, pending;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	gettime.Capabilities = &efi_time_cap;
 	gettime.Time = &oldtime;
 	gettime.status = &status;
@@ -793,6 +850,12 @@ static int uefirttime_test23(fwts_framework *fw)
 			"Failed to get time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
+	}
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_WAKEUP_TIME)) {
+		fwts_skipped(fw, "Skipping test, SetWakeupTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
 	}
 
 	/* change the hour, add 1 hour*/
@@ -817,6 +880,12 @@ static int uefirttime_test23(fwts_framework *fw)
 	}
 
 	sleep(1);
+
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_WAKEUP_TIME)) {
+		fwts_skipped(fw, "Skipping test, SetWakeupTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
 
 	getwakeuptime.Enabled = &enabled;
 	getwakeuptime.Pending = &pending;
@@ -907,6 +976,12 @@ static int uefirttime_test_setwakeuptime_invalid(
 	long ioret;
 	static uint64_t status;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_WAKEUP_TIME)) {
+		fwts_skipped(fw, "Skipping test, SetWakeupTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	status = ~0ULL;
 	setwakeuptime->status = &status;
 
@@ -954,6 +1029,12 @@ static int uefirttime_test_setwakeuptime_invalid_time(
 	uint8_t pending, enabled;
 	int ret, ioret;
 
+	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_WAKEUP_TIME)) {
+		fwts_skipped(fw, "Skipping test, GetWakeupTime runtime "
+			"service is not supported on this platform.");
+		return FWTS_SKIP;
+	}
+
 	getwakeuptime.Enabled = &enabled;
 	getwakeuptime.Pending = &pending;
 	getwakeuptime.Time = &oldtime;
@@ -995,6 +1076,9 @@ static int uefirttime_test_setwakeuptime_invalid_time(
 	setwakeuptime.Enabled = true;
 
 	ret = uefirttime_test_setwakeuptime_invalid(fw, &setwakeuptime);
+
+	if (ret == FWTS_SKIP)
+		return ret;
 
 	/* Restore original time */
 	setwakeuptime.Time = &oldtime;

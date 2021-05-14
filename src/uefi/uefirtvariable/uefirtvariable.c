@@ -2223,7 +2223,7 @@ static int uefirtvariable_test9(fwts_framework *fw)
 	/* delete the variable which was set */
 	setvariable.DataSize = 0;
 	status = ~0ULL;
-	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	variablename = malloc(sizeof(uint16_t) * variablenamesize);
 	if (!variablename) {
@@ -2299,6 +2299,9 @@ static int uefirtvariable_test9(fwts_framework *fw)
 		}
 	} else
 		fwts_skipped(fw, "QueryVarInfo runtime service supported, skip test.");
+
+	if (variablename)
+		free(variablename);
 
 	return FWTS_OK;
 }

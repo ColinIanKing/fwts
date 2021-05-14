@@ -1730,10 +1730,10 @@ bool fwts_acpi_structure_length(
 	fwts_framework *fw,
 	const char *table,
 	uint8_t type,
-	uint32_t length,
-	uint32_t size)
+	uint32_t actual_length,
+	uint32_t struct_length)
 {
-	if (length != size) {
+	if (actual_length != struct_length) {
 		char label[30];
 
 		strncpy(label, table, 4);	/* ACPI name is 4 char long */
@@ -1741,7 +1741,7 @@ bool fwts_acpi_structure_length(
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, label,
 			"%4.4s structure Type 0x%2.2" PRIx8 " should have "
 			"length 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8,
-			table, type, length, size);
+			table, type, struct_length, actual_length);
 		return false;
 	}
 	return true;

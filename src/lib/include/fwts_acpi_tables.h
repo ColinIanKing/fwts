@@ -75,7 +75,7 @@ void fwts_acpi_reserved_zero_array(fwts_framework *fw, const char *table, const 
 void fwts_acpi_reserved_bits_(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, uint8_t min, uint8_t max, bool *passed);
 void fwts_acpi_reserved_type(fwts_framework *fw, const char *table, uint8_t value, uint8_t min, uint8_t reserved, bool *passed);
 bool fwts_acpi_table_length(fwts_framework *fw, const char *table, uint32_t length, uint32_t size);
-bool fwts_acpi_structure_length(fwts_framework *fw, const char *table, uint8_t subtable_type, uint32_t subtable_length, uint32_t size);
+bool fwts_acpi_structure_length(fwts_framework *fw, const char *table, uint8_t type, uint32_t actual_length, uint32_t struct_length);
 bool fwts_acpi_structure_length_zero(fwts_framework *fw, const char *table, uint16_t length, uint32_t offset);
 bool fwts_acpi_structure_range(fwts_framework *fw, const char *table, uint32_t table_length, uint32_t offset);
 void fwts_acpi_fixed_value(fwts_framework *fw, fwts_log_level level, const char *table, const char *field, uint8_t actual, uint8_t must_be, bool *passed);

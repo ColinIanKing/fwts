@@ -138,11 +138,8 @@ static int nfit_test1(fwts_framework *fw)
 		fwts_log_info_simp_int(fw, "    Type:                                   ", entry->type);
 		fwts_log_info_simp_int(fw, "    Length:                                 ", entry->length);
 
-		if (entry->length == 0) {
+		if (fwts_acpi_structure_length_zero_check(fw, "NFIT", entry->length, offset)) {
 			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH, "NFITLengthZero",
-				    "NFIT Subtable (offset 0x%4.4" PRIx32 ") "
-				    "length cannot be 0", offset);
 			break;
 		}
 

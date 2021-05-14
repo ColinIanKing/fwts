@@ -94,10 +94,8 @@ static void pmtt_controller_test(
 			break;
 		}
 
-		if (header->length == 0) {
-			fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"PMTTBadSubtableLength",
-				"PMTT Controller has a subtable with zero length");
+		if (fwts_acpi_structure_length_zero_check(fw, "PMTT", header->length, offset)) {
+			*passed = false;
 			break;
 		}
 
@@ -132,10 +130,8 @@ static void pmtt_socket_test(
 			break;
 		}
 
-		if (header->length == 0) {
-			fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"PMTTBadSubtableLength",
-				"PMTT Socket has a subtable with zero length");
+		if (fwts_acpi_structure_length_zero_check(fw, "PMTT", header->length, offset)) {
+			*passed = false;
 			break;
 		}
 
@@ -195,11 +191,8 @@ static int pmtt_test1(fwts_framework *fw)
 	offset = sizeof(fwts_acpi_table_pmtt);
 	while (offset < table->length) {
 
-		if (entry->length == 0) {
+		if (fwts_acpi_structure_length_zero_check(fw, "PHAT", entry->length, offset)) {
 			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH, "PMTTLengthZero",
-				    "PMTT Subtable (offset 0x%4.4" PRIx32 ") "
-				    "length cannot be 0", offset);
 			break;
 		}
 

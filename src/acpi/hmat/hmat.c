@@ -159,11 +159,8 @@ static int hmat_test1(fwts_framework *fw)
 	while (offset < table->length) {
 		uint32_t type_length;
 
-		if (entry->length == 0) {
+		if (fwts_acpi_structure_length_zero_check(fw, "HMAT", entry->length, offset)) {
 			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH, "HMATStructLengthZero",
-				    "HMAT structure (offset 0x%4.4" PRIx32 ") "
-				    "length cannot be 0", offset);
 			break;
 		}
 

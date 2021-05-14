@@ -130,12 +130,12 @@ static int phat_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (entry->type == FWTS_ACPI_PHAT_VERSION) {
+		if (entry->type == FWTS_PHAT_VERSION) {
 			phat_version_test(fw, (fwts_acpi_table_phat_version *) entry, offset, &passed);
-		} else if (entry->type == FWTS_ACPI_PHAT_HEALTH) {
+		} else if (entry->type == FWTS_PHAT_HEALTH) {
 			phat_health_test(fw, (fwts_acpi_table_phat_health *) entry, offset, &passed);
 		} else {
-			fwts_acpi_reserved_type_check(fw, "PHAT", entry->type, 0, FWTS_ACPI_PHAT_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type_check(fw, "PHAT", entry->type, 0, FWTS_PHAT_RESERVED - 1, &passed);
 			break;
 		}
 

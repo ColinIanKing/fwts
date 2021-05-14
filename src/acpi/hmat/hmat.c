@@ -164,21 +164,21 @@ static int hmat_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (entry->type == FWTS_ACPI_HMAT_TYPE_PROXIMITY_DOMAIN) {
+		if (entry->type == FWTS_HMAT_TYPE_PROXIMITY_DOMAIN) {
 			hmat_proximity_domain_test(fw, (fwts_acpi_table_hmat_proximity_domain *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_hmat_proximity_domain);
-		} else if (entry->type == FWTS_ACPI_HMAT_TYPE_LOCALITY) {
+		} else if (entry->type == FWTS_HMAT_TYPE_LOCALITY) {
 			fwts_acpi_table_hmat_locality *locality = (fwts_acpi_table_hmat_locality *) entry;
 			hmat_locality_test(fw, (fwts_acpi_table_hmat_locality *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_hmat_locality) +
 			              (locality->num_initiator + locality->num_target) * 4 +
 			              (locality->num_initiator * locality->num_target * 2);
-		} else if (entry->type == FWTS_ACPI_HMAT_TYPE_CACHE) {
+		} else if (entry->type == FWTS_HMAT_TYPE_CACHE) {
 			hmat_cache_test(fw, (fwts_acpi_table_hmat_cache *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_hmat_cache) +
 			              ((fwts_acpi_table_hmat_cache *) entry)->num_smbios * 2;
 		} else {
-			fwts_acpi_reserved_type_check(fw, "HMAT", entry->type, 0, FWTS_ACPI_HMAT_TYPE_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type_check(fw, "HMAT", entry->type, 0, FWTS_HMAT_TYPE_RESERVED - 1, &passed);
 			break;
 		}
 

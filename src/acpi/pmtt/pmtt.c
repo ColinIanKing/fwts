@@ -149,16 +149,16 @@ static void pmtt_memory_device(
 	bool *passed)
 {
 	switch(entry->type) {
-		case FWTS_ACPI_PMTT_TYPE_SOCKET:
+		case FWTS_PMTT_TYPE_SOCKET:
 			pmtt_socket_test(fw, (fwts_acpi_table_pmtt_socket *) entry, offset, passed);
 			break;
-		case FWTS_ACPI_PMTT_TYPE_CONTROLLER:
+		case FWTS_PMTT_TYPE_CONTROLLER:
 			pmtt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) entry, offset, passed);
 			break;
-		case FWTS_ACPI_PMTT_TYPE_DIMM:
+		case FWTS_PMTT_TYPE_DIMM:
 			pmtt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) entry, passed);
 			break;
-		case FWTS_ACPI_PMTT_TYPE_VENDOR_SPECIFIC:
+		case FWTS_PMTT_TYPE_VENDOR_SPECIFIC:
 			/* no tests for vendor-specific type */
 			break;
 		default:

@@ -1526,9 +1526,9 @@ static int madt_subtables(fwts_framework *fw)
 		/* check for OEM and reserved entries */
 		if (hdr->type >= NUM_SUBTABLE_TYPES) {
 			if (hdr->type < 0x80)
-				type = FWTS_ACPI_MADT_RESERVED;
+				type = FWTS_MADT_RESERVED;
 			else
-				type = FWTS_ACPI_MADT_OEM;
+				type = FWTS_MADT_OEM;
 			len = hdr->length;
 		} else {
 			/* this subtable is defined */
@@ -1552,7 +1552,7 @@ static int madt_subtables(fwts_framework *fw)
 
 			/* verify that the length is what we expect */
 			if (len == SUBTABLE_VARIABLE) {
-				if (hdr->type == FWTS_ACPI_MADT_LOCAL_SAPIC) {
+				if (hdr->type == FWTS_MADT_LOCAL_SAPIC) {
 					lsapic = (fwts_acpi_madt_local_sapic *)hdr;
 					proper_len =
 					     sizeof(fwts_acpi_madt_local_sapic) +
@@ -1586,77 +1586,77 @@ static int madt_subtables(fwts_framework *fw)
 
 		/* perform checks specific to subtable types */
 		switch (type) {
-		case FWTS_ACPI_MADT_LOCAL_APIC:
+		case FWTS_MADT_LOCAL_APIC:
 			skip = madt_local_apic(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_IO_APIC:
+		case FWTS_MADT_IO_APIC:
 			skip = madt_io_apic(fw, hdr, data);
 			num_ioapics++;
 			break;
 
-		case FWTS_ACPI_MADT_INTERRUPT_OVERRIDE:
+		case FWTS_MADT_INTERRUPT_OVERRIDE:
 			skip = madt_interrupt_override(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_NMI_SOURCE:
+		case FWTS_MADT_NMI_SOURCE:
 			skip = madt_nmi_source(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_LOCAL_APIC_NMI:
+		case FWTS_MADT_LOCAL_APIC_NMI:
 			skip = madt_local_apic_nmi(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE:
+		case FWTS_MADT_LOCAL_APIC_OVERRIDE:
 			skip = madt_lapic_addr_override(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_IO_SAPIC:
+		case FWTS_MADT_IO_SAPIC:
 			skip = madt_io_sapic(fw, hdr, data);
 			num_iosapics++;
 			break;
 
-		case FWTS_ACPI_MADT_LOCAL_SAPIC:
+		case FWTS_MADT_LOCAL_SAPIC:
 			skip = madt_local_sapic(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_INTERRUPT_SOURCE:
+		case FWTS_MADT_INTERRUPT_SOURCE:
 			skip = madt_platform_int_source(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_LOCAL_X2APIC:
+		case FWTS_MADT_LOCAL_X2APIC:
 			skip = madt_local_x2apic(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_LOCAL_X2APIC_NMI:
+		case FWTS_MADT_LOCAL_X2APIC_NMI:
 			skip = madt_local_x2apic_nmi(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE:
+		case FWTS_MADT_GIC_C_CPU_INTERFACE:
 			skip = madt_gicc(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR:
+		case FWTS_MADT_GIC_D_GOC_DISTRIBUTOR:
 			skip = madt_gicd(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME:
+		case FWTS_MADT_GIC_V2M_MSI_FRAME:
 			skip = madt_gic_msi_frame(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR:
+		case FWTS_MADT_GIC_R_REDISTRIBUTOR:
 			skip = madt_gicr(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_GIC_ITS:
+		case FWTS_MADT_GIC_ITS:
 			skip = madt_gic_its(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_MP_WAKEUP:
+		case FWTS_MADT_MP_WAKEUP:
 			skip = madt_mp_wakup(fw, hdr, data);
 			break;
 
-		case FWTS_ACPI_MADT_RESERVED:
+		case FWTS_MADT_RESERVED:
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubReservedID",
 				    "MADT subtable %d (offset 0x%x) is "
@@ -1664,11 +1664,11 @@ static int madt_subtables(fwts_framework *fw)
 				    "type.  Subtable type values 0x%" PRIx8 "..0x7f "
 				    "are reserved; 0x80..0xff can be "
 				    "used by OEMs.",
-				    ii, offset, hdr->type, FWTS_ACPI_MADT_RESERVED);
+				    ii, offset, hdr->type, FWTS_MADT_RESERVED);
 			skip = (hdr->length -
 				sizeof(fwts_acpi_madt_sub_table_header));
 			break;
-		case FWTS_ACPI_MADT_OEM:
+		case FWTS_MADT_OEM:
 			/* OEM entries must be assumed to be valid */
 			skip = (hdr->length -
 				sizeof(fwts_acpi_madt_sub_table_header));

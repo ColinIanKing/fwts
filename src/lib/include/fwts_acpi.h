@@ -109,7 +109,7 @@
 
 const char *fwts_acpi_fadt_preferred_pm_profile(const int profile);
 
-#define FWTS_ACPI_FADT_FLAGS_HW_REDUCED_ACPI (1<<20)
+#define FWTS_FADT_FLAGS_HW_REDUCED_ACPI (1<<20)
 
 /*
  * ACPI GAS (Generic Address Structure), 5.2.3.1
@@ -508,35 +508,35 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_madt;
 
 typedef enum {
-	FWTS_ACPI_MADT_LOCAL_APIC = 0,
-	FWTS_ACPI_MADT_IO_APIC,
-	FWTS_ACPI_MADT_INTERRUPT_OVERRIDE,
-	FWTS_ACPI_MADT_NMI_SOURCE,
-	FWTS_ACPI_MADT_LOCAL_APIC_NMI,
-	FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE,
-	FWTS_ACPI_MADT_IO_SAPIC,
-	FWTS_ACPI_MADT_LOCAL_SAPIC,
-	FWTS_ACPI_MADT_INTERRUPT_SOURCE,
-	FWTS_ACPI_MADT_LOCAL_X2APIC,
-	FWTS_ACPI_MADT_LOCAL_X2APIC_NMI,
-	FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE,
-	FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR,
-	FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME,
-	FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR,
-	FWTS_ACPI_MADT_GIC_ITS,
-	FWTS_ACPI_MADT_MP_WAKEUP,
-	FWTS_ACPI_MADT_RESERVED, /* does not have defined structure */
-	FWTS_ACPI_MADT_OEM /* does not have defined structure */
+	FWTS_MADT_LOCAL_APIC = 0,
+	FWTS_MADT_IO_APIC,
+	FWTS_MADT_INTERRUPT_OVERRIDE,
+	FWTS_MADT_NMI_SOURCE,
+	FWTS_MADT_LOCAL_APIC_NMI,
+	FWTS_MADT_LOCAL_APIC_OVERRIDE,
+	FWTS_MADT_IO_SAPIC,
+	FWTS_MADT_LOCAL_SAPIC,
+	FWTS_MADT_INTERRUPT_SOURCE,
+	FWTS_MADT_LOCAL_X2APIC,
+	FWTS_MADT_LOCAL_X2APIC_NMI,
+	FWTS_MADT_GIC_C_CPU_INTERFACE,
+	FWTS_MADT_GIC_D_GOC_DISTRIBUTOR,
+	FWTS_MADT_GIC_V2M_MSI_FRAME,
+	FWTS_MADT_GIC_R_REDISTRIBUTOR,
+	FWTS_MADT_GIC_ITS,
+	FWTS_MADT_MP_WAKEUP,
+	FWTS_MADT_RESERVED, /* does not have defined structure */
+	FWTS_MADT_OEM /* does not have defined structure */
 } fwts_acpi_madt_type;
 
-/* Type 0, FWTS_ACPI_MADT_LOCAL_APIC */
+/* Type 0, FWTS_MADT_LOCAL_APIC */
 typedef struct {
 	uint8_t		acpi_processor_id;
 	uint8_t		apic_id;
 	uint32_t	flags;
 }  __attribute__ ((packed)) fwts_acpi_madt_processor_local_apic;
 
-/* Type 1, FWTS_ACPI_MADT_IO_APIC */
+/* Type 1, FWTS_MADT_IO_APIC */
 typedef struct {
 	uint8_t		io_apic_id;
 	uint8_t		reserved;
@@ -544,7 +544,7 @@ typedef struct {
 	uint32_t	global_irq_base;
 } __attribute__ ((packed)) fwts_acpi_madt_io_apic;
 
-/* Type 2, FWTS_ACPI_MADT_INTERRUPT_OVERRIDE */
+/* Type 2, FWTS_MADT_INTERRUPT_OVERRIDE */
 typedef struct {
 	uint8_t		bus;
 	uint8_t		source;
@@ -552,26 +552,26 @@ typedef struct {
 	uint16_t	flags;
 } __attribute__ ((packed)) fwts_acpi_madt_interrupt_override;
 
-/* Type 3, FWTS_ACPI_MADT_NMI_SOURCE */
+/* Type 3, FWTS_MADT_NMI_SOURCE */
 typedef struct {
 	uint16_t	flags;
 	uint32_t	gsi;
 } __attribute__ ((packed)) fwts_acpi_madt_nmi;
 
-/* Type 4, FWTS_ACPI_MADT_LOCAL_APIC_NMI */
+/* Type 4, FWTS_MADT_LOCAL_APIC_NMI */
 typedef struct {
 	uint8_t		acpi_processor_id;
 	uint16_t	flags;
 	uint8_t		local_apic_lint;
 } __attribute__ ((packed)) fwts_acpi_madt_local_apic_nmi;
 
-/* Type 5, FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE */
+/* Type 5, FWTS_MADT_LOCAL_APIC_OVERRIDE */
 typedef struct {
 	uint16_t	reserved;
 	uint64_t	address;
 } __attribute__ ((packed)) fwts_acpi_madt_local_apic_addr_override;
 
-/* Type 6, FWTS_ACPI_MADT_IO_SAPIC */
+/* Type 6, FWTS_MADT_IO_SAPIC */
 typedef struct {
 	uint8_t		io_sapic_id;
 	uint8_t		reserved;
@@ -579,7 +579,7 @@ typedef struct {
 	uint64_t	address;
 } __attribute__ ((packed)) fwts_acpi_madt_io_sapic;
 
-/* Type 7, FWTS_ACPI_MADT_LOCAL_SAPIC */
+/* Type 7, FWTS_MADT_LOCAL_SAPIC */
 typedef struct {
 	uint8_t		acpi_processor_id;
 	uint8_t		local_sapic_id;
@@ -590,7 +590,7 @@ typedef struct {
 	char		uid_string[0];
 } __attribute__ ((packed)) fwts_acpi_madt_local_sapic;
 
-/* Type 8, FWTS_ACPI_MADT_INTERRUPT_SOURCE */
+/* Type 8, FWTS_MADT_INTERRUPT_SOURCE */
 typedef struct {
 	uint16_t	flags;
 	uint8_t		type;
@@ -601,7 +601,7 @@ typedef struct {
 	uint32_t	pis_flags;
 } __attribute__ ((packed)) fwts_acpi_madt_platform_int_source;
 
-/* Type 9, FWTS_ACPI_MADT_LOCAL_X2APIC */
+/* Type 9, FWTS_MADT_LOCAL_X2APIC */
 typedef struct {
 	uint16_t	reserved;
 	uint32_t	x2apic_id;
@@ -609,7 +609,7 @@ typedef struct {
 	uint32_t	processor_uid;
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic;
 
-/* Type 10, FWTS_ACPI_MADT_LOCAL_X2APIC_NMI */
+/* Type 10, FWTS_MADT_LOCAL_X2APIC_NMI */
 typedef struct {
 	uint16_t	flags;
 	uint32_t	processor_uid;
@@ -617,7 +617,7 @@ typedef struct {
 	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic_nmi;
 
-/* Type 11, FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE */
+/* Type 11, FWTS_MADT_GIC_C_CPU_INTERFACE */
 /* New in ACPI 5.0, GIC, section 5.2.12.14 */
 typedef struct {
 	uint16_t	reserved;
@@ -638,7 +638,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_madt_gic;
 
 /* New in ACPI 5.0, GICD, section 5.2.12.15 */
-/* Type 12, FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR */
+/* Type 12, FWTS_MADT_GIC_D_GOC_DISTRIBUTOR */
 typedef struct {
 	uint16_t	reserved;
 	uint32_t	gic_id;
@@ -649,7 +649,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_madt_gicd;
 
 /* New in ACPI 5.1, GIC MSI Frame structure, 5.2.12.16 */
-/* Type 13, FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME */
+/* Type 13, FWTS_MADT_GIC_V2M_MSI_FRAME */
 typedef struct {
 	uint16_t	reserved;
 	uint32_t	frame_id;
@@ -661,7 +661,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_madt_gic_msi;
 
 /* New in ACPI 5.1, GICR structure, 5.2.12.17 */
-/* Type 14, FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR */
+/* Type 14, FWTS_MADT_GIC_R_REDISTRIBUTOR */
 typedef struct {
 	uint16_t	reserved;
 	uint64_t	discovery_range_base_address;
@@ -669,7 +669,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_madt_gicr;
 
 /* New in ACPI 6.0, GIC ITS structure, 5.2.12.18 */
-/* Type 15, FWTS_ACPI_MADT_GIC_ITS */
+/* Type 15, FWTS_MADT_GIC_ITS */
 typedef struct {
 	uint16_t	reserved;
 	uint32_t	its_id;
@@ -678,7 +678,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_madt_gic_its;
 
 /* New in ACPI 6.4, Multiprocessor Wakeup structure, 5.2.12.19 */
-/* Type 16, FWTS_ACPI_MADT_MP_WAKEUP */
+/* Type 16, FWTS_MADT_MP_WAKEUP */
 typedef struct {
 	uint16_t	mail_box_version;
 	uint32_t	reserved;
@@ -695,26 +695,26 @@ typedef struct {
 	uint16_t	platform_class;
 	union {
 		struct client_hdr {
-			uint32_t log_zone_length;
-			uint64_t log_zone_addr;
+			uint32_t	log_zone_length;
+			uint64_t	log_zone_addr;
 		}  __attribute__ ((packed)) client;
 		struct server_hdr {
-			uint16_t reserved;
-			uint64_t log_zone_length;
-			uint64_t log_zone_addr;
-			uint16_t spec_revision;
-			uint8_t device_flag;
-			uint8_t interrupt_flag;
-			uint8_t gpe;
-			uint8_t reserved2[3];
-			uint32_t global_sys_interrupt;
-			fwts_acpi_gas base_addr;
-			uint32_t reserved3;
-			fwts_acpi_gas config_addr;
-			uint8_t pci_seg_number;
-			uint8_t pci_bus_number;
-			uint8_t pci_dev_number;
-			uint8_t pci_func_number;
+			uint16_t	reserved;
+			uint64_t	log_zone_length;
+			uint64_t	log_zone_addr;
+			uint16_t	spec_revision;
+			uint8_t		device_flag;
+			uint8_t		interrupt_flag;
+			uint8_t		gpe;
+			uint8_t		reserved2[3];
+			uint32_t	global_sys_interrupt;
+			fwts_acpi_gas	base_addr;
+			uint32_t	reserved3;
+			fwts_acpi_gas	config_addr;
+			uint8_t		pci_seg_number;
+			uint8_t		pci_bus_number;
+			uint8_t		pci_dev_number;
+			uint8_t		pci_func_number;
 		} __attribute__ ((packed)) server;
 	};
 }  __attribute__ ((packed)) fwts_acpi_table_tcpa;
@@ -1147,11 +1147,11 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_pmtt_header;
 
 typedef enum {
-	FWTS_ACPI_PMTT_TYPE_SOCKET		= 0,
-	FWTS_ACPI_PMTT_TYPE_CONTROLLER		= 1,
-	FWTS_ACPI_PMTT_TYPE_DIMM		= 2,
-	FWTS_ACPI_PMTT_TYPE_RESERVED		= 3, /* 0x03-0xFE are reserved */
-	FWTS_ACPI_PMTT_TYPE_VENDOR_SPECIFIC	= 0xFF
+	FWTS_PMTT_TYPE_SOCKET		= 0,
+	FWTS_PMTT_TYPE_CONTROLLER	= 1,
+	FWTS_PMTT_TYPE_DIMM		= 2,
+	FWTS_PMTT_TYPE_RESERVED		= 3, /* 0x03-0xFE are reserved */
+	FWTS_PMTT_TYPE_VENDOR_SPECIFIC	= 0xFF
 } fwts_acpi_pmtt_type;
 
 typedef struct {
@@ -1185,34 +1185,34 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_nfit_struct_header;
 
 typedef enum {
-	FWTS_ACPI_NFIT_TYPE_SYSTEM_ADDRESS       = 0,
-	FWTS_ACPI_NFIT_TYPE_MEMORY_MAP           = 1,
-	FWTS_ACPI_NFIT_TYPE_INTERLEAVE           = 2,
-	FWTS_ACPI_NFIT_TYPE_SMBIOS               = 3,
-	FWTS_ACPI_NFIT_TYPE_CONTROL_REGION       = 4,
-	FWTS_ACPI_NFIT_TYPE_DATA_REGION          = 5,
-	FWTS_ACPI_NFIT_TYPE_FLUSH_ADDRESS        = 6,
-	FWTS_ACPI_NFIT_TYPE_PLATFORM_CAPABILITY  = 7,
-	FWTS_ACPI_NFIT_TYPE_RESERVED             = 8     /* >= 8 are reserved */
+	FWTS_NFIT_TYPE_SYSTEM_ADDRESS       = 0,
+	FWTS_NFIT_TYPE_MEMORY_MAP           = 1,
+	FWTS_NFIT_TYPE_INTERLEAVE           = 2,
+	FWTS_NFIT_TYPE_SMBIOS               = 3,
+	FWTS_NFIT_TYPE_CONTROL_REGION       = 4,
+	FWTS_NFIT_TYPE_DATA_REGION          = 5,
+	FWTS_NFIT_TYPE_FLUSH_ADDRESS        = 6,
+	FWTS_NFIT_TYPE_PLATFORM_CAPABILITY  = 7,
+	FWTS_NFIT_TYPE_RESERVED             = 8     /* >= 8 are reserved */
 } fwts_acpi_nfit_type;
 
-#define FWTS_ACPI_NFIT_NAME_SYSTEM_ADDRESS      "SPA Range structure"
-#define FWTS_ACPI_NFIT_NAME_MEMORY_MAP          "NVDIMM Region Mapping structure"
-#define FWTS_ACPI_NFIT_NAME_INTERLEAVE          "Interleave structure"
-#define FWTS_ACPI_NFIT_NAME_SMBIOS              "SMBIOS Management Information structure"
-#define FWTS_ACPI_NFIT_NAME_CONTROL_REGION      "NVDIMM Control Region structure"
-#define FWTS_ACPI_NFIT_NAME_DATA_REGION         "NVDIMM Block Data Window Region structure"
-#define FWTS_ACPI_NFIT_NAME_FLUSH_ADDRESS       "Flush Hint Address structure"
-#define FWTS_ACPI_NFIT_NAME_PLATFORM_CAPABILITY "Platform Capabilities structure"
+#define FWTS_NFIT_NAME_SYSTEM_ADDRESS      "SPA Range structure"
+#define FWTS_NFIT_NAME_MEMORY_MAP          "NVDIMM Region Mapping structure"
+#define FWTS_NFIT_NAME_INTERLEAVE          "Interleave structure"
+#define FWTS_NFIT_NAME_SMBIOS              "SMBIOS Management Information structure"
+#define FWTS_NFIT_NAME_CONTROL_REGION      "NVDIMM Control Region structure"
+#define FWTS_NFIT_NAME_DATA_REGION         "NVDIMM Block Data Window Region structure"
+#define FWTS_NFIT_NAME_FLUSH_ADDRESS       "Flush Hint Address structure"
+#define FWTS_NFIT_NAME_PLATFORM_CAPABILITY "Platform Capabilities structure"
 
-#define FWTS_ACPI_NFIT_MINLEN_SYSTEM_ADDRESS      56
-#define FWTS_ACPI_NFIT_MINLEN_MEMORY_MAP          48
-#define FWTS_ACPI_NFIT_MINLEN_INTERLEAVE          16
-#define FWTS_ACPI_NFIT_MINLEN_SMBIOS              8
-#define FWTS_ACPI_NFIT_MINLEN_CONTROL_REGION      32
-#define FWTS_ACPI_NFIT_MINLEN_DATA_REGION         32
-#define FWTS_ACPI_NFIT_MINLEN_FLUSH_ADDRESS       16
-#define FWTS_ACPI_NFIT_MINLEN_PLATFORM_CAPABILITY 16
+#define FWTS_NFIT_MINLEN_SYSTEM_ADDRESS      56
+#define FWTS_NFIT_MINLEN_MEMORY_MAP          48
+#define FWTS_NFIT_MINLEN_INTERLEAVE          16
+#define FWTS_NFIT_MINLEN_SMBIOS              8
+#define FWTS_NFIT_MINLEN_CONTROL_REGION      32
+#define FWTS_NFIT_MINLEN_DATA_REGION         32
+#define FWTS_NFIT_MINLEN_FLUSH_ADDRESS       16
+#define FWTS_NFIT_MINLEN_PLATFORM_CAPABILITY 16
 
 typedef struct {
 	fwts_acpi_table_nfit_struct_header	header;
@@ -1249,7 +1249,7 @@ typedef struct {
 	uint16_t	reserved;
 	uint32_t	line_count;
 	uint32_t	line_size;
-	uint32_t   line_offset[];
+	uint32_t	line_offset[];
 } __attribute__ ((packed)) fwts_acpi_table_nfit_interleave;
 
 typedef struct {
@@ -1317,9 +1317,9 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_sdev;
 
 typedef enum {
-	FWTS_ACPI_SDEV_TYPE_ACPI_NAMESPACE	= 0,
-	FWTS_ACPI_SDEV_TYPE_PCIE_ENDPOINT	= 1,
-	FWTS_ACPI_SDEV_TYPE_RESERVED		= 2,
+	FWTS_SDEV_TYPE_ACPI_NAMESPACE	= 0,
+	FWTS_SDEV_TYPE_PCIE_ENDPOINT	= 1,
+	FWTS_SDEV_TYPE_RESERVED		= 2,
 } fwts_acpi_sdev_type;
 
 typedef struct {
@@ -1349,9 +1349,9 @@ typedef struct {
 } fwts_acpi_table_sdev_pcie;
 
 typedef enum {
-	FWTS_ACPI_SDEV_ID_BASE_SECURE_ACCESS	= 0,
-	FWTS_ACPI_SDEV_MEM_BASE_SECURE_ACCESS	= 1,
-	FWTS_ACPI_SDEV_RESERVED_SECURE_ACCESS	= 2,
+	FWTS_SDEV_ID_BASE_SECURE_ACCESS		= 0,
+	FWTS_SDEV_MEM_BASE_SECURE_ACCESS	= 1,
+	FWTS_SDEV_RESERVED_SECURE_ACCESS	= 2,
 } fwts_acpi_sdev_acpi_type;
 
 typedef struct {
@@ -1390,10 +1390,10 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_hmat;
 
 typedef enum {
-	FWTS_ACPI_HMAT_TYPE_PROXIMITY_DOMAIN	= 0,
-	FWTS_ACPI_HMAT_TYPE_LOCALITY		= 1,
-	FWTS_ACPI_HMAT_TYPE_CACHE		= 2,
-	FWTS_ACPI_HMAT_TYPE_RESERVED
+	FWTS_HMAT_TYPE_PROXIMITY_DOMAIN	= 0,
+	FWTS_HMAT_TYPE_LOCALITY		= 1,
+	FWTS_HMAT_TYPE_CACHE		= 2,
+	FWTS_HMAT_TYPE_RESERVED
 } fwts_acpi_hmat_type;
 
 typedef struct {
@@ -1417,8 +1417,8 @@ typedef struct {
 	fwts_acpi_table_hmat_header	header;
 	uint8_t		flags;
 	uint8_t		data_type;
-	uint8_t         min_transfer_size;
-	uint8_t         reserved1;
+	uint8_t		min_transfer_size;
+	uint8_t		reserved1;
 	uint32_t	num_initiator;
 	uint32_t	num_target;
 	uint32_t	reserved2;
@@ -1458,10 +1458,10 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_pptt;
 
 typedef enum {
-	FWTS_ACPI_PPTT_PROCESSOR	= 0,
-	FWTS_ACPI_PPTT_CACHE		= 1,
-	FWTS_ACPI_PPTT_ID		= 2,
-	FWTS_ACPI_PPTT_RESERVED
+	FWTS_PPTT_PROCESSOR	= 0,
+	FWTS_PPTT_CACHE		= 1,
+	FWTS_PPTT_ID		= 2,
+	FWTS_PPTT_RESERVED
 } fwts_acpi_pptt_type;
 
 typedef struct {
@@ -1511,9 +1511,9 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_phat;
 
 typedef enum {
-	FWTS_ACPI_PHAT_VERSION	= 0,
-	FWTS_ACPI_PHAT_HEALTH	= 1,
-	FWTS_ACPI_PHAT_RESERVED
+	FWTS_PHAT_VERSION	= 0,
+	FWTS_PHAT_HEALTH	= 1,
+	FWTS_PHAT_RESERVED
 } fwts_acpi_phat_type;
 
 typedef struct {
@@ -1953,9 +1953,9 @@ typedef struct {
 	uint8_t		silicon_vendor_info[0];
 } __attribute__ ((packed)) fwts_acpi_table_csrt_resource_descriptor;
 
-#define FWTS_ACPI_TABLE_CSRT_TYPE_INTERRUPT	(0x0001)
-#define FWTS_ACPI_TABLE_CSRT_TYPE_TIMER		(0x0002)
-#define FWTS_ACPI_TABLE_CSRT_TYPE_DMA		(0x0003)
+#define FWTS_TABLE_CSRT_TYPE_INTERRUPT		(0x0001)
+#define FWTS_TABLE_CSRT_TYPE_TIMER		(0x0002)
+#define FWTS_TABLE_CSRT_TYPE_DMA		(0x0003)
 
 /*
  * ACPI LPTI (Low Power Idle Table)

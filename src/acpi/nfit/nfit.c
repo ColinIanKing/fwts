@@ -143,15 +143,15 @@ static int nfit_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (entry->type == FWTS_ACPI_NFIT_TYPE_SYSTEM_ADDRESS) {
+		if (entry->type == FWTS_NFIT_TYPE_SYSTEM_ADDRESS) {
 			fwts_acpi_table_nfit_system_memory *nfit_struct = (fwts_acpi_table_nfit_system_memory *) entry;
 			char guid_str[37];
 			bool guid_skip = false;
 			size_t i;
 
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_SYSTEM_ADDRESS,
-					FWTS_ACPI_NFIT_NAME_SYSTEM_ADDRESS);
+					FWTS_NFIT_MINLEN_SYSTEM_ADDRESS,
+					FWTS_NFIT_NAME_SYSTEM_ADDRESS);
 			if (!ret) {
 				passed = false;
 				break;
@@ -244,12 +244,12 @@ static int nfit_test1(fwts_framework *fw)
 					"0x%16.16" PRIx64 " instead", nfit_struct->memory_mapping);
 			}
 
-		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_MEMORY_MAP) {
+		} else if (entry->type == FWTS_NFIT_TYPE_MEMORY_MAP) {
 			fwts_acpi_table_nfit_memory_map *nfit_struct = (fwts_acpi_table_nfit_memory_map *) entry;
 
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_MEMORY_MAP,
-					FWTS_ACPI_NFIT_NAME_MEMORY_MAP);
+					FWTS_NFIT_MINLEN_MEMORY_MAP,
+					FWTS_NFIT_NAME_MEMORY_MAP);
 			if (!ret) {
 				passed = false;
 				break;
@@ -273,13 +273,13 @@ static int nfit_test1(fwts_framework *fw)
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;
 
-		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_INTERLEAVE) {
+		} else if (entry->type == FWTS_NFIT_TYPE_INTERLEAVE) {
 			fwts_acpi_table_nfit_interleave *nfit_struct = (fwts_acpi_table_nfit_interleave *) entry;
 			uint32_t i;
 
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_INTERLEAVE,
-					FWTS_ACPI_NFIT_NAME_INTERLEAVE);
+					FWTS_NFIT_MINLEN_INTERLEAVE,
+					FWTS_NFIT_NAME_INTERLEAVE);
 			if (!ret) {
 				passed = false;
 				break;
@@ -291,9 +291,9 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_simp_int(fw, "    Line Size:                              ", nfit_struct->line_size);
 
 			ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_INTERLEAVE +
+					FWTS_NFIT_MINLEN_INTERLEAVE +
 						nfit_struct->line_count * sizeof nfit_struct->line_offset[0],
-					FWTS_ACPI_NFIT_NAME_INTERLEAVE);
+					FWTS_NFIT_NAME_INTERLEAVE);
 			if (!ret) {
 				passed = false;
 				break;
@@ -315,12 +315,12 @@ static int nfit_test1(fwts_framework *fw)
 					"NFIT Number of Lines must not be zero");
 			}
 
-		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_SMBIOS) {
+		} else if (entry->type == FWTS_NFIT_TYPE_SMBIOS) {
 			fwts_acpi_table_nfit_smbios *nfit_struct = (fwts_acpi_table_nfit_smbios *) entry;
 
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_SMBIOS,
-					FWTS_ACPI_NFIT_NAME_SMBIOS);
+					FWTS_NFIT_MINLEN_SMBIOS,
+					FWTS_NFIT_NAME_SMBIOS);
 			if (!ret) {
 				passed = false;
 				break;
@@ -337,11 +337,11 @@ static int nfit_test1(fwts_framework *fw)
 			if (!ret)
 				passed = false;
 
-		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_CONTROL_REGION) {
+		} else if (entry->type == FWTS_NFIT_TYPE_CONTROL_REGION) {
 			fwts_acpi_table_nfit_control_range *nfit_struct = (fwts_acpi_table_nfit_control_range *) entry;
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_CONTROL_REGION,
-					FWTS_ACPI_NFIT_NAME_CONTROL_REGION);
+					FWTS_NFIT_MINLEN_CONTROL_REGION,
+					FWTS_NFIT_NAME_CONTROL_REGION);
 			if (!ret) {
 				passed = false;
 				break;
@@ -407,12 +407,12 @@ static int nfit_test1(fwts_framework *fw)
 				fwts_log_info_simp_int(fw, "    NVDIMM Control Region Structure Index:  ", nfit_struct->region_index);
 			}
 
-		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_DATA_REGION) {
+		} else if (entry->type == FWTS_NFIT_TYPE_DATA_REGION) {
 			fwts_acpi_table_nfit_data_range *nfit_struct = (fwts_acpi_table_nfit_data_range *) entry;
 
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_DATA_REGION,
-					FWTS_ACPI_NFIT_NAME_DATA_REGION);
+					FWTS_NFIT_MINLEN_DATA_REGION,
+					FWTS_NFIT_NAME_DATA_REGION);
 			if (!ret) {
 				passed = false;
 				break;
@@ -432,14 +432,14 @@ static int nfit_test1(fwts_framework *fw)
 					"NFIT NVDIMM Control Region Structure Index must not be zero");
 			}
 
-		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_FLUSH_ADDRESS) {
+		} else if (entry->type == FWTS_NFIT_TYPE_FLUSH_ADDRESS) {
 			fwts_acpi_table_nfit_flush_addr *nfit_struct = (fwts_acpi_table_nfit_flush_addr *) entry;
 			uint64_t reserved;
 			uint16_t i;
 
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_FLUSH_ADDRESS,
-					FWTS_ACPI_NFIT_NAME_FLUSH_ADDRESS);
+					FWTS_NFIT_MINLEN_FLUSH_ADDRESS,
+					FWTS_NFIT_NAME_FLUSH_ADDRESS);
 			if (!ret) {
 				passed = false;
 				break;
@@ -454,9 +454,9 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_simp_int(fw, "    Reserved:                               ", reserved);
 
 			ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_FLUSH_ADDRESS +
+					FWTS_NFIT_MINLEN_FLUSH_ADDRESS +
 						nfit_struct->hint_count * sizeof nfit_struct->hint_address[0],
-					FWTS_ACPI_NFIT_NAME_FLUSH_ADDRESS);
+					FWTS_NFIT_NAME_FLUSH_ADDRESS);
 			if (!ret) {
 				passed = false;
 				break;
@@ -468,13 +468,13 @@ static int nfit_test1(fwts_framework *fw)
 			if (reserved != 0)
 				reserved_passed = reserved;
 
-		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_PLATFORM_CAPABILITY) {
+		} else if (entry->type == FWTS_NFIT_TYPE_PLATFORM_CAPABILITY) {
 			fwts_acpi_table_nfit_platform_cap *nfit_struct = (fwts_acpi_table_nfit_platform_cap *) entry;
 			uint32_t reserved1;
 
 			bool ret = check_length(fw, entry->length,
-					FWTS_ACPI_NFIT_MINLEN_PLATFORM_CAPABILITY,
-					FWTS_ACPI_NFIT_NAME_PLATFORM_CAPABILITY);
+					FWTS_NFIT_MINLEN_PLATFORM_CAPABILITY,
+					FWTS_NFIT_NAME_PLATFORM_CAPABILITY);
 			if (!ret) {
 				passed = false;
 				break;
@@ -503,7 +503,7 @@ static int nfit_test1(fwts_framework *fw)
 				reserved_passed = nfit_struct->reserved2;
 
 		} else {
-			fwts_acpi_reserved_type_check(fw, "NFIT", entry->type, 0, FWTS_ACPI_NFIT_TYPE_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type_check(fw, "NFIT", entry->type, 0, FWTS_NFIT_TYPE_RESERVED - 1, &passed);
 			break;
 		}
 

@@ -128,21 +128,21 @@ static int pptt_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (entry->type == FWTS_ACPI_PPTT_PROCESSOR) {
+		if (entry->type == FWTS_PPTT_PROCESSOR) {
 			pptt_processor_test(fw, (fwts_acpi_table_pptt_processor *) entry, pptt->header.revision, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_processor) +
 				      ((fwts_acpi_table_pptt_processor *) entry)->number_priv_resources * 4;
-		} else if (entry->type == FWTS_ACPI_PPTT_CACHE) {
+		} else if (entry->type == FWTS_PPTT_CACHE) {
 			pptt_cache_test(fw, (fwts_acpi_table_pptt_cache *) entry, pptt->header.revision, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_cache);
 			if (pptt->header.revision < 3)
 				type_length -= sizeof(((fwts_acpi_table_pptt_cache *) entry)->cache_id);
-		} else if (entry->type == FWTS_ACPI_PPTT_ID) {
+		} else if (entry->type == FWTS_PPTT_ID) {
 			fwts_log_warning(fw, "PPTT type 2 is depreciated since ACPI 6.3 Errata A.");
 			pptt_id_test(fw, (fwts_acpi_table_pptt_id *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_id);
 		} else {
-			fwts_acpi_reserved_type_check(fw, "PPTT", entry->type, 0, FWTS_ACPI_PPTT_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type_check(fw, "PPTT", entry->type, 0, FWTS_PPTT_RESERVED - 1, &passed);
 			break;
 		}
 

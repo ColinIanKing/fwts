@@ -81,18 +81,18 @@ static int sdev_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (entry->type == FWTS_ACPI_SDEV_TYPE_ACPI_NAMESPACE) {
+		if (entry->type == FWTS_SDEV_TYPE_ACPI_NAMESPACE) {
 			fwts_acpi_table_sdev_acpi *acpi = (fwts_acpi_table_sdev_acpi *) entry;
 			sdev_acpi_namespace_device_test(fw, acpi, &passed);
 			type_length = sizeof(fwts_acpi_table_sdev_acpi) + acpi->device_id_length +
 				      acpi->vendor_length + acpi->secure_access_length;
 
-		} else if (entry->type == FWTS_ACPI_SDEV_TYPE_PCIE_ENDPOINT) {
+		} else if (entry->type == FWTS_SDEV_TYPE_PCIE_ENDPOINT) {
 			fwts_acpi_table_sdev_pcie *pcie = (fwts_acpi_table_sdev_pcie *) entry;
 			sdev_pcie_endpoint_device_test(fw, pcie, &passed);
 			type_length = sizeof(fwts_acpi_table_sdev_pcie) + pcie->path_length + pcie->vendor_length;
 		} else {
-			fwts_acpi_reserved_type_check(fw, "SDEV", entry->type, 0, FWTS_ACPI_SDEV_TYPE_RESERVED, &passed);
+			fwts_acpi_reserved_type_check(fw, "SDEV", entry->type, 0, FWTS_SDEV_TYPE_RESERVED, &passed);
 			break;
 		}
 

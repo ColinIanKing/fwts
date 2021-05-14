@@ -66,7 +66,7 @@ static int fpdt_test1(fwts_framework *fw)
 	const size_t fpdt_hdr_len = sizeof(fwts_acpi_table_fpdt_header);
 
 	/* Size sanity, got enough table to get initial header */
-	if (!fwts_acpi_table_length_check(fw, "FPDT", table->length, sizeof(fwts_acpi_table_header))) {
+	if (!fwts_acpi_table_length(fw, "FPDT", table->length, sizeof(fwts_acpi_table_header))) {
 		passed = false;
 		goto done;
 	}
@@ -103,7 +103,7 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info_simp_int(fw, "    Reserved:	", fbbpr->reserved);
 				fwts_log_info_simp_int(fw, "    FBPT Pointer:	", fbbpr->fbpt_addr);
 
-				fwts_acpi_reserved_zero_check("FPDT", "Reserved", fbbpr->reserved, &passed);
+				fwts_acpi_reserved_zero("FPDT", "Reserved", fbbpr->reserved, &passed);
 
 				/*
 				 * For the moment, only dump the 64-bit processor-relative physical address
@@ -113,7 +113,7 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info(fw, "Note: currently fwts does not check FBPT validity and the associated data");
 			}
 
-			fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "FPDT", "FBPT Revision", fbbpr->fpdt.revision, 1, &passed);
+			fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "FPDT", "FBPT Revision", fbbpr->fpdt.revision, 1, &passed);
 
 			/* Spec doesn't mention Reserved field should be 0 or not, skip checking the reserved field */
 			break;
@@ -130,7 +130,7 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info_simp_int(fw, "    Reserved:	", s3ptpr->reserved);
 				fwts_log_info_simp_int(fw, "    S3PT Pointer:	", s3ptpr->s3pt_addr);
 
-				fwts_acpi_reserved_zero_check("FPDT", "Reserved", s3ptpr->reserved, &passed);
+				fwts_acpi_reserved_zero("FPDT", "Reserved", s3ptpr->reserved, &passed);
 
 				/*
 				 * For the moment, only dump 64-bit processor-relative physical
@@ -140,7 +140,7 @@ static int fpdt_test1(fwts_framework *fw)
 				fwts_log_info(fw, "Note: currently fwts does not check S3PT validity and the associated data");
 			}
 
-			fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "FPDT", "S3PT Revision", s3ptpr->fpdt.revision, 1, &passed);
+			fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "FPDT", "S3PT Revision", s3ptpr->fpdt.revision, 1, &passed);
 
 			/* Spec doesn't mention Reserved field should be 0 or not, skip checking the reserved field */
 			break;

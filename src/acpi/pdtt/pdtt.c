@@ -42,7 +42,7 @@ static int pdtt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Reserved[3]:             0x%6.6" PRIx32, reserved);
 	fwts_log_info_simp_int(fw, "  Trigger ID Array Offset: ", pdtt->array_offset);
 
-	fwts_acpi_reserved_zero_check("PDTT", "Reserved", reserved, &passed);
+	fwts_acpi_reserved_zero("PDTT", "Reserved", reserved, &passed);
 
 	offset = pdtt->array_offset;
 	entry = (fwts_acpi_table_pdtt_channel *) (table->data + offset);
@@ -62,7 +62,7 @@ static int pdtt_test1(fwts_framework *fw)
 	for (i = 0; i < pdtt->trigger_count; i++) {
 		fwts_log_info_simp_int(fw, "    Sub channel ID:          ", entry->sub_channel_id);
 		fwts_log_info_simp_int(fw, "    Flags:                   ", entry->flags);
-		fwts_acpi_reserved_bits_check("PDTT", "Flags", entry->flags, 3, 7, &passed);
+		fwts_acpi_reserved_bits("PDTT", "Flags", entry->flags, 3, 7, &passed);
 
 		if ((offset += sizeof(fwts_acpi_table_pdtt_channel)) > table->length) {
 			passed = false;

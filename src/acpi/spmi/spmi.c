@@ -41,7 +41,7 @@ static int spmi_test1(fwts_framework *fw)
 	bool passed = true;
 	fwts_acpi_table_spmi *spmi = (fwts_acpi_table_spmi *)table->data;
 
-	if (!fwts_acpi_table_length_check(fw, "SPMI", table->length, sizeof(fwts_acpi_table_spmi))) {
+	if (!fwts_acpi_table_length(fw, "SPMI", table->length, sizeof(fwts_acpi_table_spmi))) {
 		passed = false;
 		goto done;
 	}
@@ -96,8 +96,8 @@ static int spmi_test1(fwts_framework *fw)
 			spmi->interface_type);
 	}
 
-	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "SPMI", "Reserved1", spmi->reserved1, 1, &passed);
-	fwts_acpi_reserved_bits_check("SPMI", "Interrupt type", spmi->interrupt_type, 2, 7, &passed);
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "SPMI", "Reserved1", spmi->reserved1, 1, &passed);
+	fwts_acpi_reserved_bits("SPMI", "Interrupt type", spmi->interrupt_type, 2, 7, &passed);
 
 	/* Check for zero GPE on specific condition of interrupt type */
 	if (((spmi->interrupt_type & 1) == 0) &&
@@ -110,8 +110,8 @@ static int spmi_test1(fwts_framework *fw)
 			spmi->gpe);
 	}
 
-	fwts_acpi_reserved_zero_check("SPMI", "Reserved2", spmi->reserved2, &passed);
-	fwts_acpi_reserved_bits_check("SPMI", "PCI device flag", spmi->pci_device_flag, 1, 7, &passed);
+	fwts_acpi_reserved_zero("SPMI", "Reserved2", spmi->reserved2, &passed);
+	fwts_acpi_reserved_bits("SPMI", "PCI device flag", spmi->pci_device_flag, 1, 7, &passed);
 
 	if (((spmi->interrupt_type & 2) == 0) &&
 	    (spmi->global_system_interrupt != 0)) {
@@ -125,10 +125,10 @@ static int spmi_test1(fwts_framework *fw)
 	}
 
 	/* Base address must be one of 3 types, System Memory, System I/O or SMBUS */
-	fwts_acpi_space_id_check(fw, "SPMI", "Base Address", &passed, spmi->base_address.address_space_id, 3,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
-				 FWTS_GAS_ADDR_SPACE_ID_SMBUS);
+	fwts_acpi_space_id(fw, "SPMI", "Base Address", &passed, spmi->base_address.address_space_id, 3,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
+			   FWTS_GAS_ADDR_SPACE_ID_SMBUS);
 
 	/*
 	 * For SSIF: The Address_Space_ID is SMBUS and the address field of the GAS

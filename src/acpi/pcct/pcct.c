@@ -50,10 +50,10 @@ static void gas_messages(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, b
 	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
 
 	snprintf(label, sizeof(label), "Subspace Type % " PRId8, type);
-	fwts_acpi_space_id_check(fw, "PCCT", label, passed, gas->address_space_id, 3,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
-				 FWTS_GAS_ADDR_SPACE_ID_FFH);
+	fwts_acpi_space_id(fw, "PCCT", label, passed, gas->address_space_id, 3,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
+			   FWTS_GAS_ADDR_SPACE_ID_FFH);
 }
 
 static void gas_messages2(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, bool *passed)
@@ -67,8 +67,8 @@ static void gas_messages2(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, 
 	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
 
 	snprintf(label, sizeof(label), "Subspace Type % " PRId8, type);
-	fwts_acpi_space_id_check(fw, "PCCT", label, passed, gas->address_space_id, 2,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
+	fwts_acpi_space_id(fw, "PCCT", label, passed, gas->address_space_id, 2,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 }
 
 static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_range, uint64_t min_length, bool *passed)
@@ -132,7 +132,7 @@ static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_
 	fwts_log_info_simp_int(fw, "    Max Periodic Access Rate:    ", entry->max_periodic_access_rate);
 	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 
-	fwts_acpi_reserved_bits_check("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
+	fwts_acpi_reserved_bits("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
 static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_2 *entry, bool *passed)
@@ -154,7 +154,7 @@ static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_
 	fwts_log_info_simp_int(fw, "    Platform Ack Preserve:       ", entry->platform_ack_preserve);
 	fwts_log_info_simp_int(fw, "    Platform Ack Write:          ", entry->platform_ack_write);
 
-	fwts_acpi_reserved_bits_check("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
+	fwts_acpi_reserved_bits("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
 static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_3_4 *entry, bool *passed)
@@ -187,7 +187,7 @@ static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	gas_messages(fw, entry->header.type, &entry->error_status_register, passed);
 	fwts_log_info_simp_int(fw, "    Error Status Mask:           ", entry->error_status_mask);
 
-	fwts_acpi_reserved_bits_check("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
+	fwts_acpi_reserved_bits("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
 static void hw_registers_based_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_5 *entry, bool *passed)
@@ -221,8 +221,8 @@ static int pcct_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Reserved:  ", pcct->reserved);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_bits_check("PCCT", "Flags", pcct->flags, 1, 31, &passed);
-	fwts_acpi_reserved_zero_check("PCCT", "Reserved", pcct->reserved, &passed);
+	fwts_acpi_reserved_bits("PCCT", "Flags", pcct->flags, 1, 31, &passed);
+	fwts_acpi_reserved_zero("PCCT", "Reserved", pcct->reserved, &passed);
 
 	offset = sizeof(fwts_acpi_table_pcct);
 	pcct_sub = (fwts_acpi_table_pcct_subspace_header *) (table->data + offset);

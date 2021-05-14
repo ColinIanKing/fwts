@@ -51,7 +51,7 @@ static int xenv_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Evtchn Intr:                     ", xenv->evtchn_intr);
 	fwts_log_info_simp_int(fw, "  Evtchn Intr Flags:               ",  xenv->evtchn_intr_flags);
 
-	fwts_acpi_reserved_bits_check("XENV", "Evtchn Intr Flags", xenv->evtchn_intr_flags, 2, 7, &passed);
+	fwts_acpi_reserved_bits("XENV", "Evtchn Intr Flags", xenv->evtchn_intr_flags, 2, 7, &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in XENV table.");

@@ -40,7 +40,7 @@ static int mchi_test1(fwts_framework *fw)
 	bool passed = true;
 	fwts_acpi_table_mchi *mchi = (fwts_acpi_table_mchi *)table->data;
 
-	if (!fwts_acpi_table_length_check(fw, "MCHI", table->length, sizeof(fwts_acpi_table_mchi))) {
+	if (!fwts_acpi_table_length(fw, "MCHI", table->length, sizeof(fwts_acpi_table_mchi))) {
 		passed = false;
 		goto done;
 	}
@@ -98,7 +98,7 @@ static int mchi_test1(fwts_framework *fw)
 			"255 (OEM defined)", mchi->protocol_identifier);
 	}
 
-	fwts_acpi_reserved_bits_check("MCHI", "Interrupt Type", mchi->interrupt_type, 2, 7, &passed);
+	fwts_acpi_reserved_bits("MCHI", "Interrupt Type", mchi->interrupt_type, 2, 7, &passed);
 
 	if (((mchi->interrupt_type & 0x01) == 0) &&
 	    (mchi->gpe != 0)) {
@@ -111,7 +111,7 @@ static int mchi_test1(fwts_framework *fw)
 			mchi->gpe);
 	}
 
-	fwts_acpi_reserved_bits_check("MCHI", "PCI Device Flag", mchi->pci_device_flag, 1, 7, &passed);
+	fwts_acpi_reserved_bits("MCHI", "PCI Device Flag", mchi->pci_device_flag, 1, 7, &passed);
 
 	if (((mchi->interrupt_type & 0x02) == 0) &&
 	    (mchi->global_system_interrupt != 0)) {
@@ -123,10 +123,10 @@ static int mchi_test1(fwts_framework *fw)
 			mchi->global_system_interrupt);
 	}
 
-	fwts_acpi_space_id_check(fw, "MCHI", "Base Address", &passed, mchi->base_address.address_space_id, 3,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
-				 FWTS_GAS_ADDR_SPACE_ID_SMBUS);
+	fwts_acpi_space_id(fw, "MCHI", "Base Address", &passed, mchi->base_address.address_space_id, 3,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
+			   FWTS_GAS_ADDR_SPACE_ID_SMBUS);
 
 	/* SMBus specific checks */
 	if (mchi->base_address.address_space_id == FWTS_GAS_ADDR_SPACE_ID_SMBUS) {

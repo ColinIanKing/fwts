@@ -44,10 +44,10 @@ static int wpbt_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Content Layout:           ", wpbt->layout);
 	fwts_log_info_simp_int(fw, "  Content Type:             ", wpbt->type);
 
-	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "WPBT", "Layout", wpbt->layout, 1, &passed);
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "WPBT", "Layout", wpbt->layout, 1, &passed);
 
 	if (wpbt->type != 1)
-		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "WPBT", "Type", wpbt->type, 1, &passed);
+		fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "WPBT", "Type", wpbt->type, 1, &passed);
 	else {
 		fwts_acpi_table_wpbt_type1 *type = (fwts_acpi_table_wpbt_type1 *) (table->data + sizeof(fwts_acpi_table_wpbt));
 		fwts_log_info_simp_int(fw, "  Arguments Length:         ", type->arguments_length);

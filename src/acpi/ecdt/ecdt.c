@@ -42,8 +42,8 @@ static int ecdt_test1(fwts_framework *fw)
 	int i;
 
 	/* Must be I/O Address Space or a Memory Space */
-	fwts_acpi_space_id_check(fw, "ECDT", "EC_CONTROL", &passed, ecdt->ec_control.address_space_id, 2,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
+	fwts_acpi_space_id(fw, "ECDT", "EC_CONTROL", &passed, ecdt->ec_control.address_space_id, 2,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 	/* Must be correct Access Size */
 	if (ecdt->ec_control.access_width > 4) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -54,8 +54,8 @@ static int ecdt_test1(fwts_framework *fw)
 		passed = false;
 	}
 	/* Must be I/O Address Space or a Memory Space */
-	fwts_acpi_space_id_check(fw, "ECDT", "EC_DATA", &passed, ecdt->ec_control.address_space_id, 2,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
+	fwts_acpi_space_id(fw, "ECDT", "EC_DATA", &passed, ecdt->ec_control.address_space_id, 2,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 	/* Must be correct Access Size */
 	if (ecdt->ec_data.access_width > 4) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,

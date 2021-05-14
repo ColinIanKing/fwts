@@ -42,7 +42,7 @@ static void sdev_acpi_namespace_device_test(fwts_framework *fw, const fwts_acpi_
 	fwts_log_info_simp_int(fw, "    Secure Access Components Offset:  ", entry->secure_access_offset);
 	fwts_log_info_simp_int(fw, "    Secure Access Components Length:  ", entry->secure_access_length);
 
-	fwts_acpi_reserved_bits_check("SDEV", "Flags", entry->header.flags, 2, 15, passed);
+	fwts_acpi_reserved_bits("SDEV", "Flags", entry->header.flags, 2, 15, passed);
 
 	/* TODO - check Secure Access Components - acpica (iasl) supports aren't complete */
 }
@@ -60,7 +60,7 @@ static void sdev_pcie_endpoint_device_test(fwts_framework *fw, const fwts_acpi_t
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Offset:      ", entry->vendor_offset);
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Length:      ", entry->vendor_length);
 
-	fwts_acpi_reserved_bits_check("SDEV", "Flags", entry->header.flags, 1, 15, passed);
+	fwts_acpi_reserved_bits("SDEV", "Flags", entry->header.flags, 1, 15, passed);
 }
 
 static int sdev_test1(fwts_framework *fw)
@@ -76,7 +76,7 @@ static int sdev_test1(fwts_framework *fw)
 	while (offset < table->length) {
 		uint32_t type_length;
 
-		if (fwts_acpi_structure_length_zero_check(fw, "SDEV", entry->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "SDEV", entry->length, offset)) {
 			passed = false;
 			break;
 		}
@@ -92,17 +92,17 @@ static int sdev_test1(fwts_framework *fw)
 			sdev_pcie_endpoint_device_test(fw, pcie, &passed);
 			type_length = sizeof(fwts_acpi_table_sdev_pcie) + pcie->path_length + pcie->vendor_length;
 		} else {
-			fwts_acpi_reserved_type_check(fw, "SDEV", entry->type, 0, FWTS_SDEV_TYPE_RESERVED, &passed);
+			fwts_acpi_reserved_type(fw, "SDEV", entry->type, 0, FWTS_SDEV_TYPE_RESERVED, &passed);
 			break;
 		}
 
-		if (!fwts_acpi_structure_length_check(fw, "SDEV", entry->type, entry->length, type_length)) {
+		if (!fwts_acpi_structure_length(fw, "SDEV", entry->type, entry->length, type_length)) {
 			passed = false;
 			break;
 		}
 
 		offset += entry->length;
-		if (fwts_acpi_structure_range_check(fw, "SDEV", table->length, offset)) {
+		if (fwts_acpi_structure_range(fw, "SDEV", table->length, offset)) {
 			passed = false;
 			break;
 		}

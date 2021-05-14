@@ -1425,10 +1425,10 @@ bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name)
 }
 
 /*
- *  fwts_acpi_reserved_zero_check_()
+ *  fwts_acpi_reserved_zero_()
  *  verify whether the reserved field is zero
  */
-void fwts_acpi_reserved_zero_check_(
+void fwts_acpi_reserved_zero_(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
@@ -1469,10 +1469,10 @@ void fwts_acpi_reserved_zero_check_(
 }
 
 /*
- *  fwts_acpi_reserved_zero_array_check()
+ *  fwts_acpi_reserved_zero_array()
  *  verify whether the reserved array is all zeroed
  */
-void fwts_acpi_reserved_zero_array_check(
+void fwts_acpi_reserved_zero_array(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
@@ -1502,10 +1502,10 @@ void fwts_acpi_reserved_zero_array_check(
 }
 
 /*
- *  fwts_acpi_fixed_value_check()
+ *  fwts_acpi_fixed_value()
  *  verify whether a field matches the designed fixed value
  */
-void fwts_acpi_fixed_value_check(
+void fwts_acpi_fixed_value(
 	fwts_framework *fw,
 	fwts_log_level level,
 	const char *table,
@@ -1528,10 +1528,10 @@ void fwts_acpi_fixed_value_check(
 }
 
 /*
- *  fwts_acpi_reserved_bits_check_()
+ *  fwts_acpi_reserved_bits_()
  *  verify whether the reserved bits are zero
  */
-void fwts_acpi_reserved_bits_check_(
+void fwts_acpi_reserved_bits_(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
@@ -1580,10 +1580,10 @@ void fwts_acpi_reserved_bits_check_(
 }
 
 /*
- *  fwts_acpi_reserved_type_check()
+ *  fwts_acpi_reserved_type()
  *  verify whether the reserved types are used
  */
-void fwts_acpi_reserved_type_check(
+void fwts_acpi_reserved_type(
 	fwts_framework *fw,
 	const char *table,
 	uint8_t value,
@@ -1640,10 +1640,10 @@ static const char *get_space_id_name(const uint8_t id)
 }
 
 /*
- *  fwts_acpi_space_id_check()
+ *  fwts_acpi_space_id()
  *  check whether gas space id matches
  */
-void fwts_acpi_space_id_check(
+void fwts_acpi_space_id(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
@@ -1699,10 +1699,10 @@ void fwts_acpi_space_id_check(
 }
 
 /*
- *  fwts_acpi_table_length_check()
+ *  fwts_acpi_table_length()
  *  verify whether table length is sane
  */
-bool fwts_acpi_table_length_check(
+bool fwts_acpi_table_length(
 	fwts_framework *fw,
 	const char *table,
 	uint32_t length,
@@ -1723,10 +1723,10 @@ bool fwts_acpi_table_length_check(
 }
 
 /*
- *  fwts_acpi_structure_length_check()
+ *  fwts_acpi_structure_length()
  *  verify whether sub structure length is sane
  */
-bool fwts_acpi_structure_length_check(
+bool fwts_acpi_structure_length(
 	fwts_framework *fw,
 	const char *table,
 	uint8_t type,
@@ -1748,10 +1748,10 @@ bool fwts_acpi_structure_length_check(
 }
 
 /*
- *  fwts_acpi_structure_length_zero_check()
+ *  fwts_acpi_structure_length_zero()
  *  verify whether sub structure length is zero
  */
-bool fwts_acpi_structure_length_zero_check(
+bool fwts_acpi_structure_length_zero(
 	fwts_framework *fw,
 	const char *table,
 	const uint16_t length,
@@ -1771,10 +1771,10 @@ bool fwts_acpi_structure_length_zero_check(
 }
 
 /*
- *  fwts_acpi_structure_range_check()
+ *  fwts_acpi_structure_range()
  *  verify whether sub structure is out of table range
  */
-bool fwts_acpi_structure_range_check(
+bool fwts_acpi_structure_range(
 	fwts_framework *fw,
 	const char *table,
 	const uint32_t table_length,

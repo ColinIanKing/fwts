@@ -51,7 +51,7 @@ static int cpep_test1(fwts_framework *fw)
 		   ((uint64_t) cpep->reserved[2] << 16) + ((uint64_t) cpep->reserved[3] << 24) +
 		   ((uint64_t) cpep->reserved[4] << 32) + ((uint64_t) cpep->reserved[5] << 40) +
 		   ((uint64_t) cpep->reserved[6] << 48) + ((uint64_t) cpep->reserved[7] << 56);
-	fwts_acpi_reserved_zero_check("CPEP", "Reserved", reserved, &passed);
+	fwts_acpi_reserved_zero("CPEP", "Reserved", reserved, &passed);
 
 	n = (table->length - sizeof(fwts_acpi_table_cpep)) /
 		sizeof(fwts_acpi_cpep_processor_info);
@@ -63,10 +63,10 @@ static int cpep_test1(fwts_framework *fw)
 		fwts_acpi_cpep_processor_info *info = &cpep->cpep_info[i];
 
 		snprintf(label, 40, "Processor Structure %d Type", i);
-		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "CPEP", label, info->type, 0, &cpep_passed);
+		fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "CPEP", label, info->type, 0, &cpep_passed);
 
 		snprintf(label, 40, "Processor Structure %d Length", i);
-		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "CPEP", label, info->length, 8, &cpep_passed);
+		fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "CPEP", label, info->length, 8, &cpep_passed);
 
 		/* Should probably sanity check processor UID, EIDs at a later date */
 

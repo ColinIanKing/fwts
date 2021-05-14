@@ -45,7 +45,7 @@ static int slic_test1(fwts_framework *fw)
 	size_t length = slic_min_hdr_size;
 
 	/* Size sanity check #1, got enough table to get initial header */
-	if (!fwts_acpi_table_length_check(fw, "SLIC", table->length, slic_min_hdr_size)) {
+	if (!fwts_acpi_table_length(fw, "SLIC", table->length, slic_min_hdr_size)) {
 		passed = false;
 		goto done;
 	}

@@ -50,7 +50,7 @@ static void phat_version_test(fwts_framework *fw, fwts_acpi_table_phat_version *
 
 		/* stop if element is outside the table */
 		offset += sizeof(fwts_acpi_table_phat_version_elem);
-		if (fwts_acpi_structure_range_check(fw, "PHAT", table->length, offset)) {
+		if (fwts_acpi_structure_range(fw, "PHAT", table->length, offset)) {
 			*passed = false;
 			break;
 		}
@@ -66,7 +66,7 @@ static void phat_version_test(fwts_framework *fw, fwts_acpi_table_phat_version *
 
 	}
 
-	fwts_acpi_reserved_zero_check("PHAT", "Reserved", reserved, passed);
+	fwts_acpi_reserved_zero("PHAT", "Reserved", reserved, passed);
 }
 
 static void phat_health_test(fwts_framework *fw, fwts_acpi_table_phat_health *entry, uint32_t offset, bool *passed)
@@ -95,7 +95,7 @@ static void phat_health_test(fwts_framework *fw, fwts_acpi_table_phat_health *en
 
 			/* stop if data is outside the table */
 			offset += sizeof(uint8_t);
-			if (fwts_acpi_structure_range_check(fw, "PHAT", table->length, offset)) {
+			if (fwts_acpi_structure_range(fw, "PHAT", table->length, offset)) {
 				*passed = false;
 				break;
 			}
@@ -104,7 +104,7 @@ static void phat_health_test(fwts_framework *fw, fwts_acpi_table_phat_health *en
 		}
 	}
 
-	fwts_acpi_reserved_zero_check("PHAT", "Reserved", entry->reserved, passed);
+	fwts_acpi_reserved_zero("PHAT", "Reserved", entry->reserved, passed);
 
 	if (entry->data_offset > entry->header.length) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
@@ -125,7 +125,7 @@ static int phat_test1(fwts_framework *fw)
 	entry = (fwts_acpi_table_phat_header *) (table->data + sizeof(fwts_acpi_table_phat));
 	offset = sizeof(fwts_acpi_table_phat);
 	while (offset < table->length) {
-		if (fwts_acpi_structure_length_zero_check(fw, "PHAT", entry->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "PHAT", entry->length, offset)) {
 			passed = false;
 			break;
 		}
@@ -135,13 +135,13 @@ static int phat_test1(fwts_framework *fw)
 		} else if (entry->type == FWTS_PHAT_HEALTH) {
 			phat_health_test(fw, (fwts_acpi_table_phat_health *) entry, offset, &passed);
 		} else {
-			fwts_acpi_reserved_type_check(fw, "PHAT", entry->type, 0, FWTS_PHAT_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type(fw, "PHAT", entry->type, 0, FWTS_PHAT_RESERVED - 1, &passed);
 			break;
 		}
 
 		/* stop if sub structure is outside the table */
 		offset += entry->length;
-		if (fwts_acpi_structure_range_check(fw, "PHAT", table->length, offset)) {
+		if (fwts_acpi_structure_range(fw, "PHAT", table->length, offset)) {
 			passed = false;
 			break;
 		}

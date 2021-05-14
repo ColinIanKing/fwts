@@ -1959,9 +1959,9 @@ void fwts_method_test_CRS_large_resource_items(
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 17, 65535, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
-		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 1, 7, passed);
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_bits("_CRS", "Flags[low]", data[4], 1, 7, passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
 		break;
 	case 0xe: /* 6.4.3.8.2 Serial Bus Connection Descriptors */
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 11, 65535, passed);
@@ -1972,8 +1972,8 @@ void fwts_method_test_CRS_large_resource_items(
 		if (!*passed)	/* Too short, abort */
 			break;
 
-		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 2, 7, passed);
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_bits("_CRS", "Flags[low]", data[4], 2, 7, passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
 
 		if (data[6] > 0xd && data[6] < 0x80) {
 			*passed = false;
@@ -1988,15 +1988,15 @@ void fwts_method_test_CRS_large_resource_items(
 				"section 6.4.3.10 of the ACPI spec.");
 		}
 
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
 		break;
 	case 0x10: /* 6.4.3.11 Pin Group Descriptors */
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 13, 65535, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 
-		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 1, 7, passed);
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_bits("_CRS", "Flags[low]", data[4], 1, 7, passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
 
 		break;
 	case 0x11: /* 6.4.3.12 Pin Group Function Descriptors */
@@ -2004,17 +2004,17 @@ void fwts_method_test_CRS_large_resource_items(
 		if (!*passed)	/* Too short, abort */
 			break;
 
-		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 2, 7, passed);
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
-		fwts_acpi_reserved_zero_check("_CRS", "Resource Source Index", data[8], passed);
+		fwts_acpi_reserved_bits("_CRS", "Flags[low]", data[4], 2, 7, passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_zero("_CRS", "Resource Source Index", data[8], passed);
 		break;
 	case 0x12: /* 6.4.3.13 Pin Group Configuration Descriptor */
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 19, 65535, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 
-		fwts_acpi_reserved_bits_check("_CRS", "Flags[low]", data[4], 2, 7, passed);
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_bits("_CRS", "Flags[low]", data[4], 2, 7, passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
 
 		if (data[6] > 0xd && data[6] < 0x80) {
 			*passed = false;
@@ -2029,7 +2029,7 @@ void fwts_method_test_CRS_large_resource_items(
 				"section 6.4.3.10 of the ACPI spec.");
 		}
 
-		fwts_acpi_reserved_zero_check("_CRS", "Flags[high]", data[5], passed);
+		fwts_acpi_reserved_zero("_CRS", "Flags[high]", data[5], passed);
 		break;
 	default:
 		snprintf(tmp, sizeof(tmp), "Method%sUnkownLargeResourceItem", objname);
@@ -2441,10 +2441,10 @@ void fwts_method_test_BMD_return(
 	if (fwts_method_package_elements_all_type(fw, name, obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
-	fwts_acpi_reserved_bits_check("_BMD", "Status Flags",
+	fwts_acpi_reserved_bits("_BMD", "Status Flags",
 		obj->Package.Elements[0].Integer.Value, 7, 31, &failed);
 
-	fwts_acpi_reserved_bits_check("_BMD", "Capability Flags",
+	fwts_acpi_reserved_bits("_BMD", "Capability Flags",
 		obj->Package.Elements[1].Integer.Value, 6, 31, &failed);
 
 	if (!failed)
@@ -2506,7 +2506,7 @@ void fwts_method_test_NBS_return(
 	ret = (nbs_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &passed);
 	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &passed);
-	fwts_acpi_reserved_bits_check("_NBS", "Validation Flags",
+	fwts_acpi_reserved_bits("_NBS", "Validation Flags",
 		ret->validation_flags, 1, 15, &passed);
 
 	if (passed)
@@ -2534,18 +2534,18 @@ void fwts_method_test_NCH_return(
 	ret = (nch_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &passed);
 	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &passed);
-	fwts_acpi_reserved_bits_check("_NCH", "Validation Flags",
+	fwts_acpi_reserved_bits("_NCH", "Validation Flags",
 		ret->extended_status, 2, 15, &passed);
 
 	/* Health Status Flags [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check("_NCH", "Health Status Flags",
+	fwts_acpi_reserved_bits("_NCH", "Health Status Flags",
 		ret->health_status_flags, 2, 7, &passed);
-	fwts_acpi_reserved_bits_check("_NCH", "Health Status Flags",
+	fwts_acpi_reserved_bits("_NCH", "Health Status Flags",
 		ret->health_status_flags, 11, 15, &passed);
-	fwts_acpi_reserved_bits_check("_NCH", "Health Status Flags",
+	fwts_acpi_reserved_bits("_NCH", "Health Status Flags",
 		ret->health_status_flags, 19, 31, &passed);
 
-	fwts_acpi_reserved_bits_check("_NCH", "Health Status Attributes",
+	fwts_acpi_reserved_bits("_NCH", "Health Status Attributes",
 		ret->health_status_attributes, 1, 31, &passed);
 
 	if (passed)
@@ -2575,14 +2575,14 @@ void fwts_method_test_NIC_return(
 	check_nvdimm_extended_status(fw, name, ret->extended_status, 0, &passed);
 
 	/* Health Error Injection Capabilities [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check("_NIC", "Health Error Injection Capabilities",
+	fwts_acpi_reserved_bits("_NIC", "Health Error Injection Capabilities",
 		ret->health_error_injection, 2, 7, &passed);
-	fwts_acpi_reserved_bits_check("_NIC", "Health Error Injection Capabilities",
+	fwts_acpi_reserved_bits("_NIC", "Health Error Injection Capabilities",
 		ret->health_error_injection, 11, 15, &passed);
-	fwts_acpi_reserved_bits_check("_NIC", "Health Error Injection Capabilities",
+	fwts_acpi_reserved_bits("_NIC", "Health Error Injection Capabilities",
 		ret->health_error_injection, 19, 31, &passed);
 
-	fwts_acpi_reserved_bits_check("_NIC", "Health Status Attributes Capabilities",
+	fwts_acpi_reserved_bits("_NIC", "Health Status Attributes Capabilities",
 		ret->health_status_attributes, 1, 31, &passed);
 
 	if (passed)
@@ -2636,18 +2636,18 @@ void fwts_method_test_NIG_return(
 	ret = (nig_return_t *) obj->Buffer.Pointer;
 	check_nvdimm_status(fw, name, ret->status, &passed);
 	check_nvdimm_extended_status(fw, name,  ret->extended_status, 0, &passed);
-	fwts_acpi_reserved_bits_check("_NIG", "Validation Flags",
+	fwts_acpi_reserved_bits("_NIG", "Validation Flags",
 		ret->validation_flags, 2, 15, &passed);
 
 	/* Injected Health Status Errors [2..7], [11.15], [19..31] are reserved */
-	fwts_acpi_reserved_bits_check("_NIG", "Injected Health Status Errors",
+	fwts_acpi_reserved_bits("_NIG", "Injected Health Status Errors",
 		ret->health_status_errors, 2, 7, &passed);
-	fwts_acpi_reserved_bits_check("_NIG", "Injected Health Status Errors",
+	fwts_acpi_reserved_bits("_NIG", "Injected Health Status Errors",
 		ret->health_status_errors, 11, 15, &passed);
-	fwts_acpi_reserved_bits_check("_NIG", "Injected Health Status Errors",
+	fwts_acpi_reserved_bits("_NIG", "Injected Health Status Errors",
 		ret->health_status_errors, 19, 31, &passed);
 
-	fwts_acpi_reserved_bits_check("_NIG", "Health Status Attributes of Injected Errors",
+	fwts_acpi_reserved_bits("_NIG", "Health Status Attributes of Injected Errors",
 		ret->health_status_attributes, 1, 31, &passed);
 
 	if (passed)
@@ -2675,7 +2675,7 @@ void fwts_method_test_STA_return(
 			"but not present, which is impossible.", name);
 		passed = false;
 	}
-	fwts_acpi_reserved_bits_check("_STA", "Reserved Bits", obj->Integer.Value, 5, 31, &passed);
+	fwts_acpi_reserved_bits("_STA", "Reserved Bits", obj->Integer.Value, 5, 31, &passed);
 
 	if (passed)
 		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
@@ -3038,7 +3038,7 @@ void fwts_method_test_BST_return(
 
 	/* Sanity check each field */
 	/* Battery State */
-	fwts_acpi_reserved_bits_check("_BST", "Battery State",
+	fwts_acpi_reserved_bits("_BST", "Battery State",
 			obj->Package.Elements[0].Integer.Value, 3, 31, &failed);
 	/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
 	if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
@@ -3091,7 +3091,7 @@ void fwts_method_test_BPC_return(
 	if (fwts_method_test_revision(fw, name, obj->Package.Elements[0].Integer.Value, 1) != FWTS_OK)
 		passed = false;
 
-	fwts_acpi_reserved_bits_check("_BPC", "Power Threshold Support Capability",
+	fwts_acpi_reserved_bits("_BPC", "Power Threshold Support Capability",
 		obj->Package.Elements[1].Integer.Value, 2, 31, &passed);
 
 	if (!passed)

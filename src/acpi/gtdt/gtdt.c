@@ -74,7 +74,7 @@ static int gtdt_test1(fwts_framework *fw)
 			"If not provided, this field must be 0xFFFFFFFFFFFFFFFF");
 	}
 
-	fwts_acpi_reserved_bits_check("GTDT", "Flags", gtdt->virtual_timer_flags, 3, 31, &passed);
+	fwts_acpi_reserved_bits("GTDT", "Flags", gtdt->virtual_timer_flags, 3, 31, &passed);
 
 	ptr = (uint8_t *)table->data + gtdt->platform_timer_offset;
 	n = gtdt->platform_timer_count;
@@ -188,13 +188,13 @@ static int gtdt_test1(fwts_framework *fw)
 				}
 
 				snprintf(field, sizeof(field), "block %" PRIu32 " physical timer flags", i);
-				fwts_acpi_reserved_bits_check("GTDT", field, block_timer->phys_timer_flags, 2, 31, &passed);
+				fwts_acpi_reserved_bits("GTDT", field, block_timer->phys_timer_flags, 2, 31, &passed);
 
 				snprintf(field, sizeof(field), "block %" PRIu32 " virtual timer flags", i);
-				fwts_acpi_reserved_bits_check("GTDT", field, block_timer->virt_timer_flags, 2, 31, &passed);
+				fwts_acpi_reserved_bits("GTDT", field, block_timer->virt_timer_flags, 2, 31, &passed);
 
 				snprintf(field, sizeof(field), "block %" PRIu32 " common flags", i);
-				fwts_acpi_reserved_bits_check("GTDT", field, block_timer->common_flags, 2, 31, &passed);
+				fwts_acpi_reserved_bits("GTDT", field, block_timer->common_flags, 2, 31, &passed);
 			}
 			ptr += block->length;
 			break;
@@ -242,7 +242,7 @@ static int gtdt_test1(fwts_framework *fw)
 			}
 
 			snprintf(field, sizeof(field), "SBSA generic watchdog timer %" PRIu32 " flags", i);
-			fwts_acpi_reserved_bits_check("GTDT", field, watchdog->watchdog_timer_flags, 3, 31, &passed);
+			fwts_acpi_reserved_bits("GTDT", field, watchdog->watchdog_timer_flags, 3, 31, &passed);
 
 			ptr += watchdog->length;
 			break;

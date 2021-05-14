@@ -56,7 +56,7 @@ static int boot_test1(fwts_framework *fw)
 	bool passed = true;
 	fwts_acpi_table_boot *boot = (fwts_acpi_table_boot *)table->data;
 
-	if (!fwts_acpi_table_length_check(fw, "BOOT", table->length, sizeof(fwts_acpi_table_boot))) {
+	if (!fwts_acpi_table_length(fw, "BOOT", table->length, sizeof(fwts_acpi_table_boot))) {
 		passed = false;
 		goto done;
 	}

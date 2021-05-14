@@ -46,9 +46,9 @@ static int bgrt_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Image Offset X:           ", bgrt->image_offset_x);
 	fwts_log_info_simp_int(fw, "  Image Offset Y:           ", bgrt->image_offset_y);
 
-	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "BGRT", "Version", bgrt->version, 1, &passed);
-	fwts_acpi_reserved_bits_check("BGRT", "BGRT Status", bgrt->status, 3, 7, &passed);
-	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_MEDIUM, "BGRT", "Image Type", bgrt->image_type, 0, &passed);
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "BGRT", "Version", bgrt->version, 1, &passed);
+	fwts_acpi_reserved_bits("BGRT", "BGRT Status", bgrt->status, 3, 7, &passed);
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "BGRT", "Image Type", bgrt->image_type, 0, &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in BGRT table.");

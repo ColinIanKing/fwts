@@ -40,7 +40,7 @@ static int dbgp_test1(fwts_framework *fw)
 	bool passed = true;
 	uint32_t reserved;
 
-	if (!fwts_acpi_table_length_check(fw, "DBGP", table->length, sizeof(fwts_acpi_table_dbgp))) {
+	if (!fwts_acpi_table_length(fw, "DBGP", table->length, sizeof(fwts_acpi_table_dbgp))) {
 		passed = false;
 		goto done;
 	}
@@ -82,7 +82,7 @@ static int dbgp_test1(fwts_framework *fw)
 			dbgp->interface_type);
 	}
 
-	fwts_acpi_reserved_zero_check("DBGP", "Reserved", reserved, &passed);
+	fwts_acpi_reserved_zero("DBGP", "Reserved", reserved, &passed);
 
 	if (dbgp->base_address.register_bit_width == 0) {
 		passed = false;

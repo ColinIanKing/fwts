@@ -30,7 +30,7 @@ static int tcpa_client_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 {
 	bool passed = true;
 
-	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "TCPA", "Length", tcpa->header.length, 50, &passed);
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "TCPA", "Length", tcpa->header.length, 50, &passed);
 	fwts_acpi_revision_check("TCPA", tcpa->header.revision, 2, &passed);
 
 	fwts_log_info_verbatim(fw, "TCPA Table:");
@@ -46,7 +46,7 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 	bool passed = true;
 	uint32_t reserved2;
 
-	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "TCPA", "Length", tcpa->header.length, 100, &passed);
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "TCPA", "Length", tcpa->header.length, 100, &passed);
 	fwts_acpi_revision_check("TCPA", tcpa->header.revision, 2, &passed);
 
 	reserved2 = tcpa->server.reserved2[0] + (tcpa->server.reserved2[1] << 4) + (tcpa->server.reserved2[2] << 8);
@@ -80,9 +80,9 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 	fwts_log_info_simp_int(fw, "  PCI Device:                      ", tcpa->server.pci_dev_number);
 	fwts_log_info_simp_int(fw, "  PCI Function:                    ", tcpa->server.pci_func_number);
 
-	fwts_acpi_reserved_zero_check("TCPA", "Reserved", tcpa->server.reserved, &passed);
-	fwts_acpi_reserved_zero_check("TCPA", "Reserved2", reserved2, &passed);
-	fwts_acpi_reserved_zero_check("TCPA", "Reserved3", tcpa->server.reserved3, &passed);
+	fwts_acpi_reserved_zero("TCPA", "Reserved", tcpa->server.reserved, &passed);
+	fwts_acpi_reserved_zero("TCPA", "Reserved2", reserved2, &passed);
+	fwts_acpi_reserved_zero("TCPA", "Reserved3", tcpa->server.reserved3, &passed);
 
 	if (tcpa->server.device_flag & 1) {
 		if (!(tcpa->server.interrupt_flag & 2)) {
@@ -100,15 +100,15 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 		}
 	}
 
-	fwts_acpi_space_id_check(fw, "TCPA", "Base Address", &passed,
-				 tcpa->server.base_addr.address_space_id, 2,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
+	fwts_acpi_space_id(fw, "TCPA", "Base Address", &passed,
+			   tcpa->server.base_addr.address_space_id, 2,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
-	fwts_acpi_space_id_check(fw, "TCPA", "Configuration Address", &passed,
-				 tcpa->server.config_addr.address_space_id, 2,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
-				 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
+	fwts_acpi_space_id(fw, "TCPA", "Configuration Address", &passed,
+			   tcpa->server.config_addr.address_space_id, 2,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
 	return passed;
 }

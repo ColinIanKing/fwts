@@ -27,13 +27,13 @@
 #define ACPI_MAX_TABLES		(128)
 
 #define fwts_acpi_revision_check(table, actual, must_be, passed) \
-	fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, table, "Revision", actual, must_be, passed)
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, table, "Revision", actual, must_be, passed)
 
-#define fwts_acpi_reserved_bits_check(table, field, value, min, max, passed) \
-	fwts_acpi_reserved_bits_check_(fw, table, field, value, sizeof(value), min, max, passed)
+#define fwts_acpi_reserved_bits(table, field, value, min, max, passed) \
+	fwts_acpi_reserved_bits_(fw, table, field, value, sizeof(value), min, max, passed)
 
-#define fwts_acpi_reserved_zero_check(table, field, value, passed) \
-	fwts_acpi_reserved_zero_check_(fw, table, field, value, sizeof(value), passed)
+#define fwts_acpi_reserved_zero(table, field, value, passed) \
+	fwts_acpi_reserved_zero_(fw, table, field, value, sizeof(value), passed)
 
 typedef enum {
 	FWTS_ACPI_TABLE_FROM_FIRMWARE,	/* directly from firmware */
@@ -70,16 +70,16 @@ bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name);
 
 fwts_bool fwts_acpi_is_reduced_hardware(fwts_framework *fw);
 
-void fwts_acpi_reserved_zero_check_(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, bool *passed);
-void fwts_acpi_reserved_zero_array_check(fwts_framework *fw, const char *table, const char *field, uint8_t* data, uint8_t length, bool *passed);
-void fwts_acpi_reserved_bits_check_(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, uint8_t min, uint8_t max, bool *passed);
-void fwts_acpi_reserved_type_check(fwts_framework *fw, const char *table, uint8_t value, uint8_t min, uint8_t reserved, bool *passed);
-bool fwts_acpi_table_length_check(fwts_framework *fw, const char *table, uint32_t length, uint32_t size);
-bool fwts_acpi_structure_length_check(fwts_framework *fw, const char *table, uint8_t subtable_type, uint32_t subtable_length, uint32_t size);
-bool fwts_acpi_structure_length_zero_check(fwts_framework *fw, const char *table, uint16_t length, uint32_t offset);
-bool fwts_acpi_structure_range_check(fwts_framework *fw, const char *table, uint32_t table_length, uint32_t offset);
-void fwts_acpi_fixed_value_check(fwts_framework *fw, fwts_log_level level, const char *table, const char *field, uint8_t actual, uint8_t must_be, bool *passed);
-void fwts_acpi_space_id_check(fwts_framework *fw, const char *table, const char *field, bool *passed, uint8_t actual, uint8_t num_type, ...);
+void fwts_acpi_reserved_zero_(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, bool *passed);
+void fwts_acpi_reserved_zero_array(fwts_framework *fw, const char *table, const char *field, uint8_t* data, uint8_t length, bool *passed);
+void fwts_acpi_reserved_bits_(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, uint8_t min, uint8_t max, bool *passed);
+void fwts_acpi_reserved_type(fwts_framework *fw, const char *table, uint8_t value, uint8_t min, uint8_t reserved, bool *passed);
+bool fwts_acpi_table_length(fwts_framework *fw, const char *table, uint32_t length, uint32_t size);
+bool fwts_acpi_structure_length(fwts_framework *fw, const char *table, uint8_t subtable_type, uint32_t subtable_length, uint32_t size);
+bool fwts_acpi_structure_length_zero(fwts_framework *fw, const char *table, uint16_t length, uint32_t offset);
+bool fwts_acpi_structure_range(fwts_framework *fw, const char *table, uint32_t table_length, uint32_t offset);
+void fwts_acpi_fixed_value(fwts_framework *fw, fwts_log_level level, const char *table, const char *field, uint8_t actual, uint8_t must_be, bool *passed);
+void fwts_acpi_space_id(fwts_framework *fw, const char *table, const char *field, bool *passed, uint8_t actual, uint8_t num_type, ...);
 
 uint32_t fwts_get_acpi_version(fwts_framework *fw);
 

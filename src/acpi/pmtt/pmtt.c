@@ -40,8 +40,8 @@ static void pmtt_subtable_header_test(
 	fwts_log_info_simp_int(fw, "    Flags:                          ", entry->flags);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
 
-	fwts_acpi_reserved_zero_check("PMTT", "Reserved1", entry->reserved1, passed);
-	fwts_acpi_reserved_bits_check("PMTT", "Flags", entry->flags, 4, 15, passed);
+	fwts_acpi_reserved_zero("PMTT", "Reserved1", entry->reserved1, passed);
+	fwts_acpi_reserved_bits("PMTT", "Flags", entry->flags, 4, 15, passed);
 
 	if ((entry->flags & 0x0C) == 0x0C) {
 		*passed = false;
@@ -50,7 +50,7 @@ static void pmtt_subtable_header_test(
 			"PMTT Flags's Bits[3..2] must not be 11b");
 	}
 
-	fwts_acpi_reserved_zero_check("PMTT", "Reserved2", entry->reserved2, passed);
+	fwts_acpi_reserved_zero("PMTT", "Reserved2", entry->reserved2, passed);
 }
 
 static void pmtt_physical_component_test(
@@ -83,18 +83,18 @@ static void pmtt_controller_test(
 	fwts_log_info_simp_int(fw, "    Memory Controller ID            ", entry->memory_controller_id);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
 
-	fwts_acpi_reserved_zero_check("PMTT", "Reserved", entry->reserved, passed);
+	fwts_acpi_reserved_zero("PMTT", "Reserved", entry->reserved, passed);
 
 	offset = sizeof(fwts_acpi_table_pmtt_controller);
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
 		/* stop if sub-structure is outside the table */
-		if (fwts_acpi_structure_range_check(fw, "PMTT", table->length, entry_offset + offset)) {
+		if (fwts_acpi_structure_range(fw, "PMTT", table->length, entry_offset + offset)) {
 			*passed = false;
 			break;
 		}
 
-		if (fwts_acpi_structure_length_zero_check(fw, "PMTT", header->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "PMTT", header->length, offset)) {
 			*passed = false;
 			break;
 		}
@@ -119,18 +119,18 @@ static void pmtt_socket_test(
 	fwts_log_info_simp_int(fw, "    Socket Identifier:              ", entry->socket_id);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
 
-	fwts_acpi_reserved_zero_check("PMTT", "Reserved", entry->reserved, passed);
+	fwts_acpi_reserved_zero("PMTT", "Reserved", entry->reserved, passed);
 
 	offset = sizeof(fwts_acpi_table_pmtt_socket);
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
 		/* stop if sub-structure is outside the table */
-		if (fwts_acpi_structure_range_check(fw, "PMTT", table->length, entry_offset + offset)) {
+		if (fwts_acpi_structure_range(fw, "PMTT", table->length, entry_offset + offset)) {
 			*passed = false;
 			break;
 		}
 
-		if (fwts_acpi_structure_length_zero_check(fw, "PMTT", header->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "PMTT", header->length, offset)) {
 			*passed = false;
 			break;
 		}
@@ -191,7 +191,7 @@ static int pmtt_test1(fwts_framework *fw)
 	offset = sizeof(fwts_acpi_table_pmtt);
 	while (offset < table->length) {
 
-		if (fwts_acpi_structure_length_zero_check(fw, "PHAT", entry->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "PHAT", entry->length, offset)) {
 			passed = false;
 			break;
 		}
@@ -199,7 +199,7 @@ static int pmtt_test1(fwts_framework *fw)
 		pmtt_memory_device(fw, entry, offset, &passed);
 
 		offset += entry->length;
-		if (fwts_acpi_structure_range_check(fw, "PMTT", table->length, offset)) {
+		if (fwts_acpi_structure_range(fw, "PMTT", table->length, offset)) {
 			passed = false;
 			break;
 		}

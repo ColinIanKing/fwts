@@ -38,7 +38,7 @@ static int aspt_test1(fwts_framework *fw)
 	bool passed = true;
 	fwts_acpi_table_aspt *aspt = (fwts_acpi_table_aspt *)table->data;
 
-	if (!fwts_acpi_table_length_check(fw, "ASPT", table->length, sizeof(fwts_acpi_table_aspt))) {
+	if (!fwts_acpi_table_length(fw, "ASPT", table->length, sizeof(fwts_acpi_table_aspt))) {
 		passed = false;
 		goto done;
 	}

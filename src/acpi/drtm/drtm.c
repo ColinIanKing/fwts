@@ -54,7 +54,7 @@ static int drtm_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Architecture_Dependent:   ", drtm->arch_dependent_address);
 	fwts_log_info_simp_int(fw, "  DRT_Flags:                ", drtm->flags);
 
-	fwts_acpi_reserved_bits_check("DRTM", "DRT_Flags", drtm->flags, 4, 31, &passed);
+	fwts_acpi_reserved_bits("DRTM", "DRT_Flags", drtm->flags, 4, 31, &passed);
 	fwts_log_nl(fw);
 
 	offset = sizeof(fwts_acpi_table_drtm);

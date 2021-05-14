@@ -148,7 +148,7 @@ static int dbg2_test1(fwts_framework *fw)
 	size_t total_size;
 
 	/* Enough length for the initial dbg2 header? */
-	if (!fwts_acpi_table_length_check(fw, "DBG2", table->length, sizeof(fwts_acpi_table_dbg2))) {
+	if (!fwts_acpi_table_length(fw, "DBG2", table->length, sizeof(fwts_acpi_table_dbg2))) {
 		passed = false;
 		goto done;
 	}
@@ -260,7 +260,7 @@ static int dbg2_test1(fwts_framework *fw)
 		fwts_log_info_simp_int(fw, "  Address Size Offset:      ", info->address_size_offset);
 		fwts_log_nl(fw);
 
-		fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "DBG2", "Info Structure Revision", info->revision, 0, &passed);
+		fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "DBG2", "Info Structure Revision", info->revision, 0, &passed);
 
 		if (port == NULL) {
 			passed = false;
@@ -279,7 +279,7 @@ static int dbg2_test1(fwts_framework *fw)
 				info->port_subtype);
 		}
 
-		fwts_acpi_reserved_zero_check("DBG2", "Info Structure Reserved", info->reserved, &passed);
+		fwts_acpi_reserved_zero("DBG2", "Info Structure Reserved", info->reserved, &passed);
 
 		length_ok = true;
 		dbg2_check_offset(fw, table->length, offset + info->length,

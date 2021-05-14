@@ -40,12 +40,12 @@ static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved3);
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved4);
 
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->header.reserved, passed);
-	fwts_acpi_reserved_bits_check("HMAT", "Flags", entry->flags, 1, 15, passed);
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved1, passed);
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved2, passed);
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved3, passed);
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved4, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->header.reserved, passed);
+	fwts_acpi_reserved_bits("HMAT", "Flags", entry->flags, 1, 15, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved1, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved2, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved3, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved4, passed);
 }
 
 static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_locality *entry, bool *passed)
@@ -69,8 +69,8 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
 	fwts_log_info_simp_int(fw, "    Entry Base Unit:                ", entry->entry_base_unit);
 
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->header.reserved, passed);
-	fwts_acpi_reserved_bits_check("HMAT", "Flags", entry->flags, 6, 7, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->header.reserved, passed);
+	fwts_acpi_reserved_bits("HMAT", "Flags", entry->flags, 6, 7, passed);
 
 	if (entry->data_type > 5) {
 		*passed = false;
@@ -81,10 +81,10 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	}
 
 	if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_64)
-		fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved1, passed);
+		fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved1, passed);
 	else
-		fwts_acpi_reserved_zero_check("HMAT", "Reserved", reserved1, passed);
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved2, passed);
+		fwts_acpi_reserved_zero("HMAT", "Reserved", reserved1, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved2, passed);
 
 	pd_size = (entry->num_initiator + entry->num_target) * 4 +
 	          (entry->num_initiator * entry->num_target * 2);
@@ -116,7 +116,7 @@ static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache
 	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved2);
 	fwts_log_info_simp_int(fw, "    Number of SMBIOS Handles:       ", entry->num_smbios);
 
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->header.reserved, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->header.reserved, passed);
 
 	if ((entry->cache_attr & 0xf) > 3 ||
 	   ((entry->cache_attr >> 4) & 0xf) > 3 ||
@@ -129,8 +129,8 @@ static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache
 			"0x%8.8" PRIx32 " instead", entry->cache_attr);
 	}
 
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved1, passed);
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", entry->reserved2, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved1, passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved2, passed);
 
 	if ((entry->header.length - sizeof(fwts_acpi_table_hmat_cache)) / 2 != entry->num_smbios) {
 		*passed = false;
@@ -152,14 +152,14 @@ static int hmat_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Reserved:        ", hmat->reserved);
 
 
-	fwts_acpi_reserved_zero_check("HMAT", "Reserved", hmat->reserved, &passed);
+	fwts_acpi_reserved_zero("HMAT", "Reserved", hmat->reserved, &passed);
 
 	entry = (fwts_acpi_table_hmat_header *) (table->data + sizeof(fwts_acpi_table_hmat));
 	offset = sizeof(fwts_acpi_table_hmat);
 	while (offset < table->length) {
 		uint32_t type_length;
 
-		if (fwts_acpi_structure_length_zero_check(fw, "HMAT", entry->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "HMAT", entry->length, offset)) {
 			passed = false;
 			break;
 		}
@@ -178,17 +178,17 @@ static int hmat_test1(fwts_framework *fw)
 			type_length = sizeof(fwts_acpi_table_hmat_cache) +
 			              ((fwts_acpi_table_hmat_cache *) entry)->num_smbios * 2;
 		} else {
-			fwts_acpi_reserved_type_check(fw, "HMAT", entry->type, 0, FWTS_HMAT_TYPE_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type(fw, "HMAT", entry->type, 0, FWTS_HMAT_TYPE_RESERVED - 1, &passed);
 			break;
 		}
 
-		if (!fwts_acpi_structure_length_check(fw, "HMAT", entry->type, entry->length, type_length)) {
+		if (!fwts_acpi_structure_length(fw, "HMAT", entry->type, entry->length, type_length)) {
 			passed = false;
 			break;
 		}
 
 		offset += entry->length;
-		if (fwts_acpi_structure_range_check(fw, "HMAT", table->length, offset)) {
+		if (fwts_acpi_structure_range(fw, "HMAT", table->length, offset)) {
 			passed = false;
 			break;
 		}

@@ -41,7 +41,7 @@ static int msdm_test1(fwts_framework *fw)
 	bool passed = true;
 
 	/* Size sanity check #1, got enough table to get initial header */
-	if (!fwts_acpi_table_length_check(fw, "MSDM", table->length, sizeof(fwts_acpi_table_msdm))) {
+	if (!fwts_acpi_table_length(fw, "MSDM", table->length, sizeof(fwts_acpi_table_msdm))) {
 		passed = false;
 		goto done;
 	}
@@ -50,8 +50,8 @@ static int msdm_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Data Reserved:            ", msdm->data_reserved);
 	fwts_log_info_simp_int(fw, "  Data Length:              ", msdm->data_length);
 
-	fwts_acpi_reserved_zero_check("MSDM", "Reserved", msdm->reserved, &passed);
-	fwts_acpi_reserved_zero_check("MSDM", "Data Reserved", msdm->data_reserved, &passed);
+	fwts_acpi_reserved_zero("MSDM", "Reserved", msdm->reserved, &passed);
+	fwts_acpi_reserved_zero("MSDM", "Data Reserved", msdm->data_reserved, &passed);
 
 	/* Now check table is big enough for the data payload */
 	if (table->length < sizeof(fwts_acpi_table_msdm) + msdm->data_length) {
@@ -72,7 +72,7 @@ static int msdm_test1(fwts_framework *fw)
 	case 0x0001:
 		/* Check license key size */
 		if (msdm->data_length != 0x1d)
-			fwts_acpi_fixed_value_check(fw, LOG_LEVEL_HIGH, "MSDM", "Data Length", msdm->data_length, 29, &passed);
+			fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "MSDM", "Data Length", msdm->data_length, 29, &passed);
 		else {
 			size_t i;
 			bool invalid = false;

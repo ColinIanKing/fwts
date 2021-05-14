@@ -51,12 +51,12 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 			entry->number_priv_resources);
 	}
 
-	fwts_acpi_reserved_zero_check("PPTT", "Reserved", entry->reserved, passed);
+	fwts_acpi_reserved_zero("PPTT", "Reserved", entry->reserved, passed);
 
 	if (rev == 1)
-		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 2, 31, passed);
+		fwts_acpi_reserved_bits("PPTT", "Flags", entry->flags, 2, 31, passed);
 	else
-		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 5, 31, passed);
+		fwts_acpi_reserved_bits("PPTT", "Flags", entry->flags, 5, 31, passed);
 
 }
 
@@ -77,14 +77,14 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 	if (rev >= 3)
 		fwts_log_info_simp_int(fw, "    Cache ID:                       ", entry->cache_id);
 
-	fwts_acpi_reserved_zero_check("PPTT", "Reserved", entry->reserved, passed);
+	fwts_acpi_reserved_zero("PPTT", "Reserved", entry->reserved, passed);
 
 	if (rev == 1 || rev == 2)
-		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 7, 31, passed);
+		fwts_acpi_reserved_bits("PPTT", "Flags", entry->flags, 7, 31, passed);
 	else
-		fwts_acpi_reserved_bits_check("PPTT", "Flags", entry->flags, 8, 31, passed);
+		fwts_acpi_reserved_bits("PPTT", "Flags", entry->flags, 8, 31, passed);
 
-	fwts_acpi_reserved_bits_check("PPTT", "Attributes", entry->attributes, 5, 7, passed);
+	fwts_acpi_reserved_bits("PPTT", "Attributes", entry->attributes, 5, 7, passed);
 }
 
 static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entry, bool *passed)
@@ -105,7 +105,7 @@ static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entr
 	fwts_log_info_simp_int(fw, "    MINOR_REV:                      ", entry->minor_rev);
 	fwts_log_info_simp_int(fw, "    SPIN_REV:                       ", entry->spin_rev);
 
-	fwts_acpi_reserved_zero_check("PPTT", "Reserved", entry->reserved, passed);
+	fwts_acpi_reserved_zero("PPTT", "Reserved", entry->reserved, passed);
 }
 
 static int pptt_test1(fwts_framework *fw)
@@ -123,7 +123,7 @@ static int pptt_test1(fwts_framework *fw)
 	while (offset < table->length) {
 		uint32_t type_length;
 
-		if (fwts_acpi_structure_length_zero_check(fw, "PPTT", entry->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "PPTT", entry->length, offset)) {
 			passed = false;
 			break;
 		}
@@ -142,17 +142,17 @@ static int pptt_test1(fwts_framework *fw)
 			pptt_id_test(fw, (fwts_acpi_table_pptt_id *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_id);
 		} else {
-			fwts_acpi_reserved_type_check(fw, "PPTT", entry->type, 0, FWTS_PPTT_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type(fw, "PPTT", entry->type, 0, FWTS_PPTT_RESERVED - 1, &passed);
 			break;
 		}
 
-		if (!fwts_acpi_structure_length_check(fw, "PPTT", entry->type, entry->length, type_length)) {
+		if (!fwts_acpi_structure_length(fw, "PPTT", entry->type, entry->length, type_length)) {
 			passed = false;
 			break;
 		}
 
 		offset += entry->length;
-		if (fwts_acpi_structure_range_check(fw, "PPTT", table->length, offset)) {
+		if (fwts_acpi_structure_range(fw, "PPTT", table->length, offset)) {
 			passed = false;
 			break;
 		}

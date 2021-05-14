@@ -47,8 +47,8 @@ static int einj_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Reserved:              ", reserved);
 	fwts_log_info_simp_int(fw, "  Injection Entry Count: ", einj->count);
 
-	fwts_acpi_reserved_bits_check("EINJ", "Injection Flags", einj->flags, 0, 31, &passed);
-	fwts_acpi_reserved_zero_check("EINJ", "Reserved", reserved, &passed);
+	fwts_acpi_reserved_bits("EINJ", "Injection Flags", einj->flags, 0, 31, &passed);
+	fwts_acpi_reserved_zero("EINJ", "Reserved", reserved, &passed);
 
 	fwts_log_nl(fw);
 
@@ -99,9 +99,9 @@ static int einj_test1(fwts_framework *fw)
 			passed = false;
 		}
 
-		fwts_acpi_reserved_zero_check("EINJ", "Reserved", entry->reserved, &passed);
-		fwts_acpi_space_id_check(fw, "EINJ", "Register Region", &passed, gas.address_space_id, 2,
-					 FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
+		fwts_acpi_reserved_zero("EINJ", "Reserved", entry->reserved, &passed);
+		fwts_acpi_space_id(fw, "EINJ", "Register Region", &passed, gas.address_space_id, 2,
+				   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
 		fwts_log_nl(fw);
 	}

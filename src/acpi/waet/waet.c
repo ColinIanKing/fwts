@@ -42,7 +42,7 @@ static int waet_test1(fwts_framework *fw)
 	fwts_acpi_table_waet *waet = (fwts_acpi_table_waet *)table->data;
 
 	/* Enough length for the initial waet header? */
-	if (!fwts_acpi_table_length_check(fw, "WAET", table->length, sizeof(fwts_acpi_table_waet))) {
+	if (!fwts_acpi_table_length(fw, "WAET", table->length, sizeof(fwts_acpi_table_waet))) {
 		passed = false;
 		goto done;
 	}
@@ -53,7 +53,7 @@ static int waet_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "    Bit [1] PM Timer Good:  %1" PRIu32, (waet->flags >> 1) & 1);
 	fwts_log_nl(fw);
 
-	fwts_acpi_reserved_bits_check("WAET", "Emulated Device Flags", waet->flags, 2, 31, &passed);
+	fwts_acpi_reserved_bits("WAET", "Emulated Device Flags", waet->flags, 2, 31, &passed);
 
 done:
 	if (passed)

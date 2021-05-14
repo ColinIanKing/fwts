@@ -182,13 +182,8 @@ static int hmat_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (entry->length != type_length) {
+		if (!fwts_acpi_structure_length_check(fw, "HMAT", entry->type, entry->length, type_length)) {
 			passed = false;
-			fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"HMATBadSubtableLength",
-				"HMAT subtable Type 0x%2.2" PRIx8 " should have "
-				"length 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8,
-				entry->type, entry->length, type_length);
 			break;
 		}
 

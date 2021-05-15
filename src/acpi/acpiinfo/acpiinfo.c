@@ -79,7 +79,9 @@ static int acpiinfo_test1(fwts_framework *fw)
 
 		sscanf(str, "%6d", &yearmonth);
 
-		if (yearmonth > 201902) {
+		if (yearmonth > 202103) {
+			version = 6.4;
+		} else if (yearmonth > 201902) {
 			version = 6.3;
 		} else if (yearmonth > 201609) {
 			version = 6.2;

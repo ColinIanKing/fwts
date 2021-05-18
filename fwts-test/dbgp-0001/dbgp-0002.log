@@ -16,8 +16,12 @@ dbgp            Interface Type is 0x04 which is a reserved interface type.
 dbgp            Expecting 0x00 (Full 16550) or 0x01 (16550 subset)
 dbgp            FAILED [HIGH] DBGPBaseAddrBitWidthZero: Test 1, DBGP Base
 dbgp            Address Bit Width is zero.
-dbgp            FAILED [HIGH] DBGPBaseAddrAddrSpaceID: Test 1, DBGP Base
-dbgp            Address, Address Space ID 0x5 which is a reserved value.
+dbgp            FAILED [HIGH] DBGPBadAddressSpaceId: Test 1, DBGP Base
+dbgp            Address Space ID must be one of System Memory (0x0),
+dbgp            System I/O (0x1), PCI Configuration (0x2), Embedded
+dbgp            Controller (0x3), SMBus (0x4), Platform Communications
+dbgp            Channel (0xa) or Functional Fixed Hardware (0x7f), got
+dbgp            SystemCMOS (0x5) instead.
 dbgp            
 dbgp            ==========================================================
 dbgp            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0

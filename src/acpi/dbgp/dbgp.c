@@ -90,20 +90,17 @@ static int dbgp_test1(fwts_framework *fw)
 			"DBGPBaseAddrBitWidthZero",
 			"DBGP Base Address Bit Width is zero.");
 	}
-	switch (dbgp->base_address.address_space_id) {
-	case 0x05 ... 0x09:
-	case 0x0b ... 0x7e:
-	case 0x80 ... 0xbf:
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"DBGPBaseAddrAddrSpaceID",
-			"DBGP Base Address, Address Space ID 0x%" PRIx8
-			" which is a reserved value.",
-			dbgp->base_address.address_space_id);
-		break;
-	default:
-		break;
-	}
+
+	fwts_acpi_space_id(fw, "DBGP", "Base Address", &passed,
+			   dbgp->base_address.address_space_id, 7,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
+			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
+			   FWTS_GAS_ADDR_SPACE_ID_PCI_CONFIG,
+			   FWTS_GAS_ADDR_SPACE_ID_EC,
+			   FWTS_GAS_ADDR_SPACE_ID_SMBUS,
+			   FWTS_GAS_ADDR_SPACE_ID_PCC,
+			   FWTS_GAS_ADDR_SPACE_ID_FFH);
+
 done:
 	if (passed)
 		fwts_passed(fw, "No issues found in DBGP table.");

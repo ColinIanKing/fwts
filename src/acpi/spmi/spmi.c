@@ -138,16 +138,11 @@ static int spmi_test1(fwts_framework *fw)
          * bits of the byte, and the most significant bit of the byte set to
          */
 	if (spmi->interface_type == 0x04) {
-		if (spmi->base_address.address_space_id != FWTS_GAS_ADDR_SPACE_ID_SMBUS) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"SPMIInvalidAddressSpaceIDForSSIF",
-				"SPMI Base Address Space ID is 0x%2.2" PRIx8
-				" but should be 0x%2.2" PRIx8 " (SMBUS) "
-				" for a SSIF Interface Type",
-				spmi->base_address.address_space_id,
-				FWTS_GAS_ADDR_SPACE_ID_SMBUS);
-		}
+
+		fwts_acpi_space_id(fw, "SPMI", "Base Address for SSIF", &passed,
+				   spmi->base_address.address_space_id, 1,
+				   FWTS_GAS_ADDR_SPACE_ID_SMBUS);
+
 		if (spmi->base_address.address & ~0x7f) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,

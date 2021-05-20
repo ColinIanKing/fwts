@@ -20,7 +20,7 @@ AM_CPPFLAGS = -Wall -Werror -Wextra -DDATAROOTDIR=\"$(datarootdir)\" 	\
 	-I$(srcdir)/../lib/include
 
 bin_PROGRAMS = kernelscan
-kernelscan_SOURCES = kernelscan.c $(srcdir)/../lib/src/fwts_json.c
+kernelscan_SOURCES = kernelscan.c ../../src/lib/src/fwts_json.c
 
 
 -include $(top_srcdir)/git.mk

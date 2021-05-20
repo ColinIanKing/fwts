@@ -1,3 +1,105 @@
+fwts (21.05.00-0ubuntu1) impish; urgency=medium
+
+  [Alex Hung]
+  * acpi: sdev: update type 1 in ACPI 6.4 (mantis 2111)
+  * fwts-test: sync up with sdev changes
+  * acpi: acpitables: add revision tests for PPTT
+  * acpi: pptt: add cache id according to ACPI 6.4 (mantis 2138)
+  * acpi: lib: add two helper functions
+  * acpi: phat: add a test for PHAT table
+  * fwts-test: sync up with phat test
+  * oops: add "kernel BUG" to oops test
+  * fwts-test: sync up with oops tests
+  * acpi: pmtt: update PMTT to revision 2 (mantis 1975)
+  * fwts-test: sync up with PMTT rev 2 changes
+  * acpi: refactor by fwts_acpi_structure_range_check
+  * acpi: refactor by fwts_acpi_reserved_type_check
+  * acpi: refactor zero length by fwts_acpi_structure_length_zero_check
+  * acpi: refactor length check by fwts_acpi_structure_length_check
+  * fwts-test: sync up with PMTT refactoring changes
+  * lib: acpi: unify naming style by removing "ACPI"
+  * acpi: shorten helper function names by removing "check"
+  * lib: acpi: fix incorrect actual vs. struct length outputs
+  * acpiinfo: update ACPI 6.4 vs. ACPICA versions
+  * acpi: dbgp/spmi: check space ids by fwts_acpi_space_id
+  * fwts-test: sync up with dbgp changes
+
+  [Colin Ian King]
+  * fwts_devicetree: clean up pedantic static analysis warning
+  * lib: fwts_acpi: fix potential infinite loop in data copy
+  * acpi: madt: replace continue with empty statement ;
+  * acpi: s3: ensure duration is initialized
+  * acpi: method: remove redundant continue statements
+  * Fix warnings on fdt_getprop calls
+  * acpi: uniqueid: Fix a couple of memory leaks
+  * ACPICA: Update to version 20210331
+  * fwts-test: update to sync with latest ACPICA
+  * mtrr: remove ioctl header include, it is redundant
+  * fwts_args: constify fields in struct fwts_option
+  * fwts_acpica.h: constify type argument in fwts_acpica_get_object_names
+  * fwts_args.h: constify read-only function arguments
+  * fwts_acpi_object_eval.h: constify read-only function arguments
+  * fwts_devicetree.h: clean up #define indents, constify function arg
+  * fwts_efi_module.h: constify read-only function arguments
+  * fwts_gpe: re-format prototypes to fit into 80 columns.
+  * fwts_pm_method.h: constify some function args, don't inline
+    free_pm_method_vars
+  * acpi_object_names: move array acpi_object_names into
+    fwts_method_check_element_type
+  * fwts_acpi_tables: move array gas_space_id_names into get_space_id_name
+  * fwts_arch: rename helper __fwts_arch_get_arch to fwts_arch_get_arch_by_name
+  * fwts-coreboot: remove blank line and fix a comment in a typo
+  * fwts_efi_module: constify read-only argument in check_module_loaded_no_dev
+  * fwts_firmware: move feature_names into fwts_firmware_feature_string
+  * fwts_log_html: move fwts_log_html_ascii_table into
+    fwts_log_html_convert_ascii
+  * fwts_summary: move two arrays into function fwts_summary_report
+  * fwts_tpm: make function args and a variable const
+  * bios: bios_info: make struct fields const
+  * bios: mtrr: clean up blank lines, make some arguments const
+  * bios: mpcheck: make function args const, change scope of array bus_types
+  * bios: mpcheck: make LEVEL macro an inlined helper function
+  * bios: mpdump: constify some read-only function arguments and variables
+  * bios: pciirq: constify read-only function argument
+  * bios: pnp move pnp_control_field into pnp_test1 and add constifications
+  * bios: romdump: constify read-only function args, add some white spaces
+  * bios: s0idle: constify read-only pointer
+  * cpu: cpufreq: make read-only function args and variables const
+  * devicetree: dt_sysinfo: make read-only function args and variables const
+  * devicetree: dt_sysinfo: make variable len a size_t
+  * hotkey: make read-only function args and variables const
+  * dmi: dmicheck: make read-only function args and variables const
+  * tpm: tpmevlogdump: make read-only function args and variables const
+  * tpm: tpmevlog: make read-only function args and variables const
+  * doc/fwts.1: fix spelling mistakes in the manual
+  * data: syntaxcheck.json: fix spelling mistakes
+  * treewide: fix spelling mistakes in comments, literals and tests
+  * treewide: Makefile.am: use $srcdir rather than relative path
+  * Makefile.am: remove references to json or json-c
+  * fwts_acpi_tables: add newline after declaration and before statement
+  * lib: fwts_ac_adapter: remove redundant pointer ac_entry
+  * lib: fwts_coreboot_cbmem.c: clean up static analysis warning
+  * lib: fwts_json: free objects where necessary to plug heap leaks
+
+  [Ivan Hu]
+  * tpmevlog: print out the TPM event log format type
+  * uefirttime: only test the unsupported status with RuntimeServicesSupported
+  * uefirtvariable: only test the unsupported status with
+    RuntimeServicesSupported
+  * uefirtmisc: only test the unsupported status with RuntimeServicesSupported
+  * uefi: remove unused have_rtsupported
+  * uefirttime: check time services supported before testing (LP: #1913351)
+  * uefirtmisc: check misc runtime services supported before testing
+    (LP: #1913351)
+  * uefirtvariable: check variable runtime services supported before testing
+    (LP: #1913351)
+  * uefirtauthvar: check variable runtime services supported before testing
+    (LP: #1913351)
+  * uefirtvariable: fix memory leak
+  * auto-packager:mkpackage.sh: add impish
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 20 May 2021 16:31:29 +0800
+
 fwts (21.03.00-0ubuntu1) hirsute; urgency=medium
 
   [Alex Hung]

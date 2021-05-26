@@ -1432,8 +1432,8 @@ void fwts_acpi_reserved_zero_(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
-	uint64_t value,
-	uint8_t size,
+	const uint64_t value,
+	const uint8_t size,
 	bool *passed)
 {
 	if (value != 0) {
@@ -1476,8 +1476,8 @@ void fwts_acpi_reserved_zero_array(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
-	uint8_t* data,
-	uint8_t length,
+	const uint8_t* data,
+	const uint8_t length,
 	bool *passed)
 {
 	uint32_t value = 0;
@@ -1507,11 +1507,11 @@ void fwts_acpi_reserved_zero_array(
  */
 void fwts_acpi_fixed_value(
 	fwts_framework *fw,
-	fwts_log_level level,
+	const fwts_log_level level,
 	const char *table,
 	const char *field,
-	uint8_t actual,
-	uint8_t must_be,
+	const uint8_t actual,
+	const uint8_t must_be,
 	bool *passed)
 {
 	char label[20];
@@ -1535,10 +1535,10 @@ void fwts_acpi_reserved_bits_(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
-	uint64_t value,
-	uint8_t size,
-	uint8_t min,
-	uint8_t max,
+	const uint64_t value,
+	const uint8_t size,
+	const uint8_t min,
+	const uint8_t max,
 	bool *passed)
 {
 	uint64_t mask = 0;
@@ -1586,9 +1586,9 @@ void fwts_acpi_reserved_bits_(
 void fwts_acpi_reserved_type(
 	fwts_framework *fw,
 	const char *table,
-	uint8_t value,
-	uint8_t min,
-	uint8_t reserved,
+	const uint8_t value,
+	const uint8_t min,
+	const uint8_t reserved,
 	bool *passed)
 {
 	if (value < min || value >= reserved) {
@@ -1648,8 +1648,8 @@ void fwts_acpi_space_id(
 	const char *table,
 	const char *field,
 	bool *passed,
-	uint8_t actual,
-	uint8_t num_type,
+	const uint8_t actual,
+	const uint8_t num_type,
 	...)
 {
 	bool matched = false;
@@ -1705,8 +1705,8 @@ void fwts_acpi_space_id(
 bool fwts_acpi_table_length(
 	fwts_framework *fw,
 	const char *table,
-	uint32_t length,
-	uint32_t size)
+	const uint32_t length,
+	const uint32_t size)
 {
 	if (length < size) {
 		char label[30];
@@ -1729,9 +1729,9 @@ bool fwts_acpi_table_length(
 bool fwts_acpi_structure_length(
 	fwts_framework *fw,
 	const char *table,
-	uint8_t type,
-	uint32_t actual_length,
-	uint32_t struct_length)
+	const uint8_t type,
+	const uint32_t actual_length,
+	const uint32_t struct_length)
 {
 	if (actual_length != struct_length) {
 		char label[30];

@@ -28,8 +28,6 @@
 
 #include "fwts_acpi_object_eval.h"
 
-#define ACPI_DUMP	(0)		/* WDAT entries are long, so don't dump, too verbose */
-
 static fwts_acpi_table_info *table;
 acpi_table_init(WDAT, &table)
 
@@ -41,6 +39,7 @@ static int wdat_test1(fwts_framework *fw)
 {
 	const fwts_acpi_table_wdat *wdat =
 		(const fwts_acpi_table_wdat *)table->data;
+	uint32_t reserved1, reserved2;
 	bool passed = true;
 	bool entries_passed = true;
 	size_t total_length;
@@ -58,33 +57,28 @@ static int wdat_test1(fwts_framework *fw)
 		goto done;
 	}
 
-	/* Now we have got some sane data, dump the WDAT */
-#if ACPI_DUMP
-	fwts_log_info_verbatim(fw, "WDAT Microsoft Watchdog Action Table:");
-	fwts_log_info_verbatim(fw, "  Watchdog Header Length:   0x%8.8" PRIx32, wdat->watchdog_header_length);
-	fwts_log_info_verbatim(fw, "  PCI Segment:              0x%4.4" PRIx16, wdat->pci_segment);
-	fwts_log_info_verbatim(fw, "  PCI Bus Number:           0x%2.2" PRIx8, wdat->pci_bus_number);
-	fwts_log_info_verbatim(fw, "  PCI Device Number:        0x%2.2" PRIx8, wdat->pci_device_number);
-	fwts_log_info_verbatim(fw, "  PCI Function Number:      0x%2.2" PRIx8, wdat->pci_function_number);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
-		wdat->reserved1[0], wdat->reserved1[1], wdat->reserved1[2]);
-	fwts_log_info_verbatim(fw, "  Timer Period:             0x%4.4" PRIx32, wdat->timer_period);
-	fwts_log_info_verbatim(fw, "  Maximum Count:            0x%4.4" PRIx32, wdat->maximum_count);
-	fwts_log_info_verbatim(fw, "  Minimum Count:            0x%4.4" PRIx32, wdat->minimum_count);
-	fwts_log_info_verbatim(fw, "  Watchdog Flags:           0x%4.4" PRIx32, wdat->watchdog_flags);
-	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
-		wdat->reserved2[0], wdat->reserved2[1], wdat->reserved2[2]);
-	fwts_log_info_verbatim(fw, "  Watchdog Entries          0x%4.4" PRIx32, wdat->number_of_entries);
-#endif
+	reserved1 = (uint32_t) wdat->reserved1[0] + ((uint32_t) wdat->reserved1[1] << 8) +
+		   ((uint32_t) wdat->reserved1[2] << 16);
 
-	if (wdat->reserved1[0] | wdat->reserved1[1] | wdat->reserved1[2] |
-	    wdat->reserved2[0] | wdat->reserved2[1] | wdat->reserved2[2]) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"WDATReservedFieldsNonZero",
-			"WDAT Reserved Fields contain a non-zero value, these "
-			"all should be zero.");
-	}
+	reserved2 = (uint32_t) wdat->reserved2[0] + ((uint32_t) wdat->reserved2[1] << 8) +
+		   ((uint32_t) wdat->reserved2[2] << 16);
+
+	/* Now we have got some sane data, dump the WDAT */
+	fwts_log_info_verbatim(fw, "WDAT Microsoft Watchdog Action Table:");
+	fwts_log_info_simp_int(fw, "  Watchdog Header Length:   ", wdat->watchdog_header_length);
+	fwts_log_info_simp_int(fw, "  PCI Segment:              ", wdat->pci_segment);
+	fwts_log_info_simp_int(fw, "  PCI Bus Number:           ", wdat->pci_bus_number);
+	fwts_log_info_simp_int(fw, "  PCI Device Number:        ", wdat->pci_device_number);
+	fwts_log_info_simp_int(fw, "  PCI Function Number:      ", wdat->pci_function_number);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", reserved1);
+	fwts_acpi_reserved_zero("WDAT", "Reserved1", reserved1, &passed);
+	fwts_log_info_simp_int(fw, "  Timer Period:             ", wdat->timer_period);
+	fwts_log_info_simp_int(fw, "  Maximum Count:            ", wdat->maximum_count);
+	fwts_log_info_simp_int(fw, "  Minimum Count:            ", wdat->minimum_count);
+	fwts_log_info_simp_int(fw, "  Watchdog Flags:           ", wdat->watchdog_flags);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", reserved2);
+	fwts_acpi_reserved_zero("WDAT", "Reserved2", reserved2, &passed);
+	fwts_log_info_simp_int(fw, "  Watchdog Entries          ", wdat->number_of_entries);
 
 	if (wdat->minimum_count > wdat->maximum_count) {
 		passed = false;
@@ -120,21 +114,19 @@ static int wdat_test1(fwts_framework *fw)
 	}
 	for (i = 0; i < wdat->number_of_entries; i++) {
 		const fwts_acpi_table_wdat_instr_entries *entry = &wdat->entries[i];
-#if ACPI_DUMP
-		fwts_log_info_verbatim(fw, "Watchdog Instruction Entry %" PRIu32, i + 1);
-		fwts_log_info_verbatim(fw, "  Watchdog Action:          0x%2.2" PRIx8, entry->watchdog_action);
-		fwts_log_info_verbatim(fw, "  Instruction Flags:        0x%2.2" PRIx8, entry->instruction_flags);
-		fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
-			entry->reserved[0], entry->reserved[1]);
 
-		fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, entry->register_region.address_space_id);
-		fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, entry->register_region.register_bit_width);
-		fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, entry->register_region.register_bit_offset);
-		fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, entry->register_region.access_width);
-		fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, entry->register_region.address);
-		fwts_log_info_verbatim(fw, "  Value:                    0x%8.8" PRIx32, entry->value);
-		fwts_log_info_verbatim(fw, "  Mask:                     0x%8.8" PRIx32, entry->mask);
-#endif
+		fwts_log_info_verbatim(fw, "Watchdog Instruction Entry %" PRIu32, i + 1);
+		fwts_log_info_simp_int(fw, "  Watchdog Action:          ", entry->watchdog_action);
+		fwts_log_info_simp_int(fw, "  Instruction Flags:        ", entry->instruction_flags);
+		fwts_log_info_simp_int(fw, "  Reserved:                 ", entry->reserved);
+		fwts_acpi_reserved_zero("WDAT", "Watchdog Entry Reserved", entry->reserved, &passed);
+		fwts_log_info_simp_int(fw, "    Address Space ID:       ", entry->register_region.address_space_id);
+		fwts_log_info_simp_int(fw, "    Register Bit Width      ", entry->register_region.register_bit_width);
+		fwts_log_info_simp_int(fw, "    Register Bit Offset     ", entry->register_region.register_bit_offset);
+		fwts_log_info_simp_int(fw, "    Access Size             ", entry->register_region.access_width);
+		fwts_log_info_simp_int(fw, "    Address                 ", entry->register_region.address);
+		fwts_log_info_simp_int(fw, "  Value:                    ", entry->value);
+		fwts_log_info_simp_int(fw, "  Mask:                     ", entry->mask);
 
 		switch (entry->watchdog_action) {
 		case 0x01:	/* RESET */

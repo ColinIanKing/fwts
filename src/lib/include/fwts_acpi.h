@@ -2154,7 +2154,7 @@ typedef struct {
 typedef struct {
 	uint8_t		watchdog_action;
 	uint8_t		instruction_flags;
-	uint8_t		reserved[2];
+	uint16_t	reserved;
 	fwts_acpi_gas	register_region;
 	uint32_t	value;
 	uint32_t	mask;

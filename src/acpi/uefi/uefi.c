@@ -115,6 +115,6 @@ static fwts_framework_ops uefi_ops = {
 	.minor_tests = uefi_tests
 };
 
-FWTS_REGISTER("uefi", &uefi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("uefi", &uefi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

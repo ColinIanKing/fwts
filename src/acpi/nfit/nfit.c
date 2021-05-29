@@ -537,6 +537,6 @@ static fwts_framework_ops nfit_ops = {
 	.minor_tests = nfit_tests
 };
 
-FWTS_REGISTER("nfit", &nfit_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("nfit", &nfit_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

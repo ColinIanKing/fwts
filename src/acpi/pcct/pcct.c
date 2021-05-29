@@ -333,6 +333,6 @@ static fwts_framework_ops pcct_ops = {
 	.minor_tests = pcct_tests
 };
 
-FWTS_REGISTER("pcct", &pcct_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("pcct", &pcct_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

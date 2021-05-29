@@ -1562,7 +1562,7 @@ static void method_test_CRS_mif_maf(
 	if (len == 0) {
 		if ((mif == 1) && (maf == 1)) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sMifMafBothOne", objname, tag);
-			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+			if (fw->flags & FWTS_FLAG_SBBR)
 				fwts_warning(fw, tmp,
 					"%s %s _MIF and _MAF flags are both "
 					"set to one which is invalid when "
@@ -1591,7 +1591,7 @@ static void method_test_CRS_mif_maf(
 				*passed = false;
 			} else if (min % tmpgran != 0) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sMinNotMultipleOfGran", objname, tag);
-				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				if (fw->flags & FWTS_FLAG_SBBR)
 					fwts_warning(fw, tmp,
 						"%s %s _MIN address is not a multiple "
 						"of the granularity when _MIF is 1.",
@@ -1618,7 +1618,7 @@ static void method_test_CRS_mif_maf(
 				*passed = false;
 			} else if (max % tmpgran != 0) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sMaxNotMultipleOfGran", objname, tag);
-				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				if (fw->flags & FWTS_FLAG_SBBR)
 					fwts_warning(fw, tmp,
 						"%s %s _MAX address is not a multiple "
 						"of the granularity when _MAF is 1.",
@@ -1637,7 +1637,7 @@ static void method_test_CRS_mif_maf(
 		if ((mif == 0) && (maf == 0) &&
 		    (len % (granularity + 1) != 0)) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sLenNotMultipleOfGran", objname, tag);
-			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+			if (fw->flags & FWTS_FLAG_SBBR)
 				fwts_warning(fw, tmp,
 					"%s %s length is not a multiple "
 					"of the granularity when _MIF "
@@ -1655,7 +1655,7 @@ static void method_test_CRS_mif_maf(
 		}
 		if (((mif == 0) && (maf == 1)) || ((mif == 1) && (maf == 0))) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sMifMafInvalid", objname, tag);
-			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+			if (fw->flags & FWTS_FLAG_SBBR)
 				fwts_warning(fw, tmp,
 					"%s %s _MIF and _MAF flags are either "
 					"0 and 1 or 1 and 0 which is invalid when "
@@ -1674,7 +1674,7 @@ static void method_test_CRS_mif_maf(
 		if ((mif == 1) && (maf == 1)) {
 			if (granularity != 0) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sGranularityNotZero", objname, tag);
-				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				if (fw->flags & FWTS_FLAG_SBBR)
 					fwts_warning(fw, tmp,
 						"%s %s granularity 0x%" PRIx64
 						" is not zero as expected when "
@@ -1692,7 +1692,7 @@ static void method_test_CRS_mif_maf(
 			}
 			if (min > max) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sMaxLessThanMin", objname, tag);
-				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				if (fw->flags & FWTS_FLAG_SBBR)
 					fwts_warning(fw, tmp,
 						"%s %s minimum address range 0x%" PRIx64
 						" is greater than the maximum address "
@@ -1710,7 +1710,7 @@ static void method_test_CRS_mif_maf(
 			}
 			if (max - min + 1 != len) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sLengthInvalid", objname, tag);
-				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				if (fw->flags & FWTS_FLAG_SBBR)
 					fwts_warning(fw, tmp,
 						"%s %s length 0x%" PRIx64
 						" does not match the difference between "

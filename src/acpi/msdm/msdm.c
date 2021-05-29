@@ -134,6 +134,6 @@ static fwts_framework_ops msdm_ops = {
 	.minor_tests = msdm_tests
 };
 
-FWTS_REGISTER("msdm", &msdm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("msdm", &msdm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

@@ -173,6 +173,6 @@ static fwts_framework_ops erst_ops = {
 	.minor_tests = erst_tests
 };
 
-FWTS_REGISTER("erst", &erst_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("erst", &erst_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

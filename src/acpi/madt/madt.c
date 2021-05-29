@@ -385,7 +385,7 @@ static int madt_init(fwts_framework *fw)
 
 	fadt_major = fadt->header.revision;
 	fadt_minor = 0;
-	if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+	if (fw->flags & FWTS_FLAG_SBBR) {
 		if (fadt_major < SBBR_ACPI_MAJOR_VERSION) {
 			fwts_log_error(fw, "SBBR support starts with ACPI v6.0,"
 					" Current revision is outdated: %" PRIu8 ".%" PRIu8,
@@ -1547,7 +1547,7 @@ static int madt_subtables(fwts_framework *fw)
 				    hdr->type, madt_sub_names[type]);
 		}
 
-		if (!(fw->flags & FWTS_FLAG_TEST_SBBR)) {
+		if (!(fw->flags & FWTS_FLAG_SBBR)) {
 			bool passed = true;
 
 			/* verify that the length is what we expect */
@@ -1698,7 +1698,7 @@ static int madt_subtables(fwts_framework *fw)
 		length -= skip;
 	}
 
-	if (!(fw->flags & FWTS_FLAG_TEST_SBBR)) {
+	if (!(fw->flags & FWTS_FLAG_SBBR)) {
 		/* run comparison tests */
 		madt_ioapic_sapic_compare(fw, num_ioapics, num_iosapics);
 	}
@@ -1734,6 +1734,6 @@ static fwts_framework_ops madt_ops = {
 	.minor_tests = madt_tests
 };
 
-FWTS_REGISTER("madt", &madt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_COMPLIANCE_ACPI | FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("madt", &madt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI | FWTS_FLAG_COMPLIANCE_ACPI | FWTS_FLAG_SBBR)
 
 #endif

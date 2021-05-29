@@ -37,7 +37,7 @@ static int spcr_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL || (table && table->length == 0)) {
-		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+		if (fw->flags & FWTS_FLAG_SBBR) {
 			fwts_log_error(fw, "ACPI SPCR table does not exist");
 			return FWTS_ERROR;
 		} else {
@@ -57,7 +57,7 @@ static int spcr_init(fwts_framework *fw)
  */
 static int spcr_sbbr_revision_test(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+	if (fw->flags & FWTS_FLAG_SBBR) {
 		const uint8_t SBBR_LATEST_REVISION = 2;
 
 		if (spcr->header.revision >= SBBR_LATEST_REVISION)
@@ -72,7 +72,7 @@ static int spcr_sbbr_revision_test(fwts_framework *fw)
 
 static int spcr_sbbr_gsiv_test(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+	if (fw->flags & FWTS_FLAG_SBBR) {
 		const uint8_t ARMH_GIC_INTR_MASK = 0x08;
 		const uint8_t IO_APIC_INTR_MASK = 0x02;
 
@@ -296,6 +296,6 @@ static fwts_framework_ops spcr_ops = {
 	.minor_tests = spcr_tests
 };
 
-FWTS_REGISTER("spcr", &spcr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("spcr", &spcr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI | FWTS_FLAG_SBBR)
 
 #endif

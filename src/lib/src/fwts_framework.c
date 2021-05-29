@@ -55,24 +55,24 @@ typedef struct {
 	 FWTS_FLAG_POWER_STATES |		\
 	 FWTS_FLAG_UTILS |			\
 	 FWTS_FLAG_UNSAFE |			\
-	 FWTS_FLAG_TEST_UEFI |			\
-	 FWTS_FLAG_TEST_ACPI |			\
-	 FWTS_FLAG_TEST_COMPLIANCE_ACPI |	\
-	 FWTS_FLAG_TEST_SBBR |			\
-	 FWTS_FLAG_TEST_EBBR)
+	 FWTS_FLAG_UEFI |			\
+	 FWTS_FLAG_ACPI |			\
+	 FWTS_FLAG_COMPLIANCE_ACPI |		\
+	 FWTS_FLAG_SBBR |			\
+	 FWTS_FLAG_EBBR)
 
 static const fwts_categories categories[] = {
-	{ "ACPI",			FWTS_FLAG_TEST_ACPI },
+	{ "ACPI",			FWTS_FLAG_ACPI },
 	{ "Batch",			FWTS_FLAG_BATCH },
 	{ "Interactive",		FWTS_FLAG_INTERACTIVE },
 	{ "Batch Experimental",		FWTS_FLAG_BATCH_EXPERIMENTAL },
 	{ "Interactive Experimental",	FWTS_FLAG_INTERACTIVE_EXPERIMENTAL },
 	{ "Power States",		FWTS_FLAG_POWER_STATES },
-	{ "SBBR",			FWTS_FLAG_TEST_SBBR },
+	{ "SBBR",			FWTS_FLAG_SBBR },
 	{ "Utilities",			FWTS_FLAG_UTILS },
 	{ "Unsafe",			FWTS_FLAG_UNSAFE },
-	{ "UEFI",			FWTS_FLAG_TEST_UEFI },
-	{ "ACPI Spec Compliance",	FWTS_FLAG_TEST_COMPLIANCE_ACPI },
+	{ "UEFI",			FWTS_FLAG_UEFI },
+	{ "ACPI Spec Compliance",	FWTS_FLAG_COMPLIANCE_ACPI },
 	{ NULL,				0 },
 };
 
@@ -1309,7 +1309,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 				return FWTS_ERROR;
 			break;
 		case 38: /* --uefitests */
-			fw->flags |= FWTS_FLAG_TEST_UEFI;
+			fw->flags |= FWTS_FLAG_UEFI;
 			break;
 		case 39: /* --rsdp */
 			fw->rsdp = (void *)strtoul(optarg, NULL, 0);
@@ -1322,10 +1322,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fw->flags |= FWTS_FLAG_SHOW_TESTS_CATEGORIES;
 			break;
 		case 42: /* --acpitests */
-			fw->flags |= FWTS_FLAG_TEST_ACPI;
+			fw->flags |= FWTS_FLAG_ACPI;
 			break;
 		case 43: /* --acpicompliance */
-			fw->flags |= FWTS_FLAG_TEST_COMPLIANCE_ACPI;
+			fw->flags |= FWTS_FLAG_COMPLIANCE_ACPI;
 			break;
 		case 44: /* --log-level */
 			if (fwts_framework_ll_parse(fw, optarg) != FWTS_OK)
@@ -1337,7 +1337,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 46: /* --sbbr */
 #if defined(FWTS_ARCH_AARCH64)
-			fw->flags |= FWTS_FLAG_TEST_SBBR;
+			fw->flags |= FWTS_FLAG_SBBR;
 			break;
 #else
 			fprintf(stderr, "option not available on this architecture\n");
@@ -1351,7 +1351,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 49: /* --ebbr */
 #if defined(FWTS_ARCH_AARCH64)
-			fw->flags |= FWTS_FLAG_TEST_EBBR;
+			fw->flags |= FWTS_FLAG_EBBR;
 			break;
 #else
 			fprintf(stderr, "option not available on this architecture\n");

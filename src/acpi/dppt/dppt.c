@@ -55,6 +55,6 @@ static fwts_framework_ops dppt_ops = {
 	.minor_tests = dppt_tests
 };
 
-FWTS_REGISTER("dppt", &dppt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("dppt", &dppt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

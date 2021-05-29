@@ -170,6 +170,6 @@ static fwts_framework_ops sleep_button_ops = {
 	.minor_tests = sleep_button_tests
 };
 
-FWTS_REGISTER("acpi_slpb", &sleep_button_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("acpi_slpb", &sleep_button_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

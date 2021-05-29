@@ -206,6 +206,6 @@ static fwts_framework_ops acpi_wpc_ops = {
 	.minor_tests = acpi_wpc_tests
 };
 
-FWTS_REGISTER("acpi_wpc", &acpi_wpc_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("acpi_wpc", &acpi_wpc_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

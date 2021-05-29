@@ -140,6 +140,6 @@ static fwts_framework_ops acpi_nvdimm_ops = {
 	.minor_tests = acpi_nvdimm_tests
 };
 
-FWTS_REGISTER("acpi_nvdimm", &acpi_nvdimm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("acpi_nvdimm", &acpi_nvdimm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

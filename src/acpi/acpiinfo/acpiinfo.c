@@ -167,6 +167,6 @@ static fwts_framework_ops acpiinfo_ops = {
 	.minor_tests = acpiinfo_tests
 };
 
-FWTS_REGISTER("acpiinfo", &acpiinfo_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("acpiinfo", &acpiinfo_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

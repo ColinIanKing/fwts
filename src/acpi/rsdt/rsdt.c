@@ -70,6 +70,6 @@ static fwts_framework_ops rsdt_ops = {
 	.minor_tests = rsdt_tests
 };
 
-FWTS_REGISTER("rsdt", &rsdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("rsdt", &rsdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

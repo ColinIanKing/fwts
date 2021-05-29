@@ -67,6 +67,6 @@ static fwts_framework_ops bgrt_ops = {
 	.minor_tests = bgrt_tests
 };
 
-FWTS_REGISTER("bgrt", &bgrt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("bgrt", &bgrt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

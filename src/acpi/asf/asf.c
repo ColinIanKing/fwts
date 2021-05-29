@@ -540,6 +540,6 @@ static fwts_framework_ops asf_ops = {
 	.minor_tests = asf_tests
 };
 
-FWTS_REGISTER("asf", &asf_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("asf", &asf_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

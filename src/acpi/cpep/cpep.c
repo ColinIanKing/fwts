@@ -101,6 +101,6 @@ static fwts_framework_ops cpep_ops = {
 	.minor_tests = cpep_tests
 };
 
-FWTS_REGISTER("cpep", &cpep_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("cpep", &cpep_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

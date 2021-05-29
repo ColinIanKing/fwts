@@ -203,6 +203,6 @@ static fwts_framework_ops wdat_ops = {
 	.minor_tests = wdat_tests
 };
 
-FWTS_REGISTER("wdat", &wdat_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("wdat", &wdat_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

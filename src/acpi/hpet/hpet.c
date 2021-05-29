@@ -476,6 +476,6 @@ static fwts_framework_ops hpet_check_ops = {
 };
 
 FWTS_REGISTER("hpet", &hpet_check_ops, FWTS_TEST_ANYTIME,
-	FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+	FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_ACPI)
 
 #endif

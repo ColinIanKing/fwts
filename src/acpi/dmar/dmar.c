@@ -335,6 +335,6 @@ static fwts_framework_ops dmar_ops = {
 	.minor_tests = dmar_tests
 };
 
-FWTS_REGISTER("dmar", &dmar_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_ROOT_PRIV)
+FWTS_REGISTER("dmar", &dmar_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI | FWTS_FLAG_ROOT_PRIV)
 
 #endif

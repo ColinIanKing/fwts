@@ -566,7 +566,7 @@ static void method_test_AEI_return(
 
 static int method_test_AEI(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
 			"_AEI", NULL, 0, method_test_AEI_return, NULL);
 	else
@@ -655,7 +655,7 @@ static int method_test_EVT(fwts_framework *fw)
 	int ret;
 
 	/* Only test the _EVT method with pins defined in AEI. */
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		ret = method_evaluate_method(fw, METHOD_MANDATORY | METHOD_SILENT,
 			"_AEI", NULL, 0, method_test_EVT_return, NULL);
 	else
@@ -761,7 +761,7 @@ static int method_test_DDN(fwts_framework *fw)
 
 static int method_test_HID(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
 			"_HID", NULL, 0, fwts_method_test_HID_return, NULL);
 	else
@@ -812,7 +812,7 @@ static int method_test_SUN(fwts_framework *fw)
 
 static int method_test_UID(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
 			"_UID", NULL, 0, fwts_method_test_UID_return, NULL);
 	else
@@ -1109,7 +1109,7 @@ static int method_test_SLI(fwts_framework *fw)
 /* Section 6.2.17 _CCA */
 static int method_test_CCA(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
 			"_CCA", NULL, 0, fwts_method_test_passed_failed_return, "_CCA");
 	else
@@ -1169,7 +1169,7 @@ static int method_test_RMV(fwts_framework *fw)
 
 static int method_test_STA(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY, "_STA",
 			NULL, 0, fwts_method_test_STA_return, "_STA");
 	else
@@ -2670,7 +2670,7 @@ static int method_test_SST(fwts_framework *fw)
 		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
 			"_SST", arg, 1, fwts_method_test_NULL_return, NULL);
 
-		if (ret == FWTS_NOT_EXIST && (fw->flags & FWTS_FLAG_TEST_SBBR)) {
+		if (ret == FWTS_NOT_EXIST && (fw->flags & FWTS_FLAG_SBBR)) {
 			fwts_warning(fw, "_SST method not found. This should be treated as error "
 					"if the platform provides user visible status such as LED.");
 		}
@@ -4340,7 +4340,7 @@ static int method_test_VPO(fwts_framework *fw)
 
 static int method_test_ADR(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
 			"_ADR", NULL, 0, fwts_method_test_integer_return, NULL);
 	else
@@ -5028,6 +5028,6 @@ static fwts_framework_ops method_ops = {
 };
 
 FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME,
-	       FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
+	       FWTS_FLAG_BATCH | FWTS_FLAG_ACPI | FWTS_FLAG_SBBR)
 
 #endif

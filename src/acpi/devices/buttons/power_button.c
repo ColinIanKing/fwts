@@ -198,6 +198,6 @@ static fwts_framework_ops power_button_ops = {
 	.minor_tests = power_button_tests
 };
 
-FWTS_REGISTER("acpi_pwrb", &power_button_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("acpi_pwrb", &power_button_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

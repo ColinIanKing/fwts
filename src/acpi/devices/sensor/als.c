@@ -264,6 +264,6 @@ static fwts_framework_ops ambient_light_ops = {
 	.minor_tests = ambient_light_tests
 };
 
-FWTS_REGISTER("acpi_als", &ambient_light_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("acpi_als", &ambient_light_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

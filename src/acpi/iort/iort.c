@@ -715,6 +715,6 @@ static fwts_framework_ops iort_ops = {
 	.minor_tests = iort_tests
 };
 
-FWTS_REGISTER("iort", &iort_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("iort", &iort_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

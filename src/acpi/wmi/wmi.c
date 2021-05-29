@@ -426,6 +426,6 @@ static fwts_framework_ops wmi_ops = {
 	.minor_tests = wmi_tests
 };
 
-FWTS_REGISTER("wmi", &wmi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("wmi", &wmi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

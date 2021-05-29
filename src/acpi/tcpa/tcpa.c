@@ -155,6 +155,6 @@ static fwts_framework_ops tcpa_ops = {
 	.minor_tests = tcpa_tests
 };
 
-FWTS_REGISTER("tcpa", &tcpa_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("tcpa", &tcpa_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

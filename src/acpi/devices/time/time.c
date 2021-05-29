@@ -406,6 +406,6 @@ static fwts_framework_ops acpi_time_alarm_ops = {
 	.minor_tests = acpi_time_alarm_tests
 };
 
-FWTS_REGISTER("acpi_time", &acpi_time_alarm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("acpi_time", &acpi_time_alarm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

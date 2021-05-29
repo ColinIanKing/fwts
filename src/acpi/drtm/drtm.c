@@ -145,6 +145,6 @@ static fwts_framework_ops drtm_ops = {
 	.minor_tests = drtm_tests
 };
 
-FWTS_REGISTER("drtm", &drtm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("drtm", &drtm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

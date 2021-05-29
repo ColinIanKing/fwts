@@ -70,6 +70,6 @@ static fwts_framework_ops wsmt_ops = {
 	.minor_tests = wsmt_tests
 };
 
-FWTS_REGISTER("wsmt", &wsmt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("wsmt", &wsmt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

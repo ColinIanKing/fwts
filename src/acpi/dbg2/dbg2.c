@@ -41,7 +41,7 @@ static int dbg2_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL || (table && table->length == 0)) {
-		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+		if (fw->flags & FWTS_FLAG_SBBR) {
 			fwts_log_error(fw,
 				"ACPI DBG2 table does not exist");
 			return FWTS_ERROR;
@@ -59,7 +59,7 @@ static int dbg2_test2(fwts_framework *fw)
 {
 	uint32_t i;
 
-	if (!(fw->flags & FWTS_FLAG_TEST_SBBR))
+	if (!(fw->flags & FWTS_FLAG_SBBR))
 		return FWTS_SKIP;
 
 	fwts_acpi_table_dbg2 *dbg2 = (fwts_acpi_table_dbg2 *)table->data;
@@ -389,6 +389,6 @@ static fwts_framework_ops dbg2_ops = {
 	.minor_tests = dbg2_tests
 };
 
-FWTS_REGISTER("dbg2", &dbg2_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("dbg2", &dbg2_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI | FWTS_FLAG_SBBR)
 
 #endif

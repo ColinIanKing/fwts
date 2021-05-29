@@ -35,7 +35,7 @@ static int xsdt_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL || (table && table->length == 0)) {
-		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+		if (fw->flags & FWTS_FLAG_SBBR) {
 			fwts_log_error(fw, "ACPI XSDT table does not exist");
 			return FWTS_ERROR;
 		} else {
@@ -59,7 +59,7 @@ static int xsdt_test1(fwts_framework *fw)
 	for (i = 0; i < n; i++) {
 		if (xsdt->entries[i] == 0) {
 			passed = false;
-			if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+			if (fw->flags & FWTS_FLAG_SBBR) {
 				fwts_failed(fw, LOG_LEVEL_CRITICAL,
 					"XSDTEntryNull",
 					"XSDT Entry %zd is null, should not be non-zero.", i);
@@ -78,7 +78,7 @@ static int xsdt_test1(fwts_framework *fw)
 		}
 	}
 	if (passed) {
-		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+		if (fw->flags & FWTS_FLAG_SBBR) {
 			fwts_passed(fw, "XSDT is present, pointed at by XsdrAddress=0x%" PRIx64
 				" and contain valid pointers to %d other ACPI tables mandated by SBBR",
 				 xsdt->entries[0], (int)n);
@@ -100,6 +100,6 @@ static fwts_framework_ops xsdt_ops = {
 	.minor_tests = xsdt_tests
 };
 
-FWTS_REGISTER("xsdt", &xsdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("xsdt", &xsdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI | FWTS_FLAG_SBBR)
 
 #endif

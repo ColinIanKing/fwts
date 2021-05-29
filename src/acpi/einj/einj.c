@@ -123,7 +123,6 @@ static fwts_framework_ops einj_ops = {
 	.minor_tests = einj_tests
 };
 
-FWTS_REGISTER("einj", &einj_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH |
-	      FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("einj", &einj_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

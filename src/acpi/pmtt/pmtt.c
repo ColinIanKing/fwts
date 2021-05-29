@@ -225,6 +225,6 @@ static fwts_framework_ops pmtt_ops = {
 	.minor_tests = pmtt_tests
 };
 
-FWTS_REGISTER("pmtt", &pmtt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("pmtt", &pmtt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

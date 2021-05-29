@@ -188,6 +188,6 @@ static fwts_framework_ops mpst_ops = {
 	.minor_tests = mpst_tests
 };
 
-FWTS_REGISTER("mpst", &mpst_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("mpst", &mpst_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

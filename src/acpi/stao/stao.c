@@ -144,6 +144,6 @@ static fwts_framework_ops stao_ops = {
 	.minor_tests = stao_tests
 };
 
-FWTS_REGISTER("stao", &stao_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("stao", &stao_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

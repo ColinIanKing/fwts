@@ -157,6 +157,6 @@ static fwts_framework_ops checksum_ops = {
 	.minor_tests = checksum_tests
 };
 
-FWTS_REGISTER("checksum", &checksum_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("checksum", &checksum_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

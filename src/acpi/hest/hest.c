@@ -892,6 +892,6 @@ static fwts_framework_ops hest_ops = {
 	.minor_tests = hest_tests
 };
 
-FWTS_REGISTER("hest", &hest_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("hest", &hest_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

@@ -209,6 +209,6 @@ static fwts_framework_ops mchi_ops = {
 	.minor_tests = mchi_tests
 };
 
-FWTS_REGISTER("mchi", &mchi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("mchi", &mchi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

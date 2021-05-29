@@ -417,5 +417,5 @@ static fwts_framework_ops fadt_sbbr_ops = {
 	.minor_tests = fadt_sbbr_tests
 };
 
-FWTS_REGISTER("fadt_sbbr", &fadt_sbbr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("fadt_sbbr", &fadt_sbbr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_SBBR)
 #endif

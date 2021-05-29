@@ -323,6 +323,6 @@ static fwts_framework_ops acpi_table_check_ops = {
 };
 
 FWTS_REGISTER("acpitables", &acpi_table_check_ops, FWTS_TEST_ANYTIME,
-	      FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
+	      FWTS_FLAG_BATCH | FWTS_FLAG_ACPI | FWTS_FLAG_SBBR)
 
 #endif

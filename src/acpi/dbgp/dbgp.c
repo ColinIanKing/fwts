@@ -119,6 +119,6 @@ static fwts_framework_ops dbgp_ops = {
 	.minor_tests = dbgp_tests
 };
 
-FWTS_REGISTER("dbgp", &dbgp_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("dbgp", &dbgp_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

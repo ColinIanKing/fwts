@@ -116,6 +116,6 @@ static fwts_framework_ops msct_ops = {
 };
 
 FWTS_REGISTER("msct", &msct_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH |
-	      FWTS_FLAG_TEST_ACPI)
+	      FWTS_FLAG_ACPI)
 
 #endif

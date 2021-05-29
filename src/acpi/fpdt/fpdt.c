@@ -194,6 +194,6 @@ static fwts_framework_ops fpdt_ops = {
 	.minor_tests = fpdt_tests
 };
 
-FWTS_REGISTER("fpdt", &fpdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("fpdt", &fpdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

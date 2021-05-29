@@ -145,6 +145,6 @@ static fwts_framework_ops facs_ops = {
 	.minor_tests = facs_tests
 };
 
-FWTS_REGISTER("facs", &facs_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("facs", &facs_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

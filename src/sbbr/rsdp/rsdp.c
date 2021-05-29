@@ -126,6 +126,6 @@ static fwts_framework_ops rsdp_sbbr_ops = {
 	.minor_tests = rsdp_sbbr_tests
 };
 
-FWTS_REGISTER("rsdp_sbbr", &rsdp_sbbr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("rsdp_sbbr", &rsdp_sbbr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_SBBR)
 
 #endif

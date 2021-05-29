@@ -221,6 +221,6 @@ static fwts_framework_ops lpit_ops = {
 	.minor_tests = lpit_tests
 };
 
-FWTS_REGISTER("lpit", &lpit_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("lpit", &lpit_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

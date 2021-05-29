@@ -97,6 +97,6 @@ static fwts_framework_ops tpm2_ops = {
 	.minor_tests = tpm2_tests
 };
 
-FWTS_REGISTER("tpm2", &tpm2_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("tpm2", &tpm2_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

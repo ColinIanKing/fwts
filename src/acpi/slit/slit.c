@@ -168,6 +168,6 @@ static fwts_framework_ops slit_ops = {
 	.minor_tests = slit_tests
 };
 
-FWTS_REGISTER("slit", &slit_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("slit", &slit_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

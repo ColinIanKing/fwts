@@ -68,6 +68,6 @@ static fwts_framework_ops sdei_ops = {
 	.minor_tests = sdei_tests
 };
 
-FWTS_REGISTER("sdei", &sdei_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("sdei", &sdei_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

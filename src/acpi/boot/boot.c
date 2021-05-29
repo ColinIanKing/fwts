@@ -107,6 +107,6 @@ static fwts_framework_ops boot_ops = {
 	.minor_tests = boot_tests
 };
 
-FWTS_REGISTER("boot", &boot_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("boot", &boot_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

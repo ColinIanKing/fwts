@@ -231,6 +231,6 @@ static fwts_framework_ops csrt_ops = {
 	.minor_tests = csrt_tests
 };
 
-FWTS_REGISTER("csrt", &csrt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("csrt", &csrt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

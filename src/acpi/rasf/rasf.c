@@ -64,6 +64,6 @@ static fwts_framework_ops rasf_ops = {
 	.minor_tests = rasf_tests
 };
 
-FWTS_REGISTER("rasf", &rasf_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("rasf", &rasf_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

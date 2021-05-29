@@ -262,6 +262,6 @@ static fwts_framework_ops acpi_table_sbbr_check_ops = {
 	.minor_tests = acpi_table_sbbr_check_tests
 };
 
-FWTS_REGISTER("acpi_sbbr", &acpi_table_sbbr_check_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("acpi_sbbr", &acpi_table_sbbr_check_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_SBBR)
 
 #endif

@@ -160,6 +160,6 @@ static fwts_framework_ops slic_ops = {
 	.minor_tests = slic_tests
 };
 
-FWTS_REGISTER("slic", &slic_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("slic", &slic_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ACPI)
 
 #endif

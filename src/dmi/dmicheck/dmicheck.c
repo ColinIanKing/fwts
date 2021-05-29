@@ -787,7 +787,7 @@ static int dmicheck_test1(fwts_framework *fw)
 	}
 
 	if (!smbios30_found) {
-		if (!(fw->flags & FWTS_FLAG_TEST_SBBR)) {
+		if (!(fw->flags & FWTS_FLAG_SBBR)) {
 			if (smbios_found)
 				return FWTS_OK;
 		}
@@ -2172,7 +2172,7 @@ static void dmi_scan_smbios30_table(fwts_framework *fw,
 
 		if ((next_entry - table) <= table_max_length) {
 			dmicheck_entry(fw, addr, &hdr, smbios_version);
-			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+			if (fw->flags & FWTS_FLAG_SBBR)
 				sbbr_test_entry_check(&hdr);
 		}
 		else {
@@ -2197,7 +2197,7 @@ static int dmicheck_test2(fwts_framework *fw)
 	uint16_t version = 0;
 	uint8_t  *table;
 
-	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+	if (fw->flags & FWTS_FLAG_SBBR)
 		return FWTS_SKIP;
 
 	if (!smbios_found) {
@@ -2271,7 +2271,7 @@ static int dmicheck_test4(fwts_framework *fw)
 {
 	uint32_t i;
 
-	if (!(fw->flags & FWTS_FLAG_TEST_SBBR))
+	if (!(fw->flags & FWTS_FLAG_SBBR))
 		return FWTS_SKIP;
 
 	if (!smbios30_found) {
@@ -2309,6 +2309,6 @@ static fwts_framework_ops dmicheck_ops = {
 	.minor_tests = dmicheck_tests
 };
 
-FWTS_REGISTER("dmicheck", &dmicheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_SBBR)
+FWTS_REGISTER("dmicheck", &dmicheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_SBBR)
 
 #endif

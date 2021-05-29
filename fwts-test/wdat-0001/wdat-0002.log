@@ -2,12 +2,35 @@ wdat            wdat: WDAT Microsoft Hardware Watchdog Action Table test.
 wdat            ----------------------------------------------------------
 wdat            Test 1 of 1: WDAT Microsoft Hardware Watchdog Action Table
 wdat            test.
-wdat            FAILED [MEDIUM] WDATReservedFieldsNonZero: Test 1, WDAT
-wdat            Reserved Fields contain a non-zero value, these all should
-wdat            be zero.
+wdat            WDAT Microsoft Watchdog Action Table:
+wdat              Watchdog Header Length:   0x00000020
+wdat              PCI Segment:              0x00ff
+wdat              PCI Bus Number:           0xff
+wdat              PCI Device Number:        0xff
+wdat              PCI Function Number:      0xff
+wdat              Reserved:                 0x00302010
+wdat            FAILED [MEDIUM] WDATReservedNonZero: Test 1, WDAT
+wdat            Reserved1 field must be zero, got 0x00302010 instead
+wdat              Timer Period:             0x00000258
+wdat              Maximum Count:            0x000003ff
+wdat              Minimum Count:            0x00000409
+wdat              Watchdog Flags:           0x81
+wdat              Reserved:                 0x00000000
+wdat              Watchdog Entries          0x00000014
 wdat            FAILED [MEDIUM] WDATMinGreaterThanMax: Test 1, WDAT
 wdat            Minimum Count is 0x409 and is greater than the Maximum
 wdat            Count of 0x3ff
+wdat            Watchdog Instruction Entry 1
+wdat              Watchdog Action:          0x07
+wdat              Instruction Flags:        0x46
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000460
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x000003ff
 wdat            FAILED [HIGH] WDATWatchdogActionInvalid: Test 1, WDAT
 wdat            Watchdog Instruction Entry 1 Watchdog Action field is 0x7
 wdat            and should be one of 0x00, 0x04, 0x05, 0x06, 0x08, 0x09,
@@ -16,6 +39,215 @@ wdat            FAILED [HIGH] WDATInstructionFlagsInvalid: Test 1, WDAT
 wdat            Watchdog Instruction Entry 1 Instruction Flags field is
 wdat            0x46 and should be one of 0x00, 0x01, 0x02, 0x03 or 0x80,
 wdat            0x81, 0x82, 0x83
+wdat            Watchdog Instruction Entry 2
+wdat              Watchdog Action:          0x04
+wdat              Instruction Flags:        0x01
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000460
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x000003ff
+wdat            Watchdog Instruction Entry 3
+wdat              Watchdog Action:          0x05
+wdat              Instruction Flags:        0x01
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000472
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x000003ff
+wdat            Watchdog Instruction Entry 4
+wdat              Watchdog Action:          0x06
+wdat              Instruction Flags:        0x83
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000472
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x000003ff
+wdat            Watchdog Instruction Entry 5
+wdat              Watchdog Action:          0x08
+wdat              Instruction Flags:        0x00
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x0b
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000468
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x00000001
+wdat            Watchdog Instruction Entry 6
+wdat              Watchdog Action:          0x09
+wdat              Instruction Flags:        0x82
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000468
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x00000800
+wdat            Watchdog Instruction Entry 7
+wdat              Watchdog Action:          0x09
+wdat              Instruction Flags:        0x02
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x01
+wdat                Address                 0x0000000000000072
+wdat              Value:                    0x00000045
+wdat              Mask:                     0x000000ff
+wdat            Watchdog Instruction Entry 8
+wdat              Watchdog Action:          0x09
+wdat              Instruction Flags:        0x82
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x01
+wdat                Address                 0x0000000000000073
+wdat              Value:                    0x00000001
+wdat              Mask:                     0x00000001
+wdat            Watchdog Instruction Entry 9
+wdat              Watchdog Action:          0x0a
+wdat              Instruction Flags:        0x00
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x0b
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000468
+wdat              Value:                    0x00000001
+wdat              Mask:                     0x00000001
+wdat            Watchdog Instruction Entry 10
+wdat              Watchdog Action:          0x0b
+wdat              Instruction Flags:        0x82
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x0000000000000468
+wdat              Value:                    0x00000800
+wdat              Mask:                     0x00000800
+wdat            Watchdog Instruction Entry 11
+wdat              Watchdog Action:          0x0b
+wdat              Instruction Flags:        0x02
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x01
+wdat                Address                 0x0000000000000072
+wdat              Value:                    0x00000045
+wdat              Mask:                     0x000000ff
+wdat            Watchdog Instruction Entry 12
+wdat              Watchdog Action:          0x0b
+wdat              Instruction Flags:        0x82
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x01
+wdat                Address                 0x0000000000000073
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x00000001
+wdat            Watchdog Instruction Entry 13
+wdat              Watchdog Action:          0x10
+wdat              Instruction Flags:        0x00
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x04
+wdat                Access Size             0x01
+wdat                Address                 0x000000000000046a
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x00000003
+wdat            Watchdog Instruction Entry 14
+wdat              Watchdog Action:          0x11
+wdat              Instruction Flags:        0x82
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x000000000000046a
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x00000030
+wdat            Watchdog Instruction Entry 15
+wdat              Watchdog Action:          0x12
+wdat              Instruction Flags:        0x00
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x04
+wdat                Access Size             0x01
+wdat                Address                 0x000000000000046a
+wdat              Value:                    0x00000001
+wdat              Mask:                     0x00000003
+wdat            Watchdog Instruction Entry 16
+wdat              Watchdog Action:          0x13
+wdat              Instruction Flags:        0x82
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x10
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x02
+wdat                Address                 0x000000000000046a
+wdat              Value:                    0x00000010
+wdat              Mask:                     0x00000030
+wdat            Watchdog Instruction Entry 17
+wdat              Watchdog Action:          0x20
+wdat              Instruction Flags:        0x02
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x01
+wdat                Address                 0x0000000000000072
+wdat              Value:                    0x00000045
+wdat              Mask:                     0x000000ff
+wdat            Watchdog Instruction Entry 18
+wdat              Watchdog Action:          0x20
+wdat              Instruction Flags:        0x00
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x01
+wdat                Address                 0x0000000000000073
+wdat              Value:                    0x00000001
+wdat              Mask:                     0x00000001
+wdat            Watchdog Instruction Entry 19
+wdat              Watchdog Action:          0x21
+wdat              Instruction Flags:        0x02
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0x01
+wdat                Register Bit Width      0x08
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0x01
+wdat                Address                 0x0000000000000072
+wdat              Value:                    0x00000045
+wdat              Mask:                     0x000000ff
+wdat            Watchdog Instruction Entry 20
+wdat              Watchdog Action:          0xff
+wdat              Instruction Flags:        0xff
+wdat              Reserved:                 0x0000
+wdat                Address Space ID:       0xff
+wdat                Register Bit Width      0xff
+wdat                Register Bit Offset     0x00
+wdat                Access Size             0xff
+wdat                Address                 0x0000000000000073
+wdat              Value:                    0x00000000
+wdat              Mask:                     0x00000001
 wdat            FAILED [HIGH] WDATWatchdogActionInvalid: Test 1, WDAT
 wdat            Watchdog Instruction Entry 20 Watchdog Action field is
 wdat            0xff and should be one of 0x00, 0x04, 0x05, 0x06, 0x08,

@@ -26,7 +26,11 @@
 static fwts_acpi_table_info *table;
 acpi_table_init(PPTT, &table)
 
-static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_processor *entry, uint8_t rev, bool *passed)
+static void pptt_processor_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_pptt_processor *entry,
+	const uint8_t rev,
+	bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  Processor hierarchy node structure (Type 0):");
 	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
@@ -60,7 +64,11 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 
 }
 
-static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache *entry, uint8_t rev, bool *passed)
+static void pptt_cache_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_pptt_cache *entry,
+	const uint8_t rev,
+	bool *passed)
 {
 
 	fwts_log_info_verbatim(fw, "  Cache Type Structure (Type 1):");
@@ -87,7 +95,10 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 	fwts_acpi_reserved_bits("PPTT", "Attributes", entry->attributes, 5, 7, passed);
 }
 
-static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entry, bool *passed)
+static void pptt_id_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_pptt_id *entry,
+	bool *passed)
 {
 	char vendor_id[5];
 

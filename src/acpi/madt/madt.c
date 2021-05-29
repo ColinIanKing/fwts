@@ -567,7 +567,10 @@ static const char *madt_sub_names[] = {
 };
 
 /* check flags points to Table 5-48 Local APIC Flags */
-static void check_madt_apic_flags(fwts_framework *fw, uint8_t type, uint32_t flags)
+static void check_madt_apic_flags(
+	fwts_framework *fw,
+	const uint8_t type,
+	const uint32_t flags)
 {
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *) mtable->data;
 	bool passed = true;

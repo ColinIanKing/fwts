@@ -26,14 +26,20 @@
 static fwts_acpi_table_info *table;
 acpi_table_init(PHAT, &table)
 
-static void print_record_header(fwts_framework *fw, const fwts_acpi_table_phat_header *header)
+static void print_record_header(
+	fwts_framework *fw,
+	const fwts_acpi_table_phat_header *header)
 {
 	fwts_log_info_simp_int(fw, "    Type:                           ", header->type);
 	fwts_log_info_simp_int(fw, "    Record Length:                  ", header->length);
 	fwts_log_info_simp_int(fw, "    Revision:                       ", header->revision);
 }
 
-static void phat_version_test(fwts_framework *fw, fwts_acpi_table_phat_version *entry, uint32_t offset, bool *passed)
+static void phat_version_test(
+	fwts_framework *fw,
+	fwts_acpi_table_phat_version *entry,
+	uint32_t offset,
+	bool *passed)
 {
 	uint32_t reserved, i;
 
@@ -69,7 +75,11 @@ static void phat_version_test(fwts_framework *fw, fwts_acpi_table_phat_version *
 	fwts_acpi_reserved_zero("PHAT", "Reserved", reserved, passed);
 }
 
-static void phat_health_test(fwts_framework *fw, fwts_acpi_table_phat_health *entry, uint32_t offset, bool *passed)
+static void phat_health_test(
+	fwts_framework *fw,
+	fwts_acpi_table_phat_health *entry,
+	uint32_t offset,
+	bool *passed)
 {
 	char *device_path;
 	char guid[37];

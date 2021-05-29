@@ -29,7 +29,10 @@
 static fwts_acpi_table_info *table;
 acpi_table_init(SDEV, &table)
 
-static void sdev_acpi_namespace_device_test(fwts_framework *fw, const fwts_acpi_table_sdev_acpi *entry, bool *passed)
+static void sdev_acpi_namespace_device_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_sdev_acpi *entry,
+	bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  ACPI Integrated Device (Type 0):");
 	fwts_log_info_simp_int(fw, "    Type:                             ", entry->header.type);
@@ -47,7 +50,10 @@ static void sdev_acpi_namespace_device_test(fwts_framework *fw, const fwts_acpi_
 	/* TODO - check Secure Access Components - acpica (iasl) supports aren't complete */
 }
 
-static void sdev_pcie_endpoint_device_test(fwts_framework *fw, const fwts_acpi_table_sdev_pcie *entry, bool *passed)
+static void sdev_pcie_endpoint_device_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_sdev_pcie *entry,
+	bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  PCIe Endpoint Device (Type 1):");
 	fwts_log_info_simp_int(fw, "    Type:                             ", entry->header.type);

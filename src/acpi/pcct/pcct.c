@@ -26,7 +26,11 @@
 static fwts_acpi_table_info *table;
 acpi_table_init(PCCT, &table)
 
-static bool subspace_length_equal(fwts_framework *fw, uint8_t type, uint8_t type_size, uint8_t length)
+static bool subspace_length_equal(
+	fwts_framework *fw,
+	const uint8_t type,
+	const uint8_t type_size,
+	const uint8_t length)
 {
 	if (type_size != length) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -39,7 +43,11 @@ static bool subspace_length_equal(fwts_framework *fw, uint8_t type, uint8_t type
 	return true;
 }
 
-static void gas_messages(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, bool *passed)
+static void gas_messages(
+	fwts_framework *fw,
+	const uint8_t type,
+	const fwts_acpi_gas *gas,
+	bool *passed)
 {
 	char label[20];
 
@@ -56,7 +64,11 @@ static void gas_messages(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, b
 			   FWTS_GAS_ADDR_SPACE_ID_FFH);
 }
 
-static void gas_messages2(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, bool *passed)
+static void gas_messages2(
+	fwts_framework *fw,
+	const uint8_t type,
+	const fwts_acpi_gas *gas,
+	bool *passed)
 {
 	char label[20];
 
@@ -71,7 +83,12 @@ static void gas_messages2(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, 
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 }
 
-static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_range, uint64_t min_length, bool *passed)
+static void memory_length(
+	fwts_framework *fw,
+	const uint8_t type,
+	const uint64_t memory_range,
+	const uint64_t min_length,
+	bool *passed)
 {
 	switch (type) {
 	case 0 ... 2:
@@ -97,7 +114,10 @@ static void memory_length(fwts_framework *fw, uint8_t type, uint64_t memory_rang
 	}
 }
 
-static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_0 *entry, bool *passed)
+static void generic_comm_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_pcct_subspace_type_0 *entry,
+	bool *passed)
 {
 	uint64_t reserved;
 
@@ -117,7 +137,10 @@ static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	fwts_log_info_simp_int(fw, "    Min Request Turnaround Time: ", entry->min_request_turnaround_time);
 }
 
-static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_1 *entry, bool *passed)
+static void hw_reduced_comm_test_type1(
+	fwts_framework *fw,
+	const fwts_acpi_table_pcct_subspace_type_1 *entry,
+	bool *passed)
 {
 	fwts_log_info_simp_int(fw, "    Platform Interrupt:          ", entry->platform_interrupt);
 	fwts_log_info_simp_int(fw, "    Platform Interrupt Flags:    ", entry->platform_interrupt_flags);
@@ -135,7 +158,10 @@ static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_
 	fwts_acpi_reserved_bits("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
-static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_2 *entry, bool *passed)
+static void hw_reduced_comm_test_type2(
+	fwts_framework *fw,
+	const fwts_acpi_table_pcct_subspace_type_2 *entry,
+	bool *passed)
 {
 	fwts_log_info_simp_int(fw, "    Platform Interrupt:          ", entry->platform_interrupt);
 	fwts_log_info_simp_int(fw, "    Platform Interrupt Flags:    ", entry->platform_interrupt_flags);
@@ -157,7 +183,10 @@ static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_
 	fwts_acpi_reserved_bits("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
-static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_3_4 *entry, bool *passed)
+static void extended_pcc_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_pcct_subspace_type_3_4 *entry,
+	bool *passed)
 {
 	fwts_log_info_simp_int(fw, "    Platform Interrupt:          ", entry->platform_interrupt);
 	fwts_log_info_simp_int(fw, "    Platform Interrupt Flags:    ", entry->platform_interrupt_flags);
@@ -190,7 +219,10 @@ static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	fwts_acpi_reserved_bits("PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, 2, 7, passed);
 }
 
-static void hw_registers_based_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_5 *entry, bool *passed)
+static void hw_registers_based_comm_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_pcct_subspace_type_5 *entry,
+	bool *passed)
 {
 	fwts_log_info_simp_int(fw, "    Version:                     ", entry->version);
 	fwts_log_info_simp_int(fw, "    Base Address:                ", entry->base_address);

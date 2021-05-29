@@ -23,7 +23,8 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-static void pmtt_memory_device(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry, uint32_t offset, bool *passed);
+static void pmtt_memory_device(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry,
+	uint32_t offset, bool *passed);
 
 static fwts_acpi_table_info *table;
 acpi_table_init(PMTT, &table)

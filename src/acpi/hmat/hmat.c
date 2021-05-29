@@ -26,7 +26,10 @@
 static fwts_acpi_table_info *table;
 acpi_table_init(HMAT, &table)
 
-static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table_hmat_proximity_domain *entry, bool *passed)
+static void hmat_proximity_domain_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_hmat_proximity_domain *entry,
+	bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  Memory Proximity Domain Attributes (Type 0):");
 	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
@@ -48,7 +51,10 @@ static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table
 	fwts_acpi_reserved_zero("HMAT", "Reserved", entry->reserved4, passed);
 }
 
-static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_locality *entry, bool *passed)
+static void hmat_locality_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_hmat_locality *entry,
+	bool *passed)
 {
 	uint32_t pd_size;
 	uint16_t reserved1 = (entry->reserved1 << 8) + entry->min_transfer_size;
@@ -103,7 +109,10 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	}
 }
 
-static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache *entry, bool *passed)
+static void hmat_cache_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_hmat_cache *entry,
+	bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  Memory Side Cache Information (Type 2):");
 	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);

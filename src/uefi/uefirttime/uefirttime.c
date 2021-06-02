@@ -1272,6 +1272,12 @@ static int uefirttime_test38(fwts_framework *fw)
 	} else
 		fwts_skipped(fw, "GetTime runtime service supported, skip test.");
 
+	/* set test time for settime and setwakeuptime tests */
+	memset(&efi_time, 0, sizeof(efi_time));
+	efi_time.Year = 2000;
+	efi_time.Month = 1;
+	efi_time.Day = 1;
+
 	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_SET_TIME)) {
 		settime.Time = &efi_time;
 		status = ~0ULL;

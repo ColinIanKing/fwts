@@ -149,7 +149,7 @@ static int pptt_test1(fwts_framework *fw)
 			if (pptt->header.revision < 3)
 				type_length -= sizeof(((fwts_acpi_table_pptt_cache *) entry)->cache_id);
 		} else if (entry->type == FWTS_PPTT_ID) {
-			fwts_log_warning(fw, "PPTT type 2 is depreciated since ACPI 6.3 Errata A.");
+			fwts_log_warning(fw, "PPTT type 2 is deprecated since ACPI 6.3 Errata A.");
 			pptt_id_test(fw, (fwts_acpi_table_pptt_id *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_id);
 		} else {

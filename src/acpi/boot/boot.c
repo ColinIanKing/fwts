@@ -36,7 +36,7 @@ static int boot_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (fwts_firmware_detect() == FWTS_FIRMWARE_UEFI) {
-		fwts_log_error(fw, "ACPI BOOT table is depreciated on UEFI firmware, skipping test");
+		fwts_log_error(fw, "ACPI BOOT table is deprecated on UEFI firmware, skipping test");
 		return FWTS_SKIP;
 	}
 	if (table == NULL || (table && table->length == 0)) {

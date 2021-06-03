@@ -47,7 +47,7 @@ pptt                Associativity:                  0xc0
 pptt                Attributes:                     0x00
 pptt                Line size:                      0x0000
 pptt            
-pptt            PPTT type 2 is depreciated since ACPI 6.3 Errata A.
+pptt            PPTT type 2 is deprecated since ACPI 6.3 Errata A.
 pptt              ID structure (Type 2):
 pptt                Type:                           0x02
 pptt                Length:                         0x1e

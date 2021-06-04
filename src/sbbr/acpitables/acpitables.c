@@ -213,20 +213,24 @@ static const char *mandatory_acpi_tables[] = {
 
 /* List of ACPI tables recommended by SBBR 4.2.2 */
 static const char *recommended_acpi_tables[] = {
-	"MCFG",
+	/* I/O Topology */
 	"IORT",
+	/* Platform Error Interfaces */
 	"BERT",
 	"EINJ",
 	"ERST",
 	"HEST",
-	"RASF",
-	"SPMI",
+	"SDEI",
+	/* NUMA */
 	"SLIT",
 	"SRAT",
-	"CSRT",
-	"ECDT",
-	"MPST",
+	"HMAT",
+	/* Platform Communications Channel (PCC) */
 	"PCCT",
+	/* Platform Debug Trigger */
+	"PDTT",
+	/* NVDIMM Firmware Interface */
+	"NFIT",
 	NULL
 };
 

@@ -195,6 +195,22 @@ static int acpi_table_sbbr_check_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/* List of mandatory ACPI tables (SBBR 4.2.1) */
+static const char *mandatory_acpi_tables[] = {
+	"RSDP",
+	"XSDT",
+	"FACP",
+	"DSDT",
+	"SSDT",
+	"MADT",
+	"GTDT",
+	"DBG2",
+	"SPCR",
+	"MCFG",
+	"PPTT",
+	NULL
+};
+
 /* List of ACPI tables recommended by SBBR 4.2.2 */
 static const char *recommended_acpi_tables[] = {
 	"MCFG",
@@ -235,6 +251,19 @@ static int acpi_table_sbbr_check_test3(fwts_framework *fw)
 {
 	uint32_t i;
 
+	for (i = 0; mandatory_acpi_tables[i] != NULL; i++) {
+		fwts_acpi_table_info *info;
+
+		info = sbbr_search_acpi_tables(fw, mandatory_acpi_tables[i]);
+		if (info == NULL) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "SBBRTableNotFound",
+				    "SBBR mandatory ACPI table \"%s\" not found.", mandatory_acpi_tables[i]);
+		} else {
+			fwts_passed(fw, "SBBR mandatory ACPI table \"%s\" found.",
+			            mandatory_acpi_tables[i]);
+		}
+	}
+
 	for (i = 0; recommended_acpi_tables[i] != NULL; i++) {
 		fwts_acpi_table_info *info;
 
@@ -253,7 +282,7 @@ static int acpi_table_sbbr_check_test3(fwts_framework *fw)
 static fwts_framework_minor_test acpi_table_sbbr_check_tests[] = {
 	{ acpi_table_sbbr_namespace_check_test1, "Test that processors only exist in the _SB namespace." },
 	{ acpi_table_sbbr_check_test2, "Test DSDT and SSDT tables are implemented." },
-	{ acpi_table_sbbr_check_test3, "Check for recommended ACPI tables." },
+	{ acpi_table_sbbr_check_test3, "Check for mandatory and recommended ACPI tables." },
 	{ NULL, NULL }
 };
 

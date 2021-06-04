@@ -27,24 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int gtdt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "GTDT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		if (fw->flags & FWTS_FLAG_SBBR) {
-			fwts_log_error(fw, "ACPI GTDT table does not exist");
-			return FWTS_ERROR;
-		} else {
-			fwts_log_error(fw, "ACPI GTDT table does not exist, skipping test");
-			return FWTS_SKIP;
-		}
-	}
-	return FWTS_OK;
-}
+acpi_table_init(GTDT, &table)
 
 /*
  *  GTDT  Generic Timer Description Table
@@ -272,7 +255,7 @@ static fwts_framework_minor_test gtdt_tests[] = {
 
 static fwts_framework_ops gtdt_ops = {
 	.description = "GTDT Generic Timer Description Table test.",
-	.init        = gtdt_init,
+	.init        = GTDT_init,
 	.minor_tests = gtdt_tests
 };
 

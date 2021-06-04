@@ -27,24 +27,7 @@
 #include <string.h>
 
 static fwts_acpi_table_info *table;
-
-static int xsdt_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "XSDT", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		if (fw->flags & FWTS_FLAG_SBBR) {
-			fwts_log_error(fw, "ACPI XSDT table does not exist");
-			return FWTS_ERROR;
-		} else {
-			fwts_log_error(fw, "ACPI XSDT table does not exist, skipping test");
-			return FWTS_SKIP;
-		}
-	}
-	return FWTS_OK;
-}
+acpi_table_init(XSDT, &table)
 
 /*
  *  XSDT Extended System Description Table
@@ -96,7 +79,7 @@ static fwts_framework_minor_test xsdt_tests[] = {
 
 static fwts_framework_ops xsdt_ops = {
 	.description = "XSDT Extended System Description Table test.",
-	.init        = xsdt_init,
+	.init        = XSDT_init,
 	.minor_tests = xsdt_tests
 };
 

@@ -37,13 +37,8 @@ static int spcr_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL || (table && table->length == 0)) {
-		if (fw->flags & FWTS_FLAG_SBBR) {
-			fwts_log_error(fw, "ACPI SPCR table does not exist");
-			return FWTS_ERROR;
-		} else {
-			fwts_log_error(fw, "ACPI SPCR table does not exist, skipping test");
-			return FWTS_SKIP;
-		}
+		fwts_log_error(fw, "ACPI SPCR table does not exist, skipping test");
+		return FWTS_SKIP;
 	}
 	spcr = (const fwts_acpi_table_spcr*)table->data;
 

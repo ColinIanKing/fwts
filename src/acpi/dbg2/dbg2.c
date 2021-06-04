@@ -33,27 +33,7 @@
 #define SBBR_DBG2_ARM_PL011_UART  0x0003
 
 static fwts_acpi_table_info *table;
-
-static int dbg2_init(fwts_framework *fw)
-{
-	if (fwts_acpi_find_table(fw, "DBG2", 0, &table) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read ACPI tables.");
-		return FWTS_ERROR;
-	}
-	if (table == NULL || (table && table->length == 0)) {
-		if (fw->flags & FWTS_FLAG_SBBR) {
-			fwts_log_error(fw,
-				"ACPI DBG2 table does not exist");
-			return FWTS_ERROR;
-		} else {
-			fwts_log_error(fw,
-				"ACPI DBG2 table does not exist, skipping test");
-			return FWTS_SKIP;
-		}
-	}
-
-	return FWTS_OK;
-}
+acpi_table_init(DBG2, &table)
 
 static int dbg2_test2(fwts_framework *fw)
 {
@@ -385,7 +365,7 @@ static fwts_framework_minor_test dbg2_tests[] = {
 
 static fwts_framework_ops dbg2_ops = {
 	.description = "DBG2 (Debug Port Table 2) test.",
-	.init        = dbg2_init,
+	.init        = DBG2_init,
 	.minor_tests = dbg2_tests
 };
 

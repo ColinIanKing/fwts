@@ -237,7 +237,7 @@ acpidump            0060: 00 01 04 06 01 05 00 01                          // ..
 acpidump        
 acpidump        HPET @ bf6dfd2e (56 bytes) (loaded from file)
 acpidump        ----
-acpidump        [000h 0000   4]                    Signature : "HPET"    [High Precision Event Timer table]
+acpidump        [000h 0000   4]                    Signature : "HPET"    [High Precision Event Timer Table]
 acpidump        [004h 0004   4]                 Table Length : 00000038
 acpidump        [008h 0008   1]                     Revision : 01
 acpidump        [009h 0009   1]                     Checksum : 0A
@@ -265,7 +265,7 @@ acpidump            0030: 00 00 00 00 00 80 00 00                          // ..
 acpidump        
 acpidump        MCFG @ bf6dfd66 (60 bytes) (loaded from file)
 acpidump        ----
-acpidump        [000h 0000   4]                    Signature : "MCFG"    [Memory Mapped Configuration table]
+acpidump        [000h 0000   4]                    Signature : "MCFG"    [Memory Mapped Configuration Table]
 acpidump        [004h 0004   4]                 Table Length : 0000003C
 acpidump        [008h 0008   1]                     Revision : 01
 acpidump        [009h 0009   1]                     Checksum : 32
@@ -707,7 +707,7 @@ acpidump            00F0: 00 00 00 00                                      // ..
 acpidump        
 acpidump        TCPA @ bf6dfda2 (50 bytes) (loaded from file)
 acpidump        ----
-acpidump        [000h 0000   4]                    Signature : "TCPA"    [Trusted Computing Platform Alliance table]
+acpidump        [000h 0000   4]                    Signature : "TCPA"    [Trusted Computing Platform Alliance Table]
 acpidump        [004h 0004   4]                 Table Length : 00000032
 acpidump        [008h 0008   1]                     Revision : 01
 acpidump        [009h 0009   1]                     Checksum : 8F

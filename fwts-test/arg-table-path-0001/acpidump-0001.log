@@ -182,12 +182,12 @@ acpidump        [000h 0000   4]                    Signature : "BOOT"    [Simple
 acpidump        [000h 0000   4]                    Signature : "DSDT"
 acpidump        [000h 0000   4]                    Signature : "FACP"    [Fixed ACPI Description Table (FADT)]
 acpidump        [000h 0000   4]                    Signature : "FACS"
-acpidump        [000h 0000   4]                    Signature : "HPET"    [High Precision Event Timer table]
-acpidump        [000h 0000   4]                    Signature : "MCFG"    [Memory Mapped Configuration table]
+acpidump        [000h 0000   4]                    Signature : "HPET"    [High Precision Event Timer Table]
+acpidump        [000h 0000   4]                    Signature : "MCFG"    [Memory Mapped Configuration Table]
 acpidump        [000h 0000   4]                    Signature : "RSDT"    [Root System Description Table]
 acpidump        [000h 0000   4]                    Signature : "SLIC"    [Software Licensing Description Table]
 acpidump        [000h 0000   4]                    Signature : "SSDT"
-acpidump        [000h 0000   4]                    Signature : "TCPA"    [Trusted Computing Platform Alliance table]
+acpidump        [000h 0000   4]                    Signature : "TCPA"    [Trusted Computing Platform Alliance Table]
 acpidump        [000h 0000   4]                    Signature : "TMOR"    
 acpidump        [000h 0000   4]                    Signature : "XSDT"    [Extended System Description Table]
 acpidump        [000h 0000   8]                    Signature : "RSD PTR "

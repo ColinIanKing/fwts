@@ -401,22 +401,22 @@ do
 					FWTS_OPTIONS="--batch"
 					;;
 				*)
-					FWTS_OPTIONS="--batch --uefitests --skip-test=s3,s4"
+					FWTS_OPTIONS="--batch --uefitests"
 					;;
 			esac
 			do_test "${FWTS_OPTIONS}" 'Running Batch Tests'
 			done_tests_finish
 			;;
 		'ACPI')
-			do_test "--acpitests --skip-test=s3,s4" 'Running ACPI Tests'
+			do_test "--acpitests" 'Running ACPI Tests'
 			done_tests_finish
 			;;
 		'UEFI')
-			do_test "--uefitests --skip-test=s3,s4" 'Running UEFI Tests'
+			do_test "--uefitests" 'Running UEFI Tests'
 			done_tests_finish
 			;;
 		'SBBR')
-			do_test "--sbbr --skip-test=s3,s4" 'Server Base Boot Requirements (SBBR) Tests'
+			do_test "--sbbr" 'Server Base Boot Requirements (SBBR) Tests'
 			done_tests_finish
 			;;
 		'Recommended')
@@ -425,7 +425,7 @@ do
 					FWTS_OPTIONS="--batch"
 					;;
 				*)
-					FWTS_OPTIONS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops --acpitests --uefitests --log-level=medium --skip-test=s3,s4"
+					FWTS_OPTIONS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops --acpitests --uefitests --log-level=medium"
 					;;
 			esac
 
@@ -433,7 +433,7 @@ do
 			done_tests_finish
 			;;
 		'Recommended for IFV')
-			FWTS_OPTIONS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops --acpitests --uefitests --ifv --skip-test=s3,s4"
+			FWTS_OPTIONS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops --acpitests --uefitests --ifv"
 			do_test "${FWTS_OPTIONS}" 'Running Recommended Tests for F/W Vendors'
 			done_tests_finish
 			;;

@@ -2105,6 +2105,7 @@ static sbbr_test_entry sbbr_test[] = {
 	{ "System Boot Information", 32, 1, 0, 0 },
 	{ "IPMI Device Information", 38, 0, "Required for platforms with IPMI BMC Interface.", 0 },
 	{ "Onboard Devices Extended Information", 41, 0, RECOMMENDED_STRUCTURE_DEFAULT_MSG, 0 },
+	{ "Redfish Host Interface", 42, 0, "Required for platforms supporting Redfish Host Interface.", 0 },
 	{ 0, 0, 0, 0, 0 }
 };
 

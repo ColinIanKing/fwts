@@ -1766,6 +1766,13 @@
    "label": "KlogAcpiApicStopsInC2"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Failed to request resources for .* on irqchip",
+   "advice": "BIOS may not set up a specific pin or a GPIO to be an IRQ. This can cause a device, such as a touchscreen, that depends on this IRQ to fail.",
+   "label": "KlogBiosIrqRequestFailed"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "Disabling IRQ",

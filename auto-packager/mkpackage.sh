@@ -23,7 +23,7 @@
 # Get fwts sources, strip out .git directory, add in necessary debian packaging
 # files, build source package ready for upload.
 #
-RELEASES="xenial bionic focal groovy hirsute impish"
+RELEASES="bionic focal groovy hirsute impish"
 REPO=git://kernel.ubuntu.com/hwe/fwts.git
 RELEASE_TAR_URL=http://fwts.ubuntu.com/release
 FWTS=fwts

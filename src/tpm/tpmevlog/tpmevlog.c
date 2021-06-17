@@ -497,4 +497,4 @@ static fwts_framework_ops tpmevlog_ops = {
 	.minor_tests = tpmevlog_tests
 };
 
-FWTS_REGISTER("tpmevlog", &tpmevlog_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_ROOT_PRIV)
+FWTS_REGISTER("tpmevlog", &tpmevlog_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)

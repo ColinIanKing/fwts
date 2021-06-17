@@ -380,6 +380,7 @@ do
 			"All" "All Batch Tests" on \
 			"ACPI" "ACPI Tests" off \
 			"UEFI" "UEFI Tests" off \
+			"TPM" "TPM Tests" off \
 			"EBBR" "ARM EBBR Tests" off \
 			"SBBR" "ARM SBBR Tests" off \
 			"Recommended" "Recommended Tests" off \
@@ -396,6 +397,7 @@ do
 			"All" "All Batch Tests" on \
 			"ACPI" "ACPI Tests" off \
 			"UEFI" "UEFI Tests" off \
+			"TPM" "TPM Tests" off \
 			"Recommended" "Recommended Tests" off \
 			"Recommended for IFV" "Recommended Tests for F/W Vendors" off \
 			"Selected" "Select Individual Tests" off \
@@ -428,6 +430,10 @@ do
 			;;
 		'UEFI')
 			do_test "--uefitests" 'Running UEFI Tests'
+			done_tests_finish
+			;;
+		'TPM')
+			do_test "tpm2 tpmevlog tpmevlogdump" 'Running TPM Tests'
 			done_tests_finish
 			;;
 		'EBBR')

@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Firmware Testing Team <fwts-devel@lists.ubuntu.com>
 Uploaders: Colin King <colin.king@ubuntu.com>, Alex Hung <alex.hung@canonical.com>, Ivan Hu <ivan.hu@canonical.com>
 Standards-Version: 3.9.7
+Homepage: https://wiki.ubuntu.com/FirmwareTestSuite
 Build-Depends: debhelper (>= 9~),
                autoconf,
                automake,

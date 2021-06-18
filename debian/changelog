@@ -1550,7 +1550,7 @@ fwts (17.05.00-0ubuntu1) artful; urgency=low
 
   [ppaidipe@linux.vnet.ibm.com]
   * fwts/opal: Power management DT Validation tests.
-  * fwts/opal: Reserved memory DT validation tests. 
+  * fwts/opal: Reserved memory DT validation tests.
 
  -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 24 May 2017 11:26:39 +0800
 
@@ -1589,7 +1589,7 @@ fwts (17.03.00-0ubuntu1) zesty; urgency=low
 
   [Supreeth Venkatesh]
   * sbbr: Add "--sbbr" flag to support running SBBR Tests.
- 
+
  -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 16 Mar 2017 11:20:20 +0800
 
 fwts (17.02.00-0ubuntu1) zesty; urgency=low
@@ -1802,7 +1802,7 @@ fwts (16.09.00-0ubuntu1) yakkety; urgency=low
   [Jeffrey Hugo]
   * acpi: fadt: Remove HEADLESS check on reduced hardware
   * pci: aspm: Add segment support
- 
+
  -- Alex Hung <alex.hung@ubuntu.com>  Fri, 09 Sep 2016 09:47:45 +0800
 
 fwts (16.08.01-0ubuntu1) yakkety; urgency=low
@@ -1810,7 +1810,7 @@ fwts (16.08.01-0ubuntu1) yakkety; urgency=low
   [Colin Ian King]
   * acpica: rename vsnprintf and sprintf in utprint.c to avoid name clash
     conflicts
- 
+
  -- Alex Hung <alex.hung@ubuntu.com>  Thu, 18 Aug 2016 17:46:32 +0800
 
 fwts (16.08.00-0ubuntu1) yakkety; urgency=low
@@ -1985,7 +1985,7 @@ fwts (16.06.00-0ubuntu1) yakkety; urgency=low
   [Jeffrey Hugo]
   * lib: acpi: Add support for HEST GHESv2
   * acpi: hest: Add GHESv2 checking (LP: #1587624)
- 
+
  -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 22 Jun 2016 15:43:04 +0800
 
 fwts (16.05.01-0ubuntu1) yakkety; urgency=low
@@ -2641,7 +2641,7 @@ fwts (15.06.00-0ubuntu1) wily; urgency=low
  -- Alex Hung <alex.hung@ubuntu.com>  Wed, 03 Jun 2015 16:37:55 +0800
 
 fwts (15.03.01-0ubuntu1) vivid; urgency=low
- 
+
   [Colin Ian King]
   * efi_runtime: ensure we don't allocate a zero byte buffer
       (LP: #1429890)]
@@ -2689,7 +2689,7 @@ fwts (15.03.00-0ubuntu1) vivid; urgency=low
   * efi_runtime: get_nextvariable: copy only the needed name bytes
   * uefirtvariable: allow large sizes for variable names
   * efi_runtime: handle memory errors when setting variables
- 
+
  -- Ivan Hu <ivan.hu@ubuntu.com>  Fri, 06 Mar 2015 11:01:50 +0800
 
 fwts (15.01.00-0ubuntu0) vivid; urgency=low
@@ -2786,7 +2786,7 @@ fwts (14.12.00-0ubuntu1) vivid; urgency=low
 
   [Phidias Chiang]
   * README: Fix missing libglib2.0-dev dependency in README
- 
+
  -- Alex Hung <alex.hung@ubuntu.com>  Wed, 17 Dec 2014 15:57:35 +0800
 
 fwts (14.11.00-0ubuntu1) vivid; urgency=low
@@ -2913,7 +2913,7 @@ fwts (14.09.00-0ubuntu1) utopic; urgency=low
  -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 24 Sep 2014 15:41:17 +0800
 
 fwts (14.08.00-0ubuntu0) utopic; urgency=low
- 
+
   [Alberto Milone]
   * Make the --pm-method argument part of fwts_framework
   * Store all the pm_method related functions in fwts_pm_method.c
@@ -2938,18 +2938,18 @@ fwts (14.08.00-0ubuntu0) utopic; urgency=low
   * ACPI: Add new ACPI 5.1 FADT fields and update acpidump (LP: #1348598)
   * fwts-test: update ACPI table related tests due to ACPI 5.1 fwts changes
   * ACPI: Fix up GTDT corrections as in ACPI 5.1 (LP: #1348618)
-  * lib + tests: re-work iASL backand and API to handle externals 
+  * lib + tests: re-work iASL backand and API to handle externals
     (LP: #1317390)
   * Update contributors in man page
   * lib: don't use #pragma GCC push and pop
 
   [Ivan Hu]
-  * uefirtvariable: setvariable without deleting the original variable 
+  * uefirtvariable: setvariable without deleting the original variable
     (LP: #1354301)
   * uefi: add the variable attribute definition for append write (LP: #1356194)
-  * lib: uefi: add the status error report for the IP addr conflict 
+  * lib: uefi: add the status error report for the IP addr conflict
     (LP: #1356195)
-  * uefirtvariable: skip test when specific attributes not supported 
+  * uefirtvariable: skip test when specific attributes not supported
     (LP: #1356199)
   * uefirtvariable: add test for setvariable with both authenticated attributes
     are set (LP: #1356207)
@@ -3271,7 +3271,7 @@ fwts (14.01.00-0ubuntu1) trusty; urgency=low
     device path type for uefidump (LP: #1260147)
   * uefi: uefidump: extend the Messaging Device Path type Vedor subtype-10
     (LP: #1262095)
-  
+
 
  -- Alex Hung <alex.hung@ubuntu.com>  Tue, 14 Jan 2014 16:13:37 +0800
 
@@ -3394,7 +3394,7 @@ fwts (13.11.00-0ubuntu1) trusty; urgency=low
  -- Keng-Yu Lin <kengyu@ubuntu.com>  Fri, 15 Nov 2013 14:11:00 +0800
 
 fwts (13.09.01-0ubuntu1) saucy; urgency=low
- 
+
   [Alex Hung]
   * live-image/fwts-frontend-text: add uefi tests to fwts-live (LP: #1223793)
 
@@ -3426,7 +3426,7 @@ fwts (13.09.00-0ubuntu1) saucy; urgency=low
  -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 10 Sep 2013 17:33:17 +0800
 
 fwts (13.08.00-0ubuntu1) saucy; urgency=low
- 
+
   [Alex Hung]
   * dmi: dmi_decode: merge smbios test as they both check dmi/smbios
   * dmi: rename dmi_decode test to dmicheck
@@ -3452,7 +3452,7 @@ fwts (13.08.00-0ubuntu1) saucy; urgency=low
   * acpi: syntaxcheck: fix spelling mistake (LP: #1200602)
   * fwts_iasl_interface.c: ensure we read in all of stdout (LP: #1200426)
   * data: klog.json: rename "Common" label prefix to "Klog", (LP: #1201311)
-  * data: klog.json: Update patterns to keep in sync with Linux 3.10 
+  * data: klog.json: Update patterns to keep in sync with Linux 3.10
       (LP: #1201335)
   * bios: hdaaudio: skip the test if no BIOS pin config found (LP: #1201903)
   * pci: aspm: test should skip if it can't read FACP or PCIe config
@@ -4363,7 +4363,7 @@ fwts (0.25.02) quantal; urgency=low
 fwts (0.25.01) precise; urgency=low
 
   [Keng-Yu Lin]
-  * wmi: Fix an error on processing the _WDG data 
+  * wmi: Fix an error on processing the _WDG data
 
  -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 26 Apr 2012 10:30:35 +0800
 
@@ -4421,7 +4421,7 @@ fwts (0.24.21) precise; urgency=low
 
   [Colin Ian King]
   * uefi: uefidump: handle realloc failure
-  * lib: fwts_pipeio: handle realloc failure 
+  * lib: fwts_pipeio: handle realloc failure
   * lib: fwts_args: handle realloc failure
   * lib: acpid: handle realloc failures in fwts_acpi_event_read()
   * lib: fwts_acpi_tables: handle fwts_low_realloc() failures
@@ -4482,7 +4482,7 @@ fwts (0.24.19) precise; urgency=low
 
   [Colin Ian King]
   * cpu: msr: GPF avoidance on BOCHs QEMU systems (LP: #925001)
- 
+
  -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 09 Feb 2012 13:52:50 +0800
 
 fwts (0.24.18) precise; urgency=low
@@ -4491,7 +4491,7 @@ fwts (0.24.18) precise; urgency=low
   * cpu:msr: fixed errors for checking SMRR MSR registers
 
   [Keng-Yu Lin]
-  * Fix a typo error of "DSTD" 
+  * Fix a typo error of "DSTD"
 
  -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 06 Feb 2012 16:39:43 +0800
 
@@ -4530,7 +4530,7 @@ fwts (0.24.16) precise; urgency=low
 fwts (0.24.15) precise; urgency=low
 
   * lib: fwts_acpi_find_rsdp_bios should only scan for RSDP on Intel/AMD
-  * cpu: msr: disabled test for non-Intel/AMD architectures 
+  * cpu: msr: disabled test for non-Intel/AMD architectures
 
  -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 09 Jan 2012 10:17:46 +0100
 
@@ -4695,14 +4695,14 @@ fwts (0.24.01) oneiric; urgency=low
   * add fwts-collect man page
   * debian: add fwts-collect to fwts installer
   * scripts: fwts-collect - collect up logs for bug reporting
-    
+
  -- Colin King <colin.king@canonical.com>  Tue, 20 Sep 2011 18:28:46 +0100
 
 fwts (0.24.00) oneiric; urgency=low
 
   * iso-image: fwts_wrapper dialog wrapper script.
   * assets: fwts logo
-    
+
  -- Colin King <colin.king@canonical.com>  Tue, 20 Sep 2011 18:16:00 +0100
 
 fwts (0.23.23) oneiric; urgency=low
@@ -5185,7 +5185,7 @@ fwts (0.21.07) natty; urgency=low
 
 fwts (0.21.06) natty; urgency=low
 
-  * Add hwinfo device checking for s3 and s4 tests 
+  * Add hwinfo device checking for s3 and s4 tests
   * Update man page
   * New upstream version 0.21.06
 
@@ -5254,7 +5254,7 @@ fwts (0.20.19) natty; urgency=low
   * lib: framework: use list head macro.
   * lib: list: include list head and tail macros
   * hpet: hpet_check: use list iterator (for klog scanning).
-  * bios: mtrr: minor rewrite to stop scoping of item confusion when 
+  * bios: mtrr: minor rewrite to stop scoping of item confusion when
     doing mtrr_bios_list scanning
   * bios: mtrr: use list iterator
   * New upstream version 0.20.19
@@ -5413,14 +5413,14 @@ fwts (0.20.01) natty; urgency=low
  -- Colin King <colin.king@canonical.com>  Fri, 3 Dec 2010 11:09:49 +0000
 
 fwts (0.20.00) natty; urgency=low
- 
+
   * Add -u, --utils option
   * New upstream version 0.20.00
 
  -- Colin King <colin.king@canonical.com>  Wed, 1 Dec 2010 16:27:37 +0000
 
 fwts (0.19.29) maverick; urgency=low
- 
+
   * Fix 64 bit build warnings
   * Add more advice into method test
   * New upstream version 0.19.29
@@ -5428,7 +5428,7 @@ fwts (0.19.29) maverick; urgency=low
  -- Colin King <colin.king@canonical.com>  Mon, 30 Nov 2010 14:26:23 +0000
 
 fwts (0.19.28) maverick; urgency=low
- 
+
   * Add in acpitable MADT checks for APICs
   * dump out global_irq_base from MADT IO APIC correctly
   * New upstream version 0.19.28
@@ -5436,7 +5436,7 @@ fwts (0.19.28) maverick; urgency=low
  -- Colin King <colin.king@canonical.com>  Fri, 26 Nov 2010 18:43:01 +0000
 
 fwts (0.19.27) maverick; urgency=low
- 
+
   * Fix GCC warnings now that we're checking log printf() args
   * Add infinite loop checking in AML method execution
   * New upstream version 0.19.27
@@ -5444,35 +5444,35 @@ fwts (0.19.27) maverick; urgency=low
  -- Colin King <colin.king@canonical.com>  Fri, 26 Nov 2010 11:26:47 +0000
 
 fwts (0.19.26) maverick; urgency=low
- 
+
   * Add more ACPI method tests
   * New upstream version 0.19.26
 
  -- Colin King <colin.king@canonical.com>  Tue, 23 Nov 2010 15:41:34 +0000
 
 fwts (0.19.25) maverick; urgency=low
- 
+
   * Add in ACPICA core + ACPI method tests
   * New upstream version 0.19.25
 
  -- Colin King <colin.king@canonical.com>  Tue, 23 Nov 2010 10:02:10 +0000
 
 fwts (0.19.24) maverick; urgency=low
- 
+
   * Minor changes in help text and better CMOS error detection.
   * New upstream version 0.19.24
 
  -- Colin King <colin.king@canonical.com>  Sun, 21 Nov 2010 12:22:21 +0000
 
 fwts (0.19.23) maverick; urgency=low
- 
+
   * More intelligent advice for FADT pointer mismatches to FACS
   * New upstream version 0.19.23
 
  -- Colin King <colin.king@canonical.com>  Fri, 19 Nov 2010 18:36:56 +0000
 
 fwts (0.19.22) maverick; urgency=low
- 
+
   * Add \_SB_._OSC buffer overflow checking
   * Add more graceful ACPI table load failure error handling
   * New upstream version 0.19.22
@@ -5480,482 +5480,481 @@ fwts (0.19.22) maverick; urgency=low
  -- Colin King <colin.king@canonical.com>  Thu, 18 Nov 2010 13:48:03 +0000
 
 fwts (0.19.21) maverick; urgency=low
- 
+
   * Fix wmi and hpet test breakage
   * New upstream version 0.19.21
 
  -- Colin King <colin.king@canonical.com>  Mon, 15 Nov 2010 17:39:34 +0000
 
 fwts (0.19.20) maverick; urgency=low
- 
+
   * Add acpitable test
   * New upstream version 0.19.20
 
  -- Colin King <colin.king@canonical.com>  Mon, 15 Nov 2010 13:22:23 +0000
 
 fwts (0.19.19) maverick; urgency=low
- 
+
   * Add acpitable test
   * New upstream version 0.19.19
 
  -- Colin King <colin.king@canonical.com>  Fri, 12 Nov 2010 15:33:17 +0000
 
 fwts (0.19.18) maverick; urgency=low
- 
-  * Update makefile 
+
+  * Update makefile
   * New upstream version 0.19.18
 
  -- Colin King <colin.king@canonical.com>  Thu, 11 Nov 2010 15:37:53 +0000
 
 fwts (0.19.17) maverick; urgency=low
- 
+
   * klog data now in json formatted datafile
   * New upstream version 0.19.17
 
  -- Colin King <colin.king@canonical.com>  Thu, 11 Nov 2010 14:59:02 +0000
 
 fwts (0.19.16) maverick; urgency=low
- 
+
   * New upstream version 0.19.16
 
  -- Colin King <colin.king@canonical.com>  Wed, 10 Nov 2010 16:24:27 +0000
 
 fwts (0.19.15) maverick; urgency=low
- 
+
   * New upstream version 0.19.15
 
  -- Colin King <colin.king@canonical.com>  Wed, 10 Nov 2010 09:15:02 +0100
 
 fwts (0.19.14) maverick; urgency=low
- 
+
   * New upstream version 0.19.14
 
  -- Colin King <colin.king@canonical.com>  Tue, 9 Nov 2010 15:59:32 +0100
 
 fwts (0.19.13) maverick; urgency=low
- 
+
   * New upstream version 0.19.13
 
  -- Colin King <colin.king@canonical.com>  Sat, 6 Nov 2010 15:35:10 +0100
 
 fwts (0.19.12) maverick; urgency=low
- 
+
   * New upstream version 0.19.12
 
  -- Colin King <colin.king@canonical.com>  Fri, 5 Nov 2010 15:33:23 +0100
 
 fwts (0.19.11) maverick; urgency=low
- 
+
   * New upstream version 0.19.11
 
  -- Colin King <colin.king@canonical.com>  Mon, 1 Nov 2010 17:37:52 +0100
 
 fwts (0.19.10) maverick; urgency=low
- 
+
   * New upstream version 0.19.10
 
  -- Colin King <colin.king@canonical.com>  Mon, 1 Nov 2010 16:47:21 +0100
 
 fwts (0.19.09) maverick; urgency=low
- 
+
   * New upstream version 0.19.09
 
  -- Colin King <colin.king@canonical.com>  Sat, 30 Oct 2010 13:30:13 +0100
 
 fwts (0.19.08) maverick; urgency=low
- 
+
   * New upstream version 0.19.08
 
  -- Colin King <colin.king@canonical.com>  Sat, 30 Oct 2010 11:51:10 +0100
 
 fwts (0.19.07) maverick; urgency=low
- 
+
   * New upstream version 0.19.07
 
  -- Colin King <colin.king@canonical.com>  Thu, 28 Oct 2010 10:43:00 +0100
 
 fwts (0.19.06) maverick; urgency=low
- 
+
   * New upstream version 0.19.06
 
  -- Colin King <colin.king@canonical.com>  Mon, 18 Oct 2010 12:24:02 +0100
 
 fwts (0.19.05) maverick; urgency=low
- 
+
   * New upstream version 0.19.05
 
  -- Colin King <colin.king@canonical.com>  Mon, 11 Oct 2010 14:31:10 +0100
 
 fwts (0.19.04) maverick; urgency=low
- 
+
   * New upstream version 0.19.04
 
  -- Colin King <colin.king@canonical.com>  Wed, 6 Oct 2010 16:41:21 +0100
 
 fwts (0.19.03) maverick; urgency=low
- 
+
   * New upstream version 0.19.03
 
  -- Colin King <colin.king@canonical.com>  Wed, 6 Oct 2010 12:38:42 +0100
 
 fwts (0.19.02) maverick; urgency=low
- 
+
   * New upstream version 0.19.02
 
  -- Colin King <colin.king@canonical.com>  Tue, 5 Oct 2010 09:49:10 +0100
 
 fwts (0.19.01) maverick; urgency=low
- 
+
   * New upstream version 0.19.01
 
  -- Colin King <colin.king@canonical.com>  Mon, 4 Oct 2010 13:56:53 +0100
- 
+
 fwts (0.19.00) maverick; urgency=low
- 
+
   * New upstream version 0.19.00
 
  -- Colin King <colin.king@canonical.com>  Mon, 4 Oct 2010 13:15:22 +0100
- 
+
 fwts (0.18.02) maverick; urgency=low
- 
+
   * FADT test read correct ACPI table from /sys/firmware (closes: #627959)
   * New upstream version 0.18.02
 
  -- Colin King <colin.king@canonical.com>  Wed, 1 Sep 2010 11:11:20 +0100
- 
+
 fwts (0.18.01) maverick; urgency=low
- 
+
   * New upstream version 0.18.01
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 13 Aug 2010 10:04:54 +0100
- 
+
 fwts (0.18.0) maverick; urgency=low
- 
+
   * New upstream version 0.18.0
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 12 Aug 2010 19:09:19 +0100
- 
+
 fwts (0.17.9.1) maverick; urgency=low
- 
+
   * New upstream version 0.17.9.1
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 12 Aug 2010 19:01:49 +0100
- 
+
 fwts (0.17.9) maverick; urgency=low
- 
+
   * New upstream version 0.17.9
- 
+
  -- Colin King <colin.king@canonical.com>  Sat, 7 Aug 2010 20:17:31 +0100
- 
+
 fwts (0.17.8) maverick; urgency=low
- 
+
   * New upstream version 0.17.8
- 
+
  -- Colin King <colin.king@canonical.com>  Sat, 7 Aug 2010 19:08:56 +0100
- 
+
 fwts (0.17.7) maverick; urgency=low
- 
+
   * New upstream version 0.17.7
- 
+
  -- Colin King <colin.king@canonical.com>  Sat, 7 Aug 2010 18:59:59 +0100
- 
+
 fwts (0.17.6) maverick; urgency=low
- 
+
   * New upstream version 0.17.6
- 
+
  -- Colin King <colin.king@canonical.com>  Sat, 7 Aug 2010 18:14:48 +0100
- 
+
 fwts (0.17.5) maverick; urgency=low
- 
+
   * New upstream version 0.17.5
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 6 Aug 2010 09:14:45 +0100
- 
+
 fwts (0.17.4) maverick; urgency=low
- 
+
   * New upstream version 0.17.4
- 
+
  -- Colin King <colin.king@canonical.com>  Tue, 3 Aug 2010 15:36:02 +0100
- 
+
 fwts (0.17.3) maverick; urgency=low
- 
+
   * New upstream version 0.17.3
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 30 Jul 2010 08:54:12 +0100
- 
+
 fwts (0.17.2) maverick; urgency=low
- 
+
   * New upstream version 0.17.2
- 
+
  -- Colin King <colin.king@canonical.com>  Wed, 28 Jul 2010 12:20:07 +0100
- 
+
 fwts (0.17.1) maverick; urgency=low
- 
+
   * New upstream version 0.17.1
- 
+
  -- Colin King <colin.king@canonical.com>  Tue, 27 Jul 2010 17:57:01 +0100
- 
+
 fwts (0.17.0) maverick; urgency=low
- 
+
   * New upstream version 0.17.0
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 23 Jul 2010 16:32:58 +0200
- 
+
 fwts (0.16.14) maverick; urgency=low
- 
+
   * New upstream version 0.16.14
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 23 Jul 2010 10:56:53 +0200
- 
+
 fwts (0.16.13) maverick; urgency=low
- 
+
   * New upstream version 0.16.13
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 23 Jul 2010 10:40:40 +0200
- 
+
 fwts (0.16.12) maverick; urgency=low
- 
+
   * New upstream version 0.16.12
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 22 Jul 2010 15:49:14 +0100
- 
+
 fwts (0.16.11) maverick; urgency=low
- 
+
   * New upstream version 0.16.11
- 
+
  -- Colin King <colin.king@canonical.com>  Wed, 21 Jul 2010 10:54:20 +0200
- 
+
 fwts (0.16.10) maverick; urgency=low
- 
+
   * New upstream version 0.16.10
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 19 Jul 2010 14:11:26 +0100
- 
+
 fwts (0.16.09) maverick; urgency=low
- 
+
   * New upstream version 0.16.09
- 
+
  -- Colin King <colin.king@canonical.com>  Sat, 17 Jul 2010 14:55:38 +0100
- 
+
 fwts (0.16.08) maverick; urgency=low
- 
+
   * New upstream version 0.16.08
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 16 Jul 2010 11:22:17 +0100
- 
+
 fwts (0.16.07) maverick; urgency=low
- 
+
   * New upstream version 0.16.07
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 15 Jul 2010 15:25:44 +0100
- 
+
 fwts (0.16.06) maverick; urgency=low
- 
+
   * New upstream version 0.16.06
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 15 Jul 2010 10:07:43 +0100
- 
+
 fwts (0.16.05) maverick; urgency=low
- 
+
   * New upstream version 0.16.05
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 12 Jul 2010 10:22:40 +0100
- 
+
 fwts (0.16.04) maverick; urgency=low
- 
+
   * New upstream version 0.16.04
- 
+
  -- Colin King <colin.king@canonical.com>  Sat, 10 Jul 2010 19:22:54 +0100
- 
+
 fwts (0.16.03) maverick; urgency=low
- 
+
   * New upstream version 0.16.03
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 9 Jul 2010 18:41:53 +0100
- 
+
 fwts (0.16.02) maverick; urgency=low
- 
+
   * New upstream version 0.16.02
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 19:29:36 +0100
- 
+
 fwts (0.16.01) maverick; urgency=low
- 
+
   * New upstream version 0.16.01
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 13:59:51 +0100
- 
+
 fwts (0.16.0) maverick; urgency=low
- 
+
   * New upstream version 0.16.0
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 10:49:04 +0100
- 
+
 fwts (0.15.9) maverick; urgency=low
- 
+
   * New upstream version 0.15.9
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 09:25:17 +0100
- 
+
 fwts (0.15.8) maverick; urgency=low
- 
+
   * New upstream version 0.15.8
- 
+
  -- Colin King <colin.king@canonical.com>  Wed, 7 Jul 2010 20:00:03 +0100
- 
+
 fwts (0.15.7) maverick; urgency=low
- 
+
   * New upstream version 0.15.7
- 
+
  -- Colin King <colin.king@canonical.com>  Tue, 6 Jul 2010 19:50:01 +0100
- 
+
 fwts (0.15.6) maverick; urgency=low
- 
+
   * New upstream version 0.15.6
- 
+
  -- Colin King <colin.king@canonical.com>  Tue, 6 Jul 2010 10:13:06 +0100
- 
+
 fwts (0.15.5) maverick; urgency=low
- 
+
   * New upstream version 0.15.5
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 5 Jul 2010 18:23:47 +0100
- 
+
 fwts (0.15.4) maverick; urgency=low
- 
+
   * New upstream version 0.15.4
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 5 Jul 2010 17:05:00 +0100
- 
+
 fwts (0.15.3) maverick; urgency=low
- 
+
   * New upstream version 0.15.3
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 5 Jul 2010 12:22:25 +0100
- 
+
 fwts (0.15.2) maverick; urgency=low
- 
+
   * New upstream version 0.15.2
- 
+
  -- Colin King <colin.king@canonical.com>  Sun, 4 Jul 2010 15:33:27 +0100
- 
+
 fwts (0.15.1) maverick; urgency=low
- 
+
   * New upstream version 0.15.1
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 2 Jul 2010 06:15:03 +0100
- 
+
 fwts (0.15.0) maverick; urgency=low
- 
+
   * New upstream version 0.15.0
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 1 Jul 2010 12:45:32 +0100
- 
+
 fwts (0.14.8) maverick; urgency=low
- 
+
   * New upstream version 0.14.8
- 
+
  -- Colin King <colin.king@canonical.com>  Tue, 29 Jun 2010 17:55:26 +0100
- 
+
 fwts (0.14.7) maverick; urgency=low
- 
+
   * New upstream version 0.14.7
- 
+
  -- Colin King <colin.king@canonical.com>  Tue, 29 Jun 2010 10:59:02 +0100
- 
+
 fwts (0.14.6) maverick; urgency=low
- 
+
   * New upstream version 0.14.6
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 28 Jun 2010 16:49:19 +0100
- 
+
 fwts (0.14.5) maverick; urgency=low
- 
+
   * New upstream version 0.14.5
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 28 Jun 2010 15:54:19 +0100
- 
+
 fwts (0.14.4) maverick; urgency=low
- 
+
   * New upstream version 0.14.4
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 28 Jun 2010 12:52:25 +0100
- 
+
 fwts (0.14.3) maverick; urgency=low
- 
+
   * New upstream version 0.14.3
- 
+
  -- Colin King <colin.king@canonical.com>  Sun, 27 Jun 2010 11:52:50 +0100
- 
+
 fwts (0.14.2) maverick; urgency=low
- 
+
   * New upstream version 0.14.2
- 
+
  -- Colin King <colin.king@canonical.com>  Sat, 26 Jun 2010 20:09:37 +0100
- 
+
 fwts (0.14.1) maverick; urgency=low
- 
+
   * New upstream version 0.14.1
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 25 Jun 2010 17:11:49 +0100
- 
+
 fwts (0.14) maverick; urgency=low
- 
+
   * New upstream version 0.14
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 25 Jun 2010 10:40:02 +0100
- 
+
 fwts (0.13.1) maverick; urgency=low
- 
+
   * New upstream version 0.13.1
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 18 Jun 2010 15:26:53 +0100
- 
+
 fwts (0.13) maverick; urgency=low
- 
+
   * New upstream version 0.13
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 18 Jun 2010 10:48:50 +0100
- 
+
 fwts (0.12.4) maverick; urgency=low
- 
+
   * New upstream version 0.12.4
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 17:55:01 +0100
- 
+
 fwts (0.12.3) maverick; urgency=low
- 
+
   * New upstream version 0.12.3
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 14:09:35 +0100
- 
+
 fwts (0.12.2) maverick; urgency=low
- 
+
   * New upstream version 0.12.2
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 12:18:16 +0100
- 
+
 fwts (0.12.1) maverick; urgency=low
- 
+
   * New upstream version 0.12.1
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 11:40:43 +0100
- 
+
 fwts (0.12) maverick; urgency=low
- 
+
   * New upstream version 0.12
- 
+
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 10:01:08 +0100
- 
+
 fwts (0.11) maverick; urgency=low
- 
+
   * New upstream version 0.11
- 
+
  -- Colin King <colin.king@canonical.com>  Mon, 7 Jun 2010 09:04:13 +0100
- 
+
 fwts (0.1) maverick; urgency=low
- 
+
   * New upstream version 0.1
- 
+
  -- Colin King <colin.king@canonical.com>  Fri, 28 May 2010 11:15:26 +0100
- 

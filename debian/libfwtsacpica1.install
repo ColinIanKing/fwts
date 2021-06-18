@@ -1,1 +1,1 @@
-usr/lib/fwts/libfwtsacpica.so.* usr/lib/fwts
+usr/lib/*/fwts/libfwtsacpica.so.*

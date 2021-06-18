@@ -1,1 +1,1 @@
-usr/lib/fwts/libfwtsiasl.so.* usr/lib/fwts
+usr/lib/*/fwts/libfwtsiasl.so.*

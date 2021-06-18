@@ -30,9 +30,9 @@ Depends: libfwtsiasl1 (= ${binary:Version}),
 Suggests: dmidecode
 Description: FirmWare Test Suite
  This is a firmware test suite that performs sanity checks on system
- firmware. It is intended to identify BIOS and ACPI errors and 
- if appropriate it will try to explain the errors and give advice to 
- help workaround or fix firmware bugs.  It is primarily intended to 
+ firmware. It is intended to identify BIOS and ACPI errors and
+ if appropriate it will try to explain the errors and give advice to
+ help workaround or fix firmware bugs.  It is primarily intended to
  be a Linux-centric firmware troubleshooting tool.
 
 Package: libfwtsiasl1
@@ -41,9 +41,9 @@ Depends: ${shlibs:Depends},
          ${misc:Depends}
 Description: FirmWare Test Suite ACPICA core built for iasl functionality
  The firmware test suite requires the ACPICA core engine to be built in
- compiler mode (with ACPI_ASL_COMPILER enabled) to support assembly and 
+ compiler mode (with ACPI_ASL_COMPILER enabled) to support assembly and
  disassembly of ACPI Machine Language (AML) in the ACPI DSDT and SSDTs.
- This library contains this code with a thin fwts specific API to 
+ This library contains this code with a thin fwts specific API to
  interface with fwts.
 
 Package: libfwtsacpica1
@@ -62,7 +62,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends}
 Description: FirmWare Test Suite core support library
  This is the fwts core library. It contains a top level test framework
- and a rich range of firmware specific testing support code for the 
+ and a rich range of firmware specific testing support code for the
  various fwts tests.
 
 Package: fwts-frontend
@@ -73,7 +73,7 @@ Depends: ${misc:Depends},
          fwts
 Description: Firmware Test Suite frontend interface
  This is a dialog based interface designed to provide an easy to use method
- to execute tests via Firmware Test Suite and is also used as the primary 
+ to execute tests via Firmware Test Suite and is also used as the primary
  interface within Firmware Test Suite live images.
 
 Package: fwts-efi-runtime-dkms

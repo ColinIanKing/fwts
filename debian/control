@@ -1,6 +1,7 @@
 Source: fwts
 Section: devel
 Priority: optional
+Rules-Requires-Root: no
 Maintainer: Firmware Testing Team <fwts-devel@lists.ubuntu.com>
 Uploaders: Colin King <colin.king@ubuntu.com>, Alex Hung <alex.hung@canonical.com>, Ivan Hu <ivan.hu@canonical.com>
 Standards-Version: 3.9.7

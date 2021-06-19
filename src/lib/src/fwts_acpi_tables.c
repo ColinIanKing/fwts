@@ -261,7 +261,7 @@ static void fwts_acpi_add_table(
 		if (strncmp(tables[i].name, name, 4) == 0)
 			which++;
 		if (tables[i].data == NULL) {
-			strncpy(tables[i].name, name, 4);
+			memcpy(tables[i].name, name, 4);
 			tables[i].name[4] = 0;
 			tables[i].data = table;
 			tables[i].addr = addr;

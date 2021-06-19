@@ -22,8 +22,6 @@
 
 #include "fwts.h"
 
-#if defined(FWTS_HAS_ACPI)
-
 #define ACPI_MAX_TABLES		(128)
 
 #define fwts_acpi_revision_check(table, actual, must_be, passed) \
@@ -94,7 +92,5 @@ void fwts_acpi_space_id(fwts_framework *fw, const char *table, const char *field
 	const uint8_t actual, const uint8_t num_type, ...);
 
 uint32_t fwts_get_acpi_version(fwts_framework *fw);
-
-#endif
 
 #endif

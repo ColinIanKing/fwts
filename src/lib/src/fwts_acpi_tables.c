@@ -37,8 +37,6 @@
 
 #include "fwts_acpi_object_eval.h"
 
-#if defined(FWTS_HAS_ACPI)
-
 #define BIOS_START	(0x000e0000)		/* Start of BIOS memory */
 #define BIOS_END  	(0x000fffff)		/* End of BIOS memory */
 #define BIOS_LENGTH	(BIOS_END - BIOS_START)	/* Length of BIOS memory */
@@ -1828,5 +1826,3 @@ uint32_t fwts_get_acpi_version(fwts_framework *fw)
 
 	return acpi_version;
 }
-
-#endif

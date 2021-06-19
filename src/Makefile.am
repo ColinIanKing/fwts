@@ -208,13 +208,13 @@ fwts_SOURCES = main.c 				\
 fwts_LDFLAGS = -lm -lbsd `pkg-config --libs glib-2.0 gio-2.0`
 
 fwts_LDADD = \
+	-lfwts					\
 	-L$(top_builddir)/src			\
 	-L$(top_builddir)/src/acpica		\
 	-L$(top_builddir)/src/libfwtsiasl	\
 	-L$(top_builddir)/src/libfwtsacpica	\
 	-L$(top_builddir)/src/lib/src		\
-	-lfwtsacpica 				\
-	-lfwts
+	-lfwtsacpica
 
 man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1
 

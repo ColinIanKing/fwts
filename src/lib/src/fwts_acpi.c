@@ -28,8 +28,6 @@
 
 #include "fwts.h"
 
-#if defined(FWTS_HAS_ACPI)
-
 const char *fwts_acpi_fadt_preferred_pm_profile(const int profile)
 {
 	static const char *pm_profiles[] = {
@@ -70,5 +68,3 @@ bool fwts_acpi_data_zero(const void *data, const size_t len)
 
 	return true;
 }
-
-#endif

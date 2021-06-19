@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#if defined(FWTS_HAS_ACPI)
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -3135,5 +3133,3 @@ void fwts_method_test_BPS_return(
 		else
 			fwts_method_passed_sane(fw, name, "package");
 }
-
-#endif

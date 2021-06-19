@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#if defined(FWTS_HAS_ACPI)
-
 #include "brightness-helper.h"
 
 #include <stdlib.h>
@@ -145,5 +143,3 @@ int brightness_set_setting(const char *entry_name, const char *setting, const in
 
 	return FWTS_OK;
 }
-
-#endif

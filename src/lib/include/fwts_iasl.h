@@ -23,8 +23,6 @@
 #include "fwts.h"
 #include <stdint.h>
 
-#if defined(FWTS_HAS_ACPI)
-
 int fwts_iasl_init(fwts_framework *fw);
 void fwts_iasl_deinit(void);
 
@@ -43,7 +41,5 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	fwts_list **iasl_stderr);
 
 const char *fwts_iasl_exception_level(uint8_t level);
-
-#endif
 
 #endif

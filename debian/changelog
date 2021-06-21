@@ -1,3 +1,51 @@
+fwts (21.06.00-0ubuntu1) impish; urgency=medium
+
+  [Alex Hung]
+  * fwts_test: arg-json-0001: use current klog.json, not a copy
+  * lib: fwts_acpi_tables: constify read-only function arguments
+  * fwts_framework: clean up flag macros
+  * acpi: pptt: constify read-only function arguments
+  * acpi: wdat: enable printing fields
+  * fwts-test: sync up with wdat changes
+  * acpi: wrap long funtion definitions
+  * acpi/fwts-test: fix typo (depreciated->deprecated)
+  * sbbr: add checks for mandatory tables
+  * sbbr: update recommended tables
+  * acpi: remove SBBR mandatory tests in various tables
+  * acpi: sbbr: add mcfg and pptt to --sbbr option
+  * live-image: remove unnecessary -skip-test=s3,s4 argument
+  * live-image: create a separate menu for arm64/aarch64
+  * dmicheck: add type 42 to SBBR requirement
+  * klog.json: check IRQ requests on irqchip
+  * tpmevlog: add to batch tests
+  * live-image: add utils tests to "Selected" menu
+  * live-image: add "TPM tests" to root menu
+  * auto-packager: mkpackage.sh: remove xenial
+
+  [Colin Ian King]
+  * Makefile.am: remove all traces of $srcdir and $top_srcdir in Makefile.am
+    (LP: #1929138)
+  * ACPICA: Update to version 20210604
+  * fwts-test: sync test logs with latest ACPICA
+  * snapcraft.yaml: add architectures info to make remote snap builds easier
+  * Debian: remove spaces at end of lines of changelong
+  * Debian: remove spaces at end of lines of control file
+  * debian/copyright: use secure https url specifier
+  * Debian: add project Homepage field to control file
+  * Debian: add Rules-Requires-Root field to control file
+  * Debian: update compat level to 9
+  * Debian: control: update Standards-Version to 4.1.0
+  * Add lintian overrides for ldconfig trigger warning
+  * Debian: move source lintian overrides file to source
+  * Remove complex disabling of ACPI for non-ACPI targets
+  * fwts_acpi_tables: memcpy 4 char ACPI table name
+
+  [Ivan Hu]
+  * uefirttime: set test time for the settime and setwakeuptime tests
+    (LP: #1929509)
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Sun, 20 Jun 2021 23:42:45 -0600
+
 fwts (21.05.00-0ubuntu1) impish; urgency=medium
 
   [Alex Hung]

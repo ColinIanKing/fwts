@@ -307,6 +307,12 @@ static int acpi_table_check_test2(fwts_framework *fw)
 
 	if (!failed)
 		fwts_passed(fw, "ACPI spec %4.4" PRIx32 " has matched table revisions.", version);
+	else
+		fwts_advice(fw,
+		"In \"ACPI Table Revision Overview\", ASWG suggests \"Conforming to a given ACPI "
+		"specification means that each and every ACPI-related table conforms to the version "
+		"number for that table that is listed in that version of the specification.\" "
+		"Please refer to https://uefi.org/node/4185 for details.");
 
 	return FWTS_OK;
 }

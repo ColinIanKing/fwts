@@ -201,7 +201,7 @@ static const char *mandatory_acpi_tables[] = {
 	"XSDT",
 	"FACP",
 	"DSDT", /* SSDT is optional */
-	"MADT",
+	"APIC", /* MADT */
 	"GTDT",
 	"DBG2",
 	"SPCR",

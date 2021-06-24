@@ -221,6 +221,7 @@ static const char *recommended_acpi_tables[] = {
 	"ERST",
 	"HEST",
 	"SDEI",
+	"AEST",
 	/* NUMA */
 	"SLIT",
 	"SRAT",
@@ -231,6 +232,10 @@ static const char *recommended_acpi_tables[] = {
 	"PDTT",
 	/* NVDIMM Firmware Interface */
 	"NFIT",
+	/* Graphics Resource Table */
+	"BGRT",
+	/* IPMI */
+	"SPMI",
 	NULL
 };
 

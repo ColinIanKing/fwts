@@ -1028,8 +1028,11 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		uint64_t facs_addr;
 		fwts_acpi_table_facs *facs = NULL;
 
-		/* This is most unexpected, so warn about it */
-		fwts_log_warning(fw, "No FACS found, fwts has faked one instead.");
+		if (fwts_acpi_is_reduced_hardware(fw))	/* FACS is optional on reduced hardware */
+			fwts_log_info(fw, "No FACS found, fwts has faked one instead.");
+		else	/* This is most unexpected, so warn about it */
+			fwts_log_warning(fw, "No FACS found, fwts has faked one instead.");
+
 		if ((facs = fwts_low_calloc(1, size)) == NULL) {
 			fwts_log_error(fw, "Cannot allocate fake FACS.");
 			return FWTS_ERROR;

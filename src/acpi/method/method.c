@@ -4340,12 +4340,8 @@ static int method_test_VPO(fwts_framework *fw)
 
 static int method_test_ADR(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_SBBR)
-		return method_evaluate_method(fw, METHOD_MANDATORY,
-			"_ADR", NULL, 0, fwts_method_test_integer_return, NULL);
-	else
-		return method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_ADR", NULL, 0, fwts_method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_ADR", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_BCL_return(

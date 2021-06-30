@@ -28,7 +28,7 @@ dbg2                Address                 0x00000000f18190a0
 dbg2            
 dbg2            PASSED: Test 1, No issues found in DBG2 table.
 dbg2            
-dbg2            Test 2 of 2: DBG2 ARM SBSA Generic UART test,
+dbg2            Test 2 of 2: DBG2 ARM BSA compliant UART test,
 dbg2            
 dbg2            ==========================================================
 dbg2            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0

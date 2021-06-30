@@ -45,7 +45,7 @@ dbg2            FAILED [HIGH] DBG2TooShort: Test 1, DBG2 table too short,
 dbg2            expecting 12394 bytes, instead got 107 bytes for a DBG2
 dbg2            table and DBG2 Info Structure Address Size End
 dbg2            
-dbg2            Test 2 of 2: DBG2 ARM SBSA Generic UART test,
+dbg2            Test 2 of 2: DBG2 ARM BSA compliant UART test,
 dbg2            
 dbg2            ==========================================================
 dbg2            0 passed, 9 failed, 0 warning, 0 aborted, 0 skipped, 0

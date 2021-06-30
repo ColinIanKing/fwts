@@ -566,12 +566,8 @@ static void method_test_AEI_return(
 
 static int method_test_AEI(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FLAG_SBBR)
-		return method_evaluate_method(fw, METHOD_MANDATORY,
-			"_AEI", NULL, 0, method_test_AEI_return, NULL);
-	else
-		return method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_AEI", NULL, 0, method_test_AEI_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_AEI", NULL, 0, method_test_AEI_return, NULL);
 }
 
 static void check_evt_event (

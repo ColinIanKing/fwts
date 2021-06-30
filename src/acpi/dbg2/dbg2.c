@@ -28,9 +28,12 @@
 
 #include "fwts_acpi_object_eval.h"
 
-#define SBBR_DBG2_PORT_SERIAL     0x8000
-#define SBBR_DBG2_ARM_SBSA_UART   0x000E
-#define SBBR_DBG2_ARM_PL011_UART  0x0003
+#define SBBR_DBG2_PORT_SERIAL          0x8000
+#define SBBR_DBG2_FULLY_16550_COMPAT   0x0000
+#define SBBR_DBG2_16550_SUBSET_COMPAT  0x0001
+#define SBBR_DBG2_ARM_PL011_UART       0x0003
+#define SBBR_DBG2_ARM_SBSA_UART        0x000E
+#define SBBR_DBG2_16550_COMPAT_GAS     0x0012
 
 static fwts_acpi_table_info *table;
 acpi_table_init(DBG2, &table)
@@ -53,11 +56,14 @@ static int dbg2_test2(fwts_framework *fw)
 		if (((uint8_t*)info + info->length) >= ((uint8_t*)table + table->length))
 			break;
 		if (info->port_type == SBBR_DBG2_PORT_SERIAL &&
-		   (info->port_subtype == SBBR_DBG2_ARM_SBSA_UART ||
-		    info->port_subtype == SBBR_DBG2_ARM_PL011_UART)) {
+		   (info->port_subtype == SBBR_DBG2_FULLY_16550_COMPAT ||
+		    info->port_subtype == SBBR_DBG2_16550_SUBSET_COMPAT ||
+		    info->port_subtype == SBBR_DBG2_ARM_PL011_UART ||
+		    info->port_subtype == SBBR_DBG2_ARM_SBSA_UART ||
+		    info->port_subtype == SBBR_DBG2_16550_COMPAT_GAS)) {
 			fwts_passed(fw,
 				"DBG2 provides a standard serial debug "
-				"port and describes ARM SBSA Generic UART");
+				"port and describes ARM BSA compliant UART");
 			return FWTS_OK;
 		}
 
@@ -187,6 +193,9 @@ static int dbg2_test1(fwts_framework *fw)
 				break;
 			case 0x0010:
 				subport = "BCM2835";
+				break;
+			case 0x0012:
+				subport = "16550-compatible with parameters in GAS";
 				break;
 			default:
 				break;
@@ -359,7 +368,7 @@ done:
 
 static fwts_framework_minor_test dbg2_tests[] = {
 	{ dbg2_test1, "DBG2 (Debug Port Table 2) test." },
-	{ dbg2_test2, "DBG2 ARM SBSA Generic UART test," },
+	{ dbg2_test2, "DBG2 ARM BSA compliant UART test," },
 	{ NULL, NULL }
 };
 

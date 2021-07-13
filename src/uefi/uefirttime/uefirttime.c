@@ -417,6 +417,11 @@ static int uefirttime_test4(fwts_framework *fw)
 	    !((oldtime.TimeZone != 0) && (newtime.TimeZone == 0))) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTimeTimezone",
 			"Failed to set timezone with UEFI runtime service.");
+		fwts_advice(fw,
+			"Some system firmware may not support the timezone "
+			"value EFI_UNSPECIFIED_TIMEZONE(2047) and set the "
+			"value 0 directly instead of returning an error which "
+			"causes the failure.");
 		return FWTS_ERROR;
 	}
 

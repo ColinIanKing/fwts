@@ -1,3 +1,26 @@
+fwts (21.07.00-0ubuntu1) impish; urgency=medium
+
+  [Alex Hung]
+  * acpi: acpitables: add advices for table revision tests
+  * sbbr: acpitables: add new recommended tables
+  * fwts_acpi_tables: skip FACS warning for reduced hardware
+  * fwts-test: sync up with DBG2 changes from BSA updates
+  * auto-packager: mkpackage.sh: remove groovy
+
+  [Erico Nunes]
+  * sbbr: remove SSDT from mandatory list
+  * sbbr: adjust signature name for MADT
+
+  [Grzegorz Bernacki]
+  * acpi: method: Make method_test_ADR() optional
+  * acpi: dbg2: Allow 16550 compatible serial port in DBG2
+  * acpi: method: Make _AEI test optional for SBBR
+
+  [Ivan Hu]
+  * uefirttime: add advice for the timezone 2047 failure (LP: #1933503)
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 14 Jul 2021 16:56:22 -0600
+
 fwts (21.06.00-0ubuntu1) impish; urgency=medium
 
   [Alex Hung]

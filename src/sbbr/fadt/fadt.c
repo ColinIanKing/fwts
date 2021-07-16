@@ -61,7 +61,7 @@ static int fadt_sbbr_init(fwts_framework *fw)
 
 #define SBBR_VERSION(major, minor)	 ((((uint16_t)(major)) << 8) | (minor))
 
-static int fadt_sbbr_revision_test1(fwts_framework *fw)
+static int fadt_sbbr_revision(fwts_framework *fw)
 {
 	const uint8_t SBBR_LATEST_MAJOR = 6;
 	const uint8_t SBBR_LATEST_MINOR = 0;
@@ -85,7 +85,7 @@ static int fadt_sbbr_revision_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int fadt_sbbr_reduced_hw_test2(fwts_framework *fw)
+static int fadt_sbbr_reduced_hw(fwts_framework *fw)
 {
 	bool rhw;
 	bool passed;
@@ -370,27 +370,7 @@ static int fadt_sbbr_reduced_hw_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int fadt_sbbr_profile_test3(fwts_framework *fw)
-{
-	const uint8_t SBBR_ENT_SERVER   = 4;
-	const uint8_t SBBR_SOHO_SERVER  = 5;
-	const uint8_t SBBR_PERF_SERVER  = 7;
-
-	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)",
-		fadt->preferred_pm_profile,
-		fwts_acpi_fadt_preferred_pm_profile(fadt->preferred_pm_profile));
-
-	if ((fadt->preferred_pm_profile == SBBR_ENT_SERVER)  ||
-            (fadt->preferred_pm_profile == SBBR_SOHO_SERVER) ||
-            (fadt->preferred_pm_profile == SBBR_PERF_SERVER))
-		fwts_passed(fw, "FADT has a recommended server PM profile.");
-	else
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "fadt_profile:", "FADT preferred PM profile is not recommended.");
-
-	return FWTS_OK;
-}
-
-static int fadt_sbbr_boot_arch_psci_compliant_test4(fwts_framework *fw)
+static int fadt_sbbr_boot_arch_psci_compliant(fwts_framework *fw)
 {
 	/* ARM SBBR 4.2.1.3 FADT */
 	if (fadt->arm_boot_flags & FWTS_FACP_ARM_BOOT_ARCH_PSCI_COMPLIANT)
@@ -404,10 +384,9 @@ static int fadt_sbbr_boot_arch_psci_compliant_test4(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test fadt_sbbr_tests[] = {
-	{ fadt_sbbr_revision_test1, "FADT Revision Test." },
-	{ fadt_sbbr_reduced_hw_test2, "FADT Reduced HW Test." },
-	{ fadt_sbbr_profile_test3, "FADT Server Profile Test." },
-	{ fadt_sbbr_boot_arch_psci_compliant_test4, "FADT PSCI Compliant Test." },
+	{ fadt_sbbr_revision, "FADT Revision Test." },
+	{ fadt_sbbr_reduced_hw, "FADT Reduced HW Test." },
+	{ fadt_sbbr_boot_arch_psci_compliant, "FADT PSCI Compliant Test." },
 	{ NULL, NULL }
 };
 

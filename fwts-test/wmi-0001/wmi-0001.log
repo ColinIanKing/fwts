@@ -9,6 +9,7 @@ wmi               WMI Object:
 wmi                 Flags          : 0x05 (Expensive | String)
 wmi                 Object ID      : A0
 wmi                 Instance       : 0x50
+wmi                 Driver         : think-lmi (Lenovo)
 wmi             
 wmi             \_SB_.WMI1._WDG (2 of 9)
 wmi               GUID: 98479A64-33F5-4E33-A707-8E251EBBC3A1
@@ -16,6 +17,7 @@ wmi               WMI Method:
 wmi                 Flags          : 0x06 (Method | String)
 wmi                 Object ID      : A1
 wmi                 Instance       : 0x01
+wmi                 Driver         : think-lmi (Lenovo)
 wmi             PASSED: Test 1, 98479A64-33F5-4E33-A707-8E251EBBC3A1 has
 wmi             associated method \_SB_.WMI1.WMA1
 wmi             
@@ -25,6 +27,7 @@ wmi               WMI Method:
 wmi                 Flags          : 0x06 (Method | String)
 wmi                 Object ID      : A2
 wmi                 Instance       : 0x01
+wmi                 Driver         : think-lmi (Lenovo)
 wmi             PASSED: Test 1, 6A4B54EF-A5ED-4D33-9455-B0D9B48DF4B3 has
 wmi             associated method \_SB_.WMI1.WMA2
 wmi             
@@ -52,6 +55,7 @@ wmi               WMI Object:
 wmi                 Flags          : 0x01 (Expensive)
 wmi                 Object ID      : A5
 wmi                 Instance       : 0x01
+wmi                 Driver         : think-lmi (Lenovo)
 wmi             
 wmi             \_SB_.WMI1._WDG (7 of 9)
 wmi               GUID: 2651D9FD-911C-4B69-B94E-D0DED5963BD7
@@ -59,6 +63,7 @@ wmi               WMI Method:
 wmi                 Flags          : 0x06 (Method | String)
 wmi                 Object ID      : A6
 wmi                 Instance       : 0x01
+wmi                 Driver         : think-lmi (Lenovo)
 wmi             PASSED: Test 1, 2651D9FD-911C-4B69-B94E-D0DED5963BD7 has
 wmi             associated method \_SB_.WMI1.WMA6
 wmi             
@@ -68,6 +73,7 @@ wmi               WMI Method:
 wmi                 Flags          : 0x06 (Method | String)
 wmi                 Object ID      : A7
 wmi                 Instance       : 0x01
+wmi                 Driver         : think-lmi (Lenovo)
 wmi             PASSED: Test 1, 7364651A-132F-4FE7-ADAA-40C6C7EE2E3B has
 wmi             associated method \_SB_.WMI1.WMA7
 wmi             

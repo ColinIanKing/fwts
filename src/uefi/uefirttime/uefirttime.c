@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012-2021 Canonical
+ * Copyright (c) 2021, ARM Limited. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -513,7 +514,7 @@ static int uefirttime_test_settime_invalid_time(
 			return FWTS_SKIP;
 		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
-			"Failed to get wakeup time with UEFI runtime service.");
+			"Failed to get time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
@@ -556,7 +557,7 @@ static int uefirttime_test_settime_invalid_time(
 			return FWTS_SKIP;
 		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTime",
-			"Failed to set wakeup time with UEFI runtime service.");
+			"Failed to set time with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}

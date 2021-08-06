@@ -166,8 +166,11 @@ static int acpi_parse_one_dev_scope(fwts_framework *fw,
 			goto error;
 		dev_type = read_pci_device_secondary_bus_number(seg, bus,
 			path->dev, path->fn, &sec_bus);
-		if (dev_type < 0) /* no such device */
+		if (dev_type < 0) {	/* no such device */
+			fwts_warning(fw, "PCI device %04Xh:%02Xh:%02Xh.%02Xh is not found.",
+				     seg, bus, path->dev, path->fn);
 			goto error;
+		}
 		path++;
 		count--;
 		bus = sec_bus;

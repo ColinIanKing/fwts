@@ -1829,3 +1829,17 @@ uint32_t fwts_get_acpi_version(fwts_framework *fw)
 
 	return acpi_version;
 }
+
+/*
+ *  fwts_get_fadt_version()
+ * 	get fadt major and minor versions
+ */
+void fwts_get_fadt_version(fwts_framework *fw, uint8_t *major, uint8_t *minor)
+{
+	uint32_t acpi_version;
+
+	/* ACPI version = FADT major & minor versions */
+	acpi_version = fwts_get_acpi_version(fw);
+	*major = (acpi_version & 0xF00) >> 8;
+	*minor = (acpi_version & 0xFF) >> 4;
+}

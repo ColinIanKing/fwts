@@ -92,5 +92,6 @@ void fwts_acpi_space_id(fwts_framework *fw, const char *table, const char *field
 	const uint8_t actual, const uint8_t num_type, ...);
 
 uint32_t fwts_get_acpi_version(fwts_framework *fw);
+void fwts_get_fadt_version(fwts_framework *fw, uint8_t *major, uint8_t *minor);
 
 #endif

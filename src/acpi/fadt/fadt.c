@@ -196,15 +196,15 @@ static int fadt_checksum(fwts_framework *fw)
 
 static int fadt_revision(fwts_framework *fw)
 {
-	const uint8_t LATEST_MAJOR = 6;
-	const uint8_t LATEST_MINOR = 3;
+	const uint8_t LATEST_MAJOR = (FWTS_ACPI_VERSION_NOW & 0xF00) >> 8;
+	const uint8_t LATEST_MINOR = (FWTS_ACPI_VERSION_NOW & 0xFF) >> 4;
 	uint8_t major;
 	uint8_t minor;
 
 	major = fadt->header.revision;
 	minor = 0;
 	if (major >= 5 && fadt->header.length >= 268)
-		minor = fadt->minor_version;   /* field added ACPI 5.1 */
+		minor = fadt->minor_version & 0xF;   /* field added ACPI 5.1 */
 
 	fwts_log_info(fw, "FADT revision: %" PRIu8 ".%" PRIu8, major, minor);
 	fwts_log_info(fw, "FADT table length: %" PRIu32, fadt->header.length);

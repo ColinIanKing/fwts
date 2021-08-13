@@ -76,9 +76,8 @@ static int fadt_init(fwts_framework *fw)
 	}
 
 	/*
-	 * Some tests require data from the FACS, also, which is
-	 * required (5.2.10) is we are not in reduced hardware
-	 * mode
+	 * Some tests require data from the FACS (5.2.10), which
+	 * requires that we are not in hardware-reduced mode
 	 */
 	if (!fwts_acpi_is_reduced_hardware(fw)) {
 		if (fwts_acpi_find_table(fw, "FACS", 0, &table) != FWTS_OK) {

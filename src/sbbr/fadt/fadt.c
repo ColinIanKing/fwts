@@ -68,8 +68,7 @@ static int fadt_sbbr_revision(fwts_framework *fw)
 	uint8_t major = fadt->header.revision;
 	uint8_t minor = 0;
 
-	if ((major >= 5) && (fadt->header.length >= 268))
-		minor = fadt->minor_version;   /* field added ACPI 5.1 */
+	fwts_get_fadt_version(fw, &major, &minor);
 
 	fwts_log_info(fw, "FADT revision: %" PRIu8 ".%" PRIu8, major, minor);
 

@@ -201,10 +201,7 @@ static int fadt_revision(fwts_framework *fw)
 	uint8_t major;
 	uint8_t minor;
 
-	major = fadt->header.revision;
-	minor = 0;
-	if (major >= 5 && fadt->header.length >= 268)
-		minor = fadt->minor_version & 0xF;   /* field added ACPI 5.1 */
+	fwts_get_fadt_version(fw, &major, &minor);
 
 	fwts_log_info(fw, "FADT revision: %" PRIu8 ".%" PRIu8, major, minor);
 	fwts_log_info(fw, "FADT table length: %" PRIu32, fadt->header.length);

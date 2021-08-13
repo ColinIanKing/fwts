@@ -393,9 +393,7 @@ static int madt_init(fwts_framework *fw)
 			return FWTS_ERROR;
 		}
 	}
-
-	if (fadt_major >= 5 && fadt->header.length >= 268)
-		fadt_minor = fadt->minor_version;   /* field added ACPI 5.1 */
+	fwts_get_fadt_version(fw, &fadt_major, &fadt_minor);
 
 	/* find the first occurrence for this version of MADT */
 	while (ms->num_types != 0) {

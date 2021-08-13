@@ -111,7 +111,6 @@ static int acpiinfo_test1(fwts_framework *fw)
 static int acpiinfo_test2(fwts_framework *fw)
 {
 	fwts_acpi_table_info *table;
-	fwts_acpi_table_fadt *fadt;
 	uint8_t major;
 	uint8_t minor = 0;
 
@@ -121,11 +120,7 @@ static int acpiinfo_test2(fwts_framework *fw)
 	if (table == NULL || table->data == NULL)
 		return FWTS_ERROR;
 
-	fadt = (fwts_acpi_table_fadt *)table->data;
-
-	major = fadt->header.revision;
-	if (major >= 5 && fadt->header.length >= 268)
-		minor = fadt->minor_version;
+	fwts_get_fadt_version(fw, &major, &minor);
 
 	fwts_log_info(fw,
 		"FACP ACPI Version: %" PRIu8 ".%" PRIu8, major, minor);

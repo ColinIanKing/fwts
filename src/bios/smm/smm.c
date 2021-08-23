@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2021 Canonical
  *
- * This code was originally part of the Linux-ready Firmware Developer Kit
- *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -28,10 +26,10 @@
 
 #define FWTS_INTEL_HOST_PATH	"/sys/bus/pci/devices/0000:00:00.0/config"
 
-#define FWTS_GGC			0x50
+#define FWTS_GGC		0x50
 #define FWTS_TSEGMB		0xB8
 #define FWTS_TOLUD		0xBC
-#define FWTS_LOCK_FIELD	0x01
+#define FWTS_LOCK_FIELD		0x01
 
 static int smm_init(fwts_framework *fw)
 {

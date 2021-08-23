@@ -86,3 +86,12 @@ Depends: ${misc:Depends},
 Description: Firmware Test Suite UEFI Runtime Service kernel driver
  This package provides the efi_runtime kernel driver in DKMS format,
  which is required for accessing UEFI Runtime Services.
+
+Package: fwts-smccc-dkms
+Architecture: arm64
+Priority: optional
+Depends: ${misc:Depends},
+         dkms
+Description: Firmware Test Suite SMCCC firmware kernel driver
+ This package provides the ARM64 SMCCC kernel driver in DKMS format,
+ which is required for accessing the ARM64 SMCCC firmware API.

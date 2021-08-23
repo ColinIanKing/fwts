@@ -11,6 +11,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
 	-I$(top_srcdir)/efi_runtime			\
+	-I$(top_srcdir)/smccc_test			\
 	-pthread `pkg-config --cflags glib-2.0 gio-2.0` \
 	-Wall -Werror -Wextra				\
 	-Wno-address-of-packed-member			\
@@ -186,6 +187,7 @@ fwts_SOURCES = main.c 				\
 	pci/aspm/aspm.c 			\
 	pci/crs/crs.c 				\
 	pci/maxreadreq/maxreadreq.c 		\
+	pci/smccc/smccc.c			\
 	tpm/tpmevlog/tpmevlog.c			\
 	tpm/tpmevlogdump/tpmevlogdump.c		\
 	uefi/csm/csm.c 				\

@@ -1,0 +1,6 @@
+PACKAGE_NAME="fwts-smccc-dkms"
+PACKAGE_VERSION="#MODULE_VERSION#"
+MAKE[0]="KVER=$kernelver make"
+BUILT_MODULE_NAME[0]="smccc_test"
+DEST_MODULE_LOCATION[0]="/updates"
+AUTOINSTALL="yes"

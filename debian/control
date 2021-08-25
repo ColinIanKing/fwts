@@ -28,7 +28,7 @@ Depends: libfwtsiasl1 (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends},
          pciutils,
-         device-tree-compiler [ppc64el powerpc]
+         device-tree-compiler [armel armhf arm64 ppc64el powerpc]
 Suggests: dmidecode
 Description: FirmWare Test Suite
  This is a firmware test suite that performs sanity checks on system

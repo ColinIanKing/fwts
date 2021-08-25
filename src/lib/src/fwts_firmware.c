@@ -27,8 +27,8 @@ static fwts_firmware_type firmware_type;
 static bool firmware_type_valid;
 
 /*
- *  fwts_memory_map_entry_compare()
- *	callback used to sort memory_map entries on start address
+ *  fwts_firmware_detect()
+ *   check system firmware type
  */
 fwts_firmware_type fwts_firmware_detect(void)
 {

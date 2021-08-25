@@ -54,22 +54,15 @@ fwts_firmware_type fwts_firmware_detect(void)
 int fwts_firmware_features(void)
 {
 	int features = 0;
-	struct stat ipmi_statbuf;
+	struct stat statbuf;
 
-	switch (fwts_firmware_detect()) {
-	case FWTS_FIRMWARE_BIOS:
-	case FWTS_FIRMWARE_UEFI:
-		features = FWTS_FW_FEATURE_ACPI;
-		break;
-	case FWTS_FIRMWARE_OPAL:
-		features = FWTS_FW_FEATURE_DEVICETREE;
-		break;
-	default:
-		break;
-	}
+	if (!stat("/sys/firmware/acpi", &statbuf))
+		features |= FWTS_FW_FEATURE_ACPI;
+	else if (!stat("/sys/firmware/devicetree/base", &statbuf))
+		features |= FWTS_FW_FEATURE_DEVICETREE;
 
 	/* just check for IPMI device presence */
-	if (!stat("/dev/ipmi0", &ipmi_statbuf))
+	if (!stat("/dev/ipmi0", &statbuf))
 		features |= FWTS_FW_FEATURE_IPMI;
 
 	return features;

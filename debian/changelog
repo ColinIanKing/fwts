@@ -1,3 +1,25 @@
+fwts (21.08.00-0ubuntu1) impish; urgency=medium
+
+  [Alex Hung]
+  * sbbr: remove pm_file test (not required in BBR 1.0)
+  * acpi/wmi: update WMI known GUIDs from Linux kernel 5.14-rc1
+  * fwts-test: sync up with updates in fwts_wmi_known_guids
+  * acpi: dmar: add a warning when PCI device is not found
+  * acpi: fadt: clarify comments of FACS and HW-reduced mode
+  * acpi: fadt: remove hard-coded FADT version
+  * lib: fwts_acpi_tables: add a function to get FADT versions
+  * acpi: sbbr: refactor by fwts_get_fadt_version
+  * bios: smm: fix indentation
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20210730
+  * ARM64 SMCCC firmware API tests
+
+  [Sunny Wang]
+  * uefirttime: Fix incorrect error messages for invalid time test
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 25 Aug 2021 13:47:49 +0800
+
 fwts (21.07.00-0ubuntu1) impish; urgency=medium
 
   [Alex Hung]

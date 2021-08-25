@@ -114,6 +114,7 @@
 #endif
 
 #if defined(__PPC64__)
+#define FWTS_ARCH_PPC	1
 #undef FWTS_HAS_ACPI
 #undef FWTS_HAS_UEFI
 #define FWTS_USE_DEVMEM 1

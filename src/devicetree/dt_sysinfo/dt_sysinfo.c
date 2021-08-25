@@ -26,6 +26,8 @@
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_PPC
+
 static const char op_powernv[] = "ibm,powernv";
 static const char opal_firmware[] = "/ibm,opal/firmware";
 static const char platform_firmware[] = "/ibm,firmware-versions";
@@ -380,3 +382,5 @@ static fwts_framework_ops dt_sysinfo_ops = {
 
 FWTS_REGISTER_FEATURES("dt_sysinfo", &dt_sysinfo_ops, FWTS_TEST_ANYTIME,
 		FWTS_FLAG_BATCH, FWTS_FW_FEATURE_DEVICETREE);
+
+#endif

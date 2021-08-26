@@ -84,7 +84,7 @@ static int power_mgmt_init(fwts_framework *fw)
 {
 	int ret;
 
-	if (fwts_firmware_detect() != FWTS_FIRMWARE_OPAL) {
+	if (fw->firmware_type != FWTS_FIRMWARE_OPAL) {
 		fwts_skipped(fw,
 			"The firmware type detected was non OPAL "
 			"so skipping the OPAL Power Management DT checks.");

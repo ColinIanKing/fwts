@@ -45,7 +45,7 @@ static int csm_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "Checking for UEFI Compatibility Support Module (CSM)");
 
-	if (fwts_firmware_detect() == FWTS_FIRMWARE_UEFI)
+	if (fw->firmware_type == FWTS_FIRMWARE_UEFI)
 		flag |= EFI_SUPPORT;
 
 	/* Get Int 10h vector from segment/offset realmode address */

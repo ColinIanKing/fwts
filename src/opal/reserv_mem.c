@@ -105,7 +105,7 @@ static char *make_message(const char *fmt, ...)
 
 static int reserv_mem_init(fwts_framework *fw)
 {
-	if (fwts_firmware_detect() != FWTS_FIRMWARE_OPAL) {
+	if (fw->firmware_type != FWTS_FIRMWARE_OPAL) {
 		fwts_skipped(fw,
 			"The firmware type detected was non OPAL "
 			"so skipping the OPAL Reserve Memory DT checks.");

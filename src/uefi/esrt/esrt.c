@@ -40,7 +40,7 @@
 static int esrt_init(fwts_framework *fw)
 {
 
-	if (fwts_firmware_detect() != FWTS_FIRMWARE_UEFI) {
+	if (fw->firmware_type != FWTS_FIRMWARE_UEFI) {
 		fwts_log_info(fw, "Cannot detect any UEFI firmware. Aborted.");
 		return FWTS_ABORTED;
 	}

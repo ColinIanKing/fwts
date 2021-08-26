@@ -35,7 +35,7 @@ static int boot_init(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot read ACPI tables.");
 		return FWTS_ERROR;
 	}
-	if (fwts_firmware_detect() == FWTS_FIRMWARE_UEFI) {
+	if (fw->firmware_type == FWTS_FIRMWARE_UEFI) {
 		fwts_log_error(fw, "ACPI BOOT table is deprecated on UEFI firmware, skipping test");
 		return FWTS_SKIP;
 	}

@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH FWTS 1 "24 August, 2017"
+.TH FWTS 1 "10 September, 2021"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -31,8 +31,8 @@ This manual page documents briefly the
 firmware test suite.
 The tool
 .B fwts
-is comprised of over fifty tests that are designed to examine and test
-different aspects of PC firmware.  Many of these tests need super user
+is comprised of over 150 tests that are designed to examine and test
+different aspects of PC firmware. Many of these tests need super user
 access to extract tables and interact with the firmware and ACPI, so running
 .B
 fwts
@@ -62,7 +62,7 @@ output results to stdout.
 .TP
 .B \-\-acpica
 enable ACPICA execution mode options. These can be specified as a comma separated
-list of one or more options.  Available options are: serialized (serialized execution
+list of one or more options. Available options are: serialized (serialized execution
 of AML), slack (run in less pedeantic mode), ignore\-errors (ignore ACPICA exception
 errors), disable\-auto\-repair (disable ACPICA from automatically fixing broken ACPICA controls).
 Note that the slack mode will turn on implicit returns of zero on control methods to attempt
@@ -74,7 +74,7 @@ for fwts developers to help track down any ACPICA interfacing issues with fwts.
 .TP
 .B \-\-acpicompliance
 run only those tests that specifically check for compliance with the ACPI
-specifications.  This may be a subset of the ACPI tests.
+specifications. This may be a subset of the ACPI tests.
 .TP
 .B \-\-acpitests
 run all general ACPI tests.
@@ -83,10 +83,10 @@ run all general ACPI tests.
 run all the tests.
 .TP
 .B \-\-arch=name
-specify the target architecture whose firmware is being tested.  This allows
+specify the target architecture whose firmware is being tested. This allows
 fwts to run on one architecture (the host) but perform tests for a different
-architecture (the target).  Known architecture strings are: x86, x86_32, or
-x86_64 for Intel; ia64 for Itanium; arm64 or aarch64 for ARMv8.  Unless this
+architecture (the target). Known architecture strings are: x86, x86_32, or
+x86_64 for Intel; ia64 for Itanium; arm64 or aarch64 for ARMv8. Unless this
 option is specified, the target is assumed to be the same as the host.
 .TP
 .B \-b, \-\-batch
@@ -121,7 +121,7 @@ README.txt \- containing a timestamp and kernel version information.
 specify dumping acpi table log default from sysfs.
 .TP
 .B \-\-dumpfile=acpidump.log
-load ACPI tables from output generated from acpidump or from sudo fwts \-\-dump.  The
+load ACPI tables from output generated from acpidump or from sudo fwts \-\-dump. The
 latter is preferred as fwts \-\-dump is able to dump more tables than acpidump. This
 allows one to dump tables from one machine and processes them with fwts on another machine.
 .TP
@@ -141,7 +141,7 @@ specifies the number of times to query a variable in the uefirtvariable query va
 run all general UEFI tests.
 .TP
 .B \-\-filter\-error\-discard
-specifies the errors that one wants to silently ignore.  One supplies a comma sperated
+specifies the errors that one wants to silently ignore. One supplies a comma sperated
 list of fwts error message labels that one wants fwts to not report as errors. fwts will
 run the test but if there is a test failure and the label matches the one supplied in this
 list fwts will then just ignore this error. This cannot be used with \-\-filter\-error\-keep.
@@ -209,7 +209,7 @@ e.g. \-\-log\-format="%date %time [%field] (%owner): "
 .B \-\-log\-level [critical|high|medium|low|info|all]
 specify the test failure level to log. Test failure levels equal to and
 higher than the specified are logged and recorded as failures. The default
-is 'all' (which is identical to 'info').  For example, a log level of 'medium'
+is 'all' (which is identical to 'info'). For example, a log level of 'medium'
 will just log test failures of level 'medium', 'high' and 'critical',
 where as a log level of 'critical' will just log 'critical' level failures.
 .TP
@@ -254,7 +254,7 @@ s3 resume to allow wifi to re-associate.
 .TP
 .B \-\-s3\-device\-check\-delay
 specify the time to wait while devices re-configure (e.g. wifi to re-associate, ethernet to connect..)
-before a device configuration check is run. The default is 15 seconds.  If this option is used the
+before a device configuration check is run. The default is 15 seconds. If this option is used the
 device checking is assumed so one does not also need to use the \-\-s3\-device\-check flag.
 .TP
 .B \-\-s3\-hybrid
@@ -272,7 +272,7 @@ is 2 tests.
 .TP
 .B \-\-s3\-resume\-hook=hookscript
 specifies a script or program to run after each S3 resume. The hookscript must
-return 0 to indicate success, or non-zero to indicate failure.  Failures will
+return 0 to indicate success, or non-zero to indicate failure. Failures will
 abort subsequent S3 test iterations.
 .TP
 .B \-\-s3\-quirks=--quirk[,--quirk]
@@ -292,7 +292,8 @@ specify the maximum allowed resume time in seconds. If resume takes longer than
 this then an error is logged.
 .TP
 .B \-\-s3power\-sleep\-delay=N
-specify the suspend duration in seconds.  The higher the value the more accurate the s3power test result.  Durations less than 10 minutes are not recommended.
+specify the suspend duration in seconds. The higher the value the more accurate the s3power test result.
+Durations less than 10 minutes are not recommended.
 .TP
 .B \-\-s4\-delay\-delta=N
 time to be added onto delay between each S4 iteration.
@@ -303,7 +304,7 @@ s3 resume to allow wifi to re-associate.
 .TP
 .B \-\-s4\-device\-check\-delay
 specify the time to wait while devices re-configure (e.g. wifi to re-associate, ethernet to connect..)
-before a device configuration check is run. The default is 15 seconds.  If this option is used the
+before a device configuration check is run. The default is 15 seconds. If this option is used the
 device checking is assumed so one does not also need to use the \-\-s4\-device\-check flag.
 .TP
 .B \-\-s4\-min\-delay=N
@@ -434,7 +435,7 @@ sudo fwts s3 \-\-s3\-multiple=100 \-\-s3\-min\-delay=1 \-\-s3\-max\-delay=10 \-\
 .BR lspci (8)
 .SH AUTHOR
 fwts was originally written by Colin King with much of the original test
-code derived from the Intel Linux Firmware test kit.  Many thanks also for
+code derived from the Intel Linux Firmware test kit. Many thanks also for
 contributions from (in alphabetical order): AceLan Kao, Al Stone, Alberto
 Milone, Alex Hung, Anthony Wong, Björn Esser, Chris Goldsworthy,
 Chris Van Hoof, David Ward, Deb McLemore, Erico Nunes, Fan Wu, Fu Wei,
@@ -447,5 +448,5 @@ Zhang Rui.
 This manual page was written by Colin King for the Ubuntu project
 (but may be used by others).
 .PP
-This is free software; see the source for copying conditions.  There is NO
+This is free software; see the source for copying conditions. There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

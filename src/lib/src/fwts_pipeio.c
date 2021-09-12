@@ -32,7 +32,7 @@
 #include <paths.h>
 
 #include <sys/param.h>
-#include <sys/poll.h>
+#include <poll.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>

@@ -263,7 +263,11 @@ static inline bool check_addr_overflow(
         return (len > ~(uintptr_t)0 - (uintptr_t)var_data_addr);
 }
 
-static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key, uint32_t key_len)
+static bool check_sigdb_presence(
+	uint8_t *var_data,
+	const size_t datalen,
+	const uint8_t *key,
+	const uint32_t key_len)
 {
 	uint8_t *var_data_addr;
 	EFI_SIGNATURE_LIST siglist;

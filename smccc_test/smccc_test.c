@@ -229,7 +229,7 @@ static void __exit smccc_test_exit(void)
 
 static int __init smccc_test_init(void)
 {
-	pr_info(MODULE_NAME ": ARM SMCCC not supported on this kernel and architecture\n",
+	pr_info(MODULE_NAME ": ARM SMCCC not supported on this kernel and architecture\n");
 
 	return -ENODEV;
 }

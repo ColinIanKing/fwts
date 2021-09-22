@@ -58,14 +58,13 @@ static int smm_test0(fwts_framework *fw)
 {
 	uint8_t config[256];
 	bool passed = true;
-	ssize_t n;
 	int fd;
 
 	if ((fd = open(FWTS_INTEL_HOST_PATH, O_RDONLY)) < 0) {
 		fwts_log_warning(fw, "Could not open PCI HOST bridge config data\n");
 		return FWTS_ERROR;
 	}
-	if ((n = read(fd, config, sizeof(config))) < 0) {
+	if (read(fd, config, sizeof(config)) < 0) {
 		fwts_log_warning(fw, "Could not read PCI HOST bridge config data\n");
 		(void)close(fd);
 		return FWTS_ERROR;

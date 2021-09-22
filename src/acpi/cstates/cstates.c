@@ -66,7 +66,7 @@ static void get_cstates(char *path, fwts_cstates *state)
 		return;
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
+		if (strlen(entry->d_name) > 3) {
 			long int nr;
 			int count;
 

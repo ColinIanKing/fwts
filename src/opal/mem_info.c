@@ -171,6 +171,8 @@ static int process_dimm(
 		}
 
 		if (strstr(my_buffer, my_string)) {
+			char my_prop_string[15];
+
 			found = true;
 			if (asprintf(&my_path,
 				"%s/%s",
@@ -190,7 +192,6 @@ static int process_dimm(
 				continue;
 			}
 
-			char my_prop_string[15];
 			strcpy(my_prop_string, "/memory-buffer");
 			if (check_status_property_okay(fw, my_path,
 						my_prop_string,
@@ -221,7 +222,6 @@ static int process_dimm(
 					failures++;
 				}
 			}
-
 			free(my_path);
 			free(my_buffer);
 			free(namelist[i]);

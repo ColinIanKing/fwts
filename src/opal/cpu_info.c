@@ -63,7 +63,7 @@ static int get_xscom_property(fwts_framework *fw,
 						property,
 						prop_buf,
 						prop_len)) {
-							failures ++;
+							failures++;
 					}
 					fwts_passed(fw,
 						"OPAL CPU Info Property of"
@@ -73,7 +73,7 @@ static int get_xscom_property(fwts_framework *fw,
 						my_path,
 						prop_buf);
 				} else {
-					failures ++;
+					failures++;
 					fwts_log_nl(fw);
 					fwts_failed(fw,
 						LOG_LEVEL_CRITICAL,
@@ -95,7 +95,7 @@ static int get_xscom_property(fwts_framework *fw,
 					property, my_path);
 			}
 		} else {
-			failures ++;
+			failures++;
 			fwts_log_nl(fw);
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"OPAL CPU Info",
@@ -105,7 +105,7 @@ static int get_xscom_property(fwts_framework *fw,
 				my_path, property);
 		}
 	} else {
-		failures ++;
+		failures++;
 		fwts_log_nl(fw);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 			"OPAL CPU Info",
@@ -180,27 +180,27 @@ static int get_linux_xscom_devices(fwts_framework *fw)
 			}
 			if (get_xscom_property(fw, xscom_path, false,
 						DT_PROPERTY_OPAL_SLOT_LOC)) {
-				failures ++;
+				failures++;
 			}
 
 			if (get_xscom_property(fw, xscom_path, false,
 						DT_PROPERTY_OPAL_PART_NUM)) {
-				failures ++;
+				failures++;
 			}
 
 			if (get_xscom_property(fw, xscom_path, false,
 						DT_PROPERTY_OPAL_SERIAL_NUM)) {
-				failures ++;
+				failures++;
 			}
 
 			if (get_xscom_property(fw, xscom_path, false,
 						DT_PROPERTY_OPAL_VENDOR)) {
-				failures ++;
+				failures++;
 			}
 
 			if (get_xscom_property(fw, xscom_path, false,
 						DT_PROPERTY_OPAL_BOARD_INFO)) {
-				failures ++;
+				failures++;
 			}
 			fwts_log_nl(fw);
 			free(cpus);
@@ -214,7 +214,7 @@ static int get_linux_xscom_devices(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	if (!found) {
-		failures ++;
+		failures++;
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 			"OPAL CPU Info",
 			"No CPU devices (xscom@X) were found in \"%s\"."

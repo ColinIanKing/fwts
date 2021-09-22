@@ -315,7 +315,7 @@ static int get_linux_pci_devices(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	if (!found) {
-		failures ++;
+		failures++;
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"OPAL PCI Info",
 				"No root PCI devices (xxxx:00:00.0) were found"

@@ -318,7 +318,6 @@ static int mtd_info_test1(fwts_framework *fw)
 			}
 			free(mtd_device_path);
 		}
-
 		free(namelist[i]);
 	}
 	free(namelist);

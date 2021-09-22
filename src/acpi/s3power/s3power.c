@@ -176,7 +176,7 @@ static int wrap_pmutils_do_suspend(fwts_pm_method_vars *fwts_settings,
 	int *duration,
 	const char *command)
 {
-	int status;
+	int status = FWTS_OK;
 
 	fwts_progress_message(fwts_settings->fw, percent, "(Suspending)");
 	time(&(fwts_settings->t_start));

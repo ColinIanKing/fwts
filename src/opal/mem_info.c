@@ -222,6 +222,7 @@ static int process_dimm(
 				}
 			}
 
+			free(my_path);
 			free(my_buffer);
 			free(namelist[i]);
 		}
@@ -308,6 +309,7 @@ static int process_mba(
 			if (process_dimm(fw, "dimm", my_path)) {
 				failures++;
 			}
+			free(my_path);
 			free(my_buffer);
 			free(namelist[i]);
 		}
@@ -363,6 +365,7 @@ static int get_linux_mem_devices(fwts_framework *fw)
 
 		dirent = namelist[i];
 
+		mem_buffer = NULL;
 		if (dirent->d_name[0] == '.' ||
 			asprintf(&mem_buffer,
 				"%s",
@@ -395,6 +398,7 @@ static int get_linux_mem_devices(fwts_framework *fw)
 			if (process_mba(fw, "mba", mba_path)) {
 				failures++;
 			}
+			free(mba_path);
 			free(mem_buffer);
 			free(namelist[i]);
 		}

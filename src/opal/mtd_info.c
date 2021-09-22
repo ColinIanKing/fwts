@@ -315,8 +315,8 @@ static int mtd_info_test1(fwts_framework *fw)
 					}
 					fwts_log_nl(fw);
 				}
-				free(mtd_device_path);
 			}
+			free(mtd_device_path);
 		}
 
 		free(namelist[i]);

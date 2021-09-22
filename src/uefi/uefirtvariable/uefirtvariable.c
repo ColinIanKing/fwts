@@ -129,7 +129,7 @@ static int getvariable_test(
 	uint8_t testdata[MAX_DATA_LENGTH];
 	uint64_t dataindex;
 	uint64_t getdatasize = sizeof(testdata);
-	uint32_t attributestest;
+	uint32_t attributestest = 0;
 
 	uint8_t data[datasize];
 	uint32_t i;

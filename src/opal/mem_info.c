@@ -137,7 +137,7 @@ static int process_dimm(
 	char *my_dir)
 {
 	int count, i, failures = 0;
-	struct dirent **namelist;
+	struct dirent **namelist = NULL;
 	bool found = false;
 
 	count = scandir(my_dir, &namelist, NULL, alphasort);
@@ -337,7 +337,7 @@ static int process_mba(
 static int get_linux_mem_devices(fwts_framework *fw)
 {
 	int count, i, failures = 0;
-	struct dirent **namelist;
+	struct dirent **namelist = NULL;
 	bool found = false;
 
 	count = scandir(DT_FS_PATH, &namelist, NULL, alphasort);

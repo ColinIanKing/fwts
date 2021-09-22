@@ -122,7 +122,7 @@ static void iort_id_mapping_dump(
 static void iort_id_mappings_dump(
 	fwts_framework *fw,
 	uint8_t *data,
-	uint8_t *data_end)
+	const uint8_t *data_end)
 {
 	uint32_t i;
 	fwts_acpi_table_iort_node *node = (fwts_acpi_table_iort_node *)data;
@@ -144,7 +144,7 @@ static void iort_id_mappings_dump(
 static void iort_id_mappings_check(
 	fwts_framework *fw,
 	uint8_t *data,
-	uint8_t *data_end,
+	const uint8_t *data_end,
 	bool *passed)
 {
 	uint32_t i;
@@ -181,7 +181,7 @@ static void iort_id_mappings_check(
 static void iort_smmu_interrupt_dump(
 	fwts_framework *fw,
 	uint8_t *data,
-	uint8_t *data_end,
+	const uint8_t *data_end,
 	uint32_t offset,
 	uint32_t count)
 {
@@ -219,7 +219,7 @@ static void iort_smmu_interrupt_flags_check(
 static void iort_smmu_interrupt_check(
 	fwts_framework *fw,
 	uint8_t *data,
-	uint8_t *data_end,
+	const uint8_t *data_end,
 	uint32_t offset,
 	uint32_t count,
 	bool *passed)
@@ -255,7 +255,7 @@ static void iort_smmu_interrupt_check(
 static void iort_smmu_global_interrupt_dump(
 	fwts_framework *fw,
 	uint8_t *data,
-	uint8_t *data_end,
+	const uint8_t *data_end,
 	uint32_t offset)
 {
 	fwts_acpi_table_iort_smmu_global_interrupt_array *intr =
@@ -276,7 +276,7 @@ static void iort_smmu_global_interrupt_dump(
 static void iort_smmu_global_interrupt_check(
 	fwts_framework *fw,
 	uint8_t *data,
-	uint8_t *data_end,
+	const uint8_t *data_end,
 	uint32_t offset,
 	bool *passed)
 {
@@ -310,7 +310,7 @@ static void iort_smmu_global_interrupt_check(
 static void iort_check_its_group(
 	fwts_framework *fw,
 	uint8_t *data,
-	uint8_t *node_end,
+	const uint8_t *node_end,
 	bool *passed)
 {
 	fwts_acpi_table_iort_its_group_node *node =

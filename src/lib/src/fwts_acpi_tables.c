@@ -300,7 +300,7 @@ int fwts_acpi_free_tables(void)
  */
 fwts_bool fwts_acpi_is_reduced_hardware(fwts_framework *fw)
 {
-	fwts_acpi_table_info *table;
+	fwts_acpi_table_info *table = NULL;
 	const fwts_acpi_table_fadt *fadt;
 
 	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK) {
@@ -969,7 +969,7 @@ void fwts_acpi_fixup_addr_from_fadt(
 	uint32_t addr32,
 	uint64_t addr64)
 {
-	fwts_acpi_table_info *table;
+	fwts_acpi_table_info *table = NULL;
 
 	/* Fetch the table */
 	if (fwts_acpi_find_table(fw, name, 0, &table) != FWTS_OK)
@@ -999,7 +999,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 {
 	int i, j, count;
 	char *oem_tbl_id;
-	fwts_acpi_table_info *table;
+	fwts_acpi_table_info *table = NULL;
 	fwts_acpi_table_rsdp *rsdp = NULL;
 	fwts_acpi_table_fadt *fadt = NULL;
 	uint64_t rsdt_fake_addr = 0, xsdt_fake_addr = 0;

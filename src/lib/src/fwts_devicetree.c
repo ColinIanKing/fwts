@@ -265,7 +265,7 @@ int fwts_dt_stringlist_count(
 	const char *property)
 {
 	const char *list, *end;
-	int length, count = 0;
+	int length = 0, count = 0;
 
 	list = fdt_getprop(fdt, nodeoffset, property, &length);
 	if (!list) {

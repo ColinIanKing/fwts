@@ -190,7 +190,7 @@ error:
 }
 
 static int acpi_parse_dev_scope(fwts_framework *fw,
-	uint8_t *start, uint8_t *end, const uint16_t seg)
+	uint8_t *start, const uint8_t *end, const uint16_t seg)
 {
 	while (start < end) {
 		struct acpi_dev_scope *scope = (struct acpi_dev_scope *)start;

@@ -281,12 +281,13 @@ static int uefirtmisc_test3(fwts_framework *fw)
 
 static int uefirtmisc_test4(fwts_framework *fw)
 {
-	long ioret;
-	uint64_t status;
-	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount;
-	uint32_t highcount;
 
 	if (!(runtimeservicessupported & EFI_RT_SUPPORTED_GET_NEXT_HIGH_MONOTONIC_COUNT)) {
+		long ioret;
+		uint64_t status;
+		struct efi_getnexthighmonotoniccount getnexthighmonotoniccount;
+		uint32_t highcount;
+
 		getnexthighmonotoniccount.HighCount = &highcount;
 		getnexthighmonotoniccount.status = &status;
 		status = ~0ULL;

@@ -200,7 +200,7 @@ static int smccc_pci_version_test(fwts_framework *fw)
 static int smccc_pci_features_test(fwts_framework *fw)
 {
 	struct smccc_test_arg arg = { };
-	int ret, implemented_funcs = 0;
+	int implemented_funcs = 0;
 	bool passed = true;
 	static const char *test = "SMCCC v1.0 PCI_FEATURES";
 	size_t i;
@@ -209,6 +209,8 @@ static int smccc_pci_features_test(fwts_framework *fw)
 	 *  Check SMCCC functions are implemented in the firmware
 	 */
 	for (i = 0; i < FWTS_ARRAY_SIZE(pci_func_ids); i++) {
+		int ret;
+
 		memset(&arg, 0, sizeof(arg));
 
 		/* Assume it is not implemented */
@@ -253,7 +255,7 @@ static int smccc_pci_features_test(fwts_framework *fw)
 static int smccc_pci_get_seg_info(fwts_framework *fw)
 {
 	struct smccc_test_arg arg = { };
-	int ret, segments = 0;
+	int segments = 0;
 	bool passed = true;
 	static const char *test = "SMCCC v1.0 PCI_GET_SEG_INFO";
 	int i;
@@ -267,6 +269,8 @@ static int smccc_pci_get_seg_info(fwts_framework *fw)
 	 *  Scan over all potential 65536 segment infos..
 	 */
 	for (i = 0; i <= 0xffff; i++) {
+		int ret;
+
 		memset(&arg, 0, sizeof(arg));
 
 		arg.size = sizeof(arg);

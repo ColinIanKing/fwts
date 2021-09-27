@@ -1,3 +1,39 @@
+fwts (21.09.00-0ubuntu1) impish; urgency=medium
+
+  [Alex Hung]
+  * lib: fwts_firmware: fix incorrect comments for fwts_firmware_detect
+  * acpi: replace fwts_firmware_detect() by fw->firmware_type
+
+  [Colin Ian King]
+  * Manual: update number of tests, date and remove double spaces
+  * lib: use <poll.h> rather than <sys/poll.h>
+  * snapcraft: update to use core20
+  * fwts_acpi_tables: NULLify table pointers
+  * fwts_devicetree: clean up static analysis warning
+  * opal: mem_info: clean up pedantic static analysis warnings
+  * uefirtvariable: clean up pedantic static analysis warnings
+  * acpi: s3power: clean up pedantic static analysis warnings
+  * opal: Fix a few memory leaks on asprint allocated buffers
+  * opal: clean up some coding style issues
+  * smccc_test: fix missing ) in pr_info call
+  * acpi: cstates: remove redundant null check on entry
+  * acpi: dmar: constify a pointer argument in acpi_parse_dev_scope
+  * acpi: iort: constify some function arguments
+  * bios: smm: remove redundant variable n
+  * src/pci/smccc: reduce scope of variable ret
+  * uefi: securebootcert: make some function arguments const
+  * uefi: uefirtmisc: reduce scope of some variables
+
+  [Rob Herring]
+  * Enable dt_sysinfo test for Power only
+  * fwts_firmware: Rework Devicetree firmware detection
+  * debian/control: Add device-tree-compiler as dependency for
+    armel/armhf/arm64 
+
+
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 27 Sep 2021 13:49:22 +0800
+
 fwts (21.08.00-0ubuntu1) impish; urgency=medium
 
   [Alex Hung]

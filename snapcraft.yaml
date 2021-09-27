@@ -41,4 +41,4 @@ apps:
         plugs: [home, hardware-observe, io-ports-control, kernel-module-control, log-observe, system-observe ]
         command: usr/local/bin/fwts
         environment:
-            LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/lib/fwts
+            LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib/fwts

@@ -108,6 +108,10 @@ static bool is_uniqueid_equal(acpi_ids *obj1, acpi_ids *obj2)
 {
 	bool hid_match = false;
 
+	/* _HID and _CID are in the same device */
+	if (!strncmp(obj1->hid_name, obj2->hid_name, strlen(obj1->hid_name) - 4))
+		return false;
+
 	if (obj1 == NULL || obj2 == NULL)
 		return false;
 

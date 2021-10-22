@@ -91,7 +91,7 @@ static void *fwts_smbios_find_entry_uefi(
 		}
 
 		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point", entry, size) == FWTS_OK &&
-		    strncmp((char*)entry, sm, strlen(sm))) {
+		    !strncmp((char*)entry, sm, strlen(sm))) {
 			fwts_log_info(fw, "%s entry loaded from /sys/firmware/dmi/tables/smbios_entry_point\n", smbios);
 			*type  = FWTS_SMBIOS;
 			return addr;

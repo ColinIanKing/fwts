@@ -430,6 +430,9 @@ PRAGMA_NULL_PTR_MATH
 PRAGMA_POP
 	AcpiGetDevices("ACPI0007", madt_processor_handler, NULL, NULL);
 
+	if (!spec_data)
+		fwts_acpica_deinit();
+
 	return (spec_data) ? FWTS_OK : FWTS_ERROR;
 }
 

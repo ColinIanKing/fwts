@@ -36,6 +36,7 @@
 #define PM_S2IDLE_SLP_S0		"/sys/kernel/debug/pmc_core/slp_s0_residency_usec"
 
 static char sleep_type[7];
+static char sleep_type_orig[7];
 
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
@@ -50,6 +51,7 @@ static float s3_suspend_time = 15.0;	/* Maximum allowed suspend time */
 static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 static bool s3_hybrid = false;
 static char *s3_hook = NULL;		/* Hook to run after each S3 */
+static char *s3_sleep_type = NULL;	/* The sleep type(s3 or s2idle) */
 
 static int s3_init(fwts_framework *fw)
 {
@@ -68,11 +70,36 @@ static int s3_init(fwts_framework *fw)
 
 	str = fwts_get(PM_SUSPEND_PATH);
 	if (str && strstr(str, "[s2idle]")) {
+		strncpy(sleep_type_orig, "s2idle", strlen("s2idle") + 1);
+		free(str);
+	} else {
+		strncpy(sleep_type_orig, "deep", strlen("deep") + 1);
+	}
+
+	if (!s3_sleep_type) {
+		if (fwts_set(PM_SUSPEND_PATH, "deep") != FWTS_OK)
+			fwts_log_error(fw, "Cannot set the sleep type to S3(deep), test with default type.");
+	} else {
+		if (fwts_set(PM_SUSPEND_PATH, s3_sleep_type) != FWTS_OK)
+			fwts_log_error(fw, "Cannot set the sleep type to %s, test with default type.", s3_sleep_type);
+	}
+
+	str = fwts_get(PM_SUSPEND_PATH);
+	if (str && strstr(str, "[s2idle]")) {
 		strncpy(sleep_type, "s2idle", strlen("s2idle") + 1);
 		free(str);
 	} else {
 		strncpy(sleep_type, "S3", strlen("S3") + 1);
 	}
+
+	return FWTS_OK;
+}
+
+static int s3_deinit(fwts_framework *fw)
+{
+
+	FWTS_UNUSED(fw);
+	(void)fwts_set(PM_SUSPEND_PATH, sleep_type_orig);
 
 	return FWTS_OK;
 }
@@ -808,6 +835,9 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 11:
 			s3_hook = optarg;
 			break;
+		case 12:
+			s3_sleep_type = optarg;
+			break;
 		}
 	}
 	return FWTS_OK;
@@ -826,6 +856,7 @@ static fwts_option s3_options[] = {
 	{ "s3-resume-time", 	"", 1, "Maximum expected resume time in seconds, e.g. --s3-resume-time=5.1" },
 	{ "s3-hybrid",		"", 0, "Run S3 with hybrid sleep, i.e. saving system states as S4 does." },
 	{ "s3-resume-hook hook","", 1, "Run a hook script after each S3 resume, 0 exit indicates success." },
+	{ "s3-sleep-type"	,"", 1, "Set the sleep type for testing S3 or s2idle, default S3." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -837,6 +868,7 @@ static fwts_framework_minor_test s3_tests[] = {
 static fwts_framework_ops s3_ops = {
 	.description = "Sleep suspend/resume test.",
 	.init        = s3_init,
+	.deinit      = s3_deinit,
 	.minor_tests = s3_tests,
 	.options     = s3_options,
 	.options_handler = s3_options_handler,

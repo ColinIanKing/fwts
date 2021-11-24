@@ -1,3 +1,26 @@
+fwts (21.11.00-0ubuntu1) jammy; urgency=medium
+
+  [Alex Hung]
+  * acpi: uniqueid: skip comparison of _HID and _CID of the same device
+  * auto-packager:mkpackage.sh: add jammy
+
+  [Colin Ian King]
+  * snapcraft: fix path to fwts
+  * snapcraft: Fix incorrect core20 library path
+
+  [G Edhaya Chandran]
+  * lib: fwts_smbios: fix loading SMBIOS table from uefi
+
+  [Grzegorz Bernacki]
+  * acpi: madt: De-initialise ACPICA core engine in case of error.
+
+  [Ivan Hu]
+  * ACPICA: Update to version 20210930
+  * s3: add sleep type setting for testing with s3 or s2idle
+  * fwts-test: sync up the adding sleep type for s2idle testing
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 24 Nov 2021 00:15:47 -0700
+
 fwts (21.09.00-0ubuntu1) impish; urgency=medium
 
   [Alex Hung]

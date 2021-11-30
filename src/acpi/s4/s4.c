@@ -413,7 +413,7 @@ static int s4_test_multiple(fwts_framework *fw)
 
 					fwts_log_info(fw, "Setting tracing buffer size to 1K for subsequent tests.");
 
-					fwts_set("1", FWTS_TRACING_BUFFER_SIZE);
+					(void)fwts_set("1", FWTS_TRACING_BUFFER_SIZE);
 					failed_alloc_image = 0;
 
 					if (s4_hibernate(fw,
@@ -463,7 +463,7 @@ static int s4_test_multiple(fwts_framework *fw)
 
 		/* Restore tracking buffer size */
 		snprintf(tmp, sizeof(tmp), "%d", tracing_buffer_size);
-		fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);
+		(void)fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);
 	}
 
 	if (klog_errors > 0)

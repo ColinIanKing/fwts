@@ -388,7 +388,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 			(*s2idle_errors)++;
 			fwts_failed(fw, LOG_LEVEL_HIGH, "S2idleNotDeepest",
 				"Expected %s to increase from %" PRIu32 ", got %" PRIu32 ".",
-				PM_S2IDLE_SLP_S0, residency, *s2idle_residency);
+				PM_S2IDLE_SLP_S0, *s2idle_residency, residency);
 		}
 		*s2idle_residency = residency;
 	}

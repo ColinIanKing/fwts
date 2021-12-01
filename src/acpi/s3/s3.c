@@ -237,16 +237,16 @@ static int wrap_pmutils_do_suspend(fwts_pm_method_vars *fwts_settings,
  *  get_s2_idle_residency()
  *	read PM_S2IDLE_SLP_S0, return 0 if it is not available
  */
-static uint32_t get_s2_idle_residency(void)
+static uint64_t get_s2_idle_residency(void)
 {
 	char *str;
-	uint32_t val;
+	uint64_t val;
 
 	str = fwts_get(PM_S2IDLE_SLP_S0);
 	if (!str)
 		return 0;
 
-	val = atoi(str);
+	val = atoll(str);
 	free(str);
 
 	return val;
@@ -257,7 +257,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	int *pm_errors,
 	int *hook_errors,
 	int *s2idle_errors,
-	uint32_t *s2idle_residency,
+	uint64_t *s2idle_residency,
 	int delay,
 	int percent)
 {
@@ -382,12 +382,12 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	}
 
 	if (!strncmp(sleep_type, "s2idle", strlen("s2idle"))) {
-		uint32_t residency = get_s2_idle_residency();
+		uint64_t residency = get_s2_idle_residency();
 		bool intel;
 		if (fwts_cpu_is_Intel(&intel) == FWTS_OK && intel && residency <= *s2idle_residency) {
 			(*s2idle_errors)++;
 			fwts_failed(fw, LOG_LEVEL_HIGH, "S2idleNotDeepest",
-				"Expected %s to increase from %" PRIu32 ", got %" PRIu32 ".",
+				"Expected %s to increase from %" PRIu64 ", got %" PRIu64 ".",
 				PM_S2IDLE_SLP_S0, *s2idle_residency, residency);
 		}
 		*s2idle_residency = residency;
@@ -591,7 +591,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	int resume_too_long = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
-	uint32_t s2idle_residency = get_s2_idle_residency();
+	uint64_t s2idle_residency = get_s2_idle_residency();
 	int pm_debug;
 
 #if FWTS_ENABLE_LOGIND

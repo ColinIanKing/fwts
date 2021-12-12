@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2021 Canonical
+ * Copyright (C) 2021 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,15 +17,9 @@
  *
  */
 
-#ifndef __FWTS_FILEIO_H__
-#define __FWTS_FILEIO_H__
+#ifndef __FWTS_KERNEL_H__
+#define __FWTS_KERNEL_H__
 
-#include <stdio.h>
-#include <zlib.h>
-
-fwts_list* fwts_file_read(FILE *fp);
-fwts_list* fwts_file_open_and_read(const char *file);
-fwts_list* fwts_gzfile_read(gzFile *fp);
-fwts_list* fwts_gzfile_open_and_read(const char *file);
+bool fwts_kernel_config_set(const char *config);
 
 #endif

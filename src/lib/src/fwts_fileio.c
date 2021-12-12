@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <zlib.h>
 
 #include "fwts.h"
 
@@ -58,6 +59,44 @@ fwts_list* fwts_file_open_and_read(const char *file)
 
 	list = fwts_file_read(fp);
 	(void)fclose(fp);
+
+	return list;
+}
+
+/*
+ *  fwts_gzfile_read()
+ *	read given gz file and return contents as a list of lines
+ */
+fwts_list *fwts_gzfile_read(gzFile *fp)
+{
+	fwts_list *list;
+	char buffer[8192];
+
+	if ((list = fwts_list_new()) == NULL)
+		return NULL;
+
+	while (gzgets(*fp, buffer, sizeof(buffer)) != NULL) {
+		buffer[strlen(buffer) - 1] = '\0';	/* Chop off "\n" */
+		fwts_text_list_append(list, buffer);
+	}
+
+	return list;
+}
+
+/*
+ *  fwts_gzfile_open_and_read()
+ *	open and read gz file and return contents as a list of lines
+ */
+fwts_list* fwts_gzfile_open_and_read(const char *file)
+{
+	gzFile fp;
+	fwts_list *list;
+
+	if ((fp = gzopen(file, "r")) == Z_NULL)
+		return NULL;
+
+	list = fwts_gzfile_read(&fp);
+	(void)gzclose(fp);
 
 	return list;
 }

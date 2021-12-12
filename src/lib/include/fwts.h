@@ -185,6 +185,7 @@
 #include "fwts_iasl.h"
 #include "fwts_ipmi.h"
 #include "fwts_klog.h"
+#include "fwts_kernel.h"
 #include "fwts_olog.h"
 #include "fwts_pipeio.h"
 #include "fwts_stringextras.h"

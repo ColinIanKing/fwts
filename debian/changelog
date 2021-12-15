@@ -1,3 +1,16 @@
+fwts (21.12.00-0ubuntu1) jammy; urgency=medium
+
+  [Alex Hung]
+  * s3: fix incorrect error messages for s2idle_residency
+  * s3: increase s2idle_residency to u64 to avoid overflows
+  * dmicheck: skip scanning smbios in /dev/mem on aarch64
+
+  [Ivan Hu]
+  * s4: clean up pedantic static analysis warnings
+  * acpi: uniqueid: clean up pedantic static analysis warnings
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 15 Dec 2021 14:39:16 -0700
+
 fwts (21.11.00-0ubuntu1) jammy; urgency=medium
 
   [Alex Hung]

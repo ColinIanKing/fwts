@@ -77,8 +77,13 @@ static int tpmevlog_eventtype_check(fwts_framework *fw, const fwts_tpmlog_event_
 	case EV_EFI_ACTION:
 	case EV_EFI_PLATFORM_FIRMWARE_BLOB:
 	case EV_EFI_HANDOFF_TABLES:
+	case EV_EFI_PLATFORM_FIRMWARE_BLOB2:
+	case EV_EFI_HANDOFF_TABLES2:
+	case EV_EFI_VARIABLE_BOOT2:
 	case EV_EFI_HCRTM_EVENT:
 	case EV_EFI_VARIABLE_AUTHORITY:
+	case EV_EFI_SPDM_FIRMWARE_BLOB:
+	case EV_EFI_SPDM_FIRMWARE_CONFIG:
 		return FWTS_OK;
 	default:
 		fwts_failed(fw, LOG_LEVEL_HIGH, "PCREventType",

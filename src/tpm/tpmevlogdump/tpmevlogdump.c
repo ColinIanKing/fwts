@@ -117,11 +117,26 @@ static char *tpmevlogdump_evtype_to_string(const fwts_tpmlog_event_type event_ty
 	case EV_EFI_HANDOFF_TABLES:
 		str = "EV_EFI_HANDOFF_TABLES";
 		break;
+	case EV_EFI_PLATFORM_FIRMWARE_BLOB2:
+		str = "EV_EFI_PLATFORM_FIRMWARE_BLOB2";
+		break;
+	case EV_EFI_HANDOFF_TABLES2:
+		str = "EV_EFI_HANDOFF_TABLES2";
+		break;
+	case EV_EFI_VARIABLE_BOOT2:
+		str = "EV_EFI_VARIABLE_BOOT2";
+		break;
 	case EV_EFI_HCRTM_EVENT:
 		str = "EV_EFI_HCRTM_EVENT";
 		break;
 	case EV_EFI_VARIABLE_AUTHORITY:
 		str = "EV_EFI_VARIABLE_AUTHORITY";
+		break;
+	case EV_EFI_SPDM_FIRMWARE_BLOB:
+		str = "EV_EFI_SPDM_FIRMWARE_BLOB";
+		break;
+	case EV_EFI_SPDM_FIRMWARE_CONFIG:
+		str = "EV_EFI_SPDM_FIRMWARE_CONFIG";
 		break;
 	default:
 		str = "Unknown";

@@ -76,10 +76,8 @@ static int s3_init(fwts_framework *fw)
 		strncpy(sleep_type_orig, "deep", strlen("deep") + 1);
 	}
 
-	if (!s3_sleep_type) {
-		if (fwts_set(PM_SUSPEND_PATH, "deep") != FWTS_OK)
-			fwts_log_error(fw, "Cannot set the sleep type to S3(deep), test with default type.");
-	} else {
+	if (s3_sleep_type) {
+		fwts_log_info(fw, "Override system suspend default by '%s'\n", s3_sleep_type);
 		if (fwts_set(PM_SUSPEND_PATH, s3_sleep_type) != FWTS_OK)
 			fwts_log_error(fw, "Cannot set the sleep type to %s, test with default type.", s3_sleep_type);
 	}

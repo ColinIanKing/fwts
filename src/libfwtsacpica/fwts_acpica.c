@@ -313,9 +313,6 @@ static ACPI_STATUS fwts_region_handler(
 			case AML_FIELD_ATTRIB_BYTES:
 			case AML_FIELD_ATTRIB_RAW_BYTES:
 			case AML_FIELD_ATTRIB_RAW_PROCESS_BYTES:
-				if (!context)
-					return AE_BAD_PARAMETER;
-				length = context->AccessLength - 2;
 				break;
 			default:
 				break;
@@ -340,9 +337,6 @@ static ACPI_STATUS fwts_region_handler(
 			case AML_FIELD_ATTRIB_BYTES:
 			case AML_FIELD_ATTRIB_RAW_BYTES:
 			case AML_FIELD_ATTRIB_RAW_PROCESS_BYTES:
-				if (!context)
-					return AE_BAD_PARAMETER;
-				length = context->AccessLength - 2;
 				break;
 			default:
 				break;

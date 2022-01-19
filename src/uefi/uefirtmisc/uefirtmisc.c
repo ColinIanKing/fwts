@@ -91,6 +91,11 @@ static int getnexthighmonotoniccount_test(fwts_framework *fw, uint32_t multitest
 					"service is not supported on this platform.");
 				return FWTS_SKIP;
 			}
+			if (status == EFI_OUT_OF_RESOURCES) {
+				fwts_skipped(fw, "Skipping test, run out of resources for "
+					"GetNextHighMonotonicCount runtime service test.");
+				return FWTS_SKIP;
+			}
 			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextHighMonotonicCount",
 				"Failed to get high monotonic count with UEFI runtime service.");
 			fwts_uefi_print_status_info(fw, status);

@@ -1,3 +1,17 @@
+fwts (22.01.00-0ubuntu1) jammy; urgency=medium
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: remove hirsute
+  * s3: use system suspend default if --s3-sleep-type is not used
+  * fwts_acpica: skip unneccessary null check
+
+  [Ivan Hu]
+  * lib: fwts_tpm.h: add new type definition
+  * tpmevlog: add supporting several new types for event log checking
+  * tpmevlogdump: add supporting several new types for event log dumping
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 25 Jan 2022 11:37:31 +0800
+
 fwts (21.12.00-0ubuntu1) jammy; urgency=medium
 
   [Alex Hung]

@@ -34,6 +34,9 @@
 #define CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE 0x00020000
 #define CAPSULE_FLAGS_INITIATE_RESET 0x00040000
 
+static uint32_t uefi_get_mn_count_multiple = 50;
+#define UEFI_GET_NEXT_HIGH_MN_COUNT_MULTIPLE_MAX	(10000)
+
 #define EFI_CAPSULE_GUID \
 { \
 	0x3B6686BD, 0x0D76, 0x4030, {0xB7, 0x0E, 0xB5, \
@@ -202,7 +205,7 @@ static int uefirtmisc_test1(fwts_framework *fw)
 static int uefirtmisc_test2(fwts_framework *fw)
 {
 	int ret;
-	uint32_t multitesttime = 512;
+	uint32_t multitesttime = uefi_get_mn_count_multiple;
 	uint32_t i;
 
 	static const uint32_t flag[] = {
@@ -219,7 +222,9 @@ static int uefirtmisc_test2(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
-	fwts_log_info(fw, "Stress testing for UEFI runtime service GetNextHighMonotonicCount interface.");
+	fwts_log_info(fw, "Stress testing for UEFI runtime service "
+		"GetNextHighMonotonicCount interface %" PRIu32 " times.",
+		multitesttime);
 	ret = getnexthighmonotoniccount_test(fw, multitesttime);
 	if (ret == FWTS_OK)
 		fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount"
@@ -336,7 +341,47 @@ static int uefirtmisc_test4(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int options_check(fwts_framework *fw)
+{
+	FWTS_UNUSED(fw);
 
+	if ((uefi_get_mn_count_multiple < 1) ||
+	    (uefi_get_mn_count_multiple >
+	    UEFI_GET_NEXT_HIGH_MN_COUNT_MULTIPLE_MAX)) {
+		fprintf(stderr, "uefi_get_mn_count_multiple is %"
+			PRIu32 ", it should be 1..%" PRIu32 "\n",
+			uefi_get_mn_count_multiple,
+			UEFI_GET_NEXT_HIGH_MN_COUNT_MULTIPLE_MAX);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+static int options_handler(
+	fwts_framework *fw,
+	int argc,
+	char * const argv[],
+	int option_char,
+	int long_index)
+{
+	FWTS_UNUSED(fw);
+	FWTS_UNUSED(argc);
+	FWTS_UNUSED(argv);
+
+	if (option_char == 0) {
+		switch (long_index) {
+		case 0:	/* --uefi_get_mn_count_multiple */
+			uefi_get_mn_count_multiple = strtoul(optarg, NULL, 10);
+			break;
+		}
+	}
+	return FWTS_OK;
+}
+
+static fwts_option options[] = {
+	{ "uefi-get-mn-count-multiple", "", 1, "Run uefirtmisc getnexthighmonotoniccount test multiple times." },
+	{ NULL, NULL, 0, NULL }
+};
 static fwts_framework_minor_test uefirtmisc_tests[] = {
 	{ uefirtmisc_test1, "Test for UEFI miscellaneous runtime service interfaces." },
 	{ uefirtmisc_test2, "Stress test for UEFI miscellaneous runtime service interfaces." },
@@ -349,7 +394,10 @@ static fwts_framework_ops uefirtmisc_ops = {
 	.description = "UEFI miscellaneous runtime service interface tests.",
 	.init        = uefirtmisc_init,
 	.deinit      = uefirtmisc_deinit,
-	.minor_tests = uefirtmisc_tests
+	.minor_tests = uefirtmisc_tests,
+	.options         = options,
+	.options_handler = options_handler,
+	.options_check   = options_check
 };
 
 FWTS_REGISTER("uefirtmisc", &uefirtmisc_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UEFI | FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_XBBR)

@@ -253,6 +253,9 @@
                              and then acpixtract,
                              e.g. --table-path=
                              /some/path/to/acpidumps
+--uefi-get-mn-count-multiple Run uefirtmisc
+                             getnexthighmonotoniccount
+                             test multiple times.
 --uefi-get-var-multiple      Run uefirtvariable
                              get variable test
                              multiple times.

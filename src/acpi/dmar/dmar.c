@@ -30,7 +30,7 @@
 
 #define MASK_4K 	0xfff
 
-/* See http://download.intel.com/technology/computing/vptech/Intel(r)_VT_for_Direct_IO.pdf */
+/* See https://software.intel.com/content/dam/develop/external/us/en/documents-tps/vt-directed-io-spec.pdf */
 
 /* DMA Remapping Reporting Table (DMAR) */
 struct acpi_table_dmar {

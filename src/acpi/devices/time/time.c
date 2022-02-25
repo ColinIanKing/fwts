@@ -34,6 +34,14 @@ static ACPI_HANDLE device;
 
 static uint32_t capability;
 
+static bool is_AC_wake_implemented(void)
+{
+	if (capability & 0x01)
+		return true;
+
+	return false;
+}
+
 static ACPI_STATUS get_device_handle(ACPI_HANDLE handle, uint32_t level,
 					  void *context, void **ret_val)
 {
@@ -213,9 +221,12 @@ static int method_test_GWS(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 
-	return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
-		"_GWS", arg, 1, method_test_GWS_return, NULL);
-}
+	if (is_AC_wake_implemented())
+		return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
+			"_GWS", arg, 1, method_test_GWS_return, NULL);
+	else
+		return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
+			"_GWS", arg, 1, method_test_GWS_return, NULL);}
 
 static void method_test_CWS_return(
 	fwts_framework *fw,
@@ -246,8 +257,13 @@ static int method_test_CWS(fwts_framework *fw)
 
 	for (i = 0; i < 2; i++) {
 		arg[0].Integer.Value = i;
-		ret = fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
-			"_CWS", arg, 1, method_test_CWS_return, NULL);
+
+		if (is_AC_wake_implemented())
+			ret = fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
+				"_CWS", arg, 1, method_test_CWS_return, NULL);
+		else
+			ret = fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
+				"_CWS", arg, 1, method_test_CWS_return, NULL);
 
 		if (ret != FWTS_OK)
 			break;
@@ -277,8 +293,12 @@ static int method_test_STV(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 100;	/* timer value */
 
-	return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
-		"_STV", arg, 2, fwts_method_test_passed_failed_return, "_STV");
+	if (is_AC_wake_implemented())
+		return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
+			"_STV", arg, 2, fwts_method_test_passed_failed_return, "_STV");
+	else
+		return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
+			"_STV", arg, 2, fwts_method_test_passed_failed_return, "_STV");
 }
 
 static int method_test_TIP(fwts_framework *fw)
@@ -288,8 +308,12 @@ static int method_test_TIP(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 
-	return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
-		"_TIP", arg, 1, fwts_method_test_integer_return, NULL);
+	if (is_AC_wake_implemented())
+		return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
+			"_TIP", arg, 1, fwts_method_test_integer_return, NULL);
+	else
+		return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
+			"_TIP", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_TIV(fwts_framework *fw)
@@ -299,8 +323,12 @@ static int method_test_TIV(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 
-	return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
-		"_TIV", arg, 1, fwts_method_test_integer_return, NULL);
+	if (is_AC_wake_implemented())
+		return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
+			"_TIV", arg, 1, fwts_method_test_integer_return, NULL);
+	else
+		return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
+			"_TIV", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 /* Evaluate Device Identification Objects - all are optional */

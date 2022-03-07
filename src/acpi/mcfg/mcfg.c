@@ -54,25 +54,27 @@ static int compare_config_space(
 		config->pci_segment_group_number);
 
 	if ((fp = fopen(path, "r")) == NULL) {
-		fwts_log_warning(fw, "Could not open %s.", path);
+		fwts_warning(fw, "Could not open %s.", path);
 		return FWTS_ERROR;
 	}
 	n = fread(config_space, 1, sizeof(config_space), fp);
 	(void)fclose(fp);
 	if (n != sizeof(config_space)) {
-		fwts_log_warning(fw, "Could only read %zd bytes from %s, expecting %zd.", n, path, sizeof(config_space));
+		fwts_warning(fw, "Could only read %zd bytes from %s, expecting %zd.", n, path, sizeof(config_space));
 		return FWTS_ERROR;
 	}
 
 	if ((mapped_config_space = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap PCI config space at 0x%" PRIx64 ".",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MMapUnmappable",
+			"Cannot mmap PCI config space at 0x%" PRIx64 ".",
 			config->base_address);
 		return FWTS_ERROR;
 	}
 
 	/* We only need to check if just the config space is readable */
 	if (fwts_safe_memread(mapped_config_space, sizeof(config_space)) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot read PCI config space at 0x%" PRIx64 ".",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIUnreadable",
+			"Cannot read PCI config space at 0x%" PRIx64 ".",
 			config->base_address);
 		(void)fwts_munmap(mapped_config_space, page_size);
 		return FWTS_ERROR;

@@ -37,17 +37,22 @@ static void sdev_acpi_namespace_device_test(
 	fwts_log_info_verbatim(fw, "  ACPI Integrated Device (Type 0):");
 	fwts_log_info_simp_int(fw, "    Type:                             ", entry->header.type);
 	fwts_log_info_simp_int(fw, "    Flags:                            ", entry->header.flags);
+	if (entry->header.flags & 1)
+		fwts_log_info_verbatim(fw, "      Allow handoff to unsecure OS");
+	if (entry->header.flags & (1 << 1))
+		fwts_log_info_verbatim(fw, "      Secure access components present");
 	fwts_log_info_simp_int(fw, "    Length:                           ", entry->header.length);
 	fwts_log_info_simp_int(fw, "    Device Id Offset:                 ", entry->device_id_offset);
 	fwts_log_info_simp_int(fw, "    Device Id Length:                 ", entry->device_id_length);
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Offset:      ", entry->vendor_offset);
 	fwts_log_info_simp_int(fw, "    Vendor Specific Data Length:      ", entry->vendor_length);
-	fwts_log_info_simp_int(fw, "    Secure Access Components Offset:  ", entry->secure_access_offset);
-	fwts_log_info_simp_int(fw, "    Secure Access Components Length:  ", entry->secure_access_length);
+	if (entry->header.flags & (1 << 1)) {
+		fwts_log_info_simp_int(fw, "    Secure Access Components Offset:  ", entry->secure_access_offset);
+		fwts_log_info_simp_int(fw, "    Secure Access Components Length:  ", entry->secure_access_length);
+	}
 
 	fwts_acpi_reserved_bits("SDEV", "Flags", entry->header.flags, 2, 15, passed);
 
-	/* TODO - check Secure Access Components - acpica (iasl) supports aren't complete */
 }
 
 static void sdev_pcie_endpoint_device_test(
@@ -91,7 +96,13 @@ static int sdev_test1(fwts_framework *fw)
 			fwts_acpi_table_sdev_acpi *acpi = (fwts_acpi_table_sdev_acpi *) entry;
 			sdev_acpi_namespace_device_test(fw, acpi, &passed);
 			type_length = sizeof(fwts_acpi_table_sdev_acpi) + acpi->device_id_length +
-				      acpi->vendor_length + acpi->secure_access_length;
+				      acpi->vendor_length;
+			if (acpi->header.flags & (1 << 1))
+				type_length += acpi->secure_access_length;
+			else {
+				type_length -= (sizeof(acpi->secure_access_offset) +
+						sizeof(acpi->secure_access_length));
+			}
 
 		} else if (entry->type == FWTS_SDEV_TYPE_PCIE_ENDPOINT) {
 			fwts_acpi_table_sdev_pcie *pcie = (fwts_acpi_table_sdev_pcie *) entry;

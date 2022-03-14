@@ -5,6 +5,8 @@ sdev            SDEV Secure Devices Table:
 sdev              ACPI Integrated Device (Type 0):
 sdev                Type:                             0x00
 sdev                Flags:                            0x03
+sdev                  Allow handoff to unsecure OS
+sdev                  Secure access components present
 sdev                Length:                           0x0041
 sdev                Device Id Offset:                 0x0023
 sdev                Device Id Length:                 0x0016

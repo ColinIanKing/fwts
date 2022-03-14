@@ -4,7 +4,9 @@ sdev            Test 1 of 1: Validate SDEV table.
 sdev            SDEV Secure Devices Table:
 sdev              ACPI Integrated Device (Type 0):
 sdev                Type:                             0x00
-sdev                Flags:                            0x05
+sdev                Flags:                            0x07
+sdev                  Allow handoff to unsecure OS
+sdev                  Secure access components present
 sdev                Length:                           0x0041
 sdev                Device Id Offset:                 0x0023
 sdev                Device Id Length:                 0x0016
@@ -13,7 +15,7 @@ sdev                Vendor Specific Data Length:      0x0008
 sdev                Secure Access Components Offset:  0x0010
 sdev                Secure Access Components Length:  0x0013
 sdev            FAILED [HIGH] SDEVReservedBitsNonZero: Test 1, SDEV Flags
-sdev            Bits [15..2] must be zero, got 0x05 instead
+sdev            Bits [15..2] must be zero, got 0x07 instead
 sdev            
 sdev              PCIe Endpoint Device (Type 1):
 sdev                Type:                             0x01

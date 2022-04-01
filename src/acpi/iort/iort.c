@@ -42,7 +42,7 @@ static void iort_node_dump(
 	fwts_log_info_simp_int(fw, "  Type:                     ", node->type);
 	fwts_log_info_simp_int(fw, "  Length:                   ", node->length);
 	fwts_log_info_simp_int(fw, "  Revision:                 ", node->revision);
-	fwts_log_info_simp_int(fw, "  Reserved:                 ", node->reserved);
+	fwts_log_info_simp_int(fw, "  Identifier:               ", node->identifier);
 	fwts_log_info_simp_int(fw, "  Number of ID mappings:    ", node->id_mappings_count);
 	fwts_log_info_simp_int(fw, "  Reference to ID Array:    ", node->id_array_offset);
 }
@@ -98,8 +98,6 @@ static void iort_node_check(
 				node->revision);
 		}
 	}
-
-	fwts_acpi_reserved_zero("IORT", "Node Reserved", node->reserved, passed);
 
 	if (no_id_mappings && node->id_mappings_count) {
 		*passed = false;

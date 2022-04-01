@@ -2026,7 +2026,7 @@ typedef struct {
 	uint8_t		type;
 	uint16_t	length;
 	uint8_t		revision;
-	uint32_t	reserved;
+	uint32_t	identifier;
 	uint32_t	id_mappings_count;
 	uint32_t	id_array_offset;
 } __attribute__ ((packed)) fwts_acpi_table_iort_node;

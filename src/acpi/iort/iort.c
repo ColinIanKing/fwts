@@ -60,7 +60,35 @@ static void iort_node_check(
 {
 	fwts_acpi_table_iort_node *node = (fwts_acpi_table_iort_node *)data;
 
-	if (node->type == 1 || node->type == 3 || node->type == 4) {
+	if (node->type == 1 || node->type == 2 || node->type == 4) {
+		if (node->revision > 4) {
+			*passed = false;
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"IORTNodeRevisionInvalid",
+				"IORT Node Revision field is 0x%2.2" PRIx8
+				" and should be less than 5.",
+				node->revision);
+		}
+	} else if (node->type == 3 || node->type == 6) {
+		if (node->revision > 3) {
+			*passed = false;
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"IORTNodeRevisionInvalid",
+				"IORT Node Revision field is 0x%2.2" PRIx8
+				" and should be less than 4.",
+				node->revision);
+		}
+	} else if (node->type == 5) {
+		if (node->revision > 2) {
+			*passed = false;
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"IORTNodeRevisionInvalid",
+				"IORT Node Revision field is 0x%2.2" PRIx8
+				" and should be less than 3.",
+				node->revision);
+		}
+	} else {
+		/* type 0 */
 		if (node->revision > 1) {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_LOW,
@@ -69,9 +97,7 @@ static void iort_node_check(
 				" and should be zero or one.",
 				node->revision);
 		}
-
-	} else
-		fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "IORT", "IORT Node Revision", node->revision, 0, passed);
+	}
 
 	fwts_acpi_reserved_zero("IORT", "Node Reserved", node->reserved, passed);
 

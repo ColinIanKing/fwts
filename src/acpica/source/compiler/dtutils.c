@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2021, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2022, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -411,6 +411,7 @@ DtGetFieldType (
     case ACPI_DMT_FLAGS0:
     case ACPI_DMT_FLAGS1:
     case ACPI_DMT_FLAGS2:
+    case ACPI_DMT_FLAGS8_2:
     case ACPI_DMT_FLAGS4:
     case ACPI_DMT_FLAGS4_0:
     case ACPI_DMT_FLAGS4_4:
@@ -561,6 +562,7 @@ DtGetFieldLength (
     case ACPI_DMT_FLAGS0:
     case ACPI_DMT_FLAGS1:
     case ACPI_DMT_FLAGS2:
+    case ACPI_DMT_FLAGS8_2:
     case ACPI_DMT_FLAGS4:
     case ACPI_DMT_FLAGS4_0:
     case ACPI_DMT_FLAGS4_4:

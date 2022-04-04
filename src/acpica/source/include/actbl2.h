@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2021, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2022, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -169,6 +169,7 @@
  * the wrong signature.
  */
 #define ACPI_SIG_AGDI           "AGDI"      /* Arm Generic Diagnostic Dump and Reset Device Interface */
+#define ACPI_SIG_APMT           "APMT"      /* Arm Performance Monitoring Unit table */
 #define ACPI_SIG_BDAT           "BDAT"      /* BIOS Data ACPI Table */
 #define ACPI_SIG_IORT           "IORT"      /* IO Remapping Table */
 #define ACPI_SIG_IVRS           "IVRS"      /* I/O Virtualization Reporting Structure */
@@ -426,6 +427,86 @@ typedef struct acpi_table_agdi
 
 /*******************************************************************************
  *
+ * APMT - ARM Performance Monitoring Unit Table
+ *
+ * Conforms to:
+ * ARM Performance Monitoring Unit Architecture 1.0 Platform Design Document
+ * ARM DEN0117 v1.0 November 25, 2021
+ *
+ ******************************************************************************/
+
+typedef struct acpi_table_apmt {
+    ACPI_TABLE_HEADER Header;    /* Common ACPI table header */
+} ACPI_TABLE_APMT;
+
+#define ACPI_APMT_NODE_ID_LENGTH                4
+
+/*
+ * APMT subtables
+ */
+typedef struct acpi_apmt_node {
+    UINT16                       Length;
+    UINT8                        Flags;
+    UINT8                        Type;
+    UINT32                       Id;
+    UINT64                       InstPrimary;
+    UINT32                       InstSecondary;
+    UINT64                       BaseAddress0;
+    UINT64                       BaseAddress1;
+    UINT32                       OvflwIrq;
+    UINT32                       Reserved;
+    UINT32                       OvflwIrqFlags;
+    UINT32                       ProcAffinity;
+    UINT32                       ImplId;
+} ACPI_APMT_NODE;
+
+/* Masks for Flags field above */
+
+#define ACPI_APMT_FLAGS_DUAL_PAGE               (1<<0)
+#define ACPI_APMT_FLAGS_AFFINITY                (1<<1)
+#define ACPI_APMT_FLAGS_ATOMIC                  (1<<2)
+
+/* Values for Flags dual page field above */
+
+#define ACPI_APMT_FLAGS_DUAL_PAGE_NSUPP         (0<<0)
+#define ACPI_APMT_FLAGS_DUAL_PAGE_SUPP          (1<<0)
+
+/* Values for Flags processor affinity field above */
+#define ACPI_APMT_FLAGS_AFFINITY_PROC           (0<<1)
+#define ACPI_APMT_FLAGS_AFFINITY_PROC_CONTAINER (1<<1)
+
+/* Values for Flags 64-bit atomic field above */
+#define ACPI_APMT_FLAGS_ATOMIC_NSUPP            (0<<2)
+#define ACPI_APMT_FLAGS_ATOMIC_SUPP             (1<<2)
+
+/* Values for Type field above */
+
+enum acpi_apmt_node_type {
+    ACPI_APMT_NODE_TYPE_MC                      = 0x00,
+    ACPI_APMT_NODE_TYPE_SMMU                    = 0x01,
+    ACPI_APMT_NODE_TYPE_PCIE_ROOT               = 0x02,
+    ACPI_APMT_NODE_TYPE_ACPI                    = 0x03,
+    ACPI_APMT_NODE_TYPE_CACHE                   = 0x04,
+    ACPI_APMT_NODE_TYPE_COUNT
+};
+
+/* Masks for ovflw_irq_flags field above */
+
+#define ACPI_APMT_OVFLW_IRQ_FLAGS_MODE          (1<<0)
+#define ACPI_APMT_OVFLW_IRQ_FLAGS_TYPE          (1<<1)
+
+/* Values for ovflw_irq_flags mode field above */
+
+#define ACPI_APMT_OVFLW_IRQ_FLAGS_MODE_LEVEL    (0<<0)
+#define ACPI_APMT_OVFLW_IRQ_FLAGS_MODE_EDGE     (1<<0)
+
+/* Values for ovflw_irq_flags type field above */
+
+#define ACPI_APMT_OVFLW_IRQ_FLAGS_TYPE_WIRED    (0<<1)
+
+
+/*******************************************************************************
+ *
  * BDAT - BIOS Data ACPI Table
  *
  * Conforms to "BIOS Data ACPI Table", Interface Specification v4.0 Draft 5
@@ -446,7 +527,7 @@ typedef struct acpi_table_bdat
  * IORT - IO Remapping Table
  *
  * Conforms to "IO Remapping Table System Software on ARM Platforms",
- * Document number: ARM DEN 0049E.b, Feb 2021
+ * Document number: ARM DEN 0049E.d, Feb 2022
  *
  ******************************************************************************/
 
@@ -562,7 +643,8 @@ typedef struct acpi_iort_root_complex
     UINT32                  AtsAttribute;
     UINT32                  PciSegmentNumber;
     UINT8                   MemoryAddressLimit;     /* Memory address size limit */
-    UINT8                   Reserved[3];            /* Reserved, must be zero */
+    UINT16                  PasidCapabilities;      /* PASID Capabilities */
+    UINT8                   Reserved[1];            /* Reserved, must be zero */
 
 } ACPI_IORT_ROOT_COMPLEX;
 
@@ -572,6 +654,8 @@ typedef struct acpi_iort_root_complex
 #define ACPI_IORT_PRI_SUPPORTED         (1<<1)  /* The root complex PRI support */
 #define ACPI_IORT_PASID_FWD_SUPPORTED   (1<<2)  /* The root complex PASID forward support */
 
+/* Masks for PasidCapabilities field above */
+#define ACPI_IORT_PASID_MAX_WIDTH       (0x1F)  /* Bits 0-4 */
 
 typedef struct acpi_iort_smmu
 {
@@ -657,6 +741,25 @@ typedef struct acpi_iort_rmr {
     UINT32 RmrOffset;
 
 } ACPI_IORT_RMR;
+
+/* Masks for Flags field above */
+#define ACPI_IORT_RMR_REMAP_PERMITTED      (1)
+#define ACPI_IORT_RMR_ACCESS_PRIVILEGE     (1<<1)
+
+/*
+ * Macro to access the Access Attributes in flags field above:
+ *  Access Attributes is encoded in bits 9:2
+ */
+#define ACPI_IORT_RMR_ACCESS_ATTRIBUTES(flags)          (((flags) >> 2) & 0xFF)
+
+/* Values for above Access Attributes */
+
+#define ACPI_IORT_RMR_ATTR_DEVICE_NGNRNE   0x00
+#define ACPI_IORT_RMR_ATTR_DEVICE_NGNRE    0x01
+#define ACPI_IORT_RMR_ATTR_DEVICE_NGRE     0x02
+#define ACPI_IORT_RMR_ATTR_DEVICE_GRE      0x03
+#define ACPI_IORT_RMR_ATTR_NORMAL_NC       0x04
+#define ACPI_IORT_RMR_ATTR_NORMAL_IWB_OWB  0x05
 
 typedef struct acpi_iort_rmr_desc {
     UINT64 BaseAddress;
@@ -1004,7 +1107,8 @@ enum AcpiMadtType
     ACPI_MADT_TYPE_GENERIC_REDISTRIBUTOR    = 14,
     ACPI_MADT_TYPE_GENERIC_TRANSLATOR       = 15,
     ACPI_MADT_TYPE_MULTIPROC_WAKEUP         = 16,
-    ACPI_MADT_TYPE_RESERVED                 = 17    /* 17 and greater are reserved */
+    ACPI_MADT_TYPE_RESERVED                 = 17,   /* 17 to 0x7F are reserved */
+    ACPI_MADT_TYPE_OEM_RESERVED             = 0x80  /* 0x80 to 0xFF are reserved for OEM use */
 };
 
 
@@ -1271,8 +1375,8 @@ typedef struct acpi_madt_multiproc_wakeup
 
 } ACPI_MADT_MULTIPROC_WAKEUP;
 
-#define ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE	2032
-#define ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE	2048
+#define ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE        2032
+#define ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE  2048
 
 typedef struct acpi_madt_multiproc_wakeup_mailbox
 {
@@ -1286,6 +1390,13 @@ typedef struct acpi_madt_multiproc_wakeup_mailbox
 } ACPI_MADT_MULTIPROC_WAKEUP_MAILBOX;
 
 #define ACPI_MP_WAKE_COMMAND_WAKEUP    1
+
+/* 17: OEM data */
+
+typedef struct acpi_madt_oem_data
+{
+    UINT8                   OemData[0];
+} ACPI_MADT_OEM_DATA;
 
 
 /*
@@ -2016,7 +2127,7 @@ typedef struct acpi_nhlt_mic_device_specific_config
 
 /* Values for ArrayTypeExt above */
 
-#define ACPI_NHLT_ARRAY_TYPE_RESERVED               0x09 // 9 and below are reserved
+#define ACPI_NHLT_ARRAY_TYPE_RESERVED               0x09    /* 9 and below are reserved */
 #define ACPI_NHLT_SMALL_LINEAR_2ELEMENT             0x0A
 #define ACPI_NHLT_BIG_LINEAR_2ELEMENT               0x0B
 #define ACPI_NHLT_FIRST_GEOMETRY_LINEAR_4ELEMENT    0x0C
@@ -2039,17 +2150,17 @@ typedef struct acpi_nhlt_vendor_mic_config
 {
     UINT8                   Type;
     UINT8                   Panel;
-    UINT16                  SpeakerPositionDistance;    // mm
-    UINT16                  HorizontalOffset;           // mm
-    UINT16                  VerticalOffset;             // mm
-    UINT8                   FrequencyLowBand;           // 5*Hz
-    UINT8                   FrequencyHighBand;          // 500*Hz
-    UINT16                  DirectionAngle;             // -180 - + 180
-    UINT16                  ElevationAngle;             // -180 - + 180
-    UINT16                  WorkVerticalAngleBegin;     // -180 - + 180 with 2 deg step
-    UINT16                  WorkVerticalAngleEnd;       // -180 - + 180 with 2 deg step
-    UINT16                  WorkHorizontalAngleBegin;   // -180 - + 180 with 2 deg step
-    UINT16                  WorkHorizontalAngleEnd;     // -180 - + 180 with 2 deg step
+    UINT16                  SpeakerPositionDistance;    /* mm */
+    UINT16                  HorizontalOffset;           /* mm */
+    UINT16                  VerticalOffset;             /* mm */
+    UINT8                   FrequencyLowBand;           /* 5*Hz */
+    UINT8                   FrequencyHighBand;          /* 500*Hz */
+    UINT16                  DirectionAngle;             /* -180 - + 180 */
+    UINT16                  ElevationAngle;             /* -180 - + 180 */
+    UINT16                  WorkVerticalAngleBegin;     /* -180 - + 180 with 2 deg step */
+    UINT16                  WorkVerticalAngleEnd;       /* -180 - + 180 with 2 deg step */
+    UINT16                  WorkHorizontalAngleBegin;   /* -180 - + 180 with 2 deg step */
+    UINT16                  WorkHorizontalAngleEnd;     /* -180 - + 180 with 2 deg step */
 
 } ACPI_NHLT_VENDOR_MIC_CONFIG;
 
@@ -2061,9 +2172,9 @@ typedef struct acpi_nhlt_vendor_mic_config
 #define ACPI_NHLT_MIC_SUPER_CARDIOID        3
 #define ACPI_NHLT_MIC_HYPER_CARDIOID        4
 #define ACPI_NHLT_MIC_8_SHAPED              5
-#define ACPI_NHLT_MIC_RESERVED6             6 // 6 is reserved
+#define ACPI_NHLT_MIC_RESERVED6             6   /* 6 is reserved */
 #define ACPI_NHLT_MIC_VENDOR_DEFINED        7
-#define ACPI_NHLT_MIC_RESERVED              8 // 8 and above are reserved
+#define ACPI_NHLT_MIC_RESERVED              8   /* 8 and above are reserved */
 
 /* Values for Panel field above */
 
@@ -2073,13 +2184,13 @@ typedef struct acpi_nhlt_vendor_mic_config
 #define ACPI_NHLT_MIC_POSITION_RIGHT        3
 #define ACPI_NHLT_MIC_POSITION_FRONT        4
 #define ACPI_NHLT_MIC_POSITION_BACK         5
-#define ACPI_NHLT_MIC_POSITION_RESERVED     6 // 6 and above are reserved
+#define ACPI_NHLT_MIC_POSITION_RESERVED     6   /* 6 and above are reserved */
 
 typedef struct acpi_nhlt_vendor_mic_device_specific_config
 {
     ACPI_NHLT_MIC_DEVICE_SPECIFIC_CONFIG    MicArrayDeviceConfig;
     UINT8                                   NumberOfMicrophones;
-    ACPI_NHLT_VENDOR_MIC_CONFIG             MicConfig[];            // Indexed by NumberOfMicrophones
+    ACPI_NHLT_VENDOR_MIC_CONFIG             MicConfig[];            /* Indexed by NumberOfMicrophones */
 
 } ACPI_NHLT_VENDOR_MIC_DEVICE_SPECIFIC_CONFIG;
 
@@ -2096,40 +2207,27 @@ typedef struct acpi_nhlt_mic_snr_sensitivity_extension
 
 typedef struct acpi_nhlt_render_feedback_device_specific_config
 {
-    UINT8                               FeedbackVirtualSlot;    // Render slot in case of capture
-    UINT16                              FeedbackChannels;       // Informative only
+    UINT8                               FeedbackVirtualSlot;        /* Render slot in case of capture */
+    UINT16                              FeedbackChannels;           /* Informative only */
     UINT16                              FeedbackValidBitsPerSample;
 
 } ACPI_NHLT_RENDER_FEEDBACK_DEVICE_SPECIFIC_CONFIG;
 
-/* Linux-specific structures */
+/* Non documented structures */
 
-typedef struct acpi_nhlt_linux_specific_count
+typedef struct acpi_nhlt_device_info_count
 {
     UINT8                               StructureCount;
 
-} ACPI_NHLT_LINUX_SPECIFIC_COUNT;
+} ACPI_NHLT_DEVICE_INFO_COUNT;
 
-typedef struct acpi_nhlt_linux_specific_data
+typedef struct acpi_nhlt_device_info
 {
     UINT8                               DeviceId[16];
     UINT8                               DeviceInstanceId;
     UINT8                               DevicePortId;
 
-} ACPI_NHLT_LINUX_SPECIFIC_DATA;
-
-typedef struct acpi_nhlt_linux_specific_data_b
-{
-    UINT8                               SpecificData[18];
-
-} ACPI_NHLT_LINUX_SPECIFIC_DATA_B;
-
-typedef struct acpi_nhlt_table_terminator
-{
-    UINT32                  TerminatorValue;
-    UINT32                  TerminatorSignature;
-
-} ACPI_NHLT_TABLE_TERMINATOR;
+} ACPI_NHLT_DEVICE_INFO;
 
 
 /*******************************************************************************
@@ -2707,8 +2805,8 @@ typedef struct acpi_table_prmt_header
 
 typedef struct acpi_prmt_module_header
 {
-	UINT16                  Revision;
-	UINT16                  Length;
+    UINT16                  Revision;
+    UINT16                  Length;
 
 } ACPI_PRMT_MODULE_HEADER;
 
@@ -2862,7 +2960,7 @@ typedef struct acpi_table_rgrt
     UINT16                  Version;
     UINT8                   ImageType;
     UINT8                   Reserved;
-    UINT8                   Image[0];
+    UINT8                   Image[];
 
 } ACPI_TABLE_RGRT;
 

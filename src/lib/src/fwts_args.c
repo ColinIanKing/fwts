@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2021 Canonical
+ * Copyright (C) 2011-2022 Canonical
  * Some of this work - Copyright (C) 2016-2021 IBM
  *
  * This program is free software; you can redistribute it and/or

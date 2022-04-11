@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2021 Canonical
+ * Copyright (C) 2010-2022 Canonical
  * Copyright (C) 2017-2021 ARM Ltd
  *
  * This program is free software; you can redistribute it and/or

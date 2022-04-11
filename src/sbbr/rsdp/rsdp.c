@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2021 Canonical
+ * Copyright (C) 2015-2022 Canonical
  * Copyright (C) 2017-2021 ARM Ltd
  *
  * Portions of this code original from the Linux-ready Firmware Developer Kit

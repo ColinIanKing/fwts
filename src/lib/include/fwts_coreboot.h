@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2021 Canonical
+ * Copyright (C) 2010-2022 Canonical
  * Copyright (C) 2017-2021 Google Inc.
  * Copyright (C) 2018-2021 9elements Cyber Security
  *

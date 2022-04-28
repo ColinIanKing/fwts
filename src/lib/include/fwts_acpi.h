@@ -2063,7 +2063,6 @@ typedef struct {
 	uint32_t	context_interrupt_array_offset;
 	uint32_t	pmu_interrupt_count;
 	uint32_t	pmu_interrupt_array_offset;
-
 	/*
 	 * Global Interrupt array, Context Interrupt Array
 	 * and PMU Interrupt arrays follow at offsets into
@@ -2101,6 +2100,10 @@ typedef struct {
 	fwts_acpi_table_iort_properties properties;
 	uint32_t	ats_attribute;
 	uint32_t	pci_segment_number;
+	uint8_t		memory_addr_size_limit;
+	uint16_t	pasid_cap;
+	uint8_t		reserved;
+	uint32_t	flags;
 	/*
 	   followed by array of ids_mappings at some offset
 	   uint32_t	identifier_array[0];
@@ -2118,6 +2121,8 @@ typedef struct {
 	uint32_t	pri;
 	uint32_t	gerr;
 	uint32_t	sync;
+	uint32_t	proximity_domain;
+	uint32_t	deviceid_mapping_idx;
 	/*
 	   followed by array of ids_mappings at some offset
 	   fwts_acpi_table_iort_id_mapping identifier_array[0];
@@ -2129,6 +2134,7 @@ typedef struct {
 	uint64_t	base_address;
 	uint32_t	gsiv;
 	uint32_t	node_ref;
+	uint64_t	p1_base_address;
 	/*
 	   followed by array of ids_mappings at some offset
 	   fwts_acpi_table_iort_id_mapping identifier_array[0];

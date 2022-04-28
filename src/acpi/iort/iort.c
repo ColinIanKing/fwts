@@ -494,21 +494,29 @@ static void iort_check_pci_root_complex(
 	fwts_log_info_simp_int(fw, "  Memory Access Flags       ", node->properties.memory_access_flags);
 	fwts_log_info_simp_int(fw, "  ATS Attribute:            ", node->ats_attribute);
 	fwts_log_info_simp_int(fw, "  PCI Segment Number:       ", node->pci_segment_number);
+	fwts_log_info_simp_int(fw, "  Memory addr. size limit:  ", node->memory_addr_size_limit);
+	fwts_log_info_simp_int(fw, "  PASID capabilities:       ", node->pasid_cap);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", node->reserved);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", node->flags);
 
 	iort_id_mappings_dump(fw, data, node_end);
 	iort_node_check(fw, data, false, false, passed);
 
-	if (node->ats_attribute > 1) {
+	iort_memory_access_properties_check(fw, "PCI Root Complex Node", &node->properties, passed);
+	fwts_acpi_reserved_bits("IORT", "ATS Attribute", node->ats_attribute, 3, 31, passed);
+	fwts_acpi_reserved_bits("IORT", "PASID capabilities", node->pasid_cap, 5, 15, passed);
+	fwts_acpi_reserved_zero("IORT", "Reserved", node->reserved, passed);
+
+	if (node->flags > 1) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"IORTCPCIRootComplexAtsAttrInvalid",
-			"IORT PCI Root Complex Node ATS Attribute is 0x%" PRIx32
-			" and was expecting either 0 (root complex supports ATS) "
-			"or 1 (root complex does not support ATS).",
-			node->ats_attribute);
+			"IORTPCIRootComplexNodeFlagsInvalid",
+			"IORT PCI Root Complex Node flag "
+			"is 0x%" PRIx32 " and should be either "
+			"0 (not support PASID) or 1 (supports PASID).",
+			node->flags);
 	}
 
-	iort_memory_access_properties_check(fw, "PCI Root Complex Node", &node->properties, passed);
 	iort_id_mappings_check(fw, data, node_end, passed);
 	fwts_log_nl(fw);
 }
@@ -590,6 +598,8 @@ static void iort_check_smmuv3(
 	fwts_log_info_simp_int(fw, "  PRI:                      ", node->pri);
 	fwts_log_info_simp_int(fw, "  GERR:                     ", node->gerr);
 	fwts_log_info_simp_int(fw, "  Sync:                     ", node->sync);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", node->proximity_domain);
+	fwts_log_info_simp_int(fw, "  DeviceId Mapping Index:   ", node->deviceid_mapping_idx);
 
 	iort_id_mappings_dump(fw, data, node_end);
 
@@ -604,7 +614,7 @@ static void iort_check_smmuv3(
 			"a model value of 0.", node->model);
 	}
 
-	fwts_acpi_reserved_bits("IORT", "SMMUv3 Reserved Flags", node->flags, 2, 31, passed);
+	fwts_acpi_reserved_bits("IORT", "SMMUv3 Reserved Flags", node->flags, 4, 31, passed);
 	fwts_log_nl(fw);
 }
 
@@ -624,6 +634,7 @@ static void iort_check_pmcg(
 	fwts_log_info_simp_int(fw, "  Base Address:             ", node->base_address);
 	fwts_log_info_simp_int(fw, "  Overflow interrupt GSIV:  ", node->gsiv);
 	fwts_log_info_simp_int(fw, "  Node reference:           ", node->node_ref);
+	fwts_log_info_simp_int(fw, "  Page 1 Base Address:      ", node->p1_base_address);
 
 	iort_id_mappings_dump(fw, data, node_end);
 

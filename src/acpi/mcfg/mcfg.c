@@ -65,6 +65,20 @@ static int compare_config_space(
 	}
 
 	if ((mapped_config_space = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
+		char *data;
+
+		if ((data = fwts_get("/sys/kernel/security/lockdown")) != NULL) {
+			if (strstr(data, "[none]") == NULL) {
+				free(data);
+				fwts_log_info(fw, "Kernel is in lockdown mode. Aborted.");
+				fwts_log_info(fw, "Please unlock the kernel before testing.");
+				fwts_log_info(fw, "Make sure you disable secureboot and disable "
+					"the kernel lockdown, (by kernel parameter lockdown=None).");
+				return FWTS_ABORTED;
+			}
+		}
+		free(data);
+
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MMapUnmappable",
 			"Cannot mmap PCI config space at 0x%" PRIx64 ".",
 			config->base_address);

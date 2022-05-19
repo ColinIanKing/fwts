@@ -10,7 +10,7 @@ iort            IORT ITS Group Node:
 iort              Type:                     0x00
 iort              Length:                   0x0020
 iort              Revision:                 0x03
-iort              Reserved:                 0xffffffff
+iort              Identifier:               0x00000000
 iort              Number of ID mappings:    0x00000080
 iort              Reference to ID Array:    0x000000e0
 iort              Number of ITSs:           0x00000004
@@ -18,10 +18,8 @@ iort            FAILED [HIGH] IORTItsIdArrayOutsideTable: Test 1, IORT ITS
 iort            Identifier Array end is outside the IORT ACPI table.
 iort            Either the Number of ID mappings is too large or the IORT
 iort            table size or ITS Group Node is too small.
-iort            FAILED [MEDIUM] IORTBadFieldValue: Test 1, IORT IORT Node
-iort            Revision field must be 0, got 3 instead.
-iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
-iort            Reserved field must be zero, got 0xffffffff instead
+iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
+iort            Revision field is 0x03 and should be zero or one.
 iort            FAILED [LOW] IORTNodeMappingsCountNonZero: Test 1, IORT
 iort            Node Number of ID Mappings field is 0x000000080 and should
 iort            be zero for this node type.
@@ -32,11 +30,11 @@ iort
 iort            IORT Named Component Node:
 iort              Type:                     0x01
 iort              Length:                   0x0050
-iort              Revision:                 0x02
-iort              Reserved:                 0x0000f001
+iort              Revision:                 0x05
+iort              Identifier:               0x00000000
 iort              Number of ID mappings:    0x00000003
 iort              Reference to ID Array:    0x00000024
-iort              Node Flags:               0xffffffff
+iort              Node Flags:               0x00000000
 iort              Cache Coherent Attribute: 0x00000004
 iort              Allocation Hints:         0x0f
 iort              Reserved:                 0xdead
@@ -56,12 +54,7 @@ iort              Output Base:              0x00000003
 iort              Output Reference:         0x88888888
 iort              Flags:                    0x00000001
 iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
-iort            Revision field is 0x02 and should be zero or one.
-iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
-iort            Reserved field must be zero, got 0x0000f001 instead
-iort            FAILED [HIGH] IORTNamedComponentNodeFlagsNonZero: Test 1,
-iort            IORT Named Component Node Flags is 0xffffffff and is
-iort            reserved and should be zero.
+iort            Revision field is 0x05 and should be less than 5.
 iort            FAILED [HIGH] IORTCacheCoherentAttrInvalid: Test 1, IORT
 iort            Named Component Node Coherent Attribute is 0x4 and should
 iort            be either 0 (device is fully coherent) or 1 (device is not
@@ -83,29 +76,27 @@ iort            IORT PCI Root Complex Node:
 iort              Type:                     0x02
 iort              Length:                   0x0040
 iort              Revision:                 0x50
-iort              Reserved:                 0x0000000f
+iort              Identifier:               0x0000000f
 iort              Number of ID mappings:    0x00000010
-iort              Reference to ID Array:    0x00000020
+iort              Reference to ID Array:    0x00000028
 iort              Cache Coherent Attribute: 0x000000d1
 iort              Allocation Hints:         0xfe
 iort              Reserved:                 0x8000
 iort              Memory Access Flags       0x03
 iort              ATS Attribute:            0x00000003
 iort              PCI Segment Number:       0xc0bbeeff
+iort              Memory addr. size limit:  0x08
+iort              PASID capabilities:       0x0000
+iort              Reserved:                 0x00
+iort              Flags:                    0x00000000
 iort            ID Mapping 0
 iort              Input Base:               0x00000002
 iort              ID Count:                 0x00000003
 iort              Output Base:              0x00000004
 iort              Output Reference:         0x00000005
 iort              Flags:                    0x00000001
-iort            FAILED [MEDIUM] IORTBadFieldValue: Test 1, IORT IORT Node
-iort            Revision field must be 0, got 80 instead.
-iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
-iort            Reserved field must be zero, got 0x0000000f instead
-iort            FAILED [HIGH] IORTCPCIRootComplexAtsAttrInvalid: Test 1,
-iort            IORT PCI Root Complex Node ATS Attribute is 0x3 and was
-iort            expecting either 0 (root complex supports ATS) or 1 (root
-iort            complex does not support ATS).
+iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
+iort            Revision field is 0x50 and should be less than 5.
 iort            FAILED [HIGH] IORTCacheCoherentAttrInvalid: Test 1, IORT
 iort            PCI Root Complex Node Coherent Attribute is 0xd1 and
 iort            should be either 0 (device is fully coherent) or 1 (device
@@ -125,7 +116,7 @@ iort            IORT SMMU node:
 iort              Type:                     0x03
 iort              Length:                   0x0094
 iort              Revision:                 0xa0
-iort              Reserved:                 0x00008100
+iort              Identifier:               0x00008100
 iort              Number of ID mappings:    0x00000001
 iort              Reference to ID Array:    0x00000090
 iort              Base Address:             0xf01030c020908000
@@ -161,9 +152,7 @@ iort              Interrupt Flags:          0x00000092
 iort              GSIV:                     0xf0008000
 iort              Interrupt Flags:          0x00000004
 iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
-iort            Revision field is 0xa0 and should be zero or one.
-iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
-iort            Reserved field must be zero, got 0x00008100 instead
+iort            Revision field is 0xa0 and should be less than 4.
 iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
 iort            SMMU_NsgIrpt Bits [31..1] must be zero, got 0x00000002
 iort            instead
@@ -204,6 +193,6 @@ iort            FAILED [HIGH] IORTInvalidType: Test 1, IORT Type 0xff is
 iort            invalid, aborting check
 iort            
 iort            ==========================================================
-iort            0 passed, 36 failed, 0 warning, 0 aborted, 0 skipped, 0
+iort            0 passed, 30 failed, 0 warning, 0 aborted, 0 skipped, 0
 iort            info only.
 iort            ==========================================================

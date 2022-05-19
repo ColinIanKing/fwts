@@ -9,8 +9,8 @@ iort
 iort            IORT ITS Group Node:
 iort              Type:                     0x00
 iort              Length:                   0x0020
-iort              Revision:                 0x00
-iort              Reserved:                 0x00000000
+iort              Revision:                 0x01
+iort              Identifier:               0x00000000
 iort              Number of ID mappings:    0x00000000
 iort              Reference to ID Array:    0x00000000
 iort              Number of ITSs:           0x00000003
@@ -21,8 +21,8 @@ iort
 iort            IORT Named Component Node:
 iort              Type:                     0x01
 iort              Length:                   0x0050
-iort              Revision:                 0x00
-iort              Reserved:                 0x00000000
+iort              Revision:                 0x04
+iort              Identifier:               0x00000000
 iort              Number of ID mappings:    0x00000002
 iort              Reference to ID Array:    0x00000024
 iort              Node Flags:               0x00000000
@@ -48,16 +48,20 @@ iort
 iort            IORT PCI Root Complex Node:
 iort              Type:                     0x02
 iort              Length:                   0x0040
-iort              Revision:                 0x00
-iort              Reserved:                 0x00000000
+iort              Revision:                 0x04
+iort              Identifier:               0x00000000
 iort              Number of ID mappings:    0x00000001
-iort              Reference to ID Array:    0x00000020
+iort              Reference to ID Array:    0x00000028
 iort              Cache Coherent Attribute: 0x00000001
 iort              Allocation Hints:         0x0e
 iort              Reserved:                 0x0000
 iort              Memory Access Flags       0x03
 iort              ATS Attribute:            0x00000001
 iort              PCI Segment Number:       0xc0bbeeff
+iort              Memory addr. size limit:  0x08
+iort              PASID capabilities:       0x0000
+iort              Reserved:                 0x00
+iort              Flags:                    0x00000000
 iort            ID Mapping 0
 iort              Input Base:               0x00000002
 iort              ID Count:                 0x00000003
@@ -69,7 +73,7 @@ iort            IORT SMMU node:
 iort              Type:                     0x03
 iort              Length:                   0x00a4
 iort              Revision:                 0x00
-iort              Reserved:                 0x00000000
+iort              Identifier:               0x00000000
 iort              Number of ID mappings:    0x00000001
 iort              Reference to ID Array:    0x00000090
 iort              Base Address:             0xf01030c020908000

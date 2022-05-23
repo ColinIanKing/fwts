@@ -1,3 +1,19 @@
+fwts (22.05.00-0ubuntu1) kinetic; urgency=medium
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20220331
+
+  [Ivan Hu]
+  * acpi: iort: update IORT node revision check
+  * acpi: iort: update the IORT node dump
+  * Update copyright year to 2022
+  * acpi: iort: update IORT test to specification version E.d
+  * auto-packager:mkpackage.sh: add kinetic
+  * acpi: mcfg: checking kernel lockdown when doing mmap PCI config space
+  * fwts-test: sync up IORT test with specification version E.d
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 23 May 2022 13:51:46 +0800
+
 fwts (22.03.00-0ubuntu1) jammy; urgency=medium
 
   [Alex Hung]

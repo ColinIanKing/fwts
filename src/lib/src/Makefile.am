@@ -21,22 +21,24 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/libfwtsiasl			\
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
-	`pkg-config --silence-errors --cflags json`	\
-	`pkg-config --silence-errors --cflags json-c`	\
-	`pkg-config --cflags glib-2.0 gio-2.0` 		\
 	-DDATAROOTDIR=\"$(datarootdir)\"		\
 	-Wall -Werror -Wextra				\
 	-Wno-address-of-packed-member
 
 pkglib_LTLIBRARIES = libfwts.la
 
-libfwts_la_LDFLAGS = 					\
-	-lm -lpthread -lbsd				\
-	-version-info 1:0:0 				\
-	-L$(top_builddir)/src/libfwtsiasl		\
-	-lfwtsiasl `pkg-config --libs glib-2.0 gio-2.0`
+libfwts_la_LDFLAGS = -version-info 1:0:0
 
-libfwts_la_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
+libfwts_la_LIBADD = 				\
+	-lm -lpthread -lbsd				\
+	@GIO_LIBS@					\
+	@GLIB_LIBS@
+
+libfwts_la_CPPFLAGS =					\
+	$(AM_CPPFLAGS)					\
+	@GIO_CFLAGS@					\
+	@GLIB_CFLAGS@					\
+	-DACPI_DEBUG_OUTPUT
 
 if HAVE_LIBFDT
 dt_sources = \

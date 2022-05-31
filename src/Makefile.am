@@ -12,7 +12,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/acpica/source/compiler	\
 	-I$(top_srcdir)/efi_runtime			\
 	-I$(top_srcdir)/smccc_test			\
-	-pthread `pkg-config --cflags glib-2.0 gio-2.0` \
+	-pthread					\
 	-Wall -Werror -Wextra				\
 	-Wno-address-of-packed-member			\
 	-Wfloat-equal -Wmissing-declarations		\
@@ -23,7 +23,11 @@ AM_CPPFLAGS = \
 
 bin_PROGRAMS = fwts
 
-fwts_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
+fwts_CPPFLAGS = 					\
+	$(AM_CPPFLAGS)					\
+	@GIO_CFLAGS@					\
+	@GLIB_CFLAGS@					\
+	-DACPI_DEBUG_OUTPUT
 
 if HAVE_LIBFDT
 dt_tests = \
@@ -207,16 +211,13 @@ fwts_SOURCES = main.c 				\
 	$(power_mgmt_tests)			\
 	$(dt_tests)
 
-fwts_LDFLAGS = -lm -lbsd `pkg-config --libs glib-2.0 gio-2.0`
+fwts_LDFLAGS = -no-undefined
 
 fwts_LDADD = \
-	-lfwts					\
-	-L$(top_builddir)/src			\
-	-L$(top_builddir)/src/acpica		\
-	-L$(top_builddir)/src/libfwtsiasl	\
-	-L$(top_builddir)/src/libfwtsacpica	\
-	-L$(top_builddir)/src/lib/src		\
-	-lfwtsacpica
+	-lbsd \
+	$(top_builddir)/src/lib/src/libfwts.la \
+	$(top_builddir)/src/libfwtsiasl/libfwtsiasl.la \
+	$(top_builddir)/src/libfwtsacpica/libfwtsacpica.la
 
 man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1
 

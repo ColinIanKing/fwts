@@ -104,8 +104,8 @@ BUILT_SOURCES = aslcompiler.y		\
 #
 # Just export fwts specific API so we don't clash with core ACPICA library
 #
-libfwtsiasl_la_LDFLAGS = -export-symbols-regex "fwts_.*" -lpthread -version-info 1:0:0
-
+libfwtsiasl_la_LDFLAGS = -export-symbols-regex "fwts_.*" -version-info 1:0:0
+libfwtsiasl_la_LIBADD = -lpthread
 CLEANFILES = $(BUILT_SOURCES)
 
 libfwtsiasl_la_CPPFLAGS = $(AM_CPPFLAGS)

@@ -64,6 +64,12 @@
 	  AC_CHECK_HEADERS([asm/opal-prd.h])
 	  AC_CHECK_HEADERS([mtd/mtd-abi.h])
 	  AC_CHECK_HEADERS([pci/pci.h])
+	  PKG_CHECK_MODULES([GIO], [gio-2.0])
+	  PKG_CHECK_MODULES([GLIB], [glib-2.0])
+	  AC_SUBST([GIO_CFLAGS])
+	  AC_SUBST([GIO_LIBS])
+	  AC_SUBST([GLIB_CFLAGS])
+	  AC_SUBST([GLIB_LIBS])
 	  AM_CONDITIONAL([HAVE_ASM_OPAL_PRD_H],
 	    [test "x$ac_cv_header_asm_opal_prd_h" = "xyes"])
 	  AM_CONDITIONAL([HAVE_MTD_ABI_H],

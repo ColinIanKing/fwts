@@ -74,7 +74,8 @@ CLEANFILES = osunixxf_munged.c					\
 
 pkglib_LTLIBRARIES = libfwtsacpica.la
 
-libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0
+libfwtsacpica_la_LDFLAGS = -version-info 1:0:0
+libfwtsacpica_la_LIBADD = -lpthread
 libfwtsacpica_la_CPPFLAGS = $(AM_CPPFLAGS)
 
 #
@@ -279,9 +280,6 @@ libfwtsacpica_la_SOURCES =						\
 	../../src/acpica/source/tools/acpiexec/aeregion.c		\
 	../../src/acpica/source/tools/acpiexec/aeinstall.c		\
 	../../src/acpica/source/os_specific/service_layers/osgendbg.c
-
-libfwtsacpica_la_LIBADD = \
-	-L../../src/lib/src -lfwts -lrt
 
 
 -include ../../git.mk

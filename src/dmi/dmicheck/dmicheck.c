@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <fcntl.h>
 
-#define DMI_VERSION			(0x0340)
+#define DMI_VERSION			(0x0350)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -1502,6 +1502,11 @@ static void dmicheck_entry(fwts_framework *fw,
 						data[0x10], table, addr, "Device/Function Number", 0x10);
 			}
 
+			if (hdr->length < (0x17 + 5 * data[0x12]))
+				break;
+
+			dmi_min_max_uint8_check(fw, table, addr, "Slot Height", hdr, (0x17 + 5 * data[0x12]), 0, 0x6);
+
 			break;
 
 		case 10: /* 7.11 (Type 10 is obsolete) */
@@ -1982,10 +1987,31 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "IProcessor Architecture Types", hdr, 0x7, 0x0, 0x8);
 			break;
 
-		case 126: /* 7.46 */
+		case 45: /* 7.46 */
+			table = "Firmware Inventory Information (Type 45)";
+			if (hdr->length < 0x18)
+				break;
+
+			dmi_str_check(fw, table, addr, "Firmware Component Name", hdr, 0x4);
+			dmi_str_check(fw, table, addr, "Firmware Version", hdr, 0x5);
+			dmi_str_check(fw, table, addr, "Firmware ID", hdr, 0x7);
+			dmi_str_check(fw, table, addr, "Release Date", hdr, 0x9);
+			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0xa);
+			dmi_str_check(fw, table, addr, "Lowest Supported Firmware Version", hdr, 0xb);
+			dmi_reserved_bits_check(fw, table, addr, "Characteristics", hdr, sizeof(uint16_t), 0x14, 2, 15);
+			dmi_min_max_uint8_check(fw, table, addr, "State", hdr, 0x16, 0x1, 0x8);
+			break;
+
+		case 46: /* 7.47 */
+			table = "String Property (Type 46)";
+			if (hdr->length < 0x7)
+				break;
+			break;
+
+		case 126: /* 7.48 */
 			table = "Inactive (Type 126)";
 			break;
-		case SMBIOS_END_OF_TABLE: /* 7.47 */
+		case SMBIOS_END_OF_TABLE: /* 7.49 */
 			table = "End of Table (Type 127)";
 			break;
 		default:

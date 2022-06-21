@@ -1978,6 +1978,8 @@ static void dmicheck_entry(fwts_framework *fw,
 			table = "Processor Additional Information (Type 44)";
 			if (hdr->length < 0x6)
 				break;
+
+			dmi_min_max_uint8_check(fw, table, addr, "IProcessor Architecture Types", hdr, 0x7, 0x0, 0x8);
 			break;
 
 		case 126: /* 7.46 */

@@ -1393,7 +1393,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Processor Type", hdr, 0x5, 0x1, 0x6);
 			dmi_str_check(fw, table, addr, "Processor Manufacturer", hdr, 0x7);
 			dmi_str_check(fw, table, addr, "Processor Version", hdr, 0x10);
-			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x3e);
+			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x3f);
 			if (hdr->length < 0x23)
 				break;
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x20);

@@ -192,7 +192,7 @@ static int pmtt_test1(fwts_framework *fw)
 	offset = sizeof(fwts_acpi_table_pmtt);
 	while (offset < table->length) {
 
-		if (fwts_acpi_structure_length_zero(fw, "PHAT", entry->length, offset)) {
+		if (fwts_acpi_structure_length_zero(fw, "PMTT", entry->length, offset)) {
 			passed = false;
 			break;
 		}

@@ -59,7 +59,7 @@ pmtt
 pmtt            FAILED [HIGH] PMTTBadSubtableType: Test 1, PMTT must have
 pmtt            subtable with Type 1..2 or 0xFF, got 0x0004 instead
 pmtt            
-pmtt            FAILED [CRITICAL] PHATStructLengthZero: Test 1, PHAT
+pmtt            FAILED [CRITICAL] PMTTStructLengthZero: Test 1, PMTT
 pmtt            structure (offset 0x00ab) length cannot be 0
 pmtt            
 pmtt            ==========================================================

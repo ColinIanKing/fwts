@@ -80,13 +80,6 @@ static void asf_check_info(
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, info->reserved3);
 #endif
 
-	if (info->watchdog_reset_value == 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"ASF!InfoMinWatchDogInvalid",
-			"ASF! ASF_INFO Minimum Watchdog Reset Value is 0x00 and "
-			"must be in the range 0x01..0xff");
-	}
 	if (info->min_sensor_poll_wait_time < 2) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

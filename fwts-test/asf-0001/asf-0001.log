@@ -2,11 +2,136 @@ asf             asf: ASF! Alert Standard Format Table test.
 asf             ----------------------------------------------------------
 asf             Test 1 of 1: ASF! Alert Standard Format Table test.
 asf             ASF! Hardware Error Source Table
+asf             Type:                       0x00
+asf             Reserved:                   0x00
+asf             Length:                     0x0010
+asf             ASF! ASF_INFO Record:
+asf               Min Watchdog Reset Value: 0xff
+asf               Min Poll Wait Time:       0xff
+asf               System ID:                0x2017
+asf               IANA Manufacturer ID:     0x664a0000
+asf               Feature Flags:            0x00
+asf               Reserved:                 0x00
+asf               Reserved:                 0x00
+asf               Reserved:                 0x00
 asf             PASSED: Test 1, No issues found in ASF! ASF_INFO record.
+asf             
+asf             Type:                       0x01
+asf             Reserved:                   0x00
+asf             Length:                     0x002c
+asf             ASF! ASF_ALRT Record:
+asf               Assertion Event Mask:     0x00
+asf               De-Assertion Event Mask:  0x00
+asf               Number of Alerts:         0x03
+asf               Array Element Length:     0x0c
+asf             ASF! ASF_ALRT Element 0:
+asf               Device Address:           0x00
+asf               Alert Command:            0x00
+asf               Alert Data Mask:          0x00
+asf               Alert Compare Value:      0x00
+asf               Alert Event Sensor Type:  0x00
+asf               Alert Event Type:         0x00
+asf               Alert Event Offset:       0x00
+asf               Alert Source Type:        0x00
+asf               Alert Event Severity:     0x00
+asf               Alert Sensor Number:      0x00
+asf               Alert Entity:             0x00
+asf               Alert Entity Instance:    0x00
+asf             ASF! ASF_ALRT Element 1:
+asf               Device Address:           0x00
+asf               Alert Command:            0x00
+asf               Alert Data Mask:          0x00
+asf               Alert Compare Value:      0x00
+asf               Alert Event Sensor Type:  0x00
+asf               Alert Event Type:         0x00
+asf               Alert Event Offset:       0x00
+asf               Alert Source Type:        0x00
+asf               Alert Event Severity:     0x00
+asf               Alert Sensor Number:      0x00
+asf               Alert Entity:             0x00
+asf               Alert Entity Instance:    0x00
+asf             ASF! ASF_ALRT Element 2:
+asf               Device Address:           0x00
+asf               Alert Command:            0x00
+asf               Alert Data Mask:          0x00
+asf               Alert Compare Value:      0x00
+asf               Alert Event Sensor Type:  0x00
+asf               Alert Event Type:         0x00
+asf               Alert Event Offset:       0x00
+asf               Alert Source Type:        0x00
+asf               Alert Event Severity:     0x00
+asf               Alert Sensor Number:      0x00
+asf               Alert Entity:             0x00
+asf               Alert Entity Instance:    0x00
 asf             PASSED: Test 1, No issues found in ASF! ASF_ALRT record.
+asf             
+asf             Type:                       0x02
+asf             Reserved:                   0x00
+asf             Length:                     0x0018
+asf             ASF! ASF_RCTL Record:
+asf               Number of Controls:       0x04
+asf               Array Element Length:     0x04
+asf               Reserved:                 0x0004
+asf             ASF! ASF_RCTL Element 0:
+asf               Control Function:         0x00
+asf               Control Device Address:   0x88
+asf               Control Command:          0x00
+asf               Control Value:            0x03
+asf             ASF! ASF_RCTL Element 1:
+asf               Control Function:         0x01
+asf               Control Device Address:   0x88
+asf               Control Command:          0x00
+asf               Control Value:            0x02
+asf             ASF! ASF_RCTL Element 2:
+asf               Control Function:         0x02
+asf               Control Device Address:   0x88
+asf               Control Command:          0x00
+asf               Control Value:            0x01
+asf             ASF! ASF_RCTL Element 3:
+asf               Control Function:         0x03
+asf               Control Device Address:   0x88
+asf               Control Command:          0x00
+asf               Control Value:            0x04
 asf             PASSED: Test 1, No issues found in ASF! ASF_RCTL record.
+asf             
+asf             Type:                       0x03
+asf             Reserved:                   0x00
+asf             Length:                     0x0017
+asf             ASF! ASF_RMCP Record:
+asf               Remote Control Cap.:      0x00 0xf8 0x00 0x00 0x00 0x13 0xf0
+asf               Boot Opt. Completion Code:0x01
+asf               IANA Enterprise ID:       0x00000000
+asf               Special Command:          0x00
+asf               Special Command Parameter:0x0000
+asf               Boot Options:             0x00 0x00
+asf               OEM Parameters:           0x0000
 asf             PASSED: Test 1, No issues found in ASF! ASF_RMCP record.
+asf             
+asf             Type:                       0x84
+asf             Reserved:                   0x00
+asf             Length:                     0x0016
+asf             ASF! ASF_ADDR Record:
+asf               SEEPROM Address:          0x00
+asf               Number of Devices:        0x10
+asf               Fixed SMBus Address       0x5c
+asf               Fixed SMBus Address       0x68
+asf               Fixed SMBus Address       0x88
+asf               Fixed SMBus Address       0xc2
+asf               Fixed SMBus Address       0xd2
+asf               Fixed SMBus Address       0xdc
+asf               Fixed SMBus Address       0xa0
+asf               Fixed SMBus Address       0xa2
+asf               Fixed SMBus Address       0xa4
+asf               Fixed SMBus Address       0xa6
+asf               Fixed SMBus Address       0xc8
+asf               Fixed SMBus Address       0x00
+asf               Fixed SMBus Address       0x00
+asf               Fixed SMBus Address       0x00
+asf               Fixed SMBus Address       0x00
+asf               Fixed SMBus Address       0x00
 asf             PASSED: Test 1, No issues found in ASF! ASF_ADDR record.
+asf             
+asf             
 asf             PASSED: Test 1, No issues found in ASF! table.
 asf             
 asf             ==========================================================

@@ -1,3 +1,22 @@
+fwts (22.07.00-0ubuntu1) kinetic; urgency=medium
+
+  [Ivan Hu]
+  * dmicheck: add Processor Architecture Types check for type 44
+  * dmicheck: update for supporting DMI version to 3.5
+  * dmicheck: update the processor upgrade field for type 4
+  * acpi: pmtt: fix the wrong table label
+  * fwts-test: sync up the fix of pmtt wrong table label
+  * acpi: asf: remove the checking of minmun watchdog reset value 0
+  * fwts-test: sync up the remove of ASF minimun watchdog reset value
+  * acpi: asf: enable verbose output
+  * fwts-test: sync up with asf verbose dump
+  * auto-packager: mkpackage.sh: remove impish
+
+  [orbea]
+  * build: Improve linking
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 25 Jul 2022 11:12:56 +0800
+
 fwts (22.05.00-0ubuntu1) kinetic; urgency=medium
 
   [Colin Ian King]

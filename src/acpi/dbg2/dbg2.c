@@ -179,8 +179,35 @@ static int dbg2_test1(fwts_framework *fw)
 			case 0x0001:
 				subport = "16550 subset compatible";
 				break;
+			case 0x0002:
+				subport = "MAX311xE SPI UART";
+				break;
 			case 0x0003:
 				subport = "ARMPL011 UART";
+				break;
+			case 0x0004:
+				subport = "MSM8x60 (e.g. 8960)";
+				break;
+			case 0x0005:
+				subport = "Nvidia 16550";
+				break;
+			case 0x0006:
+				subport = "TI OMAP";
+				break;
+			case 0x0008:
+				subport = "APM88xxxx";
+				break;
+			case 0x0009:
+				subport = "MSM8974";
+				break;
+			case 0x000a:
+				subport = "SAM5250";
+				break;
+			case 0x000b:
+				subport = "Intel USIF";
+				break;
+			case 0x000c:
+				subport = "i.MX 6";
 				break;
 			case 0x000d:
 				subport = "ARM SBSA Generic UART (deprecated)";
@@ -194,8 +221,17 @@ static int dbg2_test1(fwts_framework *fw)
 			case 0x0010:
 				subport = "BCM2835";
 				break;
+			case 0x0011:
+				subport = "SDM845 with clock rate of 1.8432 MHz";
+				break;
 			case 0x0012:
 				subport = "16550-compatible with parameters in GAS";
+				break;
+			case 0x0013:
+				subport = "SDM845 with clock rate of 7.372 MHz";
+				break;
+			case 0x0014:
+				subport = "Intel LPSS";
 				break;
 			default:
 				break;

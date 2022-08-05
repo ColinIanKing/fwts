@@ -3037,7 +3037,7 @@ void fwts_method_test_BST_return(
 	/* Sanity check each field */
 	/* Battery State */
 	fwts_acpi_reserved_bits("_BST", "Battery State",
-			obj->Package.Elements[0].Integer.Value, 3, 31, &failed);
+			obj->Package.Elements[0].Integer.Value, 4, 31, &failed);
 	/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
 	if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,

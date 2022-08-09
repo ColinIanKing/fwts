@@ -558,8 +558,7 @@ static int securebootcert_test2(fwts_framework *fw)
 {
 	int ret;
 	uint8_t data = 0;
-	static uint32_t attributes = FWTS_UEFI_VAR_NON_VOLATILE |
-					FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
+	static uint32_t attributes = FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
 					FWTS_UEFI_VAR_RUNTIME_ACCESS;
 
 	if (!(var_found & VAR_AUDITMODE_FOUND)) {

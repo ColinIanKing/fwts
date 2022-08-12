@@ -1443,9 +1443,60 @@ static uint64_t fadt_find_p_blk(fwts_framework *fw)
 	return pblk;
 }
 
-static void acpi_table_check_fadt_p_lvl2_lat(fwts_framework *fw, uint64_t pblk)
+static void get_cst_c2c3(fwts_framework *fw, uint16_t *c2, uint16_t *c3)
 {
-	if (pblk) {
+	const size_t name_len = 4;
+	fwts_list_link	*item;
+	fwts_list *objects;
+
+	if ((objects = fwts_acpi_object_get_names()) == NULL) {
+		fwts_log_info(fw, "Cannot find any ACPI objects");
+		return;
+	}
+
+	fwts_list_foreach(item, objects) {
+		char *name = fwts_list_data(char*, item);
+		const size_t len = strlen(name);
+		if (strncmp("_CST", name + len - name_len, name_len) == 0) {
+			ACPI_OBJECT_LIST arg_list;
+			ACPI_BUFFER buf;
+			ACPI_OBJECT *obj;
+			int ret;
+
+			arg_list.Count   = 0;
+			arg_list.Pointer = NULL;
+
+			ret = fwts_acpi_object_evaluate(fw, name, &arg_list, &buf);
+			if ((ACPI_FAILURE(ret) != AE_OK) || (buf.Pointer == NULL))
+				continue;
+
+			obj = buf.Pointer;
+			if ((obj->Type == ACPI_TYPE_PACKAGE) &&
+			    (obj->Package.Count) &&
+			    (obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER) &&
+			    (obj->Package.Elements[0].Integer.Value == (obj->Package.Count - 1))) {
+				ACPI_OBJECT *pkg = NULL;
+				uint32_t i;
+
+				for (i = 1; i < obj->Package.Count; i++){
+					if (*c2 == 0 || *c3 == 0) {
+						pkg = &obj->Package.Elements[i];
+						if ((uint8_t)pkg->Package.Elements[1].Integer.Value == 2)
+							*c2 = (uint16_t)pkg->Package.Elements[2].Integer.Value;
+						else if ((uint8_t)pkg->Package.Elements[1].Integer.Value == 3)
+							*c3 = (uint16_t)pkg->Package.Elements[2].Integer.Value;
+					}
+				}
+			}
+			free(buf.Pointer);
+		}
+	}
+	return;
+}
+
+static void acpi_table_check_fadt_p_lvl2_lat(fwts_framework *fw, uint64_t pblk, uint16_t c2)
+{
+	if (pblk || c2) {
 		if (fadt->p_lvl2_lat <= 100)
 			fwts_passed(fw,
 				    "FADT P_LVL2_LAT is within proper range "
@@ -1453,12 +1504,13 @@ static void acpi_table_check_fadt_p_lvl2_lat(fwts_framework *fw, uint64_t pblk)
 		else
 			fwts_warning(fw,
 				     "FADT P_LVL2_LAT is > 100 (%" PRIu16 ") "
-				     "but a P_BLK is defined.  This implies "
-				     "a C2 state is not supported, but there "
-				     "is a P_BLK register block defined which "
-				     "implies there might be a C2 state that "
-				     "works.  There is not enough information "
-				     "to determine if this is expected or not.",
+				     "but a P_BLK or _CST C2 is defined. This "
+				     "implies a C2 state is not supported, but "
+				     "there is a P_BLK register block or _CST "
+				     "C2 defined which implies there might be "
+				     "a C2 state that works. There is not "
+				     "enough information to determine if this "
+				     "is expected or not.",
 				     fadt->p_lvl2_lat);
 	} else {
 		if (fadt->p_lvl2_lat <= 100)
@@ -1467,21 +1519,22 @@ static void acpi_table_check_fadt_p_lvl2_lat(fwts_framework *fw, uint64_t pblk)
 				    "FADT P_LVL2_LAT is <= 100 (%" PRIu16 ") "
 				    "which implies a C2 state is supported "
 				    "but there is no P_BLK register block "
-				    "defined to enable the C2 transition.",
+				    "or _CST C2 defined to enable the C2 "
+				    "transition.",
 				    fadt->p_lvl2_lat);
 		else
 			fwts_passed(fw,
 				    "FADT P_LVL2_LAT is > 100 (%" PRIu16 ") "
-				    "and no P_BLK is defined.",
+				    "and no P_BLK or _CST C2 is defined.",
 				    fadt->p_lvl2_lat);
 	}
 
 	return;
 }
 
-static void acpi_table_check_fadt_p_lvl3_lat(fwts_framework *fw, uint64_t pblk)
+static void acpi_table_check_fadt_p_lvl3_lat(fwts_framework *fw, uint64_t pblk, uint16_t c3)
 {
-	if (pblk) {
+	if (pblk || c3) {
 		if (fadt->p_lvl3_lat <= 1000)
 			fwts_passed(fw,
 				    "FADT P_LVL3_LAT is within proper range "
@@ -1489,12 +1542,13 @@ static void acpi_table_check_fadt_p_lvl3_lat(fwts_framework *fw, uint64_t pblk)
 		else
 			fwts_warning(fw,
 				     "FADT P_LVL3_LAT is > 1000 (%" PRIu16 ") "
-				     "but a P_BLK is defined.  This implies "
-				     "a C3 state is not supported, but there "
-				     "is a P_BLK register block defined which "
-				     "implies there might be a C3 state that "
-				     "works.  There is not enough information "
-				     "to determine if this is expected or not.",
+				     "but a P_BLK or _CST C3 is defined. This "
+				     "implies a C3 state is not supported, but "
+				     "there is a P_BLK register block or _CST "
+				     "C3 defined which implies there might be "
+				     "a C3 state that works. There is not "
+				     "enough information to determine if this "
+				     "is expected or not.",
 				     fadt->p_lvl3_lat);
 	} else {
 		if (fadt->p_lvl3_lat <= 1000)
@@ -1503,12 +1557,13 @@ static void acpi_table_check_fadt_p_lvl3_lat(fwts_framework *fw, uint64_t pblk)
 				    "FADT P_LVL3_LAT is <= 1000 (%" PRIu16 ") "
 				    "which implies a C3 state is supported "
 				    "but there is no P_BLK register block "
-				    "defined to enable the C3 transition.",
+				    "or _CST C3 defined to enable the C3 "
+				    "transition.",
 				    fadt->p_lvl3_lat);
 		else
 			fwts_passed(fw,
-				    "FADT P_LVL3_LAT is > 100 (%" PRIu16 ") "
-				    "and no P_BLK is defined.",
+				    "FADT P_LVL3_LAT is > 1000 (%" PRIu16 ") "
+				    "and no P_BLK or _CST C3 is defined.",
 				    fadt->p_lvl3_lat);
 	}
 
@@ -1642,9 +1697,12 @@ static int fadt_test1(fwts_framework *fw)
 
 		if (fwts_acpi_init(fw) == FWTS_OK) {
 			uint64_t pblk = fadt_find_p_blk(fw);
+			uint16_t c2 = 0;
+			uint16_t c3 = 0;
 
-			acpi_table_check_fadt_p_lvl2_lat(fw, pblk);
-			acpi_table_check_fadt_p_lvl3_lat(fw, pblk);
+			get_cst_c2c3(fw, &c2, &c3);
+			acpi_table_check_fadt_p_lvl2_lat(fw, pblk, c2);
+			acpi_table_check_fadt_p_lvl3_lat(fw, pblk, c3);
 			fwts_acpi_deinit(fw);
 		} else {
 			fwts_log_error(fw, "Cannot initialize ACPI namespace.");

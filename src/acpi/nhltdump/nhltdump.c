@@ -42,6 +42,102 @@ static void nhltdump_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size
 	}
 }
 
+static char *nhltdump_linktype_to_string(const uint8_t linktype)
+{
+	char *str;
+
+	switch (linktype) {
+	case 0:
+		str = "HD-Audio";
+		break;
+	case 1:
+		str = "DSP ";
+		break;
+	case 2:
+		str = "PDM";
+		break;
+	case 3:
+		str = "SSP";
+		break;
+	case 4:
+		str = "Slimbus";
+		break;
+	case 5:
+		str = "SoundWire";
+		break;
+	default:
+		str = "reserved";
+		break;
+	}
+
+	return str;
+}
+
+static char *nhltdump_devtype_to_string(const uint8_t linktype, const uint8_t devtype)
+{
+	char *str;
+
+	if (linktype == 2) {
+		switch (devtype) {
+		case 0:
+			str = "PDM on cAVS1.8 (CNL+) platforms only";
+			break;
+		case 1:
+			str = "PDM on cAVS1.5 (KBL) based platforms";
+			break;
+		default:
+			str = "reserved";
+			break;
+		}
+	} else if (linktype == 3) {
+		switch (devtype) {
+		case 0:
+			str = "BT Sideband";
+			break;
+		case 1:
+			str = "FM";
+			break;
+		case 2:
+			str = "Modem";
+			break;
+		case 4:
+			str = "SSP Analog Codec";
+			break;
+		default:
+			str = "reserved";
+			break;
+		}
+	} else
+		str = "TBD";
+
+	return str;
+}
+
+static char *nhltdump_direction_to_string(const uint8_t direction)
+{
+	char *str;
+
+	switch (direction) {
+	case 0:
+		str = "Render";
+		break;
+	case 1:
+		str = "Capture";
+		break;
+	case 2:
+		str = "Render with loopback / feedback";
+		break;
+	case 3:
+		str = "Feedback for render (smartamp)";
+		break;
+	default:
+		str = "";
+		break;
+	}
+
+	return str;
+}
+
 /*
  *  NHLT Table
  *   see https://01.org/sites/default/files/595976_intel_sst_nhlt.pdf
@@ -58,6 +154,7 @@ static int nhltdump_test1(fwts_framework *fw)
 	char guid_str[37];
 	uint32_t table_length = table->length;
 	uint32_t offset = 0;
+	char *str_info;
 
 	fwts_log_info_simp_int(fw, "TableLength: ", table_length);
 	offset += sizeof(fwts_acpi_table_nhlt);
@@ -76,14 +173,17 @@ static int nhltdump_test1(fwts_framework *fw)
 		}
 		fwts_log_info_verbatim(fw, "  EndpointDescriptor %" PRIu8, (i + 1));
 		fwts_log_info_simp_int(fw, "    EndpointDescriptorLength: ", ep_descriptor->ep_descriptor_len);
-		fwts_log_info_simp_int(fw, "    LinkType: ", ep_descriptor->link_type);
+		str_info = nhltdump_linktype_to_string(ep_descriptor->link_type);
+		fwts_log_info_verbatim(fw, "    LinkType: %" PRIu8 " (%s)", ep_descriptor->link_type, str_info);
 		fwts_log_info_simp_int(fw, "    Instance ID: ", ep_descriptor->instance_id);
 		fwts_log_info_simp_int(fw, "    Vendor ID: ", ep_descriptor->vendor_id);
 		fwts_log_info_simp_int(fw, "    Device ID: ", ep_descriptor->device_id);
 		fwts_log_info_simp_int(fw, "    Revision ID: ", ep_descriptor->revision_id);
 		fwts_log_info_simp_int(fw, "    Subsystem ID: ", ep_descriptor->subsystem_id);
-		fwts_log_info_simp_int(fw, "    Device Type: ", ep_descriptor->device_type);
-		fwts_log_info_simp_int(fw, "    Direction: ", ep_descriptor->direction);
+		str_info = nhltdump_devtype_to_string(ep_descriptor->link_type, ep_descriptor->device_type);
+		fwts_log_info_verbatim(fw, "    Device Type: %" PRIu8 " (%s)", ep_descriptor->device_type, str_info);
+		str_info = nhltdump_direction_to_string(ep_descriptor->direction);
+		fwts_log_info_verbatim(fw, "    Direction: %" PRIu8 " (%s)", ep_descriptor->direction, str_info);
 		fwts_log_info_simp_int(fw, "    Virtual Bus ID: ", ep_descriptor->virtual_bus_id);
 
 		spec_config = (fwts_acpi_table_nhlt_specific_config *)((uint8_t *)ep_descriptor

@@ -2219,4 +2219,54 @@ typedef struct {
 	uint32_t	amrt_addr_end;
 } __attribute__ ((packed)) fwts_acpi_table_aspt;
 
+/*
+ *  NHLT Table
+ *   see https://01.org/sites/default/files/595976_intel_sst_nhlt.pdf
+*/
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint8_t	 	ep_descriptor_count;
+} __attribute__ ((packed)) fwts_acpi_table_nhlt;
+
+typedef struct  {
+	uint32_t	ep_descriptor_len;
+	uint8_t		link_type;
+	uint8_t		instance_id;
+	uint16_t	vendor_id;
+	uint16_t	device_id;
+	uint16_t	revision_id;
+	uint32_t	subsystem_id;
+	uint8_t		device_type;
+	uint8_t		direction;
+	uint8_t		virtual_bus_id;
+}__attribute__ ((packed)) fwts_acpi_table_nhlt_ep_descriptor;
+
+typedef struct {
+	uint32_t capabilities_size;
+	uint8_t capabilities[0];
+} __attribute__ ((packed)) fwts_acpi_table_nhlt_specific_config;
+
+typedef struct {
+	uint16_t wformattag;
+	uint16_t nchannels;
+	uint32_t nsamplespersec;
+	uint32_t navgbytespersec;
+	uint16_t nblockalign;
+	uint16_t wbitspersample;
+	uint16_t cbsize;
+	uint16_t wvalidbitspersample;
+	uint32_t dwchannelmask;
+	uint8_t	subformat[16];
+} __attribute__ ((packed))  fwts_acpi_table_nhlt_waveformatextensible;
+
+typedef struct {
+	fwts_acpi_table_nhlt_waveformatextensible format;
+	fwts_acpi_table_nhlt_specific_config formatconfiguration;
+} __attribute__ ((packed))  fwts_acpi_table_nhlt_format_configuration;
+
+typedef struct {
+	uint8_t formatscount;
+	fwts_acpi_table_nhlt_format_configuration formatsconfiguration[0];
+} __attribute__ ((packed))  fwts_acpi_table_nhlt_formats_configuration;
+
 #endif

@@ -667,7 +667,6 @@ static int iort_test1(fwts_framework *fw)
 	}
 
 	if (table->length < sizeof(fwts_acpi_table_iort)) {
-		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"IORTTooShort",
 			"IORT table too short, expecting %zu bytes, "

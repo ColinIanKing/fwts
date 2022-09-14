@@ -141,6 +141,7 @@ fwts_SOURCES = main.c 				\
 	acpi/spmi/spmi.c 			\
 	acpi/srat/srat.c 			\
 	acpi/stao/stao.c			\
+	acpi/svkl/svkl.c			\
 	acpi/syntaxcheck/syntaxcheck.c 		\
 	acpi/tcpa/tcpa.c 			\
 	acpi/tpm2/tpm2.c 			\

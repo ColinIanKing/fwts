@@ -2269,4 +2269,21 @@ typedef struct {
 	fwts_acpi_table_nhlt_format_configuration formatsconfiguration[0];
 } __attribute__ ((packed))  fwts_acpi_table_nhlt_formats_configuration;
 
+/*
+ * ACPI SVKL (Storage Volume Key Data)
+ *   https://cdrdv2.intel.com/v1/dl/getContent/726790
+ */
+typedef struct {
+	uint16_t	key_type;
+	uint16_t	key_format;
+	uint32_t	key_size;
+	uint64_t	key_addr;
+} __attribute__ ((packed)) fwts_acpi_table_svkl_key_structure;
+
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	key_count;
+	fwts_acpi_table_svkl_key_structure key_struct[0];
+} __attribute__ ((packed)) fwts_acpi_table_svkl;
+
 #endif

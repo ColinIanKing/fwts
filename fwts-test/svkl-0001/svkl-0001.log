@@ -1,0 +1,22 @@
+svkl            svkl: SVKL Storage Volume Key Data table test.
+svkl            ----------------------------------------------------------
+svkl            Test 1 of 1: Validate SVKL table.
+svkl            SVKL Storage Volume Key Data Table:
+svkl              Key Count:         0x00000002
+svkl              Storage Volume Key Structure 1
+svkl                Key Type:        0x0000
+svkl                Key Format:      0x0000
+svkl                Key Size:        0xaaaa4321
+svkl                Key Address:     0x0123456789abcdef
+svkl              Storage Volume Key Structure 2
+svkl                Key Type:        0x0000
+svkl                Key Format:      0x0000
+svkl                Key Size:        0xbbbb4321
+svkl                Key Address:     0x0123456789abcdef
+svkl            
+svkl            PASSED: Test 1, No issues found in SVKL table.
+svkl            
+svkl            ==========================================================
+svkl            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+svkl            info only.
+svkl            ==========================================================

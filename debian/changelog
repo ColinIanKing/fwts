@@ -1,3 +1,18 @@
+fwts (22.09.00-0ubuntu1) kinetic; urgency=medium
+
+  [Ivan Hu]
+  * acpi: dbg2: update the subtype for DBG2 table
+  * lib: acpi: update battery charge limiting state for _BST
+  * uefi: securebootcert: fix the attribute set for AuditMode and DeployedMode
+  * acpi: fadt: get _CST c2 c3 for p_lvl2 and p_lvl3 tests
+  * acpi: nhltdump: add dumping nhlt table for audio configurations
+  * acpi: nhltdump: add endpoint discriptor string description
+  * acpi: svkl: add test for SVKL table (mantis 2162)
+  * fwts-test: add regression test for SVKL
+  * acpi: iort: remove redundant code
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 22 Sep 2022 09:29:58 +0800
+
 fwts (22.07.00-0ubuntu1) kinetic; urgency=medium
 
   [Ivan Hu]

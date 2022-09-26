@@ -183,7 +183,7 @@
                              --s3-sleep-delay=60
 --s3-sleep-type              Set the sleep type
                              for testing S3 or
-                             s2idle, default S3.
+                             s2idle.
 --s3-suspend-time            Maximum expected
                              suspend time in
                              seconds, e.g.

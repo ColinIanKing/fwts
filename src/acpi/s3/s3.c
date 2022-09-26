@@ -854,7 +854,7 @@ static fwts_option s3_options[] = {
 	{ "s3-resume-time", 	"", 1, "Maximum expected resume time in seconds, e.g. --s3-resume-time=5.1" },
 	{ "s3-hybrid",		"", 0, "Run S3 with hybrid sleep, i.e. saving system states as S4 does." },
 	{ "s3-resume-hook hook","", 1, "Run a hook script after each S3 resume, 0 exit indicates success." },
-	{ "s3-sleep-type"	,"", 1, "Set the sleep type for testing S3 or s2idle, default S3." },
+	{ "s3-sleep-type"	,"", 1, "Set the sleep type for testing S3 or s2idle." },
 	{ NULL, NULL, 0, NULL }
 };
 

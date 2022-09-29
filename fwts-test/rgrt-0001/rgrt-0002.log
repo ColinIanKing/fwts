@@ -1,0 +1,21 @@
+rgrt            rgrt: RGRT Regulatory Graphics Resource Table test
+rgrt            ----------------------------------------------------------
+rgrt            Test 1 of 1: Validate RGRT table.
+rgrt            RGRT Regulatory Graphics Resource Table:
+rgrt              Version:        0x0000
+rgrt              Image Type:     0x02
+rgrt              Reserved:       0x00
+rgrt              Image:
+rgrt                0000: AA 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  ................
+rgrt                0010: 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F  ................
+rgrt                0020: 20 21 22 23 24 25 26 27                           !"#$%&'
+rgrt            FAILED [MEDIUM] RGRTBadFieldValue: Test 1, RGRT Version
+rgrt            field must be 1, got 0 instead.
+rgrt            FAILED [MEDIUM] RGRTBadFieldValue: Test 1, RGRT Image Type
+rgrt            field must be 1, got 2 instead.
+rgrt            
+rgrt            
+rgrt            ==========================================================
+rgrt            0 passed, 2 failed, 0 warning, 0 aborted, 0 skipped, 0
+rgrt            info only.
+rgrt            ==========================================================

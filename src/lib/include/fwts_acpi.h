@@ -2286,4 +2286,16 @@ typedef struct {
 	fwts_acpi_table_svkl_key_structure key_struct[0];
 } __attribute__ ((packed)) fwts_acpi_table_svkl;
 
+/*
+ * ACPI RGRT (Regulatory Graphics Resource Table)
+ * https://microsoft.github.io/mu/dyn/mu_plus/MsCorePkg/AcpiRGRT/feature_acpi_rgrt/
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint16_t	version;
+	uint8_t		image_type;
+	uint8_t		reserved;
+	uint8_t		image[0];
+} __attribute__ ((packed)) fwts_acpi_table_rgrt;
+
 #endif

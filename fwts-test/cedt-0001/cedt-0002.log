@@ -1,0 +1,92 @@
+cedt            cedt: CEDT CXL Early Discovery Table test
+cedt            ----------------------------------------------------------
+cedt            Test 1 of 1: Validate CEDT table.
+cedt            CEDT CXL Early Discovery Table:
+cedt              CXL Host Bridge Structure (CHBS):
+cedt                Type:                           0x00
+cedt                Reserved:                       0x00
+cedt                Record Length:                  0x0020
+cedt                UID:                            0x00ba5e00
+cedt                CXL Version:                    0x00000000
+cedt                Reserved:                       0x00000001
+cedt                Base:                           0x0000000000000000
+cedt                Length:                         0x0000000000010000
+cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
+cedt            field must be zero, got 0x00000001 instead
+cedt            FAILED [HIGH] CEDTBadCHBSLength: Test 1, CEDT CHBS Length
+cedt            must be 0x2000, got 0x10000 instead
+cedt            
+cedt              CXL Host Bridge Structure (CHBS):
+cedt                Type:                           0x00
+cedt                Reserved:                       0x00
+cedt                Record Length:                  0x0020
+cedt                UID:                            0x00ba5e00
+cedt                CXL Version:                    0x00000001
+cedt                Reserved:                       0x00000000
+cedt                Base:                           0x0000000000000000
+cedt                Length:                         0x0000000000002000
+cedt            FAILED [HIGH] CEDTBadCHBSLength: Test 1, CEDT CHBS Length
+cedt            must be 0x10000, got 0x2000 instead
+cedt            
+cedt              CXL Host Bridge Structure (CHBS):
+cedt                Type:                           0x00
+cedt                Reserved:                       0x00
+cedt                Record Length:                  0x0020
+cedt                UID:                            0x00ba5e00
+cedt                CXL Version:                    0x00000002
+cedt                Reserved:                       0x00000000
+cedt                Base:                           0x0000000000000000
+cedt                Length:                         0x0000000000002000
+cedt            FAILED [HIGH] CEDTBadCXLVersion: Test 1, CXL Version must
+cedt            have the value with 0 or 1, got 0x2 instead
+cedt            
+cedt              CXL Fixed Memory Window Structure (CFMWS):
+cedt                Type:                           0x01
+cedt                Reserved:                       0x00
+cedt                Record Length:                  0x0028
+cedt                Reserved:                       0x00000001
+cedt                Base HPA:                       0x0000010000000000
+cedt                Window Size:                    0x0000010000000000
+cedt                ENIW:                           0x00
+cedt                Interleave Arithmetic:          0x00
+cedt                Reserved:                       0x0002
+cedt                HBIG:                           0x00000003
+cedt                Window Restrictions:            0x0106
+cedt                QTG ID:                         0x0001
+cedt                Interleave Target List
+cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
+cedt            field must be zero, got 0x00000001 instead
+cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
+cedt            field must be zero, got 0x0002 instead
+cedt            FAILED [HIGH] CEDTReservedBitsNonZero: Test 1, CEDT Window
+cedt            Restrictions Bits [15..5] must be zero, got 0x0106 instead
+cedt            
+cedt              CXL XOR Interleave Math Structure (CXIMS):
+cedt                Type:                           0x02
+cedt                Reserved:                       0x00
+cedt                Record Length:                  0x0018
+cedt                Reserved:                       0x0001
+cedt                HBIG:                           0x03
+cedt                Number of Bitmap Entries(NIB):  0x02
+cedt                XORMAP List                     0x0807060504030201
+cedt                XORMAP List                     0x0807060504030201
+cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
+cedt            field must be zero, got 0x0001 instead
+cedt            
+cedt              RCEC Downstream Port Association Structure (RDPAS):
+cedt                Type:                           0x03
+cedt                Reserved:                       0x00
+cedt                Record Length:                  0x0010
+cedt                RCEC Segment Number             0x0000
+cedt                RCEC BDF:                       0x0109
+cedt                Protocol Type:                  0x02
+cedt                Base Address                    0x0000000001000000
+cedt            FAILED [HIGH] CEDTBadProtocolType: Test 1, CEDT CFMWS
+cedt            protocol type must have the value with 0 or 1, got 0x02
+cedt            instead
+cedt            
+cedt            
+cedt            ==========================================================
+cedt            0 passed, 9 failed, 0 warning, 0 aborted, 0 skipped, 0
+cedt            info only.
+cedt            ==========================================================

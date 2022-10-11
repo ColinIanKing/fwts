@@ -2298,4 +2298,65 @@ typedef struct {
 	uint8_t		image[0];
 } __attribute__ ((packed)) fwts_acpi_table_rgrt;
 
+/*
+ * ACPI CEDT (CXL Early Discovery Table)
+ *   https://www.computeexpresslink.org/download-the-specification
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+} __attribute__ ((packed)) fwts_acpi_table_cedt;
+
+typedef enum {
+	FWTS_CEDT_TYPE_CHBS	= 0,
+	FWTS_CEDT_TYPE_CFMWS	= 1,
+	FWTS_CEDT_TYPE_CXIMS	= 2,
+	FWTS_CEDT_TYPE_RDPAS	= 3,
+	FWTS_CEDT_TYPE_RESERVED	= 4,
+} fwts_acpi_cedt_type;
+
+typedef struct {
+	uint8_t	type;
+	uint8_t	reserved;
+	uint16_t	record_length;
+} __attribute__ ((packed)) fwts_acpi_table_cedt_header;
+
+typedef struct {
+	fwts_acpi_table_cedt_header	header;
+	uint32_t	uid;
+	uint32_t	cxl_version;
+	uint32_t	reserved;
+	uint64_t	base;
+	uint64_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_cedt_chbs;
+
+typedef struct {
+	fwts_acpi_table_cedt_header	header;
+	uint32_t	reserved1;
+	uint64_t	base_hpa;
+	uint64_t	window_size;
+	uint8_t	eniw;
+	uint8_t	interleave_arithmetic;
+	uint16_t	reserved2;
+	uint32_t	hbig;
+	uint16_t	window_restrictions;
+	uint16_t	qtg_id;
+	uint32_t	interleave_target_list[0];
+} __attribute__ ((packed)) fwts_acpi_table_cedt_cfmws;
+
+typedef struct {
+	fwts_acpi_table_cedt_header	header;
+	uint16_t	reserved;
+	uint8_t	hbig;
+	uint8_t	nig;
+	uint64_t	xormap_list[0];
+} __attribute__ ((packed)) fwts_acpi_table_cedt_cxims;
+
+typedef struct {
+	fwts_acpi_table_cedt_header	header;
+	uint16_t	rece_seg_num;
+	uint16_t	rece_bdf;
+	uint8_t	protocol_type;
+	uint64_t	base_addr;
+} __attribute__ ((packed)) fwts_acpi_table_cedt_rdpas;
+
 #endif

@@ -138,6 +138,9 @@ static char *tpmevlogdump_evtype_to_string(const fwts_tpmlog_event_type event_ty
 	case EV_EFI_SPDM_FIRMWARE_CONFIG:
 		str = "EV_EFI_SPDM_FIRMWARE_CONFIG";
 		break;
+	case EV_COMPACT_HASH:
+		str = "EV_COMPACT_HASH";
+		break;
 	default:
 		str = "Unknown";
 		break;

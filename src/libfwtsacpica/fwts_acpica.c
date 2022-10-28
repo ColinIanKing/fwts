@@ -1104,7 +1104,7 @@ int fwts_acpica_init(fwts_framework *fw)
 		}
 
 		fwts_acpica_FADT->Header.Checksum = 0;
-		fwts_acpica_FADT->Header.Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_FADT, table->length);
+		fwts_acpica_FADT->Header.Checksum = (UINT8)-AcpiUtChecksum ((void*)fwts_acpica_FADT, table->length);
 	} else {
 		fwts_acpica_FADT = NULL;
 	}
@@ -1144,7 +1144,7 @@ int fwts_acpica_init(fwts_framework *fw)
 			}
 		}
 		fwts_acpica_XSDT->Header.Checksum = 0;
-		fwts_acpica_XSDT->Header.Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_XSDT, table->length);
+		fwts_acpica_XSDT->Header.Checksum = (UINT8)-AcpiUtChecksum ((void*)fwts_acpica_XSDT, table->length);
 	} else {
 		fwts_acpica_XSDT = NULL;
 	}
@@ -1180,7 +1180,7 @@ int fwts_acpica_init(fwts_framework *fw)
 			}
 		}
 		fwts_acpica_RSDT->Header.Checksum = 0;
-		fwts_acpica_RSDT->Header.Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_RSDT, table->length);
+		fwts_acpica_RSDT->Header.Checksum = (UINT8)-AcpiUtChecksum ((void*)fwts_acpica_RSDT, table->length);
 	} else {
 		fwts_acpica_RSDT = NULL;
 	}
@@ -1199,7 +1199,7 @@ int fwts_acpica_init(fwts_framework *fw)
 		if (table->length > 20)
 			fwts_acpica_RSDP->XsdtPhysicalAddress = ACPI_PTR_TO_PHYSADDR(fwts_acpica_XSDT);
 		fwts_acpica_RSDP->RsdtPhysicalAddress = ACPI_PTR_TO_PHYSADDR(fwts_acpica_RSDT);
-		fwts_acpica_RSDP->Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_RSDP, ACPI_RSDP_CHECKSUM_LENGTH);
+		fwts_acpica_RSDP->Checksum = (UINT8)-AcpiUtChecksum ((void*)fwts_acpica_RSDP, ACPI_RSDP_CHECKSUM_LENGTH);
 	} else {
 		fwts_acpica_RSDP = NULL;
 	}

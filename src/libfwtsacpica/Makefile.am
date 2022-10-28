@@ -236,6 +236,7 @@ libfwtsacpica_la_SOURCES =						\
 	../../src/acpica/source/components/utilities/utalloc.c		\
 	../../src/acpica/source/components/utilities/utascii.c		\
 	../../src/acpica/source/components/utilities/utcache.c		\
+	../../src/acpica/source/components/utilities/utcksum.c		\
 	../../src/acpica/source/components/utilities/utcopy.c		\
 	../../src/acpica/source/components/utilities/utdebug.c		\
 	../../src/acpica/source/components/utilities/utdelete.c		\

@@ -1,3 +1,23 @@
+fwts (22.11.00-0ubuntu1) lunar; urgency=medium
+
+  [Bryan Kemp]
+  * Add Support for EV_COMPACT_HASH event type
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20221020
+  * fwts-test: sync test logs with latest ACPICA
+
+  [Ivan Hu]
+  * s3: modify the default sleep type description
+  * fwts-test: sync up with the default s3 sleep type description change
+  * acpi: rgrt: add test for ACPI RGRT table( mantis 2056)
+  * fwts-test: add regression test for RGRT
+  * acpi: cedt: add tests for ACPI CEDT table (mantis 2076)
+  * fwts-test: add regression tests for CEDT
+  * auto-package: mkpackage.sh: add lunar
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 21 Nov 2022 15:31:59 +0800
+
 fwts (22.09.00-0ubuntu1) kinetic; urgency=medium
 
   [Ivan Hu]

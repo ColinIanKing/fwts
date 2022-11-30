@@ -510,7 +510,7 @@ static int s3_scan_times(
 			s3_suspend_finish = ts;
 			continue;
 		}
-		if (strstr(txt, "PM: Timekeeping suspended")) {
+		if (strstr(txt, "Timekeeping suspended")) {
 			s3_resume_start = ts;
 			if (s3_suspend_finish < 0.0)
 				s3_suspend_finish = previous_ts;

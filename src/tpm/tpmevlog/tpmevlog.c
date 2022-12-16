@@ -25,6 +25,7 @@
 #include <fcntl.h>
 
 #include "fwts_tpm.h"
+#include "fwts_uefi.h"
 
 #define FWTS_TPM_LOG_DIR_PATH	"/sys/kernel/security"
 
@@ -144,6 +145,40 @@ static int tpmevlog_algid_check(fwts_framework *fw, const TPM2_ALG_ID hash)
 			"The AlgorithmID is undefined, 0x%4.4" PRIx16 ".",
 			hash);
 		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+}
+
+static int tpmevlog_pcr_type_event_check(
+	fwts_framework *fw,
+	const uint32_t pcr,
+	const fwts_tpmlog_event_type event_type,
+	uint32_t event_size,
+	uint8_t *event)
+{
+
+	uefi_image_load_event *ev_image_load = (uefi_image_load_event *)event;
+
+	if (pcr == 4 && event_type == EV_EFI_BOOT_SERVICES_APPLICATION) {
+		if (event_size <= sizeof(uefi_image_load_event)) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "ImageLoadEventLength",
+					"The length of the event is %" PRIu32 " which"
+					" is smaller than the UEFI Image Load Event "
+					"structure that contains DevicePath "
+					"of PE/COFF image for PCR4 and type "
+					"EV_EFI_BOOT_SERVICES_APPLICATION.",
+					event_size);
+			return FWTS_ERROR;
+		}
+		if (ev_image_load->length_of_device_path <= sizeof(fwts_uefi_dev_path)) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "ImageLoadDevicePathLength",
+					"The length of the device path is %" PRIu64
+					" is smaller than DevicePath of PE/COFF image "
+					"for PCR4 and type EV_EFI_BOOT_SERVICES_APPLICATION.",
+					ev_image_load->length_of_device_path);
+			return FWTS_ERROR;
+		}
 	}
 
 	return FWTS_OK;
@@ -335,6 +370,12 @@ static int tpmevlog_v2_check(
 					sizeof(event_size));
 			return FWTS_ERROR;
 		}
+
+		ret = tpmevlog_pcr_type_event_check(fw, pcr_event2->pcr_index,
+				pcr_event2->event_type,
+				event_size, pdata + sizeof(event_size));
+		if (ret != FWTS_OK)
+			return ret;
 		pdata += (event_size + sizeof(event_size));
 		len_remain -= (event_size + sizeof(event_size));
 
@@ -385,7 +426,6 @@ static int tpmevlog_check(fwts_framework *fw, uint8_t *data, size_t len)
 	fwts_passed(fw, "Check TPM event SHA1 log test passed.");
 	return FWTS_OK;
 }
-
 
 static uint8_t *tpmevlog_load_file(const int fd, size_t *length)
 {

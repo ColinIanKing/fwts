@@ -172,6 +172,15 @@ typedef struct {
 */
 } __attribute__ ((packed)) fwts_tcg_pcr_event2;
 
+typedef uint64_t uefi_physical_address;
+typedef struct {
+    uefi_physical_address	image_location_in_memory;
+    uint64_t			image_len_in_memory;
+    uint64_t			image_link_time_address;
+    uint64_t			length_of_device_path;
+    uint8_t			device_path[0];
+} __attribute__ ((packed)) uefi_image_load_event;
+
 void fwts_tpm_data_hexdump(fwts_framework *fw, const uint8_t *data,
 	const size_t size, const char *str);
 uint8_t fwts_tpm_get_hash_size(const TPM2_ALG_ID hash);

@@ -2359,4 +2359,120 @@ typedef struct {
 	uint64_t	base_addr;
 } __attribute__ ((packed)) fwts_acpi_table_cedt_rdpas;
 
+/*
+ * ACPI AEST (Arm Error Source Table)
+ * https://developer.arm.com/documentation/den0085/latest/
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+} __attribute__ ((packed)) fwts_acpi_table_aest;
+
+typedef enum {
+	FWTS_AEST_PROCESSOR		= 0,
+	FWTS_AEST_MEMORY		= 1,
+	FWTS_AEST_SMMU			= 2,
+	FWTS_AEST_VENDOR_DEFINED	= 3,
+	FWTS_AEST_GIC			= 4,
+	FWTS_AEST_RESERVED
+} fwts_acpi_aest_type;
+
+typedef struct {
+	uint8_t		type;
+	uint16_t	length;
+	uint8_t		reserved;
+	uint32_t	offset_node_specific_data;
+	uint32_t	offset_node_interface;
+	uint32_t	offset_node_interrupt_array;
+	uint32_t	node_interrupt_size;
+	uint64_t	timestamp_rate;
+	uint64_t	reserved1;
+	uint64_t	error_injection_countdown_rate;
+	/*
+	 * followed by Node-specific data, Node interface
+	 * and Node Interrupt array
+	 */
+} __attribute__ ((packed)) fwts_acpi_table_aest_node;
+
+typedef enum {
+	FWTS_AEST_RESOURCE_CACHE	= 0,
+	FWTS_AEST_RESOURCE_TLB		= 1,
+	FWTS_AEST_RESOURCE_GENERIC	= 2,
+	FWTS_AEST_RESOURCE_RESERVED
+} fwts_acpi_aest_resource_type;
+
+typedef struct {
+	uint32_t	acpi_processor_id;
+	uint8_t		resource_type;
+	uint8_t		reserved;
+	uint8_t		flags;
+	uint8_t		revision;
+	uint64_t	processor_affinity_level_indicator;
+	/*
+	 * followed by Resource substructure
+	 */
+} __attribute__ ((packed)) fwts_acpi_table_aest_processor;
+
+typedef struct {
+	uint32_t	cache_reference;
+	uint32_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_aest_cache_resource_substructure;
+
+typedef struct {
+	uint32_t	tlb_reference;
+	uint32_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_aest_tlb_resource_substructure;
+
+typedef struct {
+	uint32_t	data;
+} __attribute__ ((packed)) fwts_acpi_table_aest_generic_resource_substructure;
+
+typedef struct {
+	uint32_t	proximity_domain;
+} __attribute__ ((packed)) fwts_acpi_table_aest_memory_controller;
+
+typedef struct {
+	uint32_t	iort_node_reference;
+	uint32_t	smmu_specific_data_subcomponent_reference;
+} __attribute__ ((packed)) fwts_acpi_table_aest_smmu;
+
+typedef struct {
+	uint32_t	hardware_id;
+	uint32_t	unique_id;
+	uint8_t		vendor_specific_data[16];
+} __attribute__ ((packed)) fwts_acpi_table_aest_vendor_defined;
+
+typedef enum {
+	FWTS_AEST_GICC	= 0,
+	FWTS_AEST_GICD	= 1,
+	FWTS_AEST_GICR	= 2,
+	FWTS_AEST_GOCS	= 3,
+	FWTS_AEST_GIC_RESERVED
+} fwts_acpi_aest_gic_type;
+
+typedef struct {
+	uint32_t	interface_type;
+	uint32_t	instance_identifier;
+} __attribute__ ((packed)) fwts_acpi_table_aest_gic;
+
+typedef struct {
+	uint8_t		interface_type;
+	uint8_t		reserved[3];
+	uint32_t	flags;
+	uint64_t	base_address;
+	uint32_t	start_error_record_index;
+	uint32_t	number_of_error_records;
+	uint64_t	error_record_implemented;
+	uint64_t	error_record_based_status_reporting_supported;
+	uint64_t	addressing_mode;
+} __attribute__ ((packed)) fwts_acpi_table_aest_interface;
+
+typedef struct {
+	uint8_t		interrupt_type;
+	uint16_t	reserved;
+	uint8_t		interrupt_flags;
+	uint32_t	interrupt_gsiv;
+	uint8_t		id;
+	uint8_t		reserved1[3];
+} __attribute__ ((packed)) fwts_acpi_table_aest_interrupt;
+
 #endif

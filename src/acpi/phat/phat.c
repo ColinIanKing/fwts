@@ -145,7 +145,7 @@ static int phat_test1(fwts_framework *fw)
 		} else if (entry->type == FWTS_PHAT_HEALTH) {
 			phat_health_test(fw, (fwts_acpi_table_phat_health *) entry, offset, &passed);
 		} else {
-			fwts_acpi_reserved_type(fw, "PHAT", entry->type, 0, FWTS_PHAT_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type(fw, "PHAT", entry->type, 0, FWTS_PHAT_RESERVED, &passed);
 			break;
 		}
 

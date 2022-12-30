@@ -1601,7 +1601,7 @@ void fwts_acpi_reserved_type(
 		fwts_failed(fw, LOG_LEVEL_HIGH, label,
 			"%4.4s must have subtable with Type %" PRId8
 			"..%" PRId8 ", got %" PRId8 " instead",
-			table, min, reserved, value);
+			table, min, reserved - 1, value);
 
 		*passed = false;
 	}

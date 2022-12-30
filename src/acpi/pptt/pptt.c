@@ -153,7 +153,7 @@ static int pptt_test1(fwts_framework *fw)
 			pptt_id_test(fw, (fwts_acpi_table_pptt_id *) entry, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_id);
 		} else {
-			fwts_acpi_reserved_type(fw, "PPTT", entry->type, 0, FWTS_PPTT_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type(fw, "PPTT", entry->type, 0, FWTS_PPTT_RESERVED, &passed);
 			break;
 		}
 

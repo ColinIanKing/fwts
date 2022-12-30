@@ -187,7 +187,7 @@ static int hmat_test1(fwts_framework *fw)
 			type_length = sizeof(fwts_acpi_table_hmat_cache) +
 			              ((fwts_acpi_table_hmat_cache *) entry)->num_smbios * 2;
 		} else {
-			fwts_acpi_reserved_type(fw, "HMAT", entry->type, 0, FWTS_HMAT_TYPE_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type(fw, "HMAT", entry->type, 0, FWTS_HMAT_TYPE_RESERVED, &passed);
 			break;
 		}
 

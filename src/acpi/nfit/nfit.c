@@ -503,7 +503,7 @@ static int nfit_test1(fwts_framework *fw)
 				reserved_passed = nfit_struct->reserved2;
 
 		} else {
-			fwts_acpi_reserved_type(fw, "NFIT", entry->type, 0, FWTS_NFIT_TYPE_RESERVED - 1, &passed);
+			fwts_acpi_reserved_type(fw, "NFIT", entry->type, 0, FWTS_NFIT_TYPE_RESERVED, &passed);
 			break;
 		}
 

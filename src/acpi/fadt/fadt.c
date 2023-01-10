@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2022 Canonical
+ * Copyright (C) 2010-2023 Canonical
  *
  * Portions of this code original from the Linux-ready Firmware Developer Kit
  *

@@ -1,3 +1,16 @@
+fwts (23.01.00-0ubuntu1) lunar; urgency=medium
+
+  [Ivan Hu]
+  * acpi: s3: fix the issue for determining time to resume
+  * tpmevlog: add tests for checking the UEFI_IMAGE_LOAD_EVENT Structure
+  * acpi: aest: add tests for ACPI AEST table
+  * fwts-test: add regression tests for AEST
+  * lib: fwts_acpi_tables: fix the passed reserved value
+  * Update copyright year to 2023
+  * fwts-test: sync up with the fix of passed reserved value
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 16 Jan 2023 12:08:07 +0800
+
 fwts (22.11.00-0ubuntu1) lunar; urgency=medium
 
   [Bryan Kemp]

@@ -58,7 +58,7 @@ aest            FAILED [HIGH] AESTReservedBitsNonZero: Test 1, AEST
 aest            Interrupt Flags Bits [31..1] must be zero, got 0x03
 aest            instead
 aest            FAILED [HIGH] AESTBadSubTableType: Test 1, AEST must have
-aest            subtable with Type 0..2, got 5 instead
+aest            subtable with Type 0..1, got 5 instead
 aest            
 aest              AEST node structure:
 aest                Type:                           0x00
@@ -121,7 +121,7 @@ aest                Error Record Implemented:       0x0000000000000001
 aest                Status Reporting Supported:     0x0000000000000000
 aest                Addressing Mode:                0x0000000001111111
 aest            FAILED [HIGH] AESTBadSubTableType: Test 1, AEST must have
-aest            subtable with Type 0..2, got 4 instead
+aest            subtable with Type 0..1, got 4 instead
 aest            
 aest              AEST node structure:
 aest                Type:                           0x02

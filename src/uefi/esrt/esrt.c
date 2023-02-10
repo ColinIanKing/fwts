@@ -263,6 +263,6 @@ static fwts_framework_ops esrt_ops = {
 	.minor_tests = esrt_tests
 };
 
-FWTS_REGISTER("esrt", &esrt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UEFI | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_SBBR)
+FWTS_REGISTER("esrt", &esrt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UEFI | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_XBBR)
 
 #endif

@@ -936,6 +936,6 @@ static fwts_framework_ops uefibootpath_ops = {
 	.minor_tests     = uefibootpath_tests
 };
 
-FWTS_REGISTER("uefibootpath", &uefibootpath_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UEFI | FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("uefibootpath", &uefibootpath_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UEFI | FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_SBBR);
 
 #endif

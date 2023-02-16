@@ -2602,7 +2602,7 @@ void fwts_method_test_NIH_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (fwts_method_buffer_size(fw, name, obj, 64) != FWTS_OK)
+	if (fwts_method_buffer_size(fw, name, obj, 4) != FWTS_OK)
 		passed = false;
 
 	ret = (nih_return_t *) obj->Buffer.Pointer;

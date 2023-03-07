@@ -1505,7 +1505,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < (0x18 + 5 * data[0x12]))
 				break;
 
-			dmi_min_max_uint8_check(fw, table, addr, "Slot Height", hdr, (0x17 + 5 * data[0x12]), 0, 0x6);
+			dmi_min_max_uint8_check(fw, table, addr, "Slot Height", hdr, (0x17 + 5 * data[0x12]), 0, 0x4);
 
 			break;
 

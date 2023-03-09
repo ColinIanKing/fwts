@@ -1743,7 +1743,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x07)
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Type", hdr, 0x4, 0x1, 0x9);
-			fwts_dmi_value_range t21_ranges[] = {{0x1, 0x8}, {0xa0, 0xa2}};
+			fwts_dmi_value_range t21_ranges[] = {{0x1, 0x8}, {0xa0, 0xa4}};
 			dmi_ranges_uint8_check(fw, table, addr, "Interface", hdr, 0x5, t21_ranges);
 			break;
 

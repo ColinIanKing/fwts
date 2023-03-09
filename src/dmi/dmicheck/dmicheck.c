@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <fcntl.h>
 
-#define DMI_VERSION			(0x0350)
+#define DMI_VERSION			(0x0360)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -1405,7 +1405,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					table, addr, "Status", 0x18);
 			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 3, 5);
 			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 7, 7);
-			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x3f);
+			dmi_min_max_uint8_check(fw, table, addr, "Processor Upgrade", hdr, 0x19, 0x1, 0x48);
 			if (hdr->length < 0x23)
 				break;
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x20);
@@ -1422,7 +1422,10 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_min_max_uint16_check(fw, table, addr, "Core Count 2", hdr, 0x2a, 0, 0xfffe);
 			dmi_min_max_uint16_check(fw, table, addr, "Core Enabled 2", hdr, 0x2c, 0, 0xfffe);
-			dmi_min_max_uint16_check(fw, table, addr, "Thread Enabled 2", hdr, 0x2e, 0, 0xfffe);
+			dmi_min_max_uint16_check(fw, table, addr, "Thread Count 2", hdr, 0x2e, 0, 0xfffe);
+			if (hdr->length < 0x32)
+				break;
+			dmi_min_max_uint16_check(fw, table, addr, "Thread Enabled", hdr, 0x30, 0, 0xfffe);
 			break;
 
 		case 5: /* 7.6 (Type 5 is obsolete) */
@@ -1651,7 +1654,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0x10);
 			dmi_str_check(fw, table, addr, "Locator", hdr, 0x10);
 			dmi_str_check(fw, table, addr, "Bank Locator", hdr, 0x11);
-			fwts_dmi_value_range t17_ranges[] = {{0x1, 0x14}, {0x18, 0x23}};
+			fwts_dmi_value_range t17_ranges[] = {{0x1, 0x14}, {0x18, 0x24}};
 			dmi_ranges_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, t17_ranges);
 			dmi_reserved_bits_check(fw, table, addr, "Type Detail", hdr, sizeof(uint16_t), 0x13, 0, 0);
 			if (hdr->length < 0x1b)
@@ -2003,7 +2006,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x6)
 				break;
 
-			dmi_min_max_uint8_check(fw, table, addr, "IProcessor Architecture Types", hdr, 0x7, 0x0, 0x8);
+			dmi_min_max_uint8_check(fw, table, addr, "IProcessor Architecture Types", hdr, 0x7, 0x0, 0xa);
 			break;
 
 		case 45: /* 7.46 */

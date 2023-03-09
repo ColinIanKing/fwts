@@ -1297,7 +1297,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			/* new fields in spec 3.11 */
 			if (hdr->length < 0x1a)
 				break;
-			dmi_reserved_bits_check(fw, table, addr, "Extended BIOS ROM Size", hdr, sizeof(uint16_t), 0x18, 14, 15);
+			dmi_reserved_bits_check(fw, table, addr, "Extended BIOS ROM Size", hdr, sizeof(uint16_t), 0x18, 15, 15);
 			break;
 
 		case 1: /* 7.2 */

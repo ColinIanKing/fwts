@@ -1391,6 +1391,7 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_str_check(fw, table, addr, "Socket Designation", hdr, 0x4);
 			dmi_min_max_uint8_check(fw, table, addr, "Processor Type", hdr, 0x5, 0x1, 0x6);
+			dmi_min_max_uint8_check(fw, table, addr, "Processor Family", hdr, 0x6, 0x1, 0xfe);
 			dmi_str_check(fw, table, addr, "Processor Manufacturer", hdr, 0x7);
 			dmi_str_check(fw, table, addr, "Processor Version", hdr, 0x10);
 			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x3f);
@@ -1402,6 +1403,9 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x28)
 				break;
 			dmi_reserved_bits_check(fw, table, addr, "Processor Characteristics", hdr, sizeof(uint16_t), 0x26, 10, 15);
+			if (hdr->length < 0x2a)
+				break;
+			dmi_min_max_uint16_check(fw, table, addr, "Processor Family 2", hdr, 0x28, 0x1, 0xfffd);
 			if (hdr->length < 0x30)
 				break;
 			dmi_min_max_uint16_check(fw, table, addr, "Core Count 2", hdr, 0x2a, 0, 0xfffe);

@@ -1651,7 +1651,8 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0x10);
 			dmi_str_check(fw, table, addr, "Locator", hdr, 0x10);
 			dmi_str_check(fw, table, addr, "Bank Locator", hdr, 0x11);
-			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x23);
+			fwts_dmi_value_range t17_ranges[] = {{0x1, 0x14}, {0x18, 0x23}};
+			dmi_ranges_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, t17_ranges);
 			if (hdr->length < 0x1b)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x17);

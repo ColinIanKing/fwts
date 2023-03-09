@@ -1451,7 +1451,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Socket Designation", hdr, 0x4);
 			if (((GET_UINT16(data + 0x05) >> 5) & 0x0003) == 0x2)
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value %x4.4" PRIx16 " "
+					"Out of range value 0x%4.4" PRIx16 " "
 					"bits 5..6 set to illegal value 0x2, only allowed"
 					"0x0, 0x1, 0x3 while accessing entry '%s' @ "
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",

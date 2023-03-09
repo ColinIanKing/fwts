@@ -57,6 +57,7 @@
 #define DMI_RESERVED_BIT_USED		"DMIReservedBitUsed"
 #define DMI_RESERVED_OFFSET_NONZERO	"DMIReservedOffsetNonZero"
 
+#define GET_UINT8(x) (uint8_t)(*(const uint8_t *)(x))
 #define GET_UINT16(x) (uint16_t)(*(const uint16_t *)(x))
 #define GET_UINT32(x) (uint32_t)(*(const uint32_t *)(x))
 #define GET_UINT64(x) (uint64_t)(*(const uint64_t *)(x))
@@ -1394,6 +1395,16 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Processor Family", hdr, 0x6, 0x1, 0xfe);
 			dmi_str_check(fw, table, addr, "Processor Manufacturer", hdr, 0x7);
 			dmi_str_check(fw, table, addr, "Processor Version", hdr, 0x10);
+			if (((GET_UINT8(data + 0x18) & 0x07) == 0x5) || ((GET_UINT8(data + 0x18) & 0x07) == 0x6))
+				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
+					"Out of range value 0x%2.2" PRIx8 " "
+					"bits 0..2 set to illegal value 0x5 or 0x6 "
+					"while accessing entry '%s' @ 0x%8.8" PRIx32
+					", field '%s', offset 0x%2.2x",
+					GET_UINT8(data + 0x18),
+					table, addr, "Status", 0x18);
+			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 3, 5);
+			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 7, 7);
 			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x3f);
 			if (hdr->length < 0x23)
 				break;

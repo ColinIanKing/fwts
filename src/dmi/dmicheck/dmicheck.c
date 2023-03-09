@@ -1971,7 +1971,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0xb)
 				break;
 			dmi_str_check(fw, table, addr, "Reference Designation", hdr, 0x4);
-			dmi_min_max_mask_uint8_check(fw, table, addr, "Device Type", hdr, 0x5, 0x1, 0xa, 0, 0x7f);
+			dmi_min_max_mask_uint8_check(fw, table, addr, "Device Type", hdr, 0x5, 0x1, 0x10, 0, 0x7f);
 			break;
 
 		case 42: /* 7.43 */

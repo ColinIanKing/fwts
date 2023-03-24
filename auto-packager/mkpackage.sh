@@ -123,7 +123,15 @@ mk_package()
 	#
 	sed "s/) $deb_release/$suffix) $rel;/" debian/changelog > debian/changelog.new
 	mv debian/changelog.new debian/changelog
-	
+
+        #
+        # control hack
+        #
+        if [ "$rel" = "lunar" ]; then
+                sed 's/dkms,/dkms,\n               dh-dkms,/' debian/control > debian/control.new
+                mv debian/control.new debian/control
+        fi
+
   	echo 'y' | debuild -S
 	rm -rf $FWTS
 	popd >& /dev/null

@@ -1,3 +1,32 @@
+fwts (23.03.00-0ubuntu1) lunar; urgency=medium
+
+  [Huacai Chen]
+  * Add support for 64 bit LoongArch compilation
+
+  [Ivan Hu]
+  * sbbr: add esrt and uefibootpath tests to sbbr option
+  * ebbr: add some tests to ebbr option
+  * acpi: method: NIH method output buffer should be 4 bytes
+  * debian: update copyright
+  * dmicheck: fix the length check error for type 9
+  * dmicheck: fix the wrong slot height value range
+  * dmicheck: fix the extended bios ROM size bit check of type 0
+  * dmicheck: add processor family check for type 4
+  * dmicheck: add status check for type 4
+  * dmicheck: add bit 0 reserved check of the processor characteristics for type 4
+  * dmicheck: modify the memory type range check for type 17
+  * dmicheck: add some bit 0 reserved checks for type 17
+  * dmicheck: update the interface field for type 21
+  * dmicheck: update the device type field for type 41
+  * dmicheck: update for supporting DMI version to 3.6
+  * dmicheck: fix the print format
+  * auto-packager: mkpackage: add build depend dh-dkms for lunar
+
+  [Vasiliy Kovalev]
+  * libfwtsiasl: fix undefined symbols in shared library
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 27 Mar 2023 12:06:53 +0800
+
 fwts (23.01.00-0ubuntu1) lunar; urgency=medium
 
   [Ivan Hu]

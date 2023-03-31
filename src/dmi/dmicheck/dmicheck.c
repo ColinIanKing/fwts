@@ -154,6 +154,7 @@ static const fwts_dmi_pattern dmi_patterns[] = {
 	{ "DMISerialNumber",	"Serial Number",	"To Be Filled By O.E.M." },
 	{ "DMISerialNumber",	"Serial Number",	"Unknow" },
 	{ "DMISerialNumber",	"Serial Number",	"Unknown" },
+	{ "DMISerialNumber",	"Serial Number",	"Unspecified System Serial Number" },
 	{ "DMISerialNumber",	"Serial Number",	"XXXXXXXXXXXX" },
 	{ "DMISerialNumber",	"Serial Number",	"XXXXXXXXXXX" },
 	{ "DMISerialNumber",	"Serial Number",	"XXXXXXXXXX" },

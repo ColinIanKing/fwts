@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2022, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2023, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -310,7 +310,10 @@
 #define ACPI_USE_STANDARD_HEADERS
 
 #ifdef ACPI_USE_STANDARD_HEADERS
+#include <stddef.h>
 #include <unistd.h>
+
+#define ACPI_OFFSET(d, f)   offsetof(d, f)
 #endif
 
 /* Define/disable kernel-specific declarators */

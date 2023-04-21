@@ -56,7 +56,6 @@ static void cedt_chbs_test(
 					"CEDT CHBS Length must be 0x2000, got "
 					"0x%" PRIx64 " instead", entry->length);
 			}
-			//fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "CEDT", "CHBS Length", entry->length, 0x2000, passed);
 			break;
 		case 1: /* Host Bridge */
 			if (entry->length != 0x10000) {
@@ -66,7 +65,6 @@ static void cedt_chbs_test(
 					"CEDT CHBS Length must be 0x10000, got "
 					"0x%" PRIx64 " instead", entry->length);
 			}
-			//fwts_acpi_fixed_value(fw, LOG_LEVEL_HIGH, "CEDT", "CHBS Length", entry->length, 0x10000, passed);
 			break;
 		default:
 			*passed = false;

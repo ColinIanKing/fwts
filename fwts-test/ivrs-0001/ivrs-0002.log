@@ -1,0 +1,111 @@
+ivrs            ivrs: IVRS I/O Virtualization Reporting Structure test.
+ivrs            ----------------------------------------------------------
+ivrs            Test 1 of 1: Validate IVRS table.
+ivrs            IVRS I/O Virtualization Reporting Structure:
+ivrs              IVinfo:     0x07203044
+ivrs              Reserved:   0x000000cc00000000
+ivrs            
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS IVinfo
+ivrs            Bits [4..2] must be zero, got 0x07203044 instead
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS IVinfo
+ivrs            Bits [31..23] must be zero, got 0x07203044 instead
+ivrs            FAILED [MEDIUM] IVRSReservedNonZero: Test 1, IVRS Reserved
+ivrs            field must be zero, got 0x000000cc00000000 instead
+ivrs              I/O Virtualization Hardware Definition Type 10h:
+ivrs                Type:			0x10
+ivrs                Flags:			0xb0
+ivrs                Length:			0x0064
+ivrs                DeviceID:			0x0002
+ivrs                Capability Offset:		0x0040
+ivrs                IOMMU Base Address:		0x00000000fdf00000
+ivrs                PCI Segment Group:		0x0000
+ivrs                IOMMU Info:			0x4020
+ivrs                IOMMU Feature Reporting:	0x80048f6f
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS IOMMU
+ivrs            Info Bits [7..5] must be zero, got 0x4020 instead
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS IOMMU
+ivrs            Info Bits [15..13] must be zero, got 0x4020 instead
+ivrs            FAILED [HIGH] IVRSBadType: Test 1, IVRS must have device
+ivrs            entry types 66..67 or 70..72, got 68 instead
+ivrs            
+ivrs              I/O Virtualization Hardware Definition Type 11h:
+ivrs                Type:			0x11
+ivrs                Flags:			0x30
+ivrs                Length:			0x0048
+ivrs                DeviceID:			0x0002
+ivrs                Capability Offset:		0x0040
+ivrs                IOMMU Base Address:		0x00000000fdf00000
+ivrs                PCI Segment Group:		0x0000
+ivrs                IOMMU Info:			0x0000
+ivrs                IOMMU Attribute:		0x00040200
+ivrs                EFR Register Image:		0x206d73ef22254ade
+ivrs                WFR Register Image 2:	0x0000000000000000
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS IOMMU
+ivrs            Attribute Bits [12..0] must be zero, got 0x00040200
+ivrs            instead
+ivrs            FAILED [HIGH] IVRSBadSubTableType: Test 1, IVRS must have
+ivrs            subtable with Type 1..4, got 0 instead
+ivrs            
+ivrs              I/O Virtualization Hardware Definition Type 40h:
+ivrs                Type:			0x40
+ivrs                Flags:			0x30
+ivrs                Length:			0x00d4
+ivrs                DeviceID:			0x0002
+ivrs                Capability Offset:		0x0040
+ivrs                IOMMU Base Address:		0x00000000fdf00000
+ivrs                PCI Segment Group:		0x0000
+ivrs                IOMMU Info:			0x0000
+ivrs                IOMMU Attribute:		0xf0040204
+ivrs                EFR Register Image:		0x206d73ef22254ade
+ivrs                WFR Register Image 2:	0x0000000000000000
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS IOMMU
+ivrs            Attribute Bits [12..0] must be zero, got 0xf0040204
+ivrs            instead
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS IOMMU
+ivrs            Attribute Bits [31..28] must be zero, got 0xf0040204
+ivrs            instead
+ivrs            FAILED [HIGH] IVRSBadSubTableType: Test 1, IVRS must have
+ivrs            subtable with Type 1..4, got 0 instead
+ivrs            
+ivrs              I/O Virtualization Memory Definition:
+ivrs                Type:			0x20
+ivrs                Flags:			0x1d
+ivrs                Length:			0x0020
+ivrs                DeviceID:			0x1122
+ivrs                Auxiliary data:		0x0000
+ivrs                Reserved:			0x0000000000000000
+ivrs                PCI Segment Group:		0xabcd
+ivrs                Start address:		0xfedc000012345678
+ivrs                Memory block length:	0x0d21000000000000
+ivrs            FAILED [HIGH] IVRSReservedBitsNonZero: Test 1, IVRS Flags
+ivrs            Bits [7..4] must be zero, got 0x1d instead
+ivrs            
+ivrs              I/O Virtualization Memory Definition:
+ivrs                Type:			0x21
+ivrs                Flags:			0x0d
+ivrs                Length:			0x0020
+ivrs                DeviceID:			0x1122
+ivrs                Auxiliary data:		0x0000
+ivrs                Reserved:			0x0000000000000000
+ivrs                PCI Segment Group:		0xabcd
+ivrs                Start address:		0xfedc000012345678
+ivrs                Memory block length:	0x0d22000000000000
+ivrs            
+ivrs              I/O Virtualization Memory Definition:
+ivrs                Type:			0x22
+ivrs                Flags:			0x0d
+ivrs                Length:			0x0020
+ivrs                DeviceID:			0x1122
+ivrs                Auxiliary data:		0x0000
+ivrs                Reserved:			0x0000ff0000000000
+ivrs                PCI Segment Group:		0xabcd
+ivrs                Start address:		0xfedc000012345678
+ivrs                Memory block length:	0x0000000000000000
+ivrs            FAILED [MEDIUM] IVRSReservedNonZero: Test 1, IVRS Reserved
+ivrs            field must be zero, got 0x0000ff0000000000 instead
+ivrs            
+ivrs            
+ivrs            ==========================================================
+ivrs            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
+ivrs            info only.
+ivrs            ==========================================================

@@ -1,0 +1,83 @@
+ivrs            ivrs: IVRS I/O Virtualization Reporting Structure test.
+ivrs            ----------------------------------------------------------
+ivrs            Test 1 of 1: Validate IVRS table.
+ivrs            IVRS I/O Virtualization Reporting Structure:
+ivrs              IVinfo:     0x00203041
+ivrs              Reserved:   0x0000000000000000
+ivrs            
+ivrs              I/O Virtualization Hardware Definition Type 10h:
+ivrs                Type:			0x10
+ivrs                Flags:			0xb0
+ivrs                Length:			0x0064
+ivrs                DeviceID:			0x0002
+ivrs                Capability Offset:		0x0040
+ivrs                IOMMU Base Address:		0x00000000fdf00000
+ivrs                PCI Segment Group:		0x0000
+ivrs                IOMMU Info:			0x0000
+ivrs                IOMMU Feature Reporting:	0x80048f6f
+ivrs            
+ivrs              I/O Virtualization Hardware Definition Type 11h:
+ivrs                Type:			0x11
+ivrs                Flags:			0x30
+ivrs                Length:			0x0048
+ivrs                DeviceID:			0x0002
+ivrs                Capability Offset:		0x0040
+ivrs                IOMMU Base Address:		0x00000000fdf00000
+ivrs                PCI Segment Group:		0x0000
+ivrs                IOMMU Info:			0x0000
+ivrs                IOMMU Attribute:		0x00040000
+ivrs                EFR Register Image:		0x206d73ef22254ade
+ivrs                WFR Register Image 2:	0x0000000000000000
+ivrs            
+ivrs              I/O Virtualization Hardware Definition Type 40h:
+ivrs                Type:			0x40
+ivrs                Flags:			0x30
+ivrs                Length:			0x00d4
+ivrs                DeviceID:			0x0002
+ivrs                Capability Offset:		0x0040
+ivrs                IOMMU Base Address:		0x00000000fdf00000
+ivrs                PCI Segment Group:		0x0000
+ivrs                IOMMU Info:			0x0000
+ivrs                IOMMU Attribute:		0x00040000
+ivrs                EFR Register Image:		0x206d73ef22254ade
+ivrs                WFR Register Image 2:	0x0000000000000000
+ivrs            
+ivrs              I/O Virtualization Memory Definition:
+ivrs                Type:			0x20
+ivrs                Flags:			0x0d
+ivrs                Length:			0x0020
+ivrs                DeviceID:			0x1122
+ivrs                Auxiliary data:		0x0000
+ivrs                Reserved:			0x0000000000000000
+ivrs                PCI Segment Group:		0xabcd
+ivrs                Start address:		0xfedc000012345678
+ivrs                Memory block length:	0x0d21000000000000
+ivrs            
+ivrs              I/O Virtualization Memory Definition:
+ivrs                Type:			0x21
+ivrs                Flags:			0x0d
+ivrs                Length:			0x0020
+ivrs                DeviceID:			0x1122
+ivrs                Auxiliary data:		0x0000
+ivrs                Reserved:			0x0000000000000000
+ivrs                PCI Segment Group:		0xabcd
+ivrs                Start address:		0xfedc000012345678
+ivrs                Memory block length:	0x0d22000000000000
+ivrs            
+ivrs              I/O Virtualization Memory Definition:
+ivrs                Type:			0x22
+ivrs                Flags:			0x0d
+ivrs                Length:			0x0020
+ivrs                DeviceID:			0x1122
+ivrs                Auxiliary data:		0x0000
+ivrs                Reserved:			0x0000000000000000
+ivrs                PCI Segment Group:		0xabcd
+ivrs                Start address:		0xfedc000012345678
+ivrs                Memory block length:	0x0000000000000000
+ivrs            
+ivrs            PASSED: Test 1, No issues found in IVRS table.
+ivrs            
+ivrs            ==========================================================
+ivrs            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+ivrs            info only.
+ivrs            ==========================================================

@@ -2475,4 +2475,51 @@ typedef struct {
 	uint8_t		reserved1[3];
 } __attribute__ ((packed)) fwts_acpi_table_aest_interrupt;
 
+/*
+ * ACPI IVRS (I/O Virtualization Reporting Structure)
+ * https://www.amd.com/system/files/TechDocs/48882_3.07_PUB.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t		ivinfo;
+	uint64_t		reserved;
+} __attribute__ ((packed)) fwts_acpi_table_ivrs;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		flags;
+	uint16_t	length;
+	uint16_t	device_id;
+	uint16_t	capability_offset;
+	uint64_t	iommu_base_address;
+	uint16_t	pci_seg_group;
+	uint16_t	iommu_info;
+} __attribute__ ((packed)) fwts_acpi_table_ivhd;
+
+typedef struct {
+	fwts_acpi_table_ivhd	ivhd;
+	uint32_t	iommu_feature_reoprt;
+	uint8_t		ivhd_device_entries[0];
+} __attribute__ ((packed)) fwts_acpi_table_ivhd_10;
+
+typedef struct {
+	fwts_acpi_table_ivhd	ivhd;
+	uint32_t	iommu_attr;
+	uint64_t	efr_reg_image;
+	uint64_t	efr_reg_image_2;
+	uint8_t		ivhd_device_entries[0];
+} __attribute__ ((packed)) fwts_acpi_table_ivhd_11_40;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		flags;
+	uint16_t	length;
+	uint16_t	device_id;
+	uint16_t	auxiliary_data;
+	uint64_t	reserved;
+	uint16_t	pci_seg_group;
+	uint64_t	start_address;
+	uint64_t	mem_block_len;
+} __attribute__ ((packed)) fwts_acpi_table_ivmd;
+
 #endif

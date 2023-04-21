@@ -107,6 +107,7 @@ fwts_SOURCES = main.c 				\
 	acpi/hpet/hpet.c 			\
 	acpi/hmat/hmat.c 			\
 	acpi/iort/iort.c			\
+	acpi/ivrs/ivrs.c			\
 	acpi/lid/lid.c 				\
 	acpi/lpit/lpit.c 			\
 	acpi/madt/madt.c			\

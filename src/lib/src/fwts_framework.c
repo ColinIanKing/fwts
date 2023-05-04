@@ -69,6 +69,7 @@ static const fwts_categories categories[] = {
 	{ "Interactive Experimental",	FWTS_FLAG_INTERACTIVE_EXPERIMENTAL },
 	{ "Power States",		FWTS_FLAG_POWER_STATES },
 	{ "SBBR",			FWTS_FLAG_SBBR },
+	{ "EBBR",			FWTS_FLAG_EBBR },
 	{ "Utilities",			FWTS_FLAG_UTILS },
 	{ "Unsafe",			FWTS_FLAG_UNSAFE },
 	{ "UEFI",			FWTS_FLAG_UEFI },

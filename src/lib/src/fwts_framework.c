@@ -1351,7 +1351,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_strdup(&fw->clog, optarg);
 			break;
 		case 49: /* --ebbr */
-#if defined(FWTS_ARCH_AARCH64)
+#if defined(FWTS_ARCH_AARCH64) || defined(FWTS_ARCH_RISCV)
 			fw->flags |= FWTS_FLAG_EBBR;
 			break;
 #else

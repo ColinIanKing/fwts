@@ -126,9 +126,10 @@ mk_package()
 
         #
         # control hack
+        # remove dh-dkms dependency for those releases which are on need
         #
-        if [ "$rel" = "lunar" ]; then
-                sed 's/dkms,/dkms,\n               dh-dkms,/' debian/control > debian/control.new
+        if [ "$rel" = "bionic" -o "$rel" = "focal" -o "$rel" = "jammy" ]; then
+                sed '/dh-dkms,/d' debian/control > debian/control.new
                 mv debian/control.new debian/control
         fi
 

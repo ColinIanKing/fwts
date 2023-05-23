@@ -1,3 +1,24 @@
+fwts (23.05.00-0ubuntu1) mantic; urgency=medium
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20230331
+
+  [Ivan Hu]
+  * dmicheck: extent the dmi_patterns for the default serial number string
+  * dmicheck: add more checks for invalid serial number string
+  * acpi: cedt: remove unused code
+  * acpi: ivrs: add tests for ACPI IVRS table
+  * fwts-test: add regression tests for IVRS
+  * acpi: button: remove check fixed hardware & control method power buttons
+  * lib: fwts_framework: add EBBR to category
+  * s3: fix the display time of resume for Timekeeping suspended string missing
+  * fwts_framwork: add ebbr test for RISC-V
+  * auto-packager: mkpackage.sh: add mantic
+  * debian: control: add build depend dh-dkms
+  * auto-packager: mkpackage.sh remove the dh-dkms dependency
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 23 May 2023 11:59:34 +0800
+
 fwts (23.03.00-0ubuntu1) lunar; urgency=medium
 
   [Huacai Chen]

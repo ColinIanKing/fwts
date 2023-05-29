@@ -26,7 +26,7 @@
                              using file generated
                              by acpidump, e.g.
                              --dumpfile=acpidump.dat
---ebbr                       Run ARM EBBR tests.
+--ebbr                       Run EBBR tests.
 --filter-error-discard       Discard errors that
                              match any of the
                              specified labels.

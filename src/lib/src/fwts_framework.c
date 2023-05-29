@@ -139,7 +139,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "sbbr",		"",   0, "Run ARM SBBR tests." },
 	{ "ifv",		"",   0, "Run tests in firmware-vendor modes." },
 	{ "clog",		"",   1, "Specify a coreboot logfile dump" },
-	{ "ebbr",		"",   0, "Run ARM EBBR tests." },
+	{ "ebbr",		"",   0, "Run EBBR tests." },
 	{ NULL, NULL, 0, NULL }
 };
 

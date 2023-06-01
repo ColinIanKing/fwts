@@ -19,7 +19,7 @@
 
 CPPCHECK_DIR=/tmp/cppcheck
 CPPCHECK=${CPPCHECK_DIR}/cppcheck
-CPPCHECK_REPO=git://github.com/danmar/cppcheck
+CPPCHECK_REPO=https://github.com/danmar/cppcheck
 CPPCHECK_LOG=cppcheck.log
 DEPENDENCIES="git build-essential"
 JOBS=$(nproc)

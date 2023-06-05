@@ -61,6 +61,8 @@ static void fwts_klog_stack_dump(
 			dumpable |= FWTS_OOPS_GOT_OOPS;
 		if (strstr(line, "WARNING: at"))
 			dumpable |= FWTS_OOPS_GOT_WARN_ON;
+		if (strstr(line, "WARNING: CPU:"))
+			dumpable |= FWTS_OOPS_GOT_WARN_ON;
 		if (strstr(line, "Call Trace:"))
 			dumpable |= FWTS_OOPS_GOT_CALL_TRACE;
 		if (strstr(line, "--[ end trace")) {

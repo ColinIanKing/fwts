@@ -61,3 +61,29 @@ void fwts_dump_raw_data(
 		buffer[n++] = (data[i] < 32 || data[i] > 126) ? '.' : data[i];
 	buffer[n] = '\0';
 }
+
+/*
+ *  fwts_dump_raw_data_prefix()
+ *	simply print raw uint8 data of length `nbytes` into a buffer (length len)
+ *      as a hex dump. nbytes must be no more than 16 with prefix. The prefix could
+ *	be used as alighment.
+ */
+void fwts_dump_raw_data_prefix(
+	char *buffer,		/* buffer to contained formatted dump */
+	const size_t len,	/* Length of buffer */
+	const uint8_t *data,	/* Octects to dump */
+	const char *prefix,	/* Prefix string or for alignment */
+	const size_t nbytes)	/* Number of bytes to dump, max 16 */
+{
+        int i;
+	int n = 0;
+	int nbytes_max = nbytes > 16 ? 16 : nbytes;
+
+	n = snprintf(buffer, len, "%s", prefix);
+
+	/* Hex dump */
+        for (i = 0; i < nbytes_max; i++)
+                n += snprintf(buffer + n, len - n, "%2.2X ", data[i]);
+
+	buffer[n] = '\0';
+}

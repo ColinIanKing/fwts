@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Rules-Requires-Root: no
 Maintainer: Firmware Testing Team <fwts-devel@lists.ubuntu.com>
-Uploaders: Colin King <colin.king@ubuntu.com>, Alex Hung <alex.hung@canonical.com>, Ivan Hu <ivan.hu@canonical.com>
+Uploaders: Ivan Hu <ivan.hu@canonical.com>
 Standards-Version: 4.1.0
 Homepage: https://wiki.ubuntu.com/FirmwareTestSuite
 Build-Depends: debhelper (>= 9~),

@@ -87,3 +87,26 @@ void fwts_dump_raw_data_prefix(
 
 	buffer[n] = '\0';
 }
+
+/*
+ *  fwts_hexdump_data_prefix_all()
+ *	print all raw uint8 data of length `nbytes` as a hex dump with prefix.
+ *	The prefix could be used as alighment.
+ */
+void fwts_hexdump_data_prefix_all(
+	fwts_framework *fw,
+	const uint8_t *data,	/* Octects to dump */
+	const char *prefix,	/* Prefix string or for alignment for each line */
+	const size_t nbytes)	/* Number of bytes to dump for all data */
+{
+
+	size_t i;
+
+	for (i = 0; i < nbytes; i += 16) {
+		char buffer[128];
+		const size_t left = nbytes - i;
+
+		fwts_dump_raw_data_prefix(buffer, sizeof(buffer), data + i, prefix, left > 16 ? 16 : left);
+		fwts_log_info_verbatim(fw, "%s", buffer);
+	}
+}

@@ -126,7 +126,6 @@ static int aest_test1(fwts_framework *fw)
 	node = (fwts_acpi_table_aest_node *)(table->data + sizeof(fwts_acpi_table_aest));
 	offset = sizeof(fwts_acpi_table_aest);
 	while (offset < table->length) {
-		char buffer[128];
 		fwts_acpi_table_aest_processor *processor = NULL;
 		fwts_acpi_table_aest_memory_controller *mem_controller = NULL;
 		fwts_acpi_table_aest_smmu *smmu = NULL;
@@ -184,11 +183,8 @@ static int aest_test1(fwts_framework *fw)
 				fwts_log_info_simp_int(fw, "    SMMU-specific Data Subcomponent Reference: ",
 					vendor_defined->unique_id);
 				fwts_log_info_verbatim(fw, "    Vendor-specific data:");
-				fwts_dump_raw_data(buffer, sizeof(buffer),
-					vendor_defined->vendor_specific_data,
-					0,
-					sizeof(vendor_defined->vendor_specific_data));
-				fwts_log_info_verbatim(fw, "%s", buffer);
+				fwts_hexdump_data_prefix_all(fw, vendor_defined->vendor_specific_data,
+					"      ", sizeof(vendor_defined->vendor_specific_data));
 				offset += sizeof(fwts_acpi_table_aest_vendor_defined);
 				break;
 			case FWTS_AEST_GIC:

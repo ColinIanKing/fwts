@@ -135,7 +135,7 @@ aest                Node-specific data (Vendor-defined):
 aest                Hardware ID:                        0x33333333
 aest                SMMU-specific Data Subcomponent Reference: 0x44444444
 aest                Vendor-specific data:
-aest              0000: 12 23 34 45 56 67 78 89 9A AB BC CD DE EF FF 55  .#4EVgx........U
+aest                  12 23 34 45 56 67 78 89 9A AB BC CD DE EF FF 55 
 aest                Interface:
 aest                Interface Type:                 0x01
 aest                Reserved:                       0x00000000

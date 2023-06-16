@@ -113,6 +113,7 @@ fwts_SOURCES = main.c 				\
 	acpi/madt/madt.c			\
 	acpi/mcfg/mcfg.c 			\
 	acpi/mchi/mchi.c 			\
+	acpi/mpam/mpam.c 			\
 	acpi/mpst/mpst.c 			\
 	acpi/msct/msct.c 			\
 	acpi/msdm/msdm.c 			\

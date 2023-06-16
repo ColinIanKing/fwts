@@ -2522,4 +2522,59 @@ typedef struct {
 	uint64_t	mem_block_len;
 } __attribute__ ((packed)) fwts_acpi_table_ivmd;
 
+/*
+ * ACPI MPAM(Memory System Resource Partitioning And Monitoring)
+ * https://developer.arm.com/documentation/ddi0598/latest/
+ */
+typedef enum {
+    FWTS_MPAM_PROCESSOR_CACHE    = 0,
+    FWTS_MPAM_MEMORY             = 1,
+    FWTS_MPAM_SMMU               = 2,
+    FWTS_MPAM_MEMORY_CACHE       = 3,
+    FWTS_MPAM_ACPI_DEVICE        = 4,
+    FWTS_MPAM_INTERCONNECT       = 5,
+    FWTS_MPAM_UNKNOWN            = 0xFF
+} fwts_mpam_location_types;
+
+typedef struct
+{
+	uint32_t	producer;
+	uint32_t 	reserved;
+} __attribute__ ((packed)) fwts_acpi_mpam_func_deps;
+
+typedef struct {
+	uint32_t	identifier;
+	uint8_t		ris_index;
+	uint16_t	reserved1;
+	uint8_t		locator_type;
+	uint8_t		locator[12];
+	uint32_t	num_functional_deps;
+} __attribute__ ((packed)) fwts_acpi_mpam_resource_node;
+
+typedef struct
+{
+	uint16_t	length;
+	uint8_t		interface_type;
+	uint8_t		reserved;
+	uint32_t	identifier;
+	uint64_t	base_address;
+	uint32_t	mmio_size;
+	uint32_t	overflow_interrupt;
+	uint32_t	overflow_interrupt_flags;
+	uint32_t	reserved1;
+	uint32_t	overflow_interrupt_affinity;
+	uint32_t	error_interrupt;
+	uint32_t	error_interrupt_flags;
+	uint32_t	reserved2;
+	uint32_t	error_interrupt_affinity;
+	uint32_t	max_nrdy_usec;
+	uint64_t	hardware_id_linked_device;
+	uint32_t	instance_id_linked_device;
+	uint32_t	num_resouce_nodes;
+} __attribute__ ((packed)) fwts_acpi_mpam_msc_node;
+
+typedef struct {
+    fwts_acpi_table_header	header;
+} __attribute__ ((packed)) fwts_acpi_table_mpam;
+
 #endif

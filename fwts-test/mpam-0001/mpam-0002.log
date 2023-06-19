@@ -1,0 +1,160 @@
+mpam            mpam: MPAM Memory System Resource Partitioning And
+mpam            Monitoring Table test.
+mpam            ----------------------------------------------------------
+mpam            Test 1 of 1: Validate MPAM table.
+mpam            MPAM Memory System Resource Partitioning And Monitoring Table:
+mpam            MPAM MSC node:
+mpam              Length:                              0x0060
+mpam              Interface type:                      0x01
+mpam              Reserved:                            0x02
+mpam              Identifier:                          0x00000001
+mpam              Base address:                        0x00000000c0000000
+mpam              MMIO size:                           0x00010000
+mpam              Overflow interrupt:                  0x00000000
+mpam              Overflow interrupt flags:            0xff000002
+mpam              Reserved1:                           0x00020000
+mpam              Overflow interrupt affinity:         0x00000000
+mpam              Error interrupt:                     0x00000000
+mpam              Error interrupt flags:               0x11000002
+mpam              Reserved2:                           0xff000000
+mpam              Error interrupt affinity:            0x00000000
+mpam              MAX_NRDY_USEC:                       0x00000032
+mpam              Hardware ID of linked device:        0x0000000000000000
+mpam              Instance ID of linked device:        0x00000000
+mpam              Number of resource nodes:            0x00000001
+mpam            FAILED [HIGH] MPAMBadInterfaceType: Test 1, MPAM MSC node
+mpam            interface type must have value with 0 or 0x0a, got 0x01
+mpam            instead
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM Reserved
+mpam            field must be zero, got 0x02 instead
+mpam            FAILED [HIGH] MPAMReservedBitsNonZero: Test 1, MPAM
+mpam            Overflow interrupt flags Bits [2..1] must be zero, got
+mpam            0xff000002 instead
+mpam            FAILED [HIGH] MPAMReservedBitsNonZero: Test 1, MPAM
+mpam            Overflow interrupt flags Bits [31..5] must be zero, got
+mpam            0xff000002 instead
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM
+mpam            Reserved1 field must be zero, got 0x00020000 instead
+mpam            FAILED [HIGH] MPAMReservedBitsNonZero: Test 1, MPAM Error
+mpam            interrupt flags Bits [2..1] must be zero, got 0x11000002
+mpam            instead
+mpam            FAILED [HIGH] MPAMReservedBitsNonZero: Test 1, MPAM Error
+mpam            interrupt flags Bits [31..5] must be zero, got 0x11000002
+mpam            instead
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM
+mpam            Reserved2 field must be zero, got 0xff000000 instead
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000011
+mpam                RIS Index:                         0x00
+mpam                Reserved1:                         0x0000
+mpam                Locator type:                      0x01
+mpam                Locator:
+mpam                  Memory locator:
+mpam                    20 00 00 00 00 00 00 00 00 00 00 11 
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM Locator
+mpam            field must be all zero, got below instead
+mpam              Locator [00] = 0x00
+mpam              Locator [01] = 0x00
+mpam              Locator [02] = 0x00
+mpam              Locator [03] = 0x11
+mpam                Number of functional dependencies: 0x00000000
+mpam            
+mpam            MPAM MSC node:
+mpam              Length:                              0x00d0
+mpam              Interface type:                      0x00
+mpam              Reserved:                            0x00
+mpam              Identifier:                          0x00000002
+mpam              Base address:                        0x00000000d0000000
+mpam              MMIO size:                           0x00010000
+mpam              Overflow interrupt:                  0x00000000
+mpam              Overflow interrupt flags:            0x00000000
+mpam              Reserved1:                           0x00000000
+mpam              Overflow interrupt affinity:         0x00000000
+mpam              Error interrupt:                     0x00000000
+mpam              Error interrupt flags:               0x00000000
+mpam              Reserved2:                           0x00000000
+mpam              Error interrupt affinity:            0x00000000
+mpam              MAX_NRDY_USEC:                       0x00000032
+mpam              Hardware ID of linked device:        0x0000000000000000
+mpam              Instance ID of linked device:        0x00000000
+mpam              Number of resource nodes:            0x00000005
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000012
+mpam                RIS Index:                         0x00
+mpam                Reserved1:                         0x0000
+mpam                Locator type:                      0x00
+mpam                Locator:
+mpam                  Processor cache locator:
+mpam                    01 00 00 00 00 00 00 00 00 00 02 00 
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM Locator
+mpam            field must be all zero, got below instead
+mpam              Locator [00] = 0x00
+mpam              Locator [01] = 0x00
+mpam              Locator [02] = 0x02
+mpam              Locator [03] = 0x00
+mpam                Number of functional dependencies: 0x00000000
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000013
+mpam                RIS Index:                         0x01
+mpam                Reserved1:                         0x0000
+mpam                Locator type:                      0xff
+mpam                Locator:
+mpam                  Unknown locator:
+mpam                    02 00 00 00 00 00 00 00 00 00 00 00 
+mpam                Number of functional dependencies: 0x00000000
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000014
+mpam                RIS Index:                         0x01
+mpam                Reserved1:                         0x0000
+mpam                Locator type:                      0x03
+mpam                Locator:
+mpam                  Memory-side cache locator:
+mpam                    11 00 00 00 00 00 00 01 02 00 00 00 
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM Locator
+mpam            field must be all zero, got below instead
+mpam              Locator [00] = 0x11
+mpam              Locator [01] = 0x00
+mpam              Locator [02] = 0x00
+mpam              Locator [03] = 0x00
+mpam              Locator [04] = 0x00
+mpam              Locator [05] = 0x00
+mpam              Locator [06] = 0x00
+mpam                Number of functional dependencies: 0x00000000
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000015
+mpam                RIS Index:                         0x01
+mpam                Reserved1:                         0x0000
+mpam                Locator type:                      0x04
+mpam                Locator:
+mpam                  ACPI device locator:
+mpam                    11 22 33 44 55 66 77 88 99 AA BB CC 
+mpam                Number of functional dependencies: 0x00000000
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000016
+mpam                RIS Index:                         0x01
+mpam                Reserved1:                         0x0000
+mpam                Locator type:                      0x02
+mpam                Locator:
+mpam                  SMMU locator:
+mpam                    03 00 00 00 00 00 00 00 00 00 00 11 
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM Locator
+mpam            field must be all zero, got below instead
+mpam              Locator [00] = 0x00
+mpam              Locator [01] = 0x00
+mpam              Locator [02] = 0x00
+mpam              Locator [03] = 0x11
+mpam                Number of functional dependencies: 0x00000002
+mpam                Functional dependency descriptor: 
+mpam                  Producer:			       0x44332211
+mpam                  Reserved:			       0x00000000
+mpam                Functional dependency descriptor: 
+mpam                  Producer:			       0xddccbbaa
+mpam                  Reserved:			       0x22000000
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM
+mpam            Reserved1 field must be zero, got 0x22000000 instead
+mpam            
+mpam            
+mpam            ==========================================================
+mpam            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
+mpam            info only.
+mpam            ==========================================================

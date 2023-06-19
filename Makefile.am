@@ -148,8 +148,10 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/madt-0001/test-0002.sh \
 	fwts-test/mchi-0001/test-0001.sh \
 	fwts-test/mchi-0001/test-0002.sh \
-	fwts-test/mpst-0001/test-0001.sh \
-	fwts-test/mpst-0001/test-0002.sh \
+	fwts-test/mpam-0001/test-0001.sh \
+	fwts-test/mpam-0001/test-0002.sh \
+        fwts-test/mpst-0001/test-0001.sh \
+        fwts-test/mpst-0001/test-0002.sh \
 	fwts-test/msdm-0001/test-0001.sh \
 	fwts-test/msdm-0001/test-0002.sh \
 	fwts-test/method-0001/test-0001.sh \

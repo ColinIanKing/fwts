@@ -60,7 +60,7 @@ mpam              Locator [03] = 0x11
 mpam                Number of functional dependencies: 0x00000000
 mpam            
 mpam            MPAM MSC node:
-mpam              Length:                              0x00d0
+mpam              Length:                              0x0108
 mpam              Interface type:                      0x00
 mpam              Reserved:                            0x00
 mpam              Identifier:                          0x00000002
@@ -77,7 +77,7 @@ mpam              Error interrupt affinity:            0x00000000
 mpam              MAX_NRDY_USEC:                       0x00000032
 mpam              Hardware ID of linked device:        0x0000000000000000
 mpam              Instance ID of linked device:        0x00000000
-mpam              Number of resource nodes:            0x00000005
+mpam              Number of resource nodes:            0x00000006
 mpam              List of resource nodes: 
 mpam                Identifier:                        0x00000012
 mpam                RIS Index:                         0x00
@@ -152,9 +152,38 @@ mpam                  Producer:			       0xddccbbaa
 mpam                  Reserved:			       0x22000000
 mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM
 mpam            Reserved1 field must be zero, got 0x22000000 instead
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000017
+mpam                RIS Index:                         0x00
+mpam                Reserved1:                         0x0100
+mpam                Locator type:                      0x05
+mpam                Locator:
+mpam                  Interconnect locator:
+mpam                    6C 01 00 00 00 00 00 00 00 00 00 11 
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM Locator
+mpam            field must be all zero, got below instead
+mpam              Locator [00] = 0x00
+mpam              Locator [01] = 0x00
+mpam              Locator [02] = 0x00
+mpam              Locator [03] = 0x11
+mpam                  Interconnect descriptor table:
+mpam                    Signature:
+mpam                      45 D6 2B FE 3B 03 E6 49 79 94 CD D1 21 8B 0B 2E 
+mpam                    Number of descriptors:         0x00000001
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM reserved
+mpam            field must be all zero, got below instead
+mpam              reserved [00] = 0x00
+mpam              reserved [01] = 0x00
+mpam              reserved [02] = 0x11
+mpam                Number of functional dependencies: 0x00000000
+mpam            FAILED [MEDIUM] MPAMReservedNonZero: Test 1, MPAM
+mpam            Reserved1 field must be zero, got 0x0100 instead
+mpam              Resource-specific data: 
+mpam                45 D6 2B FE 3B 03 E6 49 79 94 CD D1 21 8B 0B 2E 
+mpam                01 00 00 00 11 11 11 11 22 22 22 22 00 00 00 11 
 mpam            
 mpam            
 mpam            ==========================================================
-mpam            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
+mpam            0 passed, 16 failed, 0 warning, 0 aborted, 0 skipped, 0
 mpam            info only.
 mpam            ==========================================================

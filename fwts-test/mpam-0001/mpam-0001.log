@@ -33,7 +33,7 @@ mpam                    20 00 00 00 00 00 00 00 00 00 00 00
 mpam                Number of functional dependencies: 0x00000000
 mpam            
 mpam            MPAM MSC node:
-mpam              Length:                              0x00d0
+mpam              Length:                              0x0108
 mpam              Interface type:                      0x00
 mpam              Reserved:                            0x00
 mpam              Identifier:                          0x00000002
@@ -50,7 +50,7 @@ mpam              Error interrupt affinity:            0x00000000
 mpam              MAX_NRDY_USEC:                       0x00000032
 mpam              Hardware ID of linked device:        0x0000000000000000
 mpam              Instance ID of linked device:        0x00000000
-mpam              Number of resource nodes:            0x00000005
+mpam              Number of resource nodes:            0x00000006
 mpam              List of resource nodes: 
 mpam                Identifier:                        0x00000012
 mpam                RIS Index:                         0x00
@@ -102,6 +102,22 @@ mpam                  Reserved:			       0x00000000
 mpam                Functional dependency descriptor: 
 mpam                  Producer:			       0xddccbbaa
 mpam                  Reserved:			       0x00000000
+mpam              List of resource nodes: 
+mpam                Identifier:                        0x00000017
+mpam                RIS Index:                         0x00
+mpam                Reserved1:                         0x0000
+mpam                Locator type:                      0x05
+mpam                Locator:
+mpam                  Interconnect locator:
+mpam                    6C 01 00 00 00 00 00 00 00 00 00 00 
+mpam                  Interconnect descriptor table:
+mpam                    Signature:
+mpam                      45 D6 2B FE 3B 03 E6 49 79 94 CD D1 21 8B 0B 2E 
+mpam                    Number of descriptors:         0x00000001
+mpam                Number of functional dependencies: 0x00000000
+mpam              Resource-specific data: 
+mpam                45 D6 2B FE 3B 03 E6 49 79 94 CD D1 21 8B 0B 2E 
+mpam                01 00 00 00 11 11 11 11 22 22 22 22 00 00 00 00 
 mpam            
 mpam            PASSED: Test 1, No issues found in MPAM table.
 mpam            

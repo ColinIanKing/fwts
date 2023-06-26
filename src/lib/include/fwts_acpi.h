@@ -2538,6 +2538,19 @@ typedef enum {
 
 typedef struct
 {
+	uint8_t		signature[16];
+	uint32_t 	num_of_descriptors;
+} __attribute__ ((packed)) fwts_interconnect_descriptor_table;
+
+
+typedef struct
+{
+	uint64_t	intc_des_tbl_offset;
+	uint32_t 	reserved;
+} __attribute__ ((packed)) fwts_interconnect_locator_descriptor;
+
+typedef struct
+{
 	uint32_t	producer;
 	uint32_t 	reserved;
 } __attribute__ ((packed)) fwts_acpi_mpam_func_deps;

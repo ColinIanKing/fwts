@@ -115,9 +115,19 @@ static int mpam_test1(fwts_framework *fw)
 					fwts_hexdump_data_prefix_all(fw, res_node->locator, "        ", sizeof(res_node->locator));
 					break;
 				case FWTS_MPAM_INTERCONNECT:
+					fwts_interconnect_locator_descriptor *intc_loc_des =
+							(fwts_interconnect_locator_descriptor *)res_node->locator;
+					fwts_interconnect_descriptor_table *intc_des_table = (table->data + intc_loc_des->intc_des_tbl_offset);
 					fwts_log_info_verbatim(fw, "      Interconnect locator:");
 					fwts_hexdump_data_prefix_all(fw, res_node->locator, "        ", sizeof(res_node->locator));
 					fwts_acpi_reserved_zero_array(fw, "MPAM", "Locator", res_node->locator + 8, 4, &passed);
+					fwts_log_info_verbatim(fw, "      Interconnect descriptor table:");
+					fwts_log_info_verbatim(fw, "        Signature:");
+					fwts_hexdump_data_prefix_all(fw, intc_des_table->signature, "          ", sizeof(intc_des_table->signature));
+					fwts_log_info_simp_int(fw, "        Number of descriptors:         ", intc_des_table->num_of_descriptors);
+					fwts_acpi_reserved_zero_array(fw, "MPAM", "reserved",
+						(uint8_t *)intc_des_table + sizeof(fwts_interconnect_descriptor_table) + 9,
+						3, &passed);
 					break;
 				case FWTS_MPAM_UNKNOWN:
 					fwts_log_info_verbatim(fw, "      Unknown locator:");

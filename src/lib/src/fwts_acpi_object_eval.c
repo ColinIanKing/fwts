@@ -265,9 +265,24 @@ static const acpi_eval_error errors[] = {
 		"The length of an ACPI Resource Descriptor was incorrect."
 	},
 	{ AE_AML_ILLEGAL_ADDRESS, 	LOG_LEVEL_CRITICAL,	"AEAMLIllegalAddr",	"Illegal address",
-		"An memory, PCI configuration or I/O address was encountered with an illegal address."
+		"A memory, PCI configuration or I/O address was encountered with an illegal address."
 	},
-	/* { AE_AML_INFINITE_LOOP, 	LOG_LEVEL_HIGH,		"AEAMLInfiniteLoop",	"Infinite loop", NULL }, */
+	/* { AE_AML_INFINITE_LOOP, 	LOG_LEVEL_HIGH,		"AEAMLInfiniteLoop",	"Infinite loop", NULL },
+	{ AE_AML_INFINITE_LOOP, 	LOG_LEVEL_HIGH,		"AEAMLInfiniteLoop",	"Infinite loop",
+		"An AML While loop exceeded the maximum execution time."
+	}, */
+	{ AE_AML_UNINITIALIZED_NODE, 	LOG_LEVEL_HIGH,		"AEAMLUninitNode",	"Uninitialized node",
+		"A namespace node is uninitialized or unresolved."
+	},
+	{ AE_AML_TARGET_TYPE,		LOG_LEVEL_HIGH,		"AEAMLTargetType",	"Target type",
+		"A target operand of an incorrect type was encountered."
+	},
+	{ AE_AML_PROTOCOL,		LOG_LEVEL_HIGH,		"AEAMLViolateProtocol",	"Violattion protcol",
+		"Violation of a fixed ACPI protocol."
+	},
+	{ AE_AML_BUFFER_LENGTH, 	LOG_LEVEL_HIGH,		"AEAMLBadBufLength",	"Bad buffer length",
+		"The length of the buffer is invalid/incorrect."
+	},
 	{ 0,				0,			NULL,			NULL , 		NULL}
 };
 

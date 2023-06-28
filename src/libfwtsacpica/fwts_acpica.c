@@ -262,7 +262,6 @@ static ACPI_STATUS fwts_region_handler(
 	UINT8                   *buffer = ACPI_CAST_PTR(UINT8, value);
 	ACPI_SIZE               length;
 	UINT32                  bytewidth;
-	ACPI_CONNECTION_INFO    *context;
 	int			i;
 
 	if (!regionobject)
@@ -273,8 +272,6 @@ static ACPI_STATUS fwts_region_handler(
 		return AE_OK;
 
 	fwts_acpi_region_handler_called_set(true);
-
-	context = ACPI_CAST_PTR (ACPI_CONNECTION_INFO, handlercontext);
 
 	switch (regionobject->Region.SpaceId) {
 	case ACPI_ADR_SPACE_SYSTEM_IO:

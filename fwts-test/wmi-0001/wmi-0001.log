@@ -5,11 +5,13 @@ wmi             Test 1 of 1: Windows Management Instrumentation test.
 wmi             
 wmi             \_SB_.WMI1._WDG (1 of 9)
 wmi               GUID: 51F5230E-9677-46CD-A1CF-C0B23EE34DB7
-wmi               WMI Object:
+wmi               WMI Block:
 wmi                 Flags          : 0x05 (Expensive | String)
 wmi                 Object ID      : A0
 wmi                 Instance       : 0x50
 wmi                 Driver         : think-lmi (Lenovo)
+wmi             PASSED: Test 1, 51F5230E-9677-46CD-A1CF-C0B23EE34DB7 has
+wmi             associated query method \_SB_.WMI1.WQA0
 wmi             
 wmi             \_SB_.WMI1._WDG (2 of 9)
 wmi               GUID: 98479A64-33F5-4E33-A707-8E251EBBC3A1
@@ -51,11 +53,13 @@ wmi             associated method \_SB_.WMI1.WMA4
 wmi             
 wmi             \_SB_.WMI1._WDG (6 of 9)
 wmi               GUID: 8ADB159E-1E32-455C-BC93-308A7ED98246
-wmi               WMI Object:
+wmi               WMI Block:
 wmi                 Flags          : 0x01 (Expensive)
 wmi                 Object ID      : A5
 wmi                 Instance       : 0x01
 wmi                 Driver         : think-lmi (Lenovo)
+wmi             PASSED: Test 1, 8ADB159E-1E32-455C-BC93-308A7ED98246 has
+wmi             associated query method \_SB_.WMI1.WQA5
 wmi             
 wmi             \_SB_.WMI1._WDG (7 of 9)
 wmi               GUID: 2651D9FD-911C-4B69-B94E-D0DED5963BD7
@@ -79,17 +83,21 @@ wmi             associated method \_SB_.WMI1.WMA7
 wmi             
 wmi             \_SB_.WMI1._WDG (9 of 9)
 wmi               GUID: 05901221-D566-11D1-B2F0-00A0C9062910
-wmi               WMI Object:
+wmi               WMI Block:
 wmi                 Flags          : 0x00 (None)
 wmi                 Object ID      : BA
 wmi                 Instance       : 0x01
+wmi             PASSED: Test 1, 05901221-D566-11D1-B2F0-00A0C9062910 has
+wmi             associated query method \_SB_.WMI1.WQBA
 wmi             
 wmi             \_SB_.WMI2._WDG (1 of 5)
 wmi               GUID: FCB424F1-075A-4E0E-BFC4-62F3E71771FA
-wmi               WMI Object:
+wmi               WMI Block:
 wmi                 Flags          : 0x01 (Expensive)
 wmi                 Object ID      : A7
 wmi                 Instance       : 0x01
+wmi             PASSED: Test 1, FCB424F1-075A-4E0E-BFC4-62F3E71771FA has
+wmi             associated query method \_SB_.WMI2.WQA7
 wmi             
 wmi             \_SB_.WMI2._WDG (2 of 5)
 wmi               GUID: E2BE5EE3-42DA-49DB-8378-1F5247388202
@@ -102,10 +110,12 @@ wmi             associated method \_SB_.WMI2.WMA8
 wmi             
 wmi             \_SB_.WMI2._WDG (3 of 5)
 wmi               GUID: 7430019A-DCE9-4548-BAB0-9FDE0935CAFF
-wmi               WMI Object:
+wmi               WMI Block:
 wmi                 Flags          : 0x05 (Expensive | String)
 wmi                 Object ID      : A9
 wmi                 Instance       : 0x0a
+wmi             PASSED: Test 1, 7430019A-DCE9-4548-BAB0-9FDE0935CAFF has
+wmi             associated query method \_SB_.WMI2.WQA9
 wmi             
 wmi             \_SB_.WMI2._WDG (4 of 5)
 wmi               GUID: 7FF47003-3B6C-4E5E-A227-E979824A85D1
@@ -118,12 +128,14 @@ wmi             associated method \_SB_.WMI2.WMAA
 wmi             
 wmi             \_SB_.WMI2._WDG (5 of 5)
 wmi               GUID: 05901221-D566-11D1-B2F0-00A0C9062910
-wmi               WMI Object:
+wmi               WMI Block:
 wmi                 Flags          : 0x00 (None)
 wmi                 Object ID      : BB
 wmi                 Instance       : 0x01
+wmi             PASSED: Test 1, 05901221-D566-11D1-B2F0-00A0C9062910 has
+wmi             associated query method \_SB_.WMI2.WQBB
 wmi             
 wmi             ==========================================================
-wmi             8 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+wmi             14 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
 wmi             info only.
 wmi             ==========================================================

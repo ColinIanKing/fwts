@@ -212,6 +212,100 @@ static char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
 }
 
 /*
+ * wmi_acpi_get_parent_name()
+ *	get parent name of acpi object, the result needs to be freed
+ */
+static char *wmi_acpi_get_parent_name(const char *object_name)
+{
+	size_t parent_name_length;
+	char *parent_name;
+	char *separator;
+
+	separator = strrchr(object_name, '.');
+	if (!separator)
+		return NULL;
+
+	parent_name_length = separator - object_name;
+	parent_name = malloc(parent_name_length + 1);
+	if (!parent_name)
+		return NULL;
+
+	memcpy(parent_name, object_name, parent_name_length);
+	parent_name[parent_name_length] = '\0';
+
+	return parent_name;
+}
+
+/*
+ * wmi_acpi_method_count_on_object()
+ *	count occurance of methods on acpi object
+ */
+static int wmi_acpi_method_count_on_object(const char *object_name, const char *method_name)
+{
+	const size_t object_name_length = strlen(object_name);
+	const size_t method_name_length = strlen(method_name);
+	fwts_list_link *item;
+	fwts_list *objects;
+	int count = 0;
+
+	objects = fwts_acpi_object_get_names();
+	if (!objects)
+		return 0;
+
+	fwts_list_foreach(item, objects) {
+		char *name = fwts_list_data(char *, item);
+		const size_t name_length = strlen(name);
+
+		if (name_length != (object_name_length + method_name_length + 1))
+			continue;
+
+		if (strncmp(object_name, name, object_name_length))
+			continue;
+
+		if (!strncmp(method_name, name + name_length - method_name_length, method_name_length))
+			count++;
+	}
+
+	return count;
+}
+
+/*
+ * wmi_block_query_exist_count()
+ *	check if the mandatory block query method exists for the WDG object
+ */
+static void wmi_block_query_exist_count(
+	fwts_framework *fw,
+	const fwts_wdg_info *info,
+	const char *object_name,
+	const char *guid_str)
+{
+	char wm_name[5];
+	int count;
+
+	snprintf(wm_name, sizeof(wm_name), "WQ%c%c", info->id.obj_id[0], info->id.obj_id[1]);
+
+	count = wmi_acpi_method_count_on_object(object_name, wm_name);
+	switch (count) {
+	case 0:
+		fwts_failed(fw, LOG_LEVEL_LOW, "WMIMissingQueryMethod",
+			"GUID %s should have an associated query method %s defined, "
+			"however this does not seem to exist.",
+			guid_str, wm_name);
+		break;
+	case 1:
+		fwts_passed(fw, "%s has associated query method %s.%s",
+			guid_str, object_name, wm_name);
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_LOW, "WMIMultipleQueryMethod",
+			"GUID %s has multiple associated query methods %s defined, "
+			"this is a firmware bug that leads to ambiguous behaviour.",
+			guid_str, wm_name);
+		break;
+	}
+}
+
+/*
  *  wmi_method_exist_count()
  *	check if an associated method exists for the WDG object
  */
@@ -328,6 +422,14 @@ static void wmi_parse_wdg_data(
 	const fwts_wdg_info *info = (const fwts_wdg_info *)wdg_data;
 	bool all_events_known = true;
 	bool events = false;
+	char *acpi_object_name;
+
+	acpi_object_name = wmi_acpi_get_parent_name(name);
+	if (!acpi_object_name) {
+		fwts_log_info(fw, "Unable to the get parent name of %s", name);
+		return;
+	}
+
 
 	for (i = 0; i < (size / sizeof(fwts_wdg_info)); i++, info++) {
 		const uint8_t *guid = info->guid;
@@ -365,14 +467,17 @@ static void wmi_parse_wdg_data(
 				all_events_known = false;
 			}
 		} else {
-			fwts_log_info_verbatim(fw, "  WMI Object:");
+			fwts_log_info_verbatim(fw, "  WMI Block:");
 			wmi_dump_object(fw, info);
 			wmi_known_driver(fw, known);
+			wmi_block_query_exist_count(fw, info, acpi_object_name, guid_str);
 		}
 	}
 
 	if (events && all_events_known)
 		fwts_passed(fw, "All events associated with %s are handled by a kernel driver.", name);
+
+	free(acpi_object_name);
 }
 
 static int wmi_test1(fwts_framework *fw)

@@ -312,30 +312,16 @@ static void wmi_block_query_exist_count(
 static void wmi_method_exist_count(
 	fwts_framework *fw,
 	const fwts_wdg_info *info,
+	const char *object_name,
 	const char *guid_str)
 {
-	fwts_list_link	*item;
-	fwts_list *objects;
-	const size_t wm_name_len = 4;
 	char wm_name[5];
-	char *objname = "";
-	int  count = 0;
+	int  count;
 
 	snprintf(wm_name, sizeof(wm_name), "WM%c%c",
 		info->id.obj_id[0], info->id.obj_id[1]);
 
-	if ((objects = fwts_acpi_object_get_names()) == NULL)
-		return;	/* Should not ever happen, bail out if it does */
-
-	fwts_list_foreach(item, objects) {
-		char *name = fwts_list_data(char*, item);
-		const size_t name_len = strlen(name);
-		if (strncmp(wm_name, name + name_len - wm_name_len, wm_name_len) == 0) {
-			objname = name;
-			count++;
-		}
-	}
-
+	count = wmi_acpi_method_count_on_object(object_name, wm_name);
 	if (count == 0) {
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"WMIMissingMethod",
@@ -349,7 +335,8 @@ static void wmi_method_exist_count(
 			"this is a firmware bug that leads to ambiguous behaviour.",
 			guid_str, info->id.obj_id[0], info->id.obj_id[1]);
 	} else
-		fwts_passed(fw, "%s has associated method %s", guid_str, objname);
+		fwts_passed(fw, "%s has associated method %s.%s",
+			guid_str, object_name, wm_name);
 }
 
 /*
@@ -447,7 +434,7 @@ static void wmi_parse_wdg_data(
 			fwts_log_info_verbatim(fw, "  WMI Method:");
 			wmi_dump_object(fw, info);
 			wmi_known_driver(fw, known);
-			wmi_method_exist_count(fw, info, guid_str);
+			wmi_method_exist_count(fw, info, acpi_object_name, guid_str);
 		} else if (info->flags & FWTS_WMI_EVENT) {
 			events = true;
 			fwts_log_info_verbatim(fw, "  WMI Event:");

@@ -38,7 +38,7 @@ typedef struct {
 } fwts_memory_map_entry;
 
 int        fwts_memory_map_type(fwts_list *memory_map_list, const uint64_t memory);
-int        fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t memory);
+fwts_bool  fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t memory);
 fwts_list *fwts_memory_map_table_load(fwts_framework *fw);
 void       fwts_memory_map_table_free(fwts_list *memory_map_list);
 void       fwts_memory_map_table_dump(fwts_framework *fw, fwts_list *memory_map_list);

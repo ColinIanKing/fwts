@@ -100,15 +100,41 @@ static int spcr_test1(fwts_framework *fw)
 		str = "16550 compatible";
 		break;
 	case 0x01:
-		str = "16450 compatible";
+		str = "16550 subset compatible with DBGP Revision 1";
+		break;
+	case 0x02:
+		str = "MAX311xE SPI UART";
 		break;
 	case 0x03:
 		str = "ARM PL011 UART";
 		break;
-	case 0x02:
-	case 0x04 ... 0x0c:
+	case 0x04:
+		str = "MSM8x60 (e.g. 8960)";
+		break;
+	case 0x05:
+		str = "Nvidia 16550";
+		break;
+	case 0x06:
+		str = "TI OMAP";
+		break;
+	case 0x07:
 		str = "Reserved (Do not Use)";
 		reserved = true;
+		break;
+	case 0x08:
+		str = "APM88xxxx";
+		break;
+	case 0x09:
+		str = "MSM8974";
+		break;
+	case 0x0a:
+		str = "SAM5250";
+		break;
+	case 0x0b:
+		str = "Intel USIF";
+		break;
+	case 0x0c:
+		str = "i.MX6";
 		break;
 	case 0x0d:
 		str = "(deprecated) ARM SBSA";
@@ -121,6 +147,21 @@ static int spcr_test1(fwts_framework *fw)
 		break;
 	case 0x10:
 		str = "BCM2835";
+		break;
+	case 0x11:
+		str = "SDM845 with clock rate of 1.8432 MHz";
+		break;
+	case 0x12:
+		str = "16550-compatible with parameters defined in Generic Address Structure";
+		break;
+	case 0x13:
+		str = "SDM845 with clock rate of 7.372 MHz";
+		break;
+	case 0x14:
+		str = "Intel LPSS";
+		break;
+	case 0x15:
+		str = "RISC-V SBI console (any supported SBI mechanism)";
 		break;
 	default:
 		str = "Reserved";
@@ -140,12 +181,6 @@ static int spcr_test1(fwts_framework *fw)
 	reserved1 = spcr->reserved1[0] + (spcr->reserved1[1] << 8) + (spcr->reserved1[2] << 16);
 	fwts_acpi_reserved_zero("SPCR", "Reserved1", reserved1, &passed);
 
-	if (spcr->interrupt_type == 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRUnknownInterruptType",
-			"SPCR interrupt type field is zero, expecting support bits to be set");
-	}
 	if (spcr->interrupt_type & 0xf0) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

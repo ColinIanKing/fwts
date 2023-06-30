@@ -264,6 +264,7 @@ enum AcpiExDebuggerCommands
     CMD_THREADS,
 
     CMD_TEST,
+	CMD_INTERRUPT,
 #endif
 };
 
@@ -345,6 +346,7 @@ static const ACPI_DB_COMMAND_INFO   AcpiGbl_DbCommands[] =
     {"THREADS",      3},
 
     {"TEST",         1},
+    {"INTERRUPT",    1},
 #endif
     {NULL,           0}
 };
@@ -389,7 +391,7 @@ static const ACPI_DB_COMMAND_HELP   AcpiGbl_DbCommandHelp[] =
     {1, "  Debug <Namepath> [Arguments]",       "Single-Step a control method\n"},
     {7, "  [Arguments] formats:",               "Control method argument formats\n"},
     {1, "     Hex Integer",                     "Integer\n"},
-    {1, "     \"Ascii String\"",                "String\n"},
+    {1, "     \"ASCII String\"",                "String\n"},
     {1, "     (Hex Byte List)",                 "Buffer\n"},
     {1, "         (01 42 7A BF)",               "Buffer example (4 bytes)\n"},
     {1, "     [Package Element List]",          "Package\n"},
@@ -461,6 +463,7 @@ static const ACPI_DB_COMMAND_HELP   AcpiGbl_DbCommandHelp[] =
     {1, "  Gpes",                               "Display info on all GPE devices\n"},
     {1, "  Sci",                                "Generate an SCI\n"},
     {1, "  Sleep [SleepState]",                 "Simulate sleep/wake sequence(s) (0-5)\n"},
+    {1, "  Interrupt <GSIV>",                   "Simulate an interrupt\n"},
 #endif
     {0, NULL, NULL}
 };
@@ -1262,6 +1265,11 @@ AcpiDbCommandDispatch (
 
         AcpiOsPrintf ("Event command not implemented\n");
         break;
+
+	case CMD_INTERRUPT:
+
+		AcpiDbGenerateInterrupt (AcpiGbl_DbArgs[1]);
+		break;
 
     case CMD_GPE:
 

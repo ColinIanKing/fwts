@@ -89,6 +89,9 @@ static int mpam_test1(fwts_framework *fw)
 			fwts_log_info_simp_int(fw, "    Locator type:                      ", res_node->locator_type);
 			fwts_log_info_verbatim(fw, "    Locator:");
 
+			fwts_interconnect_locator_descriptor *intc_loc_des = NULL;
+			fwts_interconnect_descriptor_table *intc_des_table = NULL;
+
 			switch(res_node->locator_type) {
 				case FWTS_MPAM_PROCESSOR_CACHE:
 					fwts_log_info_verbatim(fw, "      Processor cache locator:");
@@ -115,9 +118,8 @@ static int mpam_test1(fwts_framework *fw)
 					fwts_hexdump_data_prefix_all(fw, res_node->locator, "        ", sizeof(res_node->locator));
 					break;
 				case FWTS_MPAM_INTERCONNECT:
-					fwts_interconnect_locator_descriptor *intc_loc_des =
-							(fwts_interconnect_locator_descriptor *)res_node->locator;
-					fwts_interconnect_descriptor_table *intc_des_table = (table->data + intc_loc_des->intc_des_tbl_offset);
+					intc_loc_des = (fwts_interconnect_locator_descriptor *)res_node->locator;
+					intc_des_table = (table->data + intc_loc_des->intc_des_tbl_offset);
 					fwts_log_info_verbatim(fw, "      Interconnect locator:");
 					fwts_hexdump_data_prefix_all(fw, res_node->locator, "        ", sizeof(res_node->locator));
 					fwts_acpi_reserved_zero_array(fw, "MPAM", "Locator", res_node->locator + 8, 4, &passed);

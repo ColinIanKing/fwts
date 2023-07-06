@@ -1,0 +1,10 @@
+usr/bin/kernelscan
+usr/lib/*/fwts/libfwts.a
+usr/lib/*/fwts/libfwts.la
+usr/lib/*/fwts/libfwts.so
+usr/lib/*/fwts/libfwtsacpica.a
+usr/lib/*/fwts/libfwtsacpica.la
+usr/lib/*/fwts/libfwtsacpica.so
+usr/lib/*/fwts/libfwtsiasl.a
+usr/lib/*/fwts/libfwtsiasl.la
+usr/lib/*/fwts/libfwtsiasl.so

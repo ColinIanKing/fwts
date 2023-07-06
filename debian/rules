@@ -2,8 +2,6 @@
 
 export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
-DEB_BUILD_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH)
-
 DEBVERS := $(shell dpkg-parsechangelog | grep ^Version: | cut -d' ' -f2 \
 		| cut -d- -f1)
 

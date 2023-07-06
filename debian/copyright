@@ -3,14 +3,13 @@ Upstream-Name: fwts
 Source: git://kernel.ubuntu.com/hwe/fwts
 
 Files: *
-       src/acpica/source/compiler/fwts_iasl_interface.c
-       src/acpica/source/compiler/fwts_iasl_interface.h
+       src/libfwtsiasl/fwts_iasl_interface.c
+       src/libfwtsacpica/fwts_acpica.c
 Copyright: 2010-2023, Canonical Ltd
 License: GPL-2
 
 Files: src/acpi/acpiinfo/acpiinfo.c
        src/acpi/battery/battery.c
-       src/acpi/common/common.c
        src/acpi/cstates/cstates.c
        src/acpi/dmar/dmar.c
        src/acpi/fan/fan.c
@@ -19,18 +18,12 @@ Files: src/acpi/acpiinfo/acpiinfo.c
        src/bios/mtrr/mtrr.c
        src/cpu/cpufreq/cpufreq.c
        src/cpu/microcode/microcode.c
-       src/dmi/dmi_decode/dmi_decode.c
-       src/hpet/hpet_check/hpet_check.c
-       src/lib/include/fwts_e820.h
-       src/lib/src/e820.c
        src/pci/maxreadreq/maxreadreq.c
 Copyright: 2010-2023, Canonical Ltd
            2006, Intel Corporation
 License: GPL-2
 
 Files: src/cpu/virt/virt.c
-       src/lib/include/fwts_virt.h
-       src/lib/src/virt.c
 Copyright: 2010-2023, Canonical Ltd
            2007, AMD Inc
            2006, Intel Corporation

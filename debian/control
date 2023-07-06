@@ -4,9 +4,9 @@ Priority: optional
 Rules-Requires-Root: no
 Maintainer: Firmware Testing Team <fwts-devel@lists.ubuntu.com>
 Uploaders: Ivan Hu <ivan.hu@canonical.com>
-Standards-Version: 4.1.0
+Standards-Version: 4.6.0
 Homepage: https://wiki.ubuntu.com/FirmwareTestSuite
-Build-Depends: debhelper (>= 9~),
+Build-Depends: debhelper-compat (= 13),
                autoconf,
                automake,
                libtool,

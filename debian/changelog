@@ -1,3 +1,46 @@
+fwts (23.07.00-0ubuntu1) mantic; urgency=medium
+
+  [Armin Wolf]
+  * acpi/wmi: Add WMI GUID for the dell-wmi-ddv driver
+  * acpi/wmi: Check if the mandatory block query method exists
+  * acpi/wmi: Fix bug when counting WMI methods
+  * fwts_acpica: Remove unused variable "context"
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20230628
+
+  [Ivan Hu]
+  * lib: framework: remvoe ARM specific for ebbr
+  * fwts-test: sync up the removing ARM specific for ebbr
+  * cppcheck: fix the cppcheck source link error
+  * lib: fwts_oops: fix the WARN_ON warnings in kernel not found
+  * debian: control: update uploader
+  * debian: control: modify newer dkms dependency
+  * auto-packager: mkpackage.sh: remove the control hook
+  * lib: fwts_dump_data: add function for simply dump raw data
+  * lib: fwts_dump_data: add library function for dumping all raw data with
+    prefix
+  * acpi: aest: modify the dumping raw data without noisy info
+  * fwts-test: sync up aest modify the dumping raw data
+  * acpi: mpam: add test for ACPI MPAM table
+  * fwts-test: sync up with adding the mpam tests
+  * acpi: mpam: test with resource specific data for interconnect location type
+  * fwts-test: sync up with test with resource specific data
+  * acpi: mpam: fix build fail on bionic
+  * uefi: esrt: update the LastAttemptStatus values to UEFI spec 2.10
+  * lib: fwts_acpi_object_eval: sync up the AML exceptions from ACPICA
+  * debian: update compat level and standards version
+  * debian: fix debuild fail for the not installed files
+  * debian: fix lintian errors and warnings
+
+  [Mario Limonciello]
+  * Increase number of max semaphores to fix OOM crashes on some systems
+
+  [Ákos Nagy]
+  * lib: make the return types consistent
+ 
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Fri, 07 Jul 2023 10:37:02 +0800
+
 fwts (23.05.00-0ubuntu1) mantic; urgency=medium
 
   [Colin Ian King]

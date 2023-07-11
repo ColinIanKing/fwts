@@ -31,7 +31,7 @@
 void fwts_dump_raw_data(
 	char *buffer,		/* buffer to contained formatted dump */
 	const size_t len,	/* Length of buffer */
-	const uint8_t *data,	/* Octects to dump */
+	const uint8_t *data,	/* Octets to dump */
 	const int addr,		/* Original buffer data address */
 	const size_t nbytes)	/* Number of bytes to dump, max 16 */
 {
@@ -71,7 +71,7 @@ void fwts_dump_raw_data(
 void fwts_dump_raw_data_prefix(
 	char *buffer,		/* buffer to contained formatted dump */
 	const size_t len,	/* Length of buffer */
-	const uint8_t *data,	/* Octects to dump */
+	const uint8_t *data,	/* Octets to dump */
 	const char *prefix,	/* Prefix string or for alignment */
 	const size_t nbytes)	/* Number of bytes to dump, max 16 */
 {
@@ -95,7 +95,7 @@ void fwts_dump_raw_data_prefix(
  */
 void fwts_hexdump_data_prefix_all(
 	fwts_framework *fw,
-	const uint8_t *data,	/* Octects to dump */
+	const uint8_t *data,	/* Octets to dump */
 	const char *prefix,	/* Prefix string or for alignment for each line */
 	const size_t nbytes)	/* Number of bytes to dump for all data */
 {

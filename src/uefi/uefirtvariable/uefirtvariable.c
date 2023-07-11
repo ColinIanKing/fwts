@@ -2018,7 +2018,7 @@ static void getvariable_test_invalid(
 	}
 	fwts_failed(fw, LOG_LEVEL_HIGH,
 		"UEFIRuntimeGetVariableInvalid",
-		"GetVariable wuth %s failed to get an error return status, "
+		"GetVariable with %s failed to get an error return status, "
 		"expected EFI_INVALID_PARAMETER.", test);
 
 	return;

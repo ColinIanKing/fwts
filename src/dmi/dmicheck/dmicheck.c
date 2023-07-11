@@ -1638,7 +1638,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			fwts_dmi_value_range t16_ranges[] = {{0x1, 0xa}, {0xa0, 0xa4}};
 			dmi_ranges_uint8_check(fw, table, addr, "Location", hdr, 0x4, t16_ranges);
 			dmi_min_max_uint8_check(fw, table, addr, "Use", hdr, 0x5, 0x1, 0x7);
-			dmi_min_max_uint8_check(fw, table, addr, "Error Corrrection Type", hdr, 0x6, 0x1, 0x7);
+			dmi_min_max_uint8_check(fw, table, addr, "Error Correction Type", hdr, 0x6, 0x1, 0x7);
 			dmi_min_max_uint32_check(fw, table, addr, "Maximum Capacity", hdr, 0x7, 0, 0x80000000);
 			if (hdr->length < 0x17)
 				break;

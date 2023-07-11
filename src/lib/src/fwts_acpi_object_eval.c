@@ -277,7 +277,7 @@ static const acpi_eval_error errors[] = {
 	{ AE_AML_TARGET_TYPE,		LOG_LEVEL_HIGH,		"AEAMLTargetType",	"Target type",
 		"A target operand of an incorrect type was encountered."
 	},
-	{ AE_AML_PROTOCOL,		LOG_LEVEL_HIGH,		"AEAMLViolateProtocol",	"Violattion protcol",
+	{ AE_AML_PROTOCOL,		LOG_LEVEL_HIGH,		"AEAMLViolateProtocol",	"Violation protocol",
 		"Violation of a fixed ACPI protocol."
 	},
 	{ AE_AML_BUFFER_LENGTH, 	LOG_LEVEL_HIGH,		"AEAMLBadBufLength",	"Bad buffer length",

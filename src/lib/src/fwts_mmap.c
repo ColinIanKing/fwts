@@ -74,7 +74,7 @@ void *fwts_mmap(const off_t start, const size_t size)
 
 /*
  *  fwts_munmap()
- *	Unmap memory mapped wuth fwts_mmap. Needs the mmap'd address and size.
+ *	Unmap memory mapped with fwts_mmap. Needs the mmap'd address and size.
  */
 int fwts_munmap(void *mem, const size_t size)
 {

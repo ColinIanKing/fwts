@@ -187,7 +187,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "Unable to switch EFI into virtual mode",
-   "advice": "The EFI driver was unable to swith the EFI runtime services to virtual mode, the call to the EFI service SetVirtualAddressMap failed and the kernel panic'd",
+   "advice": "The EFI driver was unable to switch the EFI runtime services to virtual mode, the call to the EFI service SetVirtualAddressMap failed and the kernel panic'd",
    "label": "KlogEfiSwitchToVirtualModePanic",
   },
   {
@@ -418,14 +418,14 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Error collecting EINJ resources",
-   "advice": "The ACPI Error Injection (EINJ) driver detected either an invalid Generic Address Structure (GAR) in an injection instruction entry, or resource space ID was not system memeory or system I/O.",
+   "advice": "The ACPI Error Injection (EINJ) driver detected either an invalid Generic Address Structure (GAR) in an injection instruction entry, or resource space ID was not system memory or system I/O.",
    "label": "KlogAcpiEinjResourcesFailure",
   },
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Error requesting memory/port resources",
-   "advice": "The ACPI Error Injection (EINJ) driver failed to request system meory or system I/O port resources, EINJ functionality is disabled.",
+   "advice": "The ACPI Error Injection (EINJ) driver failed to request system memory or system I/O port resources, EINJ functionality is disabled.",
    "label": "KlogAcpiEinjResourcesFailure",
   },
   {
@@ -810,7 +810,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI does not support sleep state S",
-   "advice": "The ACPI driver could not put the machine into the desired sleep state because the sleep state is not suppoted.",
+   "advice": "The ACPI driver could not put the machine into the desired sleep state because the sleep state is not supported.",
    "label": "KlogAcpiSleepStateNoSupport"
   },
   {
@@ -831,14 +831,14 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI: processor limited to max C-state",
-   "advice": "The maximum C state is less than the maxium allowed processor C states, so the CPU cannot go into a deep idle C state which means it is not optimally configured for power saving.",
+   "advice": "The maximum C state is less than the maximum allowed processor C states, so the CPU cannot go into a deep idle C state which means it is not optimally configured for power saving.",
    "label": "KlogAcpiIdleMaxCStateLimited"
   },
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "battery: (dis)charge rate invalid",
-   "advice": "The ACPI Battery Status (_BST) object is returning an invalid dischar or charge rate.  This can be either a negative 16 bit value or reporing 0 as 65536 because of an invalid calculation in the DSDT. The Linux ACPI battery driver has detected this firmware bug and attempted to work around it.",
+   "advice": "The ACPI Battery Status (_BST) object is returning an invalid dischar or charge rate.  This can be either a negative 16 bit value or reporting 0 as 65536 because of an invalid calculation in the DSDT. The Linux ACPI battery driver has detected this firmware bug and attempted to work around it.",
    "label": "KlogAcpiBstInvalidRate"
   },
   {
@@ -1097,7 +1097,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "No IRQ available for",
-   "advice": "The ACPI driver failed to allocate an IRQ to a PCI link, possibly because of prevous IRQ allocations that have precedence. A workaround is to use kernel parameter pci=noacpi or acpi=off",
+   "advice": "The ACPI driver failed to allocate an IRQ to a PCI link, possibly because of previous IRQ allocations that have precedence. A workaround is to use kernel parameter pci=noacpi or acpi=off",
    "label": "KlogAcpiPciLinkIrq"
   },
   {
@@ -1328,7 +1328,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Path has too many parent prefixes.*reached beyond root node",
-   "advice": "The firmware specified an ACPI path using too many parent ^ prefixes and reached a point where thare are no parent nodes in the hierarchy and so the referenced object could not be found.  The kernel cannot find the named object because of this bug in the firmware and this may lead to broken or misbehaving behaviour.",
+   "advice": "The firmware specified an ACPI path using too many parent ^ prefixes and reached a point where there are no parent nodes in the hierarchy and so the referenced object could not be found.  The kernel cannot find the named object because of this bug in the firmware and this may lead to broken or misbehaving behaviour.",
    "label": "KlogAcpiPathTooManyParentPrefixes"
   },
   {
@@ -1461,7 +1461,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Failed to create genetlink family for ACPI event",
-   "advice": "An internel kernel error occurred during  ACPI driver genetic link initialization. See acpi_event_genetlink_init() in drivers/acpi/event.c for more information.",
+   "advice": "An internal kernel error occurred during  ACPI driver genetic link initialization. See acpi_event_genetlink_init() in drivers/acpi/event.c for more information.",
    "label": "KlogAcpiGenetlinkInitFail"
   },
   {
@@ -1573,7 +1573,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Limiting number of power states to max",
-   "advice": "The ACPI C states object (_CST) contains more C states than ACPI supports and so the kernal has had to limit this.  To enable more C states, one must increase the Kernal ACPI macro ACPI_PROCESSOR_MAX_POWER.",
+   "advice": "The ACPI C states object (_CST) contains more C states than ACPI supports and so the kernel has had to limit this.  To enable more C states, one must increase the kernel ACPI macro ACPI_PROCESSOR_MAX_POWER.",
    "label": "KlogLimitPowerStates"
   },
   {
@@ -1587,7 +1587,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "TSC doesn't count with P0 frequency",
-   "advice": "The AMD processor has the x86 constant TSC feature enabled but the firmware has not set bit 24 of the MSR MSR_K7_HWCR and so the processor TSC does not count in the P0 frequenct level. This is a firmware bug.",
+   "advice": "The AMD processor has the x86 constant TSC feature enabled but the firmware has not set bit 24 of the MSR MSR_K7_HWCR and so the processor TSC does not count in the P0 frequency level. This is a firmware bug.",
    "label": "KlogAmdTscP0FreqNoCount"
   },
   {
@@ -1636,7 +1636,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Found unsupported MADT entry",
-   "advice": "The ACPI Multiple APIC Description Table (MADT) contains an entry that has an unknown MADT header type. This will be igored, but it does suggest a broken or buggyy ACPI MADT.",
+   "advice": "The ACPI Multiple APIC Description Table (MADT) contains an entry that has an unknown MADT header type. This will be ignored, but it does suggest a broken or buggyy ACPI MADT.",
    "label": "KlogMadtEntryUnsupported"
   },
   {
@@ -1657,7 +1657,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "DMAR: Recommended TLB entries for ISOCH unit is 16; your BIOS set",
-   "advice": "The recommended number of TLB entries for the ISOCH DMAR unit should be 16, hoever the firmware has misconfigured this.",
+   "advice": "The recommended number of TLB entries for the ISOCH DMAR unit should be 16, however the firmware has misconfigured this.",
    "label": "KlogDmarTlbEntriesMisconfigured"
   },
   {
@@ -1972,14 +1972,14 @@
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Local index .* is invalid .*max",
-    "advice": "An error occurred getting the node associated with a local or an arg. The local index for the refclass local type was greather than ACPI_METHOD_MAX_LOCAL.  See acpi_ds_method_data_get_node().",
+    "advice": "An error occurred getting the node associated with a local or an arg. The local index for the refclass local type was greater than ACPI_METHOD_MAX_LOCAL.  See acpi_ds_method_data_get_node().",
     "label": "KlogAcpiLocalIndexInvalid"
   },
   {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Arg index .* is invalid .*max",
-    "advice": "An error occurred getting the node associated with a local or an arg. The arg index for the refclass arg type was greather than ACPI_NETHOD_MAX_ARG.  See acpi_ds_method_data_get_node().",
+    "advice": "An error occurred getting the node associated with a local or an arg. The arg index for the refclass arg type was greater than ACPI_NETHOD_MAX_ARG.  See acpi_ds_method_data_get_node().",
     "label": "KlogAcpiArgIndexInvalid"
   },
   {
@@ -2175,7 +2175,7 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Target is not a Package or BufferField",
-    "advice": "An attempt to store an ACPI object into an indexed buffer or package element failed beacause the targe type is not a package or a buffer field.",
+    "advice": "An attempt to store an ACPI object into an indexed buffer or package element failed because the targe type is not a package or a buffer field.",
     "label": "KlogAcpiTargetNotPackageOrBufferField"
   },
   {
@@ -2875,7 +2875,7 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Invalid OwnerId: 0x",
-    "advice": "An attempt to release an owner ID failed because the owner ID is invalud. Only owner IDs 1 to 255 are allowed.",
+    "advice": "An attempt to release an owner ID failed because the owner ID is invalid. Only owner IDs 1 to 255 are allowed.",
     "label": "KlogAcpiInvalidOwnerId"
   },
   {
@@ -2931,7 +2931,7 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Method reached maximum reentrancy limit (255)",
-    "advice": "A method has been re-entrantly entered too many times. The limit is imposed to avoid a wrap-around on the thread count. Methods should generally not be re-entrantly executred this deep, so it may indicate a bug in the firmware.",
+    "advice": "A method has been re-entrantly entered too many times. The limit is imposed to avoid a wrap-around on the thread count. Methods should generally not be re-entrantly executed this deep, so it may indicate a bug in the firmware.",
     "label": "KlogAcpiMethodMaxRentrancyLimit"
   },
   {
@@ -3120,7 +3120,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Unsupported register bit width: 0x",
-   "advice": "The ACPI driver was requested to validate a H/W register but the bit width of the register was not 8, 16 or 32 bits; other sizes are not suppoted by the driver. See acpi_hw_validate_register().",
+   "advice": "The ACPI driver was requested to validate a H/W register but the bit width of the register was not 8, 16 or 32 bits; other sizes are not supported by the driver. See acpi_hw_validate_register().",
    "label": "KlogAcpiHwRegsUnsupportedRegisterBitWidth"
   },
   {
@@ -3134,7 +3134,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Unknown Register ID: 0x",
-   "advice": "The ACPI driver was registed to read an ACPI register, but an invalid register ID was given; was expected withe a PM1 status register, PM1 enable register, PM1 control, PM 2 control, PM timer or a SMI command block.  This is normally a driver bug, see acpi_hw_register_read().",
+   "advice": "The ACPI driver was registered to read an ACPI register, but an invalid register ID was given; was expected with a PM1 status register, PM1 enable register, PM1 control, PM 2 control, PM timer or a SMI command block.  This is normally a driver bug, see acpi_hw_register_read().",
    "label": "KlogAcpiHwRegsUnknownRegisterId"
   },
   {
@@ -3302,7 +3302,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not convert resource",
-   "advice": "The ACPI driver could not covert a resource linked list into an AML bytestream. See acpi_rs_convert_resources_to_aml() for details.",
+   "advice": "The ACPI driver could not convert a resource linked list into an AML bytestream. See acpi_rs_convert_resources_to_aml() for details.",
    "label": "KlogAcpiResourceToAmlFailed"
   },
   {
@@ -3624,7 +3624,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI thermal trip point .* changed",
-   "advice": "The ACPI driver has thrown this exeption because of one of the two cases: 1. Either a trip point has becomes invalid when re-evaluating the AML code or, 2. devices listed in _PSL, _ALx or _TZD may have changed and the driver needs to re-bind to the cooling devices of a thermal zone when that happens.  This execption probably means the ACPI thermal driver needs to cater for this behaviour and it needs fixing or updating.",
+   "advice": "The ACPI driver has thrown this exception because of one of the two cases: 1. Either a trip point has becomes invalid when re-evaluating the AML code or, 2. devices listed in _PSL, _ALx or _TZD may have changed and the driver needs to re-bind to the cooling devices of a thermal zone when that happens.  This exception probably means the ACPI thermal driver needs to cater for this behaviour and it needs fixing or updating.",
    "label": "KlogAcpiThermTripPointChanged"
   },
   {
@@ -3904,7 +3904,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Unknown exception code: 0x",
-   "advice": "An execption occurred but the execption code was not recognized and the ACPI driver could not find a textual description for this exception. This is most probably a bug in the ACPI driver or ACPICA core.",
+   "advice": "An exception occurred but the exception code was not recognized and the ACPI driver could not find a textual description for this exception. This is most probably a bug in the ACPI driver or ACPICA core.",
    "label": "KlogAcpiUnknownExceptionCode"
   },
   {
@@ -3953,7 +3953,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Unknown action (0x",
-   "advice": "The ACPI engine was expecting to increment, decrement or delete a reference count but instead was given an uknown action to do instead.  This is a bug in the ACPI ACPICA code.",
+   "advice": "The ACPI engine was expecting to increment, decrement or delete a reference count but instead was given an unknown action to do instead.  This is a bug in the ACPI ACPICA code.",
    "label": "KlogAcpiRefCountUnknownAction"
   },
   {
@@ -3967,7 +3967,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Unknown parent opcode Op=",
-   "advice": "The ACPI interpreter found an AML opcode that had an unexpected parent class. This probably indicates an internal ACPI interpeter bug. ",
+   "advice": "The ACPI interpreter found an AML opcode that had an unexpected parent class. This probably indicates an internal ACPI interpreter bug. ",
    "label": "KlogAcpiUnknownParentOp"
   },
   {
@@ -4107,7 +4107,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "obsolete and not implemented",
-   "advice": "ACPI execution run time error: Execution of AML_SHIFT_LEFT_BIT_OP (0x5b11) or AML_SHIFT_RIGHT_BIT_OP (0x5b10) were ignored, these are obsolete AML opcodes and are not implemented in the ACPI interpreter. Unexepcted execution behaviour will occur.",
+   "advice": "ACPI execution run time error: Execution of AML_SHIFT_LEFT_BIT_OP (0x5b11) or AML_SHIFT_RIGHT_BIT_OP (0x5b10) were ignored, these are obsolete AML opcodes and are not implemented in the ACPI interpreter. Unexpected execution behaviour will occur.",
    "label": "KlogAcpiOpObsolete"
   },
   {
@@ -4212,14 +4212,14 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "e820: too many entries; ignoring ",
-   "advice": "Legacy E820 BIOS has a limit of 128 entries in the E820 memory map but the firmware seems to have more than this. For EFI Numa hardare, the limit is 128 + 3 * maximum number of nodes.  The kernel has ignore the extra entries.  This could lead to regions of memory being used by the kernel when in fact is should be reserved and this can lead to unexpected behaviour.",
+   "advice": "Legacy E820 BIOS has a limit of 128 entries in the E820 memory map but the firmware seems to have more than this. For EFI NUMA hardware, the limit is 128 + 3 * maximum number of nodes.  The kernel has ignore the extra entries.  This could lead to regions of memory being used by the kernel when in fact is should be reserved and this can lead to unexpected behaviour.",
    "label": "KlogE820TooManyEntries"
   },
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "Ooops! Too many entries in the memory map!",
-   "advice": "Legacy E820 BIOS has a limit of 128 entries in the E820 memory map but the firmware seems to have more than this. For EFI Numa hardare, the limit is 128 + 3 * maximum number of nodes.  The kernel has ignore the extra entries.  This could lead to regions of memory being used by the kernel when in fact is should be reserved and this can lead to unexpected behaviour.",
+   "advice": "Legacy E820 BIOS has a limit of 128 entries in the E820 memory map but the firmware seems to have more than this. For EFI NUMA hardware, the limit is 128 + 3 * maximum number of nodes.  The kernel has ignore the extra entries.  This could lead to regions of memory being used by the kernel when in fact is should be reserved and this can lead to unexpected behaviour.",
    "label": "KlogE820TooManyEntries"
   },
   {
@@ -4282,7 +4282,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI.*Error parsing platform interrupt source entry",
-   "advice": "The ACPI MADT could not be parsed to find the platform intrerrupt source entry.",
+   "advice": "The ACPI MADT could not be parsed to find the platform interrupt source entry.",
    "label": "KlogAcpiMadtPlatIntSrcParseError"
   },
   {
@@ -4506,7 +4506,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Invalid _PSS data",
-   "advice": "Failed to get ACPI performance states from the _PSS contol, buffer was either NULL or not an ACPI package.",
+   "advice": "Failed to get ACPI performance states from the _PSS control, buffer was either NULL or not an ACPI package.",
    "label": "KlogAcpiPssFailed"
   },
   {
@@ -4919,7 +4919,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "error obtaining _EC",
-   "advice": "The ACPI Embedded Controller Offset Query Control Method _EC failed to evaluate. It is either missing or broken and means the kernel cound not add a SMBUS host controller.",
+   "advice": "The ACPI Embedded Controller Offset Query Control Method _EC failed to evaluate. It is either missing or broken and means the kernel could not add a SMBUS host controller.",
    "label": "KlogAcpiEcFailed"
   },
   {
@@ -4940,7 +4940,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Invalid _TSS data: freq is zero",
-   "advice": "The _TSS has returned a zero fequency setting in one or more of the package elements.",
+   "advice": "The _TSS has returned a zero frequency setting in one or more of the package elements.",
    "label": "KlogAcpiTssZeroFrequency"
   },
   {
@@ -5017,7 +5017,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Invalid _PTC data",
-   "advice": "_PTC did not return a package of two elements, expected a two element package containing bufffers for the control and status register.",
+   "advice": "_PTC did not return a package of two elements, expected a two element package containing buffers for the control and status register.",
    "label": "KlogAcpiPtcDataBad"
   },
   {
@@ -5150,7 +5150,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI Error.*ACPI path has too many parent prefixes",
-   "advice": "A path to an ACPI obejct has too many ^ parent prefixes and references passed the top of the root node. Please check AML for all ^ prefixed ACPI path names.",
+   "advice": "A path to an ACPI object has too many ^ parent prefixes and references passed the top of the root node. Please check AML for all ^ prefixed ACPI path names.",
    "label": "KlogAcpiPathTooManyParentPrefixes"
   },
   {
@@ -5381,7 +5381,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_INVALID_TABLE_LENGTH",
-   "advice": "The ACPI Method returned a table of the incorrect length. This can lead to unexepected results.",
+   "advice": "The ACPI Method returned a table of the incorrect length. This can lead to unexpected results.",
    "label": "KlogAcpiInvalidTableLength"
   },
   {
@@ -5465,7 +5465,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Method parse/execution failed",
-   "advice": "The ACPI driver encountered a parse or execution error on some ACPI AML code. This is unexepcted and normally indicates that there is a bug in the compiled AML code.  It could be a programming fault or an AML compiler issue.  See acpi_ps_parse_aml().",
+   "advice": "The ACPI driver encountered a parse or execution error on some ACPI AML code. This is unexpected and normally indicates that there is a bug in the compiled AML code.  It could be a programming fault or an AML compiler issue.  See acpi_ps_parse_aml().",
    "label": "KlogAcpiParseExecAmlFailed"
   },
   {
@@ -5479,7 +5479,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI (Warning|Error).*Evaluating .* failed",
-   "advice": "Executing the ACPI Method leaded in an execution failure. This needs investigating.",
+   "advice": "Executing the ACPI Method ended in an execution failure. This needs investigating.",
    "label": "KlogAcpiEvaluationFailed"
   },
   {
@@ -5591,7 +5591,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI Warning.*Package has no elements",
-   "advice": "The ACPI Method returned a package with no elements in it, and some were exepected.This should be fixed.",
+   "advice": "The ACPI Method returned a package with no elements in it, and some were expected. This should be fixed.",
    "label": "KlogAcpiPackageHasNoElements"
   },
   {
@@ -5604,7 +5604,7 @@
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
-   "pattern": "ACPI Warning.*Return Package type mistmatch at index",
+   "pattern": "ACPI Warning.*Return Package type mismatch at index",
    "advice": "The ACPI Method returned a package that contained data of the incorrect data type. This data type needs fixing.",
    "label": "KlogAcpiReturnPackageTypeMismatch"
   },
@@ -5906,7 +5906,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "\\[Firmware Bug\\]:.*Duplicate ACPI video bus",
-   "advice": "Try video module parameter video.allow_duplicates=1 if the current driver does't work.",
+   "advice": "Try video module parameter video.allow_duplicates=1 if the current driver doesn't work.",
    "label": "KlogAcpiDuplicateAcpiVideoBus"
   },
   {
@@ -6174,7 +6174,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "PM: Not enough free swap",
-   "advice": "Hibernate failed because the swap parition was probably too small.",
+   "advice": "Hibernate failed because the swap partition was probably too small.",
    "label": "PmNotEnoughFreeSwap"
   },
   {

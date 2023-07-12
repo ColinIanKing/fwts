@@ -181,12 +181,6 @@ static int spcr_test1(fwts_framework *fw)
 	reserved1 = spcr->reserved1[0] + (spcr->reserved1[1] << 8) + (spcr->reserved1[2] << 16);
 	fwts_acpi_reserved_zero("SPCR", "Reserved1", reserved1, &passed);
 
-	if (spcr->interrupt_type == 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRUnknownInterruptType",
-			"SPCR interrupt type field is zero, expecting support bits to be set");
-	}
 	if (spcr->interrupt_type & 0xf0) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

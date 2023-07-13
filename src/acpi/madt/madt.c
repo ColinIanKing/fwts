@@ -118,11 +118,11 @@
 
 #define FADT_MAX_MAJOR_REVISION	((uint8_t)((FWTS_ACPI_VERSION_NOW & 0xF00) >> 8))
 #define FADT_MAX_MINOR_REVISION	((uint8_t)(FWTS_ACPI_VERSION_NOW & 0xF0) >> 4)
-#define MADT_MAX_REVISION	((uint8_t)5)
+#define MADT_MAX_REVISION	((uint8_t)6)
 
 #define SUBTABLE_UNDEFINED	0x00
 #define SUBTABLE_VARIABLE	0xff
-#define NUM_SUBTABLE_TYPES	16
+#define NUM_SUBTABLE_TYPES	24
 #define MAX_IO_APIC_ID		256 /* IO APIC ID field is 1 byte */
 
 #define SBBR_ACPI_MAJOR_VERSION 6
@@ -237,6 +237,18 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 		.num_types = 16,
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
 			     16, 16, 12, 80, 24, 24, 16, 20 }
+	},
+	{ /* for ACPI 6.5 */
+		.major_version = 6,
+		.minor_version = 5,
+		.madt_version = 6,
+		.num_types = 24,
+		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
+			     16, 16, 12, 82, 24, 24, 16, 20, 16,
+			     SUBTABLE_VARIABLE, SUBTABLE_VARIABLE,
+			     SUBTABLE_VARIABLE, SUBTABLE_VARIABLE,
+			     SUBTABLE_VARIABLE, SUBTABLE_VARIABLE,
+			     SUBTABLE_VARIABLE }
 	},
 	{ /* terminator */
 		.major_version = 0,

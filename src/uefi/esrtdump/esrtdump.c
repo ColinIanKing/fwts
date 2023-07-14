@@ -152,8 +152,15 @@ static int get_entries_info(fwts_framework *fw)
 				case LAST_ATTEMPT_STATUS_ERR_PWR_EVT_BATT:
 					str_info = "(PWR EVT BATT)";
 					break;
+				case LAST_ATTEMPT_STATUS_ERR_UNSATISFIED_DEPENDENCIES:
+					str_info = "(Unsatisfied Dependencies)";
+					break;
 				default:
-					str_info = "";
+					if (count >= LAST_ATTEMPT_STATUS_ERR_UNSUCCESSFUL_VENDOR_RANGE_MIN
+						&& count <= LAST_ATTEMPT_STATUS_ERR_UNSUCCESSFUL_VENDOR_RANGE_MAX)
+						str_info = "(Unsuccessful Vendor Range)";
+					else
+						str_info = "";
 					break;
 				}
 				fwts_log_info_verbatim(fw, "  LastAttemptStatus:        %d %s", count, str_info);

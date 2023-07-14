@@ -23,6 +23,8 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
+#include "fwts_uefi.h"
+
 static fwts_acpi_table_info *table;
 acpi_table_init(PHAT, &table)
 
@@ -81,11 +83,13 @@ static void phat_health_test(
 	uint32_t offset,
 	bool *passed)
 {
-	char *device_path;
+	uint16_t *device_path;
+
 	char guid[37];
+	char buffer[2048];
 
 	fwts_guid_buf_to_str(entry->data_signature, guid, sizeof(guid));
-	device_path = (char *)entry + sizeof(fwts_acpi_table_phat_health);
+	device_path = (uint16_t *)((char *)entry + sizeof(fwts_acpi_table_phat_health));
 
 	fwts_log_info_verbatim(fw, " Firmware Health Data Record (Type 1):");
 	print_record_header(fw, &entry->header);
@@ -93,9 +97,11 @@ static void phat_health_test(
 	fwts_log_info_simp_int(fw, "    AmHealthy:                      ", entry->healthy);
 	fwts_log_info_verbatim(fw, "    Device Signature:               %s", guid);
 	fwts_log_info_simp_int(fw, "    Device-specific Data Offset:    ", entry->data_offset);
-	fwts_log_info_verbatim(fw, "    Device Path:                    %s", device_path);
 
-	offset = offset + sizeof(fwts_acpi_table_phat_health) + strlen(device_path);
+	fwts_uefi_str16_to_str(buffer, sizeof(buffer), device_path);
+	fwts_log_info_verbatim(fw, "    Device Path:                    %s", buffer);
+
+	offset = offset + sizeof(fwts_acpi_table_phat_health) + (fwts_uefi_str16len(device_path) + 1) * 2;
 
 	if (entry->data_offset != 0) {
 		uint16_t i;

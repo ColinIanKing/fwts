@@ -24,12 +24,12 @@ phat                Producer ID:                    0x03040506
 phat            
 phat             Firmware Health Data Record (Type 1):
 phat                Type:                           0x0001
-phat                Record Length:                  0x002f
+phat                Record Length:                  0x003e
 phat                Revision:                       0x00
 phat                Reserved:                       0x0000
 phat                AmHealthy:                      0x00
 phat                Device Signature:               91AF0530-5D86-470E-A6B0-0A2DB9408249
-phat                Device-specific Data Offset:    0x0000002b
+phat                Device-specific Data Offset:    0x0000003a
 phat                Device Path:                    \_SB.PCI0.ABCD
 phat                Vendor Data:                    0xff
 phat                Vendor Data:                    0x11
@@ -38,12 +38,12 @@ phat                Vendor Data:                    0xaa
 phat            
 phat             Firmware Health Data Record (Type 1):
 phat                Type:                           0x0001
-phat                Record Length:                  0x0037
+phat                Record Length:                  0x004a
 phat                Revision:                       0x00
 phat                Reserved:                       0x0000
 phat                AmHealthy:                      0x00
 phat                Device Signature:               18D5DD11-BA12-4924-A75A-46D251ECB593
-phat                Device-specific Data Offset:    0x0000002f
+phat                Device-specific Data Offset:    0x00000042
 phat                Device Path:                    \_SB.PCI0.GFX0.XYZ
 phat                Vendor Data:                    0x12
 phat                Vendor Data:                    0x34

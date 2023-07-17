@@ -2,9 +2,7 @@ spcr            spcr: SPCR Serial Port Console Redirection Table test.
 spcr            ----------------------------------------------------------
 spcr            Test 1 of 3: SPCR Serial Port Console Redirection Table
 spcr            test.
-spcr            Serial Interface: Reserved (Do not Use)
-spcr            FAILED [HIGH] SPCRInterfaceReserved: Test 1, SPCR Serial
-spcr            interface type 0x08 is a reserved interface
+spcr            Serial Interface: APM88xxxx
 spcr            FAILED [MEDIUM] SPCRReservedNonZero: Test 1, SPCR
 spcr            Reserved1 field must be zero, got 0x000020f0 instead
 spcr            Baud Rate:        Reserved
@@ -23,6 +21,6 @@ spcr
 spcr            Test 3 of 3: SPCR GSIV Interrupt Test.
 spcr            
 spcr            ==========================================================
-spcr            0 passed, 6 failed, 0 warning, 0 aborted, 0 skipped, 0
+spcr            0 passed, 5 failed, 0 warning, 0 aborted, 0 skipped, 0
 spcr            info only.
 spcr            ==========================================================

@@ -2597,7 +2597,7 @@ klog            Method parse/execution failed [_PR_.CPU1.APCT] (Node
 klog            f7033090), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2608,7 +2608,7 @@ klog            Method parse/execution failed [_PR_.CPU1.GCAP] (Node
 klog            f7033078), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2628,7 +2628,7 @@ klog            Method parse/execution failed [_PR_.CPU1._PDC] (Node
 klog            f7033048), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2669,7 +2669,7 @@ klog            /execution failed [_PR_.CPU1.APPT] (Node f403d228),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2680,7 +2680,7 @@ klog            /execution failed [_PR_.CPU1.GCAP] (Node f403d1f8),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2703,7 +2703,7 @@ klog            /execution failed [_PR_.CPU1._PDC] (Node f403d1c8),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2744,7 +2744,7 @@ klog            /execution failed [_PR_.CPU1.APCT] (Node f403d210),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2755,7 +2755,7 @@ klog            /execution failed [_PR_.CPU2.GCAP] (Node f403d270),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2766,7 +2766,7 @@ klog            /execution failed [_PR_.CPU2._PDC] (Node f403d240),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2824,7 +2824,7 @@ klog            Method parse/execution failed [_PR_.CPU1.APPT] (Node
 klog            f701e228), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [HIGH] KlogAcpiInvalidTableLength: Test 1, HIGH
 klog            Kernel message: [ 0.091510] ACPI Error (psparse-0537):
@@ -2832,7 +2832,7 @@ klog            Method parse/execution failed [_PR_.CPU1.GCAP] (Node
 klog            f701e1f8), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.091541] ACPI Warning: Incorrect
@@ -2849,7 +2849,7 @@ klog            Method parse/execution failed [_PR_.CPU1._PDC] (Node
 klog            f701e1c8), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.091778] ACPI Warning: Incorrect
@@ -2875,7 +2875,7 @@ klog            Method parse/execution failed [_PR_.CPU1.APCT] (Node
 klog            f701e210), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2886,7 +2886,7 @@ klog            Method parse/execution failed [_PR_.CPU2.GCAP] (Node
 klog            f701e270), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2897,7 +2897,7 @@ klog            Method parse/execution failed [_PR_.CPU2._PDC] (Node
 klog            f701e240), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2945,7 +2945,7 @@ klog            /execution failed [_PR_.CPU1.APPT] (Node f383e498),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2956,7 +2956,7 @@ klog            /execution failed [_PR_.CPU1.GCAP] (Node f383e468),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2967,7 +2967,7 @@ klog            /execution failed [_PR_.CPU1._PDC] (Node f383e438),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -2998,7 +2998,7 @@ klog            /execution failed [_PR_.CPU1.APCT] (Node f383e480),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -3009,7 +3009,7 @@ klog            /execution failed [_PR_.CPU2.GCAP] (Node f383e4e0),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -3020,7 +3020,7 @@ klog            /execution failed [_PR_.CPU2._PDC] (Node f383e4b0),
 klog            AE_NO_MEMORY (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -3183,7 +3183,7 @@ klog            /execution failed [_PR_.CPU1._PDC] (Node f5822150),
 klog            AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [HIGH] KlogAcpiInvalidTableLength: Test 1, HIGH
 klog            Kernel message: [ 0.113864] ACPI Error: Method parse
@@ -3191,7 +3191,7 @@ klog            /execution failed [_PR_.CPU2._PDC] (Node f58221e0),
 klog            AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [HIGH] KlogAcpiInvalidTableLength: Test 1, HIGH
 klog            Kernel message: [ 0.114544] ACPI Error: Method parse
@@ -3199,7 +3199,7 @@ klog            /execution failed [_PR_.CPU0._PDC] (Node f54211c8),
 klog            AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.115838] ACPI Warning: Incorrect
@@ -3263,7 +3263,7 @@ klog            Method parse/execution failed [_PR_.CPU0._PDC] (Node
 klog            f70191c8), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -4192,7 +4192,7 @@ klog            Method parse/execution failed [_PR_.CPU1._PDC] (Node
 klog            f701a150), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectNotFound: Test 1, HIGH Kernel
 klog            message: [ 0.185688] ACPI Error (psparse-0537): Method
@@ -4209,7 +4209,7 @@ klog            Method parse/execution failed [_PR_.CPU2._PDC] (Node
 klog            f701a1e0), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [HIGH] KlogAcpiPackageListLargerThanExpected: Test
 klog            1, HIGH Kernel message: [ 0.186281] ACPI Warning: Package
@@ -4451,7 +4451,7 @@ klog            /execution failed [_PR_.CPU1._PDC] (Node f5821150),
 klog            AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [HIGH] KlogAcpiInvalidTableLength: Test 1, HIGH
 klog            Kernel message: [ 0.194701] ACPI Error: Method parse
@@ -4459,7 +4459,7 @@ klog            /execution failed [_PR_.CPU2._PDC] (Node f58211e0),
 klog            AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.194897] ACPI Warning: Incorrect
@@ -4603,7 +4603,7 @@ klog            Method parse/execution failed [_PR_.CPU1._PDC] (Node
 klog            f700e180), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.203079] ACPI Warning: Incorrect
@@ -5638,7 +5638,7 @@ klog            Method parse/execution failed [_PR_.CPU1.APCT] (Node
 klog            ffff88007af30560), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -5649,7 +5649,7 @@ klog            Method parse/execution failed [_PR_.CPU1.GCAP] (Node
 klog            ffff88007af30540), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -5660,7 +5660,7 @@ klog            Method parse/execution failed [_PR_.CPU1._PDC] (Node
 klog            ffff88007af30500), AE_NO_MEMORY
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -12258,7 +12258,7 @@ klog            ffff8801376322a8), AE_AML_OPERAND_VALUE (20110112
 klog            /psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -12270,7 +12270,7 @@ klog            ffff880137632438), AE_AML_OPERAND_VALUE (20110112
 klog            /psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -12343,7 +12343,7 @@ klog            Method parse/execution failed [_PR_.CPU1._PDC] (Node
 klog            f700f180), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [HIGH] KlogAcpiInvalidTableLength: Test 1, HIGH
 klog            Kernel message: [ 2.468963] ACPI Error (psparse-0537):
@@ -12351,7 +12351,7 @@ klog            Method parse/execution failed [_PR_.CPU2._PDC] (Node
 klog            f700f240), AE_INVALID_TABLE_LENGTH
 klog            
 klog            ADVICE: The ACPI Method returned a table of the incorrect
-klog            length. This can lead to unexepected results.
+klog            length. This can lead to unexpected results.
 klog            
 klog            FAILED [LOW] KlogAcpiDodWithNoDos: Test 1, LOW Kernel
 klog            message: [ 2.478380] [Firmware Bug]: ACPI(NGFX) defines
@@ -13635,7 +13635,7 @@ klog            ffff880117642ed8), AE_AML_INFINITE_LOOP (20110112
 klog            /psparse-536)
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -13958,7 +13958,7 @@ klog            Method parse/execution failed [_SB_.PCI0.SWFS] (Node
 klog            ffff880226c49320), AE_AML_INFINITE_LOOP
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -13969,7 +13969,7 @@ klog            Method parse/execution failed [_SB_.PCI0.RBYT] (Node
 klog            ffff880226c493c0), AE_AML_INFINITE_LOOP
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -13980,7 +13980,7 @@ klog            Method parse/execution failed [_SB_.PCI0.ASOC.SECV] (Node
 klog            ffff880226c4a0e0), AE_AML_INFINITE_LOOP
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -13991,7 +13991,7 @@ klog            Method parse/execution failed [_SB_.PCI0.ASOC.RVLT] (Node
 klog            ffff880226c49b00), AE_AML_INFINITE_LOOP
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -14051,7 +14051,7 @@ klog            FAILED [HIGH] KlogAcpiEvaluationFailed: Test 1, HIGH
 klog            Kernel message: [ 12.167205] ACPI Warning: Evaluating _BQC
 klog            failed (20090903/video-641)
 klog            
-klog            ADVICE: Executing the ACPI Method leaded in an execution
+klog            ADVICE: Executing the ACPI Method ended in an execution
 klog            failure. This needs investigating.
 klog            
 klog            FAILED [HIGH] KlogAcpiResolveOpBadType: Test 1, HIGH
@@ -14085,7 +14085,7 @@ klog            FAILED [HIGH] KlogAcpiEvaluationFailed: Test 1, HIGH
 klog            Kernel message: [ 12.242409] ACPI Warning: Evaluating _BQC
 klog            failed (20110413/video-484)
 klog            
-klog            ADVICE: Executing the ACPI Method leaded in an execution
+klog            ADVICE: Executing the ACPI Method ended in an execution
 klog            failure. This needs investigating.
 klog            
 klog            FAILED [HIGH] KlogAcpiResolveOpBadType: Test 1, HIGH
@@ -14309,7 +14309,7 @@ klog            FAILED [HIGH] KlogAcpiEvaluationFailed: Test 1, HIGH
 klog            Kernel message: [ 14.175667] ACPI Warning: Evaluating _BQC
 klog            failed (20110112/video-484)
 klog            
-klog            ADVICE: Executing the ACPI Method leaded in an execution
+klog            ADVICE: Executing the ACPI Method ended in an execution
 klog            failure. This needs investigating.
 klog            
 klog            FAILED [HIGH] KlogAcpiResolveOpBadType: Test 1, HIGH
@@ -14440,7 +14440,7 @@ klog            Method parse/execution failed [_SB_.PCI0.ASOC.SEFA] (Node
 klog            ffff880226c4a120), AE_AML_INFINITE_LOOP
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -14451,7 +14451,7 @@ klog            Method parse/execution failed [_SB_.PCI0.ASOC.RFAN] (Node
 klog            ffff880226c49bc0), AE_AML_INFINITE_LOOP
 klog            
 klog            ADVICE: The ACPI driver encountered a parse or execution
-klog            error on some ACPI AML code. This is unexepcted and
+klog            error on some ACPI AML code. This is unexpected and
 klog            normally indicates that there is a bug in the compiled AML
 klog            code. It could be a programming fault or an AML compiler
 klog            issue. See acpi_ps_parse_aml().
@@ -14804,7 +14804,7 @@ klog            FAILED [HIGH] KlogAcpiEvaluationFailed: Test 1, HIGH
 klog            Kernel message: [ 20.149063] ACPI Warning: Evaluating _BQC
 klog            failed (20100428/video-651)
 klog            
-klog            ADVICE: Executing the ACPI Method leaded in an execution
+klog            ADVICE: Executing the ACPI Method ended in an execution
 klog            failure. This needs investigating.
 klog            
 klog            FAILED [HIGH] KlogAcpiBcqInsteadOfBqc: Test 1, HIGH Kernel

@@ -32,7 +32,7 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": "e820: cannot find a gap in the 32bit address range",
+   "pattern": "Cannot find an available gap in the 32-bit address range",
    "advice": "A search for the biggest gap in the low 32 bit E820 memory space for PCI MMIO resources failed to find any free gaps large enough. PCI devices with unassigned 32 bit Base Address Registers (BARs) are very likely to break.",
    "label": "KlogBiosE820NoGapAvailable",
   },
@@ -1337,6 +1337,20 @@
    "pattern": "mem=nopentium ignored! (only supported on x86_32)",
    "advice": "The kernel parameter mem=nopentium (to disable 4MB pages) was ignored as it only applies to 32 bit x86 systems.",
    "label": "KlogE8320BiosKernelParameter"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "e820: failed to memremap setup_data entry",
+   "advice": "Fail to memory remap the bootloader's extensible setup_data structures.",
+   "label": "KlogE8320MemremapSetupData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "e820: failed to memremap indirect setup_data",
+   "advice": "Fail to memory remap the bootloader's extensible indirect setup_data structures.",
+   "label": "KlogE8320MemremapIndirectSetupData"
   },
   {
    "compare_mode": "string",
@@ -4211,7 +4225,7 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": "e820: too many entries; ignoring ",
+   "pattern": "too many entries; ignoring ",
    "advice": "Legacy E820 BIOS has a limit of 128 entries in the E820 memory map but the firmware seems to have more than this. For EFI NUMA hardware, the limit is 128 + 3 * maximum number of nodes.  The kernel has ignore the extra entries.  This could lead to regions of memory being used by the kernel when in fact is should be reserved and this can lead to unexpected behaviour.",
    "label": "KlogE820TooManyEntries"
   },

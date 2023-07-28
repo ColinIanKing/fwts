@@ -103,31 +103,24 @@ static void phat_health_test(
 
 	offset = offset + sizeof(fwts_acpi_table_phat_health) + (fwts_uefi_str16len(device_path) + 1) * 2;
 
+	fwts_acpi_reserved_zero("PHAT", "Reserved", entry->reserved, passed);
+
 	if (entry->data_offset != 0) {
-		uint16_t i;
-
-		for (i = entry->data_offset; i < entry->header.length; i++) {
-			uint8_t *vendor_data = (uint8_t *)entry + i;
-
-			/* stop if data is outside the table */
-			offset += sizeof(uint8_t);
-			if (fwts_acpi_structure_range(fw, "PHAT", table->length, offset)) {
-				*passed = false;
-				break;
-			}
-
-			fwts_log_info_simp_int(fw, "    Vendor Data:                    ", *vendor_data);
+		if (fwts_acpi_structure_range(fw, "PHAT", table->length, offset))
+			*passed = false;
+		else if (entry->data_offset > entry->header.length) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"PHATOutOfRangeOffset",
+				"PHAT Type 1's Data Offset is out of range");
+			*passed = false;
+		}
+		else {
+			fwts_log_info_verbatim(fw, "    Vendor Data:");
+			fwts_hexdump_data_prefix_all(fw, (uint8_t *)entry + entry->data_offset,
+					"      ", entry->header.length - entry->data_offset);
 		}
 	}
 
-	fwts_acpi_reserved_zero("PHAT", "Reserved", entry->reserved, passed);
-
-	if (entry->data_offset > entry->header.length) {
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"PHATOutOfRangeOffset",
-			"PHAT Type 1's Data Offset is out of range");
-		*passed = false;
-	}
 }
 
 static int phat_test1(fwts_framework *fw)

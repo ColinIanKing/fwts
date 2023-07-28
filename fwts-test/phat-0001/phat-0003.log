@@ -33,12 +33,10 @@ phat                AmHealthy:                      0x00
 phat                Device Signature:               91AF0530-5D86-470E-A6B0-0A2DB9408249
 phat                Device-specific Data Offset:    0x0000003a
 phat                Device Path:                    \_SB.PCI0.ABCD
-phat                Vendor Data:                    0xff
-phat                Vendor Data:                    0x11
-phat                Vendor Data:                    0x55
-phat                Vendor Data:                    0xaa
 phat            FAILED [MEDIUM] PHATReservedNonZero: Test 1, PHAT Reserved
 phat            field must be zero, got 0xabcd instead
+phat                Vendor Data:
+phat                  FF 11 55 AA 
 phat            
 phat             Firmware Health Data Record (Type 1):
 phat                Type:                           0x0001

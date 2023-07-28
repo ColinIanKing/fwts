@@ -31,10 +31,8 @@ phat                AmHealthy:                      0x00
 phat                Device Signature:               91AF0530-5D86-470E-A6B0-0A2DB9408249
 phat                Device-specific Data Offset:    0x0000003a
 phat                Device Path:                    \_SB.PCI0.ABCD
-phat                Vendor Data:                    0xff
-phat                Vendor Data:                    0x11
-phat                Vendor Data:                    0x55
-phat                Vendor Data:                    0xaa
+phat                Vendor Data:
+phat                  FF 11 55 AA 
 phat            
 phat            FAILED [HIGH] PHATBadSubTableType: Test 1, PHAT must have
 phat            subtable with Type 0..1, got 2 instead

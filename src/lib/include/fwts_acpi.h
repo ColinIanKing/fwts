@@ -1669,7 +1669,7 @@ typedef struct {
 	uint8_t		stop_bits;
 	uint8_t		flow_control;
 	uint8_t		terminal_type;
-	uint8_t		reserved2;
+	uint8_t		language;
 	uint16_t	pci_device_id;
 	uint16_t	pci_vendor_id;
 	uint8_t		pci_bus_number;
@@ -1677,7 +1677,11 @@ typedef struct {
 	uint8_t		pci_function_number;
 	uint32_t	pci_flags;
 	uint8_t		pci_segment;
-	uint32_t	reserved3;
+	uint32_t	uart_clock_freq;
+	uint32_t	precise_baud_rate;
+	uint16_t	namespace_str_length;
+	uint16_t	namespace_str_offset;
+	char		namespace_str[0];
 } __attribute__ ((packed)) fwts_acpi_table_spcr;
 
 /*

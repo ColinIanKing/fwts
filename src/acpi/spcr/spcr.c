@@ -92,8 +92,8 @@ static int spcr_test1(fwts_framework *fw)
 	bool passed = true;
 
 	/*
-	 * Assuming revision 2, full list from
-	 * http://go.microsoft.com/fwlink/p/?LinkId=234837)
+	 * Current revision 4, full list from
+	 * https://learn.microsoft.com/en-us/windows-hardware/drivers/serports/serial-port-console-redirection-table
 	 */
 	switch (spcr->interface_type) {
 	case 0x00:
@@ -181,7 +181,7 @@ static int spcr_test1(fwts_framework *fw)
 	reserved1 = spcr->reserved1[0] + (spcr->reserved1[1] << 8) + (spcr->reserved1[2] << 16);
 	fwts_acpi_reserved_zero("SPCR", "Reserved1", reserved1, &passed);
 
-	if (spcr->interrupt_type & 0xf0) {
+	if (spcr->interrupt_type & 0xe0) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRIllegalReservedInterruptType",
@@ -266,7 +266,7 @@ static int spcr_test1(fwts_framework *fw)
 			" is a reserved terminal type", spcr->terminal_type);
 	}
 
-	fwts_acpi_reserved_zero("SPCR", "Reserved2", spcr->reserved2, &passed);
+	fwts_acpi_reserved_zero("SPCR", "Language", spcr->language, &passed);
 
 	/* According to the spec, these values indicate NOT a PCI device */
 	if ((spcr->pci_device_id == 0xffff) &&
@@ -305,7 +305,8 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	fwts_acpi_reserved_bits("SPCR", "PCI Flags", spcr->pci_flags, 1, 31, &passed);
-	fwts_acpi_reserved_zero("SPCR", "Reserved3", spcr->reserved3, &passed);
+	if (spcr->header.revision <= 2)
+		fwts_acpi_reserved_zero("SPCR", "Reserved3", spcr->uart_clock_freq, &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in SPCR table.");

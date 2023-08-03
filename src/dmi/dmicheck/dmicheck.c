@@ -1410,7 +1410,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					table, addr, "Status", 0x18);
 			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 3, 5);
 			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 7, 7);
-			dmi_min_max_uint8_check(fw, table, addr, "Processor Upgrade", hdr, 0x19, 0x1, 0x48);
+			dmi_min_max_uint8_check(fw, table, addr, "Processor Upgrade", hdr, 0x19, 0x1, 0x50);
 			if (hdr->length < 0x23)
 				break;
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x20);

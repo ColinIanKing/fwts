@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <fcntl.h>
 
-#define DMI_VERSION			(0x0360)
+#define DMI_VERSION			(0x0370)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -299,7 +299,8 @@ static const fwts_dmi_type_length type_info[] = {
 	{ 17, 0x208, 0x207, 0x22 },
 	{ 17, 0x302, 0x208, 0x28 },
 	{ 17, 0x303, 0x302, 0x54 },
-	{ 17, MAX_VERSION, 0x303, 0x5c },
+	{ 17, 0x307, 0x303, 0x5c },
+	{ 17, MAX_VERSION, 0x307, 0x64 },
 	{ 19, 0x207, 0x201, 0xf },
 	{ 19, MAX_VERSION, 0x207, 0x1f },
 	{ 20, 0x207, 0x201, 0x13 },
@@ -1498,8 +1499,6 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Length", hdr, 0x8, 0x1, 0x6);
 			if (hdr->length < 0x0d)
 				break;
-
-			dmi_reserved_bits_check(fw, table, addr, "Slot Characteristics 2", hdr, sizeof(uint8_t), 0x0c, 7, 7);
 
 			if (hdr->length < 0x11)
 				break;

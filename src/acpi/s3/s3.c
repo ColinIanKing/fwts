@@ -34,6 +34,7 @@
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
 #define PM_SUSPEND_PATH			"/sys/power/mem_sleep"
 #define PM_S2IDLE_SLP_S0		"/sys/kernel/debug/pmc_core/slp_s0_residency_usec"
+#define WAKEUP_SOURCE_PATH		"/sys/kernel/debug/wakeup_sources"
 
 static char sleep_type[7];
 static char sleep_type_orig[7];
@@ -52,6 +53,103 @@ static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 static bool s3_hybrid = false;
 static char *s3_hook = NULL;		/* Hook to run after each S3 */
 static char *s3_sleep_type = NULL;	/* The sleep type(s3 or s2idle) */
+
+typedef struct {
+	char		name[32];
+	uint64_t	active_count;
+	uint64_t	event_count;
+	uint64_t	wakeup_count;
+	uint64_t	expire_count;
+	int64_t		active_since;
+	int64_t		total_time;
+	int64_t		max_time;
+	int64_t		last_change;
+	int64_t		prevent_suspend_time;
+} wakeup_source;
+
+static int read_wakeup_source(fwts_list *source)
+{
+	FILE		*fp;
+	char		name[32];
+	uint64_t	active_count;
+	uint64_t	event_count;
+	uint64_t	wakeup_count;
+	uint64_t	expire_count;
+	int64_t		active_since;
+	int64_t		total_time;
+	int64_t		max_time;
+	int64_t		last_change;
+	int64_t		prevent_suspend_time;
+	int		c;
+
+	fwts_list_init(source);
+
+	if ((fp = fopen(WAKEUP_SOURCE_PATH, "r")) == NULL)
+		return FWTS_ERROR;
+
+	/* skip first line */
+	while (c = fgetc(fp), c != '\n' && c != EOF);
+
+	while (fscanf(fp, "%s\t%lu\t\t%lu\t\t%lu\t\t%lu\t\t%ld\t\t%ld\t\t%ld\t\t%ld\t\t%ld\n",
+			name, &active_count, &event_count,
+			&wakeup_count, &expire_count, &active_since,
+			&total_time, &max_time, &last_change,
+			&prevent_suspend_time) == 10) {
+		wakeup_source *wakeup_source_data;
+
+		wakeup_source_data  = calloc(1, sizeof(wakeup_source));
+		if (wakeup_source_data == NULL) {
+			fwts_list_free_items(source, free);
+			(void)fclose(fp);
+			return FWTS_ERROR;
+		}
+
+		memcpy(wakeup_source_data->name , name, sizeof(name));
+		wakeup_source_data->active_count = active_count;
+		wakeup_source_data->event_count = event_count;
+		wakeup_source_data->wakeup_count = wakeup_count;
+		wakeup_source_data->expire_count = expire_count;
+		wakeup_source_data->active_since = active_since;
+		wakeup_source_data->total_time = total_time;
+		wakeup_source_data->max_time = max_time;
+		wakeup_source_data->last_change = last_change;
+		wakeup_source_data->prevent_suspend_time = prevent_suspend_time;
+	
+		fwts_list_append(source, wakeup_source_data);
+
+	}
+
+	(void)fclose(fp);
+
+	return FWTS_OK;
+}
+
+
+static void wakeup_source_cmp(fwts_framework *fw, fwts_list *suspend_source, fwts_list *resume_source)
+{
+
+	fwts_list_link *item1;
+	fwts_list_link *item2;
+
+	if (fwts_list_len(suspend_source) != fwts_list_len(resume_source)) {
+		fwts_log_info_verbatim(fw, "wakeup source list length differ, cannot get wakeup sources.\n");
+		return;
+	}
+
+	item1 = fwts_list_head(suspend_source);
+	item2 = fwts_list_head(resume_source);
+
+	while ((item1 != NULL) && (item2 != NULL)) {
+		wakeup_source *data1 = fwts_list_data(wakeup_source *, item1);
+		wakeup_source *data2 = fwts_list_data(wakeup_source *, item2);
+		if (data1->event_count < data2->event_count) {
+			fwts_log_info_verbatim(fw, "wakeup source name: \"%s\" wakeup event was signaled.\n", data1->name);
+
+		}
+		item1 = fwts_list_next(item1);
+		item2 = fwts_list_next(item2);
+	}
+}
 
 static int s3_init(fwts_framework *fw)
 {
@@ -267,6 +365,9 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	char *command = NULL;
 	char *quirks = NULL;
 	fwts_pm_method_vars *fwts_settings;
+	fwts_list suspend_wakeup_soure;
+	fwts_list resume_wakeup_soure;
+	bool wk_src_found = false;
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 
@@ -344,8 +445,18 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 
 	fwts_wakealarm_trigger(fw, delay);
 
+	if (read_wakeup_source(&suspend_wakeup_soure) != FWTS_ERROR) {
+		wk_src_found = true;
+	}
+
 	/* Do S3 / S2idle here */
 	status = do_suspend(fwts_settings, percent, &duration, command);
+
+	if (wk_src_found) {
+		if (read_wakeup_source(&resume_wakeup_soure) != FWTS_ERROR) {
+			(void)wakeup_source_cmp(fw, &suspend_wakeup_soure, &resume_wakeup_soure);
+		}
+	}
 
 	fwts_log_info(fw, "pm-action returned %d after %d seconds.", status, duration);
 
@@ -432,6 +543,9 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 			"pm-action encountered an error and also failed to "
 			"enter the requested power saving state.");
 	}
+
+	fwts_list_free_items(&suspend_wakeup_soure, free);
+	fwts_list_free_items(&resume_wakeup_soure, free);
 
 tidy:
 	free(command);

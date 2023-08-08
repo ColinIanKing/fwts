@@ -53,6 +53,7 @@ static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 static bool s3_hybrid = false;
 static char *s3_hook = NULL;		/* Hook to run after each S3 */
 static char *s3_sleep_type = NULL;	/* The sleep type(s3 or s2idle) */
+static bool s3_wakeup_src = false;	/* dump wakeup source for debug */
 
 typedef struct {
 	char		name[32];
@@ -124,6 +125,25 @@ static int read_wakeup_source(fwts_list *source)
 	return FWTS_OK;
 }
 
+static void dump_wakeup_source(fwts_framework *fw, fwts_list *source)
+{
+	if (fwts_list_len(source) > 0) {
+		fwts_list_link *item;
+
+
+		fwts_list_foreach(item, source) {
+			wakeup_source *wakeup_source_data =
+				fwts_list_data(wakeup_source *, item);
+
+			fwts_log_info_verbatim(fw, "%s\t%lu\t%lu\t%lu\t%lu\t%ld\t%ld\t%ld\t%ld\t%ld\n",
+			wakeup_source_data->name, wakeup_source_data->active_count, wakeup_source_data->event_count,
+			wakeup_source_data->wakeup_count, wakeup_source_data->expire_count, wakeup_source_data->active_since,
+			wakeup_source_data->total_time, wakeup_source_data->max_time, wakeup_source_data->last_change,
+			wakeup_source_data->prevent_suspend_time);
+		}
+	} else
+		fwts_log_info(fw, "No wakeup source found.");
+}
 
 static void wakeup_source_cmp(fwts_framework *fw, fwts_list *suspend_source, fwts_list *resume_source)
 {
@@ -144,7 +164,19 @@ static void wakeup_source_cmp(fwts_framework *fw, fwts_list *suspend_source, fwt
 		wakeup_source *data2 = fwts_list_data(wakeup_source *, item2);
 		if (data1->event_count < data2->event_count) {
 			fwts_log_info_verbatim(fw, "wakeup source name: \"%s\" wakeup event was signaled.\n", data1->name);
+			if (s3_wakeup_src) {
+				fwts_log_info_verbatim(fw, "%s %lu %lu %lu %lu %ld %ld %ld %ld %ld\n",
+				data1->name, data1->active_count, data1->event_count,
+				data1->wakeup_count, data1->expire_count, data1->active_since,
+				data1->total_time, data1->max_time, data1->last_change,
+				data1->prevent_suspend_time);
 
+				fwts_log_info_verbatim(fw, "%s %lu %lu %lu %lu %ld %ld %ld %ld %ld\n",
+				data2->name, data2->active_count, data2->event_count,
+				data2->wakeup_count, data2->expire_count, data2->active_since,
+				data2->total_time, data2->max_time, data2->last_change,
+				data2->prevent_suspend_time);
+			}
 		}
 		item1 = fwts_list_next(item1);
 		item2 = fwts_list_next(item2);
@@ -455,6 +487,11 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	if (wk_src_found) {
 		if (read_wakeup_source(&resume_wakeup_soure) != FWTS_ERROR) {
 			(void)wakeup_source_cmp(fw, &suspend_wakeup_soure, &resume_wakeup_soure);
+			if (s3_wakeup_src) {
+				(void)dump_wakeup_source(fw, &suspend_wakeup_soure);
+				fwts_log_info(fw, "versus after:");
+				(void)dump_wakeup_source(fw, &resume_wakeup_soure);
+			}
 		}
 	}
 
@@ -950,6 +987,9 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 12:
 			s3_sleep_type = optarg;
 			break;
+		case 13:
+			s3_wakeup_src = true;
+			break;
 		}
 	}
 	return FWTS_OK;
@@ -968,7 +1008,8 @@ static fwts_option s3_options[] = {
 	{ "s3-resume-time", 	"", 1, "Maximum expected resume time in seconds, e.g. --s3-resume-time=5.1" },
 	{ "s3-hybrid",		"", 0, "Run S3 with hybrid sleep, i.e. saving system states as S4 does." },
 	{ "s3-resume-hook hook","", 1, "Run a hook script after each S3 resume, 0 exit indicates success." },
-	{ "s3-sleep-type"	,"", 1, "Set the sleep type for testing S3 or s2idle." },
+	{ "s3-sleep-type",	"", 1, "Set the sleep type for testing S3 or s2idle." },
+	{ "s3-dump-wakeup-src",	"", 0, "dump the all device wakeup sources suspend/resume.(For debug)"}, 
 	{ NULL, NULL, 0, NULL }
 };
 

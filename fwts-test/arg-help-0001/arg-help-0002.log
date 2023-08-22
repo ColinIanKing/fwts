@@ -152,6 +152,10 @@
                              suspend. Default is
                              15 seconds, e.g.
                              --s3-device-check-delay=20
+--s3-dump-wakeup-src         dump the all device
+                             wakeup sources
+                             suspend/resume.(For
+                             debug)
 --s3-hybrid                  Run S3 with hybrid
                              sleep, i.e. saving
                              system states as S4

@@ -60,7 +60,7 @@ static void iort_node_check(
 {
 	fwts_acpi_table_iort_node *node = (fwts_acpi_table_iort_node *)data;
 
-	if (node->type == 1 || node->type == 2 || node->type == 4) {
+	if (node->type == 1 || node->type == 2) {
 		if (node->revision > 4) {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_LOW,
@@ -85,6 +85,15 @@ static void iort_node_check(
 				"IORTNodeRevisionInvalid",
 				"IORT Node Revision field is 0x%2.2" PRIx8
 				" and should be less than 3.",
+				node->revision);
+		}
+	} else if (node->type == 4) {
+		if (node->revision > 5) {
+			*passed = false;
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"IORTNodeRevisionInvalid",
+				"IORT Node Revision field is 0x%2.2" PRIx8
+				" and should be less than 6.",
 				node->revision);
 		}
 	} else {
@@ -606,15 +615,17 @@ static void iort_check_smmuv3(
 	iort_node_check(fw, data, false, false, passed);
 	iort_id_mappings_check(fw, data, node_end, passed);
 
-	if (node->model > 0) {
+	fwts_acpi_reserved_bits("IORT", "SMMUv3 Reserved Flags", node->flags, 5, 31, passed);
+	fwts_acpi_reserved_zero("IORT", "Reserved", node->reserved, passed);
+
+	if (node->model > 2) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"IORTSmmuv3InvalidModel",
 			"IORT SMMUv3 Model is 0x%" PRIx32 " and was expecting "
-			"a model value of 0.", node->model);
+			"a model value less than 3.", node->model);
 	}
 
-	fwts_acpi_reserved_bits("IORT", "SMMUv3 Reserved Flags", node->flags, 4, 31, passed);
 	fwts_log_nl(fw);
 }
 
@@ -640,6 +651,52 @@ static void iort_check_pmcg(
 
 	iort_node_check(fw, data, false, false, passed);
 	iort_id_mappings_check(fw, data, node_end, passed);
+
+	fwts_log_nl(fw);
+}
+
+/*
+ *  Check IORT Reserved Memory Range node (RMR)
+ */
+static void iort_check_rmr(
+	fwts_framework *fw,
+	uint8_t *data,
+	uint8_t *node_end,
+	bool *passed)
+{
+	uint32_t i;
+
+	fwts_acpi_table_iort_rmr_node *node =
+		(fwts_acpi_table_iort_rmr_node *)data;
+
+	iort_node_dump(fw, "IORT RMR node", (fwts_acpi_table_iort_node *)data);
+	fwts_log_info_simp_int(fw, "  Flags:		    ", node->flags);
+	fwts_log_info_simp_int(fw, "  Number of memory range descriptors:    ", node->num_mem_rng_des);
+	fwts_log_info_simp_int(fw, "  Reference to memory range descriptors: ", node->mem_rng_des_offset);
+
+	iort_node_check(fw, data, false, false, passed);
+	iort_id_mappings_check(fw, data, node_end, passed);
+
+	fwts_acpi_reserved_bits("IORT", "RMR Reserved Flags", node->flags, 10, 31, passed);
+
+	fwts_acpi_table_iort_mem_rng_des *descriptor = (fwts_acpi_table_iort_mem_rng_des *)(data + node->mem_rng_des_offset);
+
+	for (i = 0; i < node->num_mem_rng_des; i++, descriptor++) {
+		if (sizeof(*descriptor) + (uint8_t *)descriptor > node_end) {
+			*passed = false;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"IORTMemRangeDescriptorOutsideTable",
+				"IORT memory range descriptors %" PRIu32 " is outside the "
+				"IORT ACPI table. Either the offset is incorrect "
+				"or the IORT table size or the node is too small.", i);
+			break;
+		}
+
+		fwts_log_info_simp_int(fw, "    Physical Range offset:               ", descriptor->physical_range_offset);
+		fwts_log_info_simp_int(fw, "    Physical Range length:               ", descriptor->physical_range_length);
+		fwts_log_info_simp_int(fw, "    Reserved:                            ", descriptor->reserved);
+		fwts_acpi_reserved_zero("IORT", "Reserved", descriptor->reserved, passed);
+	}
 
 	fwts_log_nl(fw);
 }
@@ -681,6 +738,9 @@ static int iort_test1(fwts_framework *fw)
 	fwts_log_info_simp_int(fw, "  Number of IORT Nodes:     ", iort->io_rt_nodes_count);
 	fwts_log_info_simp_int(fw, "  IORT Node Array Offset:   ", iort->io_rt_offset);
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", iort->reserved);
+
+	fwts_acpi_reserved_zero("IORT", "Reserved", iort->reserved, &passed);
+
 	fwts_log_nl(fw);
 
 	data = (uint8_t *)table->data + iort->io_rt_offset;
@@ -718,6 +778,9 @@ static int iort_test1(fwts_framework *fw)
 			break;
 		case 0x05:
 			iort_check_pmcg(fw, data, node_end, &passed);
+			break;
+		case 0x06:
+			iort_check_rmr(fw, data, node_end, &passed);
 			break;
 		default:
 			/* reserved */

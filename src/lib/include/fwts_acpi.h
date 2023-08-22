@@ -2153,6 +2153,19 @@ typedef struct {
 	*/
 } __attribute__ ((packed)) fwts_acpi_table_iort_pmcg_node;
 
+typedef struct {
+	uint64_t	physical_range_offset;
+	uint64_t	physical_range_length;
+	uint32_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_iort_mem_rng_des;
+
+typedef struct {
+	fwts_acpi_table_iort_node iort_node;
+	uint32_t	flags;
+	uint32_t	num_mem_rng_des;
+	uint32_t	mem_rng_des_offset;
+} __attribute__ ((packed)) fwts_acpi_table_iort_rmr_node;
+
 /*
  * ACPI STAO (Status Override Table)
  *   http://wiki.xenproject.org/mediawiki/images/0/02/Status-override-table.pdf

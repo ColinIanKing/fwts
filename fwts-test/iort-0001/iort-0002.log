@@ -2,7 +2,7 @@ iort            iort: IORT IO Remapping Table test.
 iort            ----------------------------------------------------------
 iort            Test 1 of 1: IORT IO Remapping Table test.
 iort            IORT IO Remapping Table test
-iort              Number of IORT Nodes:     0x00000005
+iort              Number of IORT Nodes:     0x00000007
 iort              IORT Node Array Offset:   0x00000030
 iort              Reserved:                 0x00000000
 iort            
@@ -114,7 +114,7 @@ iort            too small.
 iort            
 iort            IORT SMMU node:
 iort              Type:                     0x03
-iort              Length:                   0x0094
+iort              Length:                   0x00a4
 iort              Revision:                 0xa0
 iort              Identifier:               0x00008100
 iort              Number of ID mappings:    0x00000001
@@ -151,6 +151,14 @@ iort              GSIV:                     0xf0008040
 iort              Interrupt Flags:          0x00000092
 iort              GSIV:                     0xf0008000
 iort              Interrupt Flags:          0x00000004
+iort              GSIV:                     0xffff0000
+iort              Interrupt Flags:          0x000000ff
+iort            ID Mapping 0
+iort              Input Base:               0xffff0000
+iort              ID Count:                 0x000000ff
+iort              Output Base:              0x50403020
+iort              Output Reference:         0x00000000
+iort              Flags:                    0x00000001
 iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
 iort            Revision field is 0xa0 and should be less than 4.
 iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
@@ -175,24 +183,92 @@ iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
 iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000092 instead
 iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
 iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000004 instead
-iort            FAILED [HIGH] IORTSmmuInterruptsOutsideTable: Test 1, IORT
-iort            SMMU Interrupt 4 is outside the IORT ACPI table. Either
-iort            the offset is incorrect or the IORT table size is too
-iort            small.
-iort            FAILED [HIGH] IORTIdMappingOutsideTable: Test 1, IORT ID
-iort            Mapping 0 is outside the IORT ACPI table. Either the
-iort            offset is incorrect or the IORT table size or the node is
-iort            too small.
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x000000ff instead
 iort            FAILED [HIGH] IORTSmmuInvalidModel: Test 1, IORT SMMU
 iort            Model is 0x6 and was expecting a model value 0 to 5.
 iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT SMMU
 iort            Reserved Flags Bits [31..2] must be zero, got 0x000000aa
 iort            instead
 iort            
-iort            FAILED [HIGH] IORTInvalidType: Test 1, IORT Type 0xff is
-iort            invalid, aborting check
+iort            IORT SMMUv3 node:
+iort              Type:                     0x04
+iort              Length:                   0x0058
+iort              Revision:                 0x05
+iort              Identifier:               0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000044
+iort              Base Address:             0x0000000000000000
+iort              Flags:                    0xff000000
+iort              Reserved:                 0xddccbbaa
+iort              VATOS Address:            0x0000000000000000
+iort              Model:                    0x00000005
+iort              Event:                    0x00000000
+iort              PRI:                      0x00000000
+iort              GERR:                     0x00000000
+iort              Sync:                     0x00000000
+iort              Proximity Domain:         0x00000000
+iort              DeviceId Mapping Index:   0x00000000
+iort            ID Mapping 0
+iort              Input Base:               0x00000000
+iort              ID Count:                 0x00000000
+iort              Output Base:              0x00000000
+iort              Output Reference:         0x00000000
+iort              Flags:                    0x00000000
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT SMMUv3
+iort            Reserved Flags Bits [31..5] must be zero, got 0xff000000
+iort            instead
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Reserved
+iort            field must be zero, got 0xddccbbaa instead
+iort            FAILED [HIGH] IORTSmmuv3InvalidModel: Test 1, IORT SMMUv3
+iort            Model is 0x5 and was expecting a model value less than 3.
+iort            
+iort            IORT PMCG node:
+iort              Type:                     0x05
+iort              Length:                   0x003c
+iort              Revision:                 0x03
+iort              Identifier:               0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000028
+iort              Base Address:             0x0000000000000000
+iort              Overflow interrupt GSIV:  0x00000000
+iort              Node reference:           0x00000000
+iort              Page 1 Base Address:      0x0000000000000000
+iort            ID Mapping 0
+iort              Input Base:               0x00000000
+iort              ID Count:                 0x00000000
+iort              Output Base:              0x00000000
+iort              Output Reference:         0x00000000
+iort              Flags:                    0x00000001
+iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
+iort            Revision field is 0x03 and should be less than 3.
+iort            
+iort            IORT RMR node:
+iort              Type:                     0x06
+iort              Length:                   0x0044
+iort              Revision:                 0x05
+iort              Identifier:               0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000030
+iort              Flags:		    0xaabbccdd
+iort              Number of memory range descriptors:    0x00000001
+iort              Reference to memory range descriptors: 0x0000001c
+iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
+iort            Revision field is 0x05 and should be less than 4.
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT ID
+iort            Mapping 0 flags Bits [31..1] must be zero, got 0xff000000
+iort            instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT RMR
+iort            Reserved Flags Bits [31..10] must be zero, got 0xaabbccdd
+iort            instead
+iort                Physical Range offset:               0x0000000000000000
+iort                Physical Range length:               0x0000000000000000
+iort                Reserved:                            0xddccbbaa
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Reserved
+iort            field must be zero, got 0xddccbbaa instead
+iort            
 iort            
 iort            ==========================================================
-iort            0 passed, 30 failed, 0 warning, 0 aborted, 0 skipped, 0
+iort            0 passed, 36 failed, 0 warning, 0 aborted, 0 skipped, 0
 iort            info only.
 iort            ==========================================================

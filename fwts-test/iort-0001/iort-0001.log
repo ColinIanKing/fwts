@@ -2,7 +2,7 @@ iort            iort: IORT IO Remapping Table test.
 iort            ----------------------------------------------------------
 iort            Test 1 of 1: IORT IO Remapping Table test.
 iort            IORT IO Remapping Table test
-iort              Number of IORT Nodes:     0x00000004
+iort              Number of IORT Nodes:     0x00000007
 iort              IORT Node Array Offset:   0x00000030
 iort              Reserved:                 0x00000000
 iort            
@@ -114,6 +114,63 @@ iort              ID Count:                 0x00000001
 iort              Output Base:              0x50403020
 iort              Output Reference:         0x00000000
 iort              Flags:                    0x00000001
+iort            
+iort            IORT SMMUv3 node:
+iort              Type:                     0x04
+iort              Length:                   0x0058
+iort              Revision:                 0x04
+iort              Identifier:               0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000044
+iort              Base Address:             0x0000000000000000
+iort              Flags:                    0x00000000
+iort              Reserved:                 0x00000000
+iort              VATOS Address:            0x0000000000000000
+iort              Model:                    0x00000000
+iort              Event:                    0x00000000
+iort              PRI:                      0x00000000
+iort              GERR:                     0x00000000
+iort              Sync:                     0x00000000
+iort              Proximity Domain:         0x00000000
+iort              DeviceId Mapping Index:   0x00000000
+iort            ID Mapping 0
+iort              Input Base:               0x00000000
+iort              ID Count:                 0x00000000
+iort              Output Base:              0x00000000
+iort              Output Reference:         0x00000000
+iort              Flags:                    0x00000000
+iort            
+iort            IORT PMCG node:
+iort              Type:                     0x05
+iort              Length:                   0x003c
+iort              Revision:                 0x02
+iort              Identifier:               0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000028
+iort              Base Address:             0x0000000000000000
+iort              Overflow interrupt GSIV:  0x00000000
+iort              Node reference:           0x00000000
+iort              Page 1 Base Address:      0x0000000000000000
+iort            ID Mapping 0
+iort              Input Base:               0x00000000
+iort              ID Count:                 0x00000000
+iort              Output Base:              0x00000000
+iort              Output Reference:         0x00000000
+iort              Flags:                    0x00000001
+iort            
+iort            IORT RMR node:
+iort              Type:                     0x06
+iort              Length:                   0x0044
+iort              Revision:                 0x03
+iort              Identifier:               0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000030
+iort              Flags:		    0x00000000
+iort              Number of memory range descriptors:    0x00000001
+iort              Reference to memory range descriptors: 0x0000001c
+iort                Physical Range offset:               0x0000000000000000
+iort                Physical Range length:               0x0000000000000000
+iort                Reserved:                            0x00000000
 iort            
 iort            PASSED: Test 1, No issues found in IORT.
 iort            

@@ -789,7 +789,7 @@ int fwts_method_package_elements_all_type(
 			fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 				"%s package element %" PRIu32 " was not the expected "
 				"type '%s', was instead type '%s'.",
-				name, i,
+				name ? name : "unknown", i,
 				fwts_method_type_name(type),
 				fwts_method_type_name(obj->Package.Elements[i].Type));
 			failed = true;
@@ -827,7 +827,7 @@ int fwts_method_package_elements_type__(
 			fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 				"%s package element %" PRIu32 " (%s) was not the expected "
 				"type '%s', was instead type '%s'.",
-				name, i, info[i].name,
+				name ? name : "unknown", i, info[i].name,
 				fwts_method_type_name(info[i].type),
 				fwts_method_type_name(obj->Package.Elements[i].Type));
 			failed = true;

@@ -57,30 +57,30 @@ static bool s3_wakeup_src = false;	/* dump wakeup source for debug */
 
 typedef struct {
 	char		name[32];
-	uint64_t	active_count;
-	uint64_t	event_count;
-	uint64_t	wakeup_count;
-	uint64_t	expire_count;
-	int64_t		active_since;
-	int64_t		total_time;
-	int64_t		max_time;
-	int64_t		last_change;
-	int64_t		prevent_suspend_time;
+	unsigned long	active_count;
+	unsigned long	event_count;
+	unsigned long	wakeup_count;
+	unsigned long	expire_count;
+	long int	active_since;
+	long int	total_time;
+	long int	max_time;
+	long int	last_change;
+	long int	prevent_suspend_time;
 } wakeup_source;
 
 static int read_wakeup_source(fwts_list *source)
 {
 	FILE		*fp;
 	char		name[32];
-	uint64_t	active_count;
-	uint64_t	event_count;
-	uint64_t	wakeup_count;
-	uint64_t	expire_count;
-	int64_t		active_since;
-	int64_t		total_time;
-	int64_t		max_time;
-	int64_t		last_change;
-	int64_t		prevent_suspend_time;
+	unsigned long	active_count;
+	unsigned long	event_count;
+	unsigned long	wakeup_count;
+	unsigned long	expire_count;
+	long int	active_since;
+	long int	total_time;
+	long int	max_time;
+	long int	last_change;
+	long int	prevent_suspend_time;
 	int		c;
 
 	fwts_list_init(source);

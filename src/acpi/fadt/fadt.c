@@ -758,53 +758,32 @@ static void acpi_table_check_fadt_smi_cmd(fwts_framework *fw)
 
 static void acpi_table_check_fadt_acpi_enable(fwts_framework *fw)
 {
-	if (fadt->acpi_enable == 0)
+	if (fadt->acpi_enable != 0) {
 		if (fadt->smi_cmd == 0)
-			fwts_passed(fw, "FADT SMI ACPI enable command is zero, "
-				    "which is allowed since SMM is not "
-				    "supported, or machine is in legacy mode.");
-		else
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				    "SMMHasNoAcpiEnableCmd",
-				    "FADT SMI ACPI enable command is zero, "
-				    "but this is not allowed when SMM "
-				    "is supported.");
-	else
-		if (fadt->smi_cmd == 0)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			fwts_failed(fw, LOG_LEVEL_HIGH,
 				    "SMMNeedsAcpiEnableCmd",
 				    "FADT SMI ACPI enable command is non-zero, "
 				    "but SMM is not supported.");
 		else
 			fwts_passed(fw, "FADT SMI ACPI enable command is "
 				    "non-zero, and SMM is supported.");
+	}
 
 	return;
 }
 
 static void acpi_table_check_fadt_acpi_disable(fwts_framework *fw)
 {
-	if (fadt->acpi_disable == 0)
+	if (fadt->acpi_disable != 0) {
 		if (fadt->smi_cmd == 0)
-			fwts_passed(fw,
-				    "FADT SMI ACPI disable command is zero, "
-				    "which is allowed since SMM is not "
-				    "supported, or machine is in legacy mode.");
-		else
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				    "SMMHasNoAcpiDisableCmd",
-				    "FADT SMI ACPI disable command is zero, "
-				    "but this is not allowed when SMM "
-				    "is supported.");
-	else
-		if (fadt->smi_cmd == 0)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			fwts_failed(fw, LOG_LEVEL_HIGH,
 				    "SMMNeedsAcpiDisableCmd",
 				    "FADT SMI ACPI disable command is "
 				    "non-zero, but SMM is not supported.");
 		else
 			fwts_passed(fw, "FADT SMI ACPI disable command is "
 				    "non-zero, and SMM is supported.");
+	}
 
 	return;
 }

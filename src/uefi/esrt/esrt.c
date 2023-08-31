@@ -167,13 +167,13 @@ static void check_entries(fwts_framework *fw, bool *passed)
 						"Missing or failed to get LastAttemptStatus on %s.", entry->d_name);
 				*passed = false;
 			} else {
-				uint32_t lastattemptst = strtoul(str, NULL, 16);
+				uint32_t lastattemptst = strtoul(str, NULL, 10);
 
 				if (lastattemptst > LAST_ATTEMPT_STATUS_ERR_UNSATISFIED_DEPENDENCIES &&
 					(lastattemptst < LAST_ATTEMPT_STATUS_ERR_UNSUCCESSFUL_VENDOR_RANGE_MIN ||
 					lastattemptst > LAST_ATTEMPT_STATUS_ERR_UNSUCCESSFUL_VENDOR_RANGE_MAX)) {
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidValue",
-						"The LastAttemptStatus value on %s is 0x%" PRIx32
+						"The LastAttemptStatus value on %s is 0x%" PRIu32
 						", which is undefined on UEFI Spec."
 						, entry->d_name, lastattemptst);
 					*passed = false;

@@ -245,10 +245,7 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 		.num_types = 24,
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
 			     16, 16, 12, 82, 24, 24, 16, 20, 16,
-			     SUBTABLE_VARIABLE, SUBTABLE_VARIABLE,
-			     SUBTABLE_VARIABLE, SUBTABLE_VARIABLE,
-			     SUBTABLE_VARIABLE, SUBTABLE_VARIABLE,
-			     SUBTABLE_VARIABLE }
+			     15, 23, 21, 13, 19, 17, 15 }
 	},
 	{ /* terminator */
 		.major_version = 0,
@@ -574,6 +571,13 @@ static const char *madt_sub_names[] = {
 	/* 0x0e */ "GICR Redistributor",
 	/* 0x0f */ "GIC Interrupt Translation Service (ITS)",
 	/* 0x10 */ "Multiprocessor Wakeup",
+	/* 0x11 */ "CORE PIC",
+	/* 0x12 */ "LIO PIC",
+	/* 0x13 */ "HT PIC",
+	/* 0x14 */ "EIO PIC",
+	/* 0x16 */ "MSI PIC",
+	/* 0x17 */ "BIO PIC",
+	/* 0x18 */ "LPC PIC",
 	/* 0x11 - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
 	/* 0x80 - 0xff */ "Reserved for OEM use",
 	NULL
@@ -1446,6 +1450,60 @@ static int madt_mp_wakup(fwts_framework *fw,
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
+static int madt_core_pic(fwts_framework *fw,
+			     fwts_acpi_madt_sub_table_header *hdr,
+			     uint8_t *data)
+{
+
+	fwts_acpi_madt_core_pic *core_pic = (fwts_acpi_madt_core_pic *)data;
+
+	if (core_pic->version > 1)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "SPECMADTPicVersion",
+			    "MADT %s version should not over 1, "
+			    "but instead have 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], core_pic->version);
+	else
+		fwts_passed(fw,
+			    "MADT %s version is properly set.",
+			    madt_sub_names[hdr->type]);
+
+	if (core_pic->flag & 0xfffffffe)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "SPECMADTPicFlag",
+			    "MADT %s flags, bits 1..31 are reserved "
+			    "and should be zero, but are set as: %" PRIx32 ".",
+			    madt_sub_names[hdr->type], core_pic->flag);
+	else
+		fwts_passed(fw,
+			    "MADT %s flags, bits 1..31 are reserved "
+			    "and set to zero.",
+			    madt_sub_names[hdr->type]);
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
+static int madt_general_pic(fwts_framework *fw,
+			     fwts_acpi_madt_sub_table_header *hdr,
+			     uint8_t *data)
+{
+
+	uint8_t *version = (uint8_t *)data;
+
+	if (*version > 1)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "SPECMADTPicVersion",
+			    "MADT %s version should not over 1, "
+			    "but instead have 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], *version);
+	else
+		fwts_passed(fw,
+			    "MADT %s version is properly set.",
+			    madt_sub_names[hdr->type]);
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
 static void madt_ioapic_sapic_compare(fwts_framework *fw,
 				     int num_ioapics,
 				     int num_iosapics)
@@ -1670,6 +1728,19 @@ static int madt_subtables(fwts_framework *fw)
 
 		case FWTS_MADT_MP_WAKEUP:
 			skip = madt_mp_wakup(fw, hdr, data);
+			break;
+
+		case FWTS_MADT_CORE_PIC:
+			skip = madt_core_pic(fw, hdr, data);
+			break;
+
+		case FWTS_MADT_LIO_PIC:
+		case FWTS_MADT_HT_PIC:
+		case FWTS_MADT_EIO_PIC:
+		case FWTS_MADT_MSI_PIC:
+		case FWTS_MADT_BIO_PIC:
+		case FWTS_MADT_LPC_PIC:
+			skip = madt_general_pic(fw, hdr, data);
 			break;
 
 		case FWTS_MADT_RESERVED:

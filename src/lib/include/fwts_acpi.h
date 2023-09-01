@@ -691,6 +691,15 @@ typedef struct {
 	uint64_t	mail_box_address;
 } __attribute__ ((packed)) fwts_acpi_madt_mp_wakeup;
 
+/* New in ACPI 6.5 Core Programmable Interrupt Controller (CORE PIC) Structure, 5.2.12.20 */
+/* Type 17, FWTS_MADT_CORE_PIC */
+typedef struct {
+	uint8_t		version;
+	uint32_t	acpi_processor_id;
+	uint32_t	physical_processor_id;
+	uint32_t	flag;
+} __attribute__ ((packed)) fwts_acpi_madt_core_pic;
+
 /*
  * ACPI TCPA (Trusted Computing Platform Alliance Capabilities Table)
  *   http://www.kuro5hin.org/story/2002/10/27/16622/530,

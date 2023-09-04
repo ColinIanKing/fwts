@@ -118,7 +118,7 @@ scan_source_file $src/kernel/time/timekeeping.c
 scan_source_file $src/drivers/watchdog/iTCO_vendor_support.c
 scan_source_file $src/drivers/watchdog/hpwdt.c
 scan_source_file $src/drivers/usb/host/pci-quirks.c
-scan_source_file $src/drivers/iommu/amd_iommu_init.c
+scan_source_file $src/drivers/iommu/amd/init.c
 
 
 #
@@ -133,14 +133,14 @@ scan_source_file $src/drivers/platform/x86/asus-nb-wmi.c
 scan_source_file $src/drivers/platform/x86/asus-wmi.c
 scan_source_file $src/drivers/platform/x86/classmate-laptop.c
 scan_source_file $src/drivers/platform/x86/compal-laptop.c
-scan_source_file $src/drivers/platform/x86/dell-laptop.c
-scan_source_file $src/drivers/platform/x86/dell-wmi-aio.c
-scan_source_file $src/drivers/platform/x86/dell-wmi.c
+scan_source_file $src/drivers/platform/x86/dell/dell-laptop.c
+scan_source_file $src/drivers/platform/x86/dell/dell-wmi-aio.c
+scan_source_file $src/drivers/platform/x86/dell/dell-wmi-base.c
 scan_source_file $src/drivers/platform/x86/eeepc-laptop.c
 scan_source_file $src/drivers/platform/x86/eeepc-wmi.c
 scan_source_file $src/drivers/platform/x86/fujitsu-laptop.c
 scan_source_file $src/drivers/platform/x86/fujitsu-tablet.c
-scan_source_file $src/drivers/platform/x86/hp-wmi.c
+scan_source_file $src/drivers/platform/x86/hp/hp-wmi.c
 scan_source_file $src/drivers/platform/x86/ideapad-laptop.c
 scan_source_file $src/drivers/platform/x86/msi-laptop.c
 scan_source_file $src/drivers/platform/x86/msi-wmi.c
@@ -149,7 +149,7 @@ scan_source_file $src/drivers/platform/x86/panasonic-laptop.c
 scan_source_file $src/drivers/platform/x86/samsung-laptop.c
 scan_source_file $src/drivers/platform/x86/samsung-q10.c
 #scan_source_file $src/drivers/platform/x86/sony-laptop.c
-scan_source_file $src/drivers/platform/x86/tc1100-wmi.c
+scan_source_file $src/drivers/platform/x86/hp/tc1100-wmi.c
 #scan_source_file $src/drivers/platform/x86/thinkpad_acpi.c
 scan_source_file $src/drivers/platform/x86/topstar-laptop.c
 scan_source_file $src/drivers/platform/x86/toshiba_acpi.c

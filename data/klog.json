@@ -844,6 +844,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Warning: Failed to enable wakeup from IRQ",
+   "advice": "The ACPI driver could not set the wakeup mode enabled which can let this IRQ wake the system from sleep.",
+   "label": "KlogAcpiEnableWakeupIRQFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Hardware changed while hibernated, success doubtful",
    "advice": "The FACS hardware signature does not match the saved hardware signature. The kernel detected a change in the hardware so the resume from hibernate may not work or be possibly broken.",
    "label": "KlogAcpiHibernateHwChange"

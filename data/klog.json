@@ -648,6 +648,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "device is empty",
+   "advice": "ACPI memory hot-plug device is empty",
+   "label": "KlogAcpiMemHotPlugDeviceEmpty"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "add_memory failed",
    "advice": "ACPI memory hot-plug failed to enable a memory device",
    "label": "KlogAcpiMemHotPlugAddMemFailed"

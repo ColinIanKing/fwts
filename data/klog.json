@@ -675,10 +675,31 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Failed to process ARS records",
+   "advice": "The ACPI NFIT driver was unable to Address Range Scrub (ARS) records",
+   "label": "KlogAcpiNfitARSProcessFail"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "ARS: range .* ARS failed",
+   "advice": "The ACPI NFIT driver encounter the Address Range Scrub(ARS) start failed with the System Physical Address",
+   "label": "KlogAcpiNfitARSRangeFail"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": ": notification registration failed",
    "advice": "The ACPI NFIT driver was unable to install a notify handler for an NFIT NVDIMM device, device was marked as not available",
    "label": "KlogAcpiNfitNVDIMM"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Error found in NVDIMM .* flags:",
+   "advice": "The ACPI NFIT driver encountered a NVDIMM region and its mapping NVDIMM state flags error.",
+   "label": "KlogAcpiNfitNVDIMMFlagError"
   },
   {
    "compare_mode": "string",

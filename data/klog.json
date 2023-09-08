@@ -836,6 +836,13 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "FW issue: working around C-state latencies out of order",
+   "advice": "The ACPI processor idle driver gets the out of order latencies for C-state from firmware and workaroud it.",
+   "label": "KlogAcpiCStateBadLatency"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI: processor limited to max C-state",
    "advice": "The maximum C state is less than the maximum allowed processor C states, so the CPU cannot go into a deep idle C state which means it is not optimally configured for power saving.",

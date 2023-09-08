@@ -459,6 +459,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "DMA mask not set",
+   "advice": "DMA mask is not set for an ACPI ARM64 DMA device, If dev is expected to be DMA-capable then the bus code that created it should have initialised its dma_mask pointer, if not, it will continue the legacy behaviour of coercing it to the coherent mask.",
+   "label": "KlogAcpiAmbaDevAddFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "amba_device_add() failed",
    "advice": "An error occurred when attempting to add an ACPI ARM AMBA device, the device allocation failed and the device has not enabled.",
    "label": "KlogAcpiAmbaDevAddFailed",

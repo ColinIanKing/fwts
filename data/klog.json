@@ -473,6 +473,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid resource",
+   "advice": "Got an invalid resource for an ACPI ARM AMBA device, neither IORESOURCE_MEM nor IORESOURCE_IRQ.",
+   "label": "KlogAcpiAmbaDevAllocFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "PCC check channel failed. Status=",
    "advice": "An error occurred waiting for the Platform Communication Channel communication channel to become available to the operating system. It seems to be still owned by the platform after too long a duration.",
    "label": "KlogAcpiPccChannelBlocked",

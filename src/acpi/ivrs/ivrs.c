@@ -199,6 +199,7 @@ static int ivrs_test1(fwts_framework *fw)
 					"IVRSBadIVHDType",
 					"IVHD or IVMD must have type with Type 0x10, 0x11, 0x20 to 0x22 "
 					"and 0x40 , got 0x%2.2" PRIx8 " instead", entry->type);
+				offset += entry->length;
 				break;
 		}
 

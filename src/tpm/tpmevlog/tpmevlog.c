@@ -161,7 +161,7 @@ static int tpmevlog_pcr_type_event_check(
 	uefi_image_load_event *ev_image_load = (uefi_image_load_event *)event;
 
 	if (pcr == 4 && event_type == EV_EFI_BOOT_SERVICES_APPLICATION) {
-		if (event_size <= sizeof(uefi_image_load_event)) {
+		if (event_size < sizeof(uefi_image_load_event)) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "ImageLoadEventLength",
 					"The length of the event is %" PRIu32 " which"
 					" is smaller than the UEFI Image Load Event "
@@ -171,7 +171,8 @@ static int tpmevlog_pcr_type_event_check(
 					event_size);
 			return FWTS_ERROR;
 		}
-		if (ev_image_load->length_of_device_path <= sizeof(fwts_uefi_dev_path)) {
+		if (ev_image_load->length_of_device_path &&
+		    ev_image_load->length_of_device_path <= sizeof(fwts_uefi_dev_path)) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "ImageLoadDevicePathLength",
 					"The length of the device path is %" PRIu64
 					" is smaller than DevicePath of PE/COFF image "

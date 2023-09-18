@@ -1766,6 +1766,55 @@
    "label": "KlogAcpiPciIntRemap"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "pattern": "Firmware reports .*:.*:.* PCI INT .* connected to .*; changing to",
+   "advice": "The kernel has detected a PCI interrupt configuration than needed to be quirked to make it work correctly.",
+   "label": "KlogAcpiPciIntRemap"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "pattern": "Cannot reroute IRQ %d to legacy IRQ: unknown mapping",
+   "advice": "Some chipsets generate a legacy INTx when the IRQ entry in the chipset's IO-APIC is masked. When this INTx generation cannot be disabled, kernel reroute these interrupts to their legacy equivalent to get rid of spurious interrupts. The kernel cannot route to legacy IRQ correctly.",
+   "label": "KlogAcpiPciIntMap"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_INFO",
+   "pattern": "can't derive routing for PCI INT",
+   "advice": "Kernel cannot derive an IRQ for this device from a parent bridge's PCI interrupt routing entry.",
+   "label": "KlogAcpiPciIntRount"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "pattern": "PCI INT .*: no GSI - using ISA IRQ",
+   "advice": "The kernel cannot register Global System Interrupt (no GSI), instead, using ISA IRQ.",
+   "label": "KlogAcpiPciIntRegister"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "PCI INT .*: not connected",
+   "advice": "PCI IRQ is invalid, Kernel cannot connect the PCI interrupt.",
+   "label": "KlogAcpiPciIntInvalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "pattern": "PCI INT .*: no GSI",
+   "advice": "The kernel cannot register Global System Interrupt (no GSI).",
+   "label": "KlogAcpiPciIntOnGSI"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "PCI INT .*: failed to register GSI",
+   "advice": "The kernel failed to register Global System Interrupt(GSI).",
+   "label": "KlogAcpiPciIntRegsiterFail"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "No IOAPIC for GSI",

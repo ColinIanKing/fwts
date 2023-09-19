@@ -51,11 +51,11 @@ static int tpm2_test1(fwts_framework *fw)
 
 	fwts_acpi_reserved_zero("TPM2", "Reserved", tpm2->reserved, &passed);
 
-	if (tpm2->start_method < 1 || tpm2->start_method >= 12) {
+	if (tpm2->start_method < 1 || tpm2->start_method >= 14) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"TPM2BadStartMethod",
-			"TPM2's Start Method must be between one to eleven, got 0x%" PRIx16,
+			"TPM2's Start Method must be between 0x1 and 0xd, got 0x%" PRIx16,
 			tpm2->start_method);
 	}
 

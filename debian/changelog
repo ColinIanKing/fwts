@@ -1,3 +1,56 @@
+fwts (23.09.00-0ubuntu1) mantic; urgency=medium
+
+  [Arthur Heymans]
+  * acpi/spcr: Update supported port types
+  * acpi/scpr: spcr->interrupt_type == 0 is valid
+
+  [Colin Ian King]
+  * data/klog.json: Fix spelling mistakes found using codespell
+  * src/*: Fix various spelling mistakes in source code
+
+  [Ivan Hu]
+  * fwts-test: sync up with klog.json ix spelling mistakes found using codespell
+  * fwts-test: sync up with update supported port types
+  * acpi: update fadt and madt revisions to ACPI 6.5
+  * uefi: esrtdump: update the LastAttemptStatus values to UEFI spec 2.10
+  * acpi: phat: fix the device path for the health data record
+  * fwts-test: sync up with phat fix the device path for the health data record
+  * klog.json: Add and modify some more e820 kernel messages to klog database
+  * acpi: phat: modify the dumping vendor data format
+  * fwts-test: sync up with the phat dumping vendor data modification
+  * acpi: spcr: update the spcr tests to lastest revision 4
+  * fwts-test: sync up the spcr test updating to revision 4
+  * dmicheck: update supported DMI version to 3.7
+  * s3: add checking the device signed wakeup events
+  * s3: add dumping the all devices and signed wakeup sources
+  * snapcraft: add snap build for riscv64
+  * fwts-test: sync up with the dumping s3-dump-wakeup-src option
+  * acpi: s3: build fail for unexpected format of argument types for i386
+  * auto-packager: mkpackage.sh: remove kinetic
+  * lib: fwts_acpi_object_eval.: fix build fail for ppc64el on mantic
+  * acpi: iort: update IORT table to specification version E.e
+  * fwts-test: sync up with iort test to version E.e
+  * acpi: fadt: remove the tests for expecting smi_cmd is zero
+  * uefi: esrt: fix the last_attempt_status wrongly interpretation of value
+  * acpi: madt: add more interrupt controller structure types defined in ACPI
+    6.5
+  * kernelscan: modify some pathes of the scan files
+  * klog.json: Add some missing ACPI memory hotplug kernel messages to klog
+    database
+  * klog.json: Add some missing processor idle kernel messages to klog database
+  * klog.json: Add some missing ACPI NFIT kernel messages to klog database
+  * klog.json: Add some missing sleep kernel messages to klog database
+  * klog.json: Add some missing amba kernel messages to klog database
+  * klog.json: Add some missing dma kernel messages to klog database
+  * acpi: ivrs: fix the tests stuck at validate IVRS table
+  * klog.json: Add some missing ACPI PCI IRQ kernel messages to klog database
+
+  [Mario Limonciello]
+  * Upgrade the max value for "Processor Upgrade" to 0x50
+  * tpmevlog: Correct boundary checking for PCR4 event check
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 19 Sep 2023 10:20:20 +0800
+
 fwts (23.07.00-0ubuntu1) mantic; urgency=medium
 
   [Armin Wolf]

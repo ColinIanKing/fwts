@@ -387,10 +387,24 @@
    "label": "KlogAcpiEinjFailedMemRegion",
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Can not request .* for Trigger table entry",
+   "advice": "The ACPI Error Injection (EINJ) driver attempted to request a memory region for the APEI EINJ trigger table entry but the request failed, perhaps the mapping was incorrect.",
+   "label": "KlogAcpiEinjFailedMemRegion",
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Failed to map trigger table",
    "advice": "The ACPI Error Injection (EINJ) driver attempted to IO remap the APEI EINJ trigger table, but the mapping failed.",
+   "label": "KlogAcpiEinjFailedIoremap",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid trigger error action table.",
+   "advice": "The ACPI Error Injection (EINJ) driver checks EINJ trigger table header, and got invlid trigger error action table.",
    "label": "KlogAcpiEinjFailedIoremap",
   },
   {

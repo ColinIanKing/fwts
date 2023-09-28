@@ -361,6 +361,20 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "get table failed",
+   "advice": "The ACPI Boot Error Record Table (BERT) driver found the table, but it cannot get the table for some format exceptions.",
+   "label": "KlogAcpiBertGetTableFail",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "table invalid",
+   "advice": "The ACPI Boot Error Record Table (BERT) driver checked the BERT table and got the table invalid.",
+   "label": "KlogAcpiBertTableInvalid",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Truncated status block",
    "advice": "The ACPI Boot Error Record Table (BERT) driver found a status block that was truncated and so it cannot print it.",
    "label": "KlogAcpiBertShortStatusBlock",

@@ -1485,8 +1485,8 @@ void fwts_acpi_reserved_zero_array(
 	char label[20];
 	uint8_t i;
 
-	strncpy(label + 4, "ReservedNonZero", sizeof(label) - 4);
-	strncpy(label, table, 4);	/* ACPI table name is 4 char long */
+	strncpy(label, table, sizeof(label) - 1);
+	strcat(label, "ReservedNonZero");
 
 	for (i = 0; i < length; i++)
 		value += data[i];

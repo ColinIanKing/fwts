@@ -4909,11 +4909,32 @@
    "label": "KlogAcpiSciGsiError"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unknown or unused hardware error source type: .* for hardware error source:",
+   "advice": "The ACPI Hardware Error Source Table (HEST) driver parsed the hardware error sources, but got the hardware error sources.",
+   "label": "KlogAcpiHestHWSourceError"
+  },
+  {
    "compare_mode": "string",
-   "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": "Cannot map memory that high",
-   "advice": "Cannot map an ACPI physical address above the 32 bit 4GB limit, this could lead to broken functionality.",
-   "label": "KlogAcpiMap4GbLimit"
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Table contents overflow for hardware error source",
+   "advice": "The ACPI Hardware Error Source Table (HEST) driver parsed the hardware error sources, but got the table contents overflow.",
+   "label": "KlogAcpiHestContentsOverflow"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Duplicated hardware error source ID",
+   "advice": "The ACPI Hardware Error Source Table (HEST) driver parsed the hardware error sources, but got the duplicated hardware error source ID.",
+   "label": "KlogAcpiHestDuplicateID"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "HEST: Failed to get table",
+   "advice": "The ACPI Hardware Error Source Table (HEST) found the table, but it cannot get the table for some format exceptions.",
+   "label": "KlogAcpiHestGetTableFail",
   },
   {
    "compare_mode": "string",

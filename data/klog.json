@@ -3615,6 +3615,20 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Failed to update perflib freq constraint",
+   "advice": "The ACPI driver attempted to update an existing frequency QoS request along with the effective constraint value for the list of requests it belongs to, but failed.",
+   "label": "KlogAcpiUpdateFreqFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Failed to add freq constraint for CPU",
+   "advice": "The ACPI driver attempted to insert new frequency QoS request into a given list, but failed.",
+   "label": "KlogAcpiInsertFreqFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Evaluating _PPC",
    "advice": "The ACPI driver attempted to get the current CPU performance states but the _PPC (Performance Present Capabilities) method failed to evaluate. The CPU frequency policy will not be updated.  This may explain why CPU frequencies are locked at one setting and do not change.",

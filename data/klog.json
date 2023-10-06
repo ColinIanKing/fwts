@@ -606,6 +606,27 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "APMT could not register gsi hwirq",
+   "advice": "The ACPI Arm Performance Monitoring Unit table (APMT) driver could not register a Global System Interrupt (GSI) handler.",
+   "label": "KlogAcpiApmtGsiHandlerRegFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to get APMT table",
+   "advice": "The ACPI Arm Performance Monitoring Unit table (APMT) driver failed to get APMT table, the table was not found.",
+   "label": "KlogAcpiApmtGetTableFail",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to initialize APMT platform devices",
+   "advice": "The ACPI Arm Performance Monitoring Unit table (APMT) driver failed to ini the platform devices and connot add platform device.",
+   "label": "KlogAcpiApmtFail",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "iort node pointer overflows, bad table",
    "advice": "The ACPI IO Remapping Table (IORT) indicated it had more IORT nodes than were in the IORT table. Either the node count was incorrect or the table is truncated.",
    "label": "KlogAcpiIortBadTable",

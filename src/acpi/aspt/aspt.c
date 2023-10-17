@@ -58,7 +58,7 @@ static int aspt_test1(fwts_framework *fw)
 	if (aspt->sptt_addr_end < aspt->sptt_addr_start) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"ASPTSpttEndError",
-			"ASPT SPTT end address is less than the APTT start "
+			"ASPT SPTT end address is less than the SPTT start "
 			"address.");
 		passed = false;
 	}

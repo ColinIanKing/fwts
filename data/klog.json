@@ -3077,6 +3077,13 @@
   {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Internal - null pointer",
+    "advice": "An error occurred attempting to convert reference objects to values. A NULL pointer to entry on obj_stack, which can be either an (union acpi_operand_object *) or an acpi_handle. See acpi_ex_resolve_to_value().",
+    "label": "KlogAcpiNullPackageElementDereference"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Attempt to dereference an Index to NULL package element Idx=",
     "advice": "An error occurred attempting to retrieve a value from an internal ACPI object. A NULL object descriptor indicates an uninitialized element in an ACPI package, and hence it cannot be deferenced. Could not retrieve a value from an internal ACPI object. See acpi_ex_resolve_object_to_value().",
     "label": "KlogAcpiNullPackageElementDereference"

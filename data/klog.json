@@ -2746,6 +2746,27 @@
     "label": "KlogAcpiConcatenateInvalidObjectType"
   },
   {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Invalid numeric logical opcode:",
+    "advice": "An invalid opcode was found while execute a logical Numeric AML opcode. For these Numeric operators, the opcode should be LAnd or LOr.",
+    "label": "KlogAcpiInvalidOpcode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Invalid object type for logical operator:",
+    "advice": "An invalid object type was found while execute a none numeric AML opcode. For these operators, operands can be any combination of Integer/String/Buffer.",
+    "label": "KlogAcpiInvalidObjType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Invalid comparison opcode:",
+    "advice": "An invalid comparison opcode was found while comparing both integers, both strings or buffers.",
+    "label": "KlogAcpiInvalidComparisonOpcode"
+  },
+  {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Null parameter: Node .* Name 0x.* ReturnNode",

@@ -2489,6 +2489,20 @@
   {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Could not disable GPEs in GPE block",
+    "advice": "The ACPI GPEs could not be disabled. See acpi_ev_terminate().",
+    "label": "KlogAcpiGPEsDisableFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_LOW",
+    "pattern": "Could not delete GPE handlers",
+    "advice": "The ACPI GPE handlers could not be deleted. See acpi_ev_terminate().",
+    "label": "KlogAcpiGPEHandlersDeletedFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Invalid/unsupported SerialBus resource descriptor: BusType 0x",
     "advice": "An ACPI resource descriptor failed a validation check, the bus type field for a serial bus resource descriptor is invalid. See acpi_ut_validate_resource().  This appears to be a firmware bug.",
     "label": "KlogAcpiBadSerialBusResourceDescriptor"

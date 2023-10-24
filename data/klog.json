@@ -88,9 +88,30 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Error while updating 1:1 mapping PA",
+   "advice": "The EFI driver failed to update the 1:1 mapping, physical addresses to virtual addresses on a range of EFI related pages.",
+   "label": "KlogEfiPhysVirtMappingUpdateFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Error while updating VA mapping PA",
+   "advice": "The EFI driver failed to upate the virtual addresses mapping on a range of EFI related pages.",
+   "label": "KlogEfiVirtMappingUpdateFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Failed to map kernel text 1:1",
    "advice": "The kernel text region failed to be mapped 1 to 1 (physical to virtual).",
    "label": "KlogEfiKernelTextOneToOneMapFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to map kernel rodata 1:1",
+   "advice": "The kernel rodata region failed to be mapped 1 to 1 (physical to virtual).",
+   "label": "KlogEfiKernelRODataOneToOneMapFailed",
   },
   {
    "compare_mode": "string",
@@ -104,6 +125,13 @@
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Failed to create 1:1 mapping for the first page",
    "advice": "The firmware still believes it is the exclusive owner of the first physical page of the EFI mapping even though the firmware has marked it as EFI_CONVENTIONAL_MEMORY.  To avoid a triple fault if the firmware attempts to write-access the page, a 1:1 mapping is used, however, this failed to be created.",
+   "label": "KlogEfiOneToOneMappingFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to create 1:1 mapping for the GHCBs",
+   "advice": "When SEV-ES is active, the GHCB as set by the kernel will be used by firmware. Create a 1:1 unencrypted mapping for each GHCB, however, this failed to be created.",
    "label": "KlogEfiOneToOneMappingFailed",
   },
   {

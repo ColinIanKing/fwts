@@ -2942,6 +2942,13 @@
     "label": "KlogAcpiPathTooManyParentPrefixes"
   },
   {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Path has too many parent prefixes (^)",
+    "advice": "An ACPI path has too many parent prefixes and has fallen outside the root node.  This is a bug in the firmware.  The Name Space lookup on the ACPI path cannot be found.",
+    "label": "KlogAcpiPathTooManyParentPrefixes"
+  },
+  {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Could not construct external pathname; index=.*, size=.*, Path=.*",

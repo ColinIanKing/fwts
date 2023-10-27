@@ -3630,6 +3630,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid Field/AccessAs protocol ID",
+   "advice": "The ACPI driver gets invalid type of the protocol indicated by region field access attributes when try to get the length of the generic_serial_bus protocol bytes. See acpi_ex_get_protocol_buffer_length() for details.",
+   "label": "KlogAcpiInvalidProtocolID"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not get result from predicate evaluation",
    "advice": "The ACPI driver failed to pop a result off the result stack while evaluating a predicate. This is probably an AML code firmware bug.",
    "label": "KlogAcpiPredicateEvalPopFailed"

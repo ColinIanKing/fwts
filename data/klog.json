@@ -3439,6 +3439,20 @@
    "label": "KlogAcpiHwRegsUnsupportedRegisterBitWidth"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Requested bit width 0x.* is smaller than register bit width 0x",
+   "advice": "The ACPI driver was requested validate the bit width, convert access width into number of bits, but the requested bit width is smaller than register bit width. See acpi_hw_validate_register().",
+   "label": "KlogAcpiHwRegsUnsupportedRegisterBitWidth"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unsupported register access width: 0x",
+   "advice": "The ACPI driver was requested to validate a H/W register but the access width of the register larger than 32 bits; the sizes are not supported by the driver. See acpi_hw_validate_register().",
+   "label": "KlogAcpiHwRegsUnsupportedRegisterAccessWidth"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Invalid BitRegister ID: 0x",

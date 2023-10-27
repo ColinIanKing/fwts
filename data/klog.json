@@ -3616,6 +3616,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Zero-length resource returned from RsConvertAmlToResource",
+   "advice": "The ACPI driver convert an AML resource to an internal representation of the resource that is aligned and easier to access but got zero length returned. See acpi_rs_convert_aml_to_resource() for details.",
+   "label": "KlogAcpiAmlResourceConvertFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not convert resource",
    "advice": "The ACPI driver could not convert a resource linked list into an AML bytestream. See acpi_rs_convert_resources_to_aml() for details.",
    "label": "KlogAcpiResourceToAmlFailed"

@@ -2747,6 +2747,13 @@
   },
   {
     "compare_mode": "string",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "pattern": "Could not acquire AML Namespace mutex",
+    "advice": "The AML namespace mutex could not be acquired when entering the interpreter execution region.  This is a fatal system error.",
+    "label": "KlogAcpiAmlMutexAcquireFailed"
+  },
+  {
+    "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Invalid descriptor type 0x",
     "advice": "An invalid descriptor type was found while obtaining a reference to a target object.",
@@ -4078,6 +4085,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Expected EISAID is larger than 32 bits:",
+   "advice": "The ACPI driver gets EISAID larger than 32 bits when converting a numeric EISAID to string representation. It is truncated.",
+   "label": "KlogAcpiEISAIDTooLarge"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Error in acpi_memory_enable_device",
    "advice": "ACPI memory hotplug failed to add a memory device, acpi_memory_enable_device() failed. This occurs if the memory block has already been used by the kernel or if add_memory() failed.",
    "label": "KlogAcpiMemHotPlugFailed"
@@ -4298,6 +4312,13 @@
    "pattern": "Divide by zero",
    "advice": "The ACPI interpreter detected a zero divisor which produce a division by zero error.  The AML code is buggy and this will return an undefined value that may cause unexpected behaviour.",
    "label": "KlogAcpiAmlDivideByZero"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Could not release AML Namespace mutex",
+   "advice": "The ACPI AML interpreter attempted to release the mutex but this failed. The next time interpreter will attempt to acquire this mutex it will fail, however it will continue to execute AML but there will be race conditions occurring.",
+   "label": "KlogAcpiAmlMutexNotReleased"
   },
   {
    "compare_mode": "string",

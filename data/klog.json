@@ -3607,6 +3607,20 @@
    "label": "KlogAcpiFadtFieldZeroAddrLength"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Optional FADT field .* has valid .* but zero",
+   "advice": "The ACPI FADT optional, Pm2_control, GPE0, GPE1 AND has its own length field. If present, both the address and length must be valid.  One of these fields is zero and needs fixing.",
+   "label": "KlogAcpiFadtFieldZeroAddrLength"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid length for FADT/.*: .*, using default",
+   "advice": "The ACPI FADT initialize global ACPI PM1 register definitions but gets the invalid lengths, force FADT register definitions to their default lengths.",
+   "label": "KlogAcpiFadtRegZeroLength"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not convert AML resource",

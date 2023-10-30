@@ -1053,6 +1053,13 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "(dis)charge rate invalid",
+   "advice": "The ACPI Battery Status (_BST) object is returning an invalid dischar or charge rate.  This can be either a negative 16 bit value or reporting 0 as 65536 because of an invalid calculation in the DSDT. The Linux ACPI battery driver has detected this firmware bug and attempted to work around it.",
+   "label": "KlogAcpiBstInvalidRate"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Err sending PCC mbox message. cmd",
    "advice": "The ACPI CPPC (Collaborative Processor Performance Control) driver attempted to send a command via the PCC mailbox but it failed to be sent. If this persists then the CPU freq drivers cannot control CPU performance using the _CPC ACPI tables.",

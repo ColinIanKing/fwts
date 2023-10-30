@@ -4134,7 +4134,21 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Cannot turn on wakeup power resources",
+   "advice": "The ACPI driver was preparing to wakeup a device by powering on the power resources required for the device but one of these resources failed to power on.  See acpi_enable_wakeup_device_power().",
+   "label": "KlogAcpiPowerWakeupResources"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Cannot turn wakeup power resources off",
+   "advice": "The ACPI driver was preparing to shutdown a wakeup device by powering off the power resources for the device but one of these resources failed to power off. See acpi_disable_wakeup_device_power().",
+   "label": "KlogAcpiPowerWakeupResources"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Cannot turn off wakeup power resources",
    "advice": "The ACPI driver was preparing to shutdown a wakeup device by powering off the power resources for the device but one of these resources failed to power off. See acpi_disable_wakeup_device_power().",
    "label": "KlogAcpiPowerWakeupResources"
   },

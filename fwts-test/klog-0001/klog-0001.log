@@ -8919,10 +8919,8 @@ klog            FAILED [HIGH] KlogAcpiErstInvalid: Test 1, HIGH Kernel
 klog            message: [ 0.628687] [Firmware Bug]: ERST: ERST table is
 klog            invalid
 klog            
-klog            ADVICE: The Error Record Serialization Table (ERST) seems
-klog            to be invalid. This normally indicates that the ERST table
-klog            header size is too small, or the table size (excluding
-klog            header) is not a multiple of the ERST entries.
+klog            ADVICE: The ACPI Error Record Serialization (ERST) driver
+klog            checked the ERST table and got the table invalid.
 klog            
 klog            FAILED [HIGH] KlogAcpiObjectAlreadyExists: Test 1, HIGH
 klog            Kernel message: [ 0.630258] ACPI Error: Method parse

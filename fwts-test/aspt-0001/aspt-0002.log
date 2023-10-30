@@ -8,7 +8,7 @@ aspt              AMRT Start Address: 0xe0000010
 aspt              AMRT End Address:   0xe0000000
 aspt            
 aspt            FAILED [HIGH] ASPTSpttEndError: Test 1, ASPT SPTT end
-aspt            address is less than the APTT start address.
+aspt            address is less than the SPTT start address.
 aspt            FAILED [HIGH] ASPTAmrtEndError: Test 1, ASPT AMRT end
 aspt            address is less than the AMRT start address.
 aspt            

@@ -5156,6 +5156,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Unable to register for system notifications",
+   "advice": "The ACPI system nofifications failed to register and so ACPI support with be disabled.",
+   "label": "KlogAcpiSysNotificationsRegFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "Unable to start the ACPI Interpreter",
    "advice": "The ACPI interpreter failed to start up correctly and so ACPI support with be disabled.",
    "label": "KlogAcpiInterpreterFailed"

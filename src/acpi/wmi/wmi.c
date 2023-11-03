@@ -124,6 +124,7 @@ static fwts_wmi_known_guid fwts_wmi_known_guids[] = {
 	{ "F7CC25EC-D20B-404C-8903-0ED4359C18AE", "surface3-wmi", "Surface3" },
 	{ "C364AC71-36DB-495A-8494-B439D472A505", "tc110-wmi",	"HP Compaq" },
 	{ "59142400-C6A3-40FA-BADB-8A2652834100", "toshiba_acpi", "Toshiba" },
+	{ "05901221-D566-11D1-B2F0-00A0C9062910", "wmi-bmof", "Generic" },
 	{ NULL, NULL, NULL }
 };
 

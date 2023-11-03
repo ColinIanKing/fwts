@@ -87,6 +87,7 @@ wmi               WMI Block:
 wmi                 Flags          : 0x00 (None)
 wmi                 Object ID      : BA
 wmi                 Instance       : 0x01
+wmi                 Driver         : wmi-bmof (Generic)
 wmi             PASSED: Test 1, 05901221-D566-11D1-B2F0-00A0C9062910 has
 wmi             associated query method \_SB_.WMI1.WQBA
 wmi             
@@ -132,6 +133,7 @@ wmi               WMI Block:
 wmi                 Flags          : 0x00 (None)
 wmi                 Object ID      : BB
 wmi                 Instance       : 0x01
+wmi                 Driver         : wmi-bmof (Generic)
 wmi             PASSED: Test 1, 05901221-D566-11D1-B2F0-00A0C9062910 has
 wmi             associated query method \_SB_.WMI2.WQBB
 wmi             

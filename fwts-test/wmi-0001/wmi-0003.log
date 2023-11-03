@@ -58,6 +58,7 @@ wmi               WMI Block:
 wmi                 Flags          : 0x00 (None)
 wmi                 Object ID      : MO
 wmi                 Instance       : 0x01
+wmi                 Driver         : wmi-bmof (Generic)
 wmi             PASSED: Test 1, 05901221-D566-11D1-B2F0-00A0C9062910 has
 wmi             associated query method \_SB_.AMW0.WQMO
 wmi             PASSED: Test 1, All events associated with \_SB_.AMW0._WDG

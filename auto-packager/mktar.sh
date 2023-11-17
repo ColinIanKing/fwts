@@ -23,7 +23,7 @@
 # Get fwts sources, strip out .git directory, add in necessary debian packaging
 # files, build source package ready for upload.
 #
-REPO=git://kernel.ubuntu.com/hwe/fwts.git
+REPO=https://github.com/fwts/fwts
 FWTS=fwts
 
 #

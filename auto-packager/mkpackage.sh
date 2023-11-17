@@ -24,7 +24,7 @@
 # files, build source package ready for upload.
 #
 RELEASES="bionic focal jammy lunar mantic"
-REPO=git://kernel.ubuntu.com/hwe/fwts.git
+REPO=https://github.com/fwts/fwts
 RELEASE_TAR_URL=http://fwts.ubuntu.com/release
 FWTS=fwts
 

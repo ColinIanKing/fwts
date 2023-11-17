@@ -1,0 +1,29 @@
+ras2            ras2: ACPI RAS2 Feature Table test
+ras2            ----------------------------------------------------------
+ras2            Test 1 of 1: Validate RAS2 table.
+ras2            RAS2 (ACPI RAS2 Feature) Table:
+ras2              Reserved:                  0x0000
+ras2              Number of PCC descriptors: 0x0002
+ras2              PCC Descriptor List:
+ras2                PCC Identifier:          0x00
+ras2                Reserved:                0xff00
+ras2                Feature Type:            0x3f
+ras2                Instance:                0x00000001
+ras2            FAILED [MEDIUM] RAS2ReservedNonZero: Test 1, RAS2 Reserved
+ras2            field must be zero, got 0xff00 instead
+ras2            FAILED [HIGH] RAS2ReservedType: Test 1, RAS2 RAS feature
+ras2            types 0x01-0x7f is reserved, got 0x3f
+ras2              PCC Descriptor List:
+ras2                PCC Identifier:          0x01
+ras2                Reserved:                0x0011
+ras2                Feature Type:            0x7f
+ras2                Instance:                0x00000002
+ras2            FAILED [MEDIUM] RAS2ReservedNonZero: Test 1, RAS2 Reserved
+ras2            field must be zero, got 0x0011 instead
+ras2            FAILED [HIGH] RAS2ReservedType: Test 1, RAS2 RAS feature
+ras2            types 0x01-0x7f is reserved, got 0x7f
+ras2            
+ras2            ==========================================================
+ras2            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+ras2            info only.
+ras2            ==========================================================

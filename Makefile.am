@@ -173,6 +173,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/pmtt-0001/test-0002.sh \
 	fwts-test/pptt-0001/test-0001.sh \
 	fwts-test/pptt-0001/test-0002.sh \
+	fwts-test/ras2-0001/test-0001.sh \
+	fwts-test/ras2-0001/test-0002.sh \
 	fwts-test/rasf-0001/test-0001.sh \
 	fwts-test/rasf-0001/test-0002.sh \
 	fwts-test/rgrt-0001/test-0001.sh \

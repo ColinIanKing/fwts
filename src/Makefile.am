@@ -130,6 +130,7 @@ fwts_SOURCES = main.c 				\
 	acpi/pmtt/pmtt.c 			\
 	acpi/pptt/pptt.c 			\
 	acpi/rasf/rasf.c			\
+	acpi/ras2/ras2.c			\
 	acpi/rgrt/rgrt.c			\
 	acpi/rsdp/rsdp.c			\
 	sbbr/rsdp/rsdp.c			\

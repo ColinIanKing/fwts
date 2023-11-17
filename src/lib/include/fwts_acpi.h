@@ -1096,7 +1096,24 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_rasf;
 
 /*
- * ACPI MPST (Memory Power State Table), 5.2.21
+ * ACPI RAS2 (RAS2 Feature Table), 5.2.21
+ */
+typedef struct {
+	uint8_t		pcc_id;
+	uint16_t	reserved;
+	uint8_t         feature_type;
+	uint32_t	instance;
+} __attribute__ ((packed)) fwts_acpi_ras2_pcc_desc;
+
+typedef struct {
+	fwts_acpi_table_header		header;
+	uint16_t			reserved;
+	uint16_t			num_pcc_descriptors;
+	fwts_acpi_ras2_pcc_desc		pcc_descriptors[0];
+} __attribute__ ((packed)) fwts_acpi_table_ras2;
+
+/*
+ * ACPI MPST (Memory Power State Table), 5.2.22
  */
 typedef struct {
 	fwts_acpi_table_header	header;

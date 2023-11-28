@@ -2641,4 +2641,97 @@ typedef struct {
     fwts_acpi_table_header	header;
 } __attribute__ ((packed)) fwts_acpi_table_mpam;
 
+/*
+ * iSCSI Boot Firmware Table (iBFT)
+ * https://download.microsoft.com/download/1/e/5/1e5a2287-366c-431a-8e05-b958540230b1/iBFT.docx
+ */
+typedef enum {
+    FWTS_IBFT_RESERVED   = 0,
+    FWTS_IBFT_CONTROL    = 1,
+    FWTS_IBFT_INITIATOR  = 2,
+    FWTS_IBFT_NIC        = 3,
+    FWTS_IBFT_TARGET     = 4,
+    FWTS_IBFT_EXTENSIONS = 5,
+    FWTS_IBFT_UNKNOWN    = 0xFF
+} fwts_ibft_structure_types;
+
+typedef struct {
+	char		signature[4];
+	uint32_t	length;
+	uint8_t		revision;
+	uint8_t		checksum;
+	char		oem_id[6];
+	char		oem_tbl_id[8];
+	uint8_t		reserved[24];
+} __attribute__ ((packed)) fwts_acpi_ibft_header;
+
+typedef struct {
+	uint8_t		structure_id;
+	uint8_t		version;
+	uint16_t	length;
+	uint8_t		index;
+	uint8_t		flags;
+} __attribute__ ((packed)) fwts_acpi_ibft_standard;
+
+typedef struct {
+        fwts_acpi_ibft_standard std;
+        uint16_t                extensions;
+	uint16_t		initiator_offset;
+	uint16_t		nic_0_offset;
+	uint16_t		target_0_offset;
+	uint16_t		nic_1_offset;
+	uint16_t		target_1_offset;
+} __attribute__ ((packed)) fwts_acpi_ibft_control;
+
+typedef struct {
+        fwts_acpi_ibft_standard std;
+	uint8_t			isns_server[16];
+	uint8_t			slp_server[16];
+	uint8_t			primary_radius_server[16];
+	uint8_t			secondary_radius_server[16];
+	uint16_t		initiator_name_length;
+	uint16_t		initiator_name_offset;
+} __attribute__ ((packed)) fwts_acpi_ibft_initiator;
+
+typedef struct {
+        fwts_acpi_ibft_standard std;
+	uint8_t			ip_address[16];
+	uint8_t			subnet_mask_prefix;
+	uint8_t			origin;
+	uint8_t			gateway[16];
+	uint8_t			primary_dns[16];
+	uint8_t			secondary_dns[16];
+	uint8_t			dhcp[16];
+	uint16_t		vlan;
+	uint8_t			mac_address[6];
+	uint16_t		pci_bus_dev_func;
+	uint16_t		host_name_length;
+	uint16_t		host_name_offset;
+} __attribute__ ((packed)) fwts_acpi_ibft_nic;
+
+typedef struct {
+        fwts_acpi_ibft_standard std;
+	uint8_t			target_ip_address[16];
+	uint16_t		target_ip_socket;
+	uint64_t		target_boot_lun;
+	uint8_t			chap_type;
+	uint8_t			nic_sssociation;
+	uint16_t		target_name_length;
+	uint16_t		target_name_offset;
+	uint16_t		chap_name_length;
+	uint16_t		chap_name_offset;
+	uint16_t		chap_secret_length;
+	uint16_t		chap_secret_offset;
+	uint16_t		reverse_chap_name_length;
+	uint16_t		reverse_chap_name_offset;
+	uint16_t		reverse_chap_secret_length;
+	uint16_t		reverse_chap_secret_offset;
+} __attribute__ ((packed)) fwts_acpi_ibft_target;
+
+typedef struct {
+	fwts_acpi_ibft_header	header;
+	uint32_t		ivinfo;
+	uint64_t		reserved;
+} __attribute__ ((packed)) fwts_acpi_table_ibft;
+
 #endif

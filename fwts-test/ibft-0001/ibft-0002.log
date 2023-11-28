@@ -1,0 +1,108 @@
+ibft            ibft: iBFT iSCSI Boot Firmware Table test.
+ibft            ----------------------------------------------------------
+ibft            Test 1 of 1: Validate iBFT table.
+ibft            iSCSI Boot Firmware Table:
+ibft            iBFT Control Structure:
+ibft              Structure ID:               0x01
+ibft              Version:                    0x01
+ibft              Length:                     0x0012
+ibft              Index:                      0x00
+ibft              Flags:                      0x02
+ibft            FAILED [HIGH] iBAFReservedBitsNonZero: Test 1, iBAF Flags
+ibft            Bits [7..1] must be zero, got 0x02 instead
+ibft              Extensions:                 0x0000
+ibft              Initiator Offset:           0x0048
+ibft            iBFT Initiator Structure:
+ibft              Structure ID:               0x02
+ibft              Version:                    0x01
+ibft              Length:                     0x004a
+ibft              Index:                      0x00
+ibft              Flags:                      0x04
+ibft            FAILED [HIGH] iBAFReservedBitsNonZero: Test 1, iBAF Flags
+ibft            Bits [7..2] must be zero, got 0x04 instead
+ibft              iSNS Server:
+ibft                11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 00 
+ibft              SLP Server:
+ibft                00 01 02 02 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 
+ibft              Primary Radius Server:
+ibft                00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 
+ibft              Secondary Radius Server:
+ibft                AA AA AA AA BB BB BB BB CC CC CC CC DD DD DD DD 
+ibft              Initiator Name Length:      0x0008
+ibft              Initiator Name Offset:      0x01d8
+ibft            FAILED [HIGH] iBFTBadOffset: Test 1, iBFT initiator name
+ibft            offset exceed table length
+ibft              NIC 0 Offset:               0x0098
+ibft            iBFT NIC Structure:
+ibft              Structure ID:               0x03
+ibft              Version:                    0x01
+ibft              Length:                     0x0066
+ibft              Index:                      0x00
+ibft              Flags:                      0x08
+ibft            FAILED [HIGH] iBAFReservedBitsNonZero: Test 1, iBAF Flags
+ibft            Bits [7..3] must be zero, got 0x08 instead
+ibft              IP Address:
+ibft                FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00 
+ibft              Subnet Mask Prefix:         0x18
+ibft              Origin:                     0x00
+ibft              Gateway:
+ibft                00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 
+ibft              Primary DNS:
+ibft                00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 
+ibft              Secondary DNS:
+ibft                00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 
+ibft              DHCP:
+ibft                00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 
+ibft              VLAN:                       0x0000
+ibft              MAC Address:
+ibft                11 22 33 44 55 66 
+ibft              PCI Bus/Dev/Func:           0x0000
+ibft              Host Name Length:           0x0004
+ibft              Host Name Offset:           0x01e0
+ibft            FAILED [HIGH] iBFTBadOffset: Test 1, iBFT host name offset
+ibft            exceed table length
+ibft              Target 0 Offset:            0x0100
+ibft            iBFT Target Structure:
+ibft              Structure ID:               0x04
+ibft              Version:                    0x01
+ibft              Length:                     0x0036
+ibft              Index:                      0x00
+ibft              Flags:                      0x10
+ibft            FAILED [HIGH] iBAFReservedBitsNonZero: Test 1, iBAF Flags
+ibft            Bits [7..4] must be zero, got 0x10 instead
+ibft              Target IP Address:
+ibft                00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF 
+ibft              Target IP Socket:           0x0000
+ibft              Target Boot LUN:            0x0000000000000000
+ibft              CHAP Type:                  0x00
+ibft              NIC Association:            0x00
+ibft              Target Name Length:         0x0004
+ibft              Target Name Offset:         0x01e4
+ibft            FAILED [HIGH] iBFTBadOffset: Test 1, iBFT target name
+ibft            offset exceed table length
+ibft              CHAP Name Length:           0x0004
+ibft              CHAP Name Offset:           0x01e8
+ibft            FAILED [HIGH] iBFTBadOffset: Test 1, iBFT chap name offset
+ibft            exceed table length
+ibft              CHAP Secret Length:         0x0004
+ibft              CHAP Secret Offset:         0x01ec
+ibft            FAILED [HIGH] iBFTBadOffset: Test 1, iBFT chat secret
+ibft            offset exceed table length
+ibft              Reverse CHAP Name Length:   0x0008
+ibft              Reverse CHAP Name Offset:   0x01f0
+ibft            FAILED [HIGH] iBFTBadOffset: Test 1, iBFT resverse chap
+ibft            name offset exceed table length
+ibft              Reverse CHAP Secret Length: 0x0008
+ibft              Reverse CHAP Secret Offset: 0x01f8
+ibft            FAILED [HIGH] iBFTBadOffset: Test 1, iBFT reverse chap
+ibft            secret offset exceed table length
+ibft              NIC 1 Offset:               0x0000
+ibft              Target 1 Offset:            0x01a0
+ibft            FAILED [HIGH] iBFTBadStructureOffset: Test 1, iBFT Target
+ibft            structure exceed the table length, table length 0x0000017a
+ibft            , but got 0x000001a0
+ibft            
+ibft            ==========================================================
+ibft            0 passed, 12 failed, 0 warning, 0 aborted, 0 skipped, 0
+ibft            info only.
+ibft            ==========================================================

@@ -124,6 +124,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/hest-0001/test-0002.sh \
 	fwts-test/hmat-0001/test-0001.sh \
 	fwts-test/hmat-0001/test-0002.sh \
+	fwts-test/ibft-0001/test-0001.sh \
+	fwts-test/ibft-0001/test-0002.sh \
 	fwts-test/iort-0001/test-0001.sh \
 	fwts-test/iort-0001/test-0002.sh \
 	fwts-test/ivrs-0001/test-0001.sh \

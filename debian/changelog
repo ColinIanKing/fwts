@@ -1,3 +1,49 @@
+fwts (23.11.00-0ubuntu1) noble; urgency=medium
+
+  [Armin Wolf]
+  * acpi/wmi: Add WMI GUID for the wmi-bmof driver
+
+  [Ivan Hu]
+  * fwts-test: sync up with Recognize Pluton TPM patch
+  * klog.json: Add some missing einj kernel messages to klog database
+  * klog.json: Add some missing bert kernel messages to klog database
+  * klog.json: Add some missing erst kernel messages to klog database
+  * lib: fwts_acpi_table: fix fwts_acpi_reserved_zero_array with the input
+    string
+  * klog.json: Add some missing hest kernel messages to klog database
+  * klog.json: Add some missing apmt kernel messages to klog database
+  * klog.json: Add some missinig processor_perflib kernel messages to klog
+    database
+  * README: modify the fwts git repository
+  * acpi: aspt: fix typo of SPTT
+  * klog.json: Add some missing exresolv kernel messages to klog database
+  * klog.json: Add some missing efi64 kernel messages to klog database
+  * klog.json: Add some missing exmisc kernel messages to klog database
+  * klog.json: Add some missing evmisc kernel messages to klog database
+  * klog.json: Add some missing rslist kernel messages to klog database
+  * klog.json: Add some missing exfield kernel messages to klog database
+  * klog.json: Add some missing tbfadt kernel messages to klog database
+  * klog.json: Add some missing hwregs kernel messages to klog database
+  * klog.json: Add some missing exutils kernel messages to klog database
+  * klog.json: Add some missing nsaccess kernel messages to klog database
+  * klog.json: Add some missing bus kernel messages to klog database
+  * klog.json: Add some missing battery kernel messages to klog database
+  * klog.json: Add some missing power kernel messages to klog database
+  * fwts-test: sync up the SPTT typo fix
+  * fwts-test: sync up with the klog message update
+  * acpi: ras2: add test for ACPI RAS2 table
+  * fwts-test: add regression tests for RAS2
+  * auto-packager: update the fwts git repo
+  * lib: framework: fix the unclear error message of the results log
+  * auto-packager: mkpackage.sh: add noble
+  * acpi: ibft: add tests for iBFT table
+  * fwts-test: add regression tests for iBFT
+
+  [Mario Limonciello]
+  * acpi: Recognize Pluton TPM
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 28 Nov 2023 15:30:05 +0800
+
 fwts (23.09.00-0ubuntu1) mantic; urgency=medium
 
   [Arthur Heymans]

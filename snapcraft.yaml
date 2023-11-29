@@ -21,6 +21,7 @@ parts:
     fwts:
         plugin: autotools
         source: https://github.com/fwts/fwts
+        source-type: git
         stage-packages:
             - libfdt1
             - libbsd0

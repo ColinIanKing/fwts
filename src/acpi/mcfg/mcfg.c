@@ -206,7 +206,7 @@ static int mcfg_test1(fwts_framework *fw)
 		if ((memory_map_list != NULL) &&
 		    (!fwts_memory_map_is_reserved(memory_map_list, config->base_address))) {
 
-			fwts_failed(fw, LOG_LEVEL_LOW, "MCFGMMIONotReserved",
+			fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGMMIONotReserved",
 				"MCFG MMIO config space at 0x%" PRIx64
 				" is not reserved in the memory map table",
 				config->base_address);

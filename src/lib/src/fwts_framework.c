@@ -1564,10 +1564,11 @@ int fwts_framework_args(const int argc, char **argv)
 			(fw->flags & FWTS_FLAG_FORCE_CLEAN) ? "w" : "a",
 			fw->log_type)) == NULL) {
 		ret = FWTS_ERROR;
-		fprintf(stderr, "%s: Cannot open results log '%s.log'"
+		fprintf(stderr, "%s: Cannot open results log '%s'"
 			" (you may need to remove it to set proper"
 			" permissions).\n",
-			argv[0], fw->results_logname);
+			argv[0],
+			fwts_log_get_filenames(fw->results_logname, fw->log_type));
 		goto tidy_close;
 	}
 

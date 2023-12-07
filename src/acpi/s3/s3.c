@@ -33,6 +33,7 @@
 #define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
 #define PM_SUSPEND_PATH			"/sys/power/mem_sleep"
+#define PM_SUSPEND_LAST_HW_SLEEP	"/sys/power/suspend_stats/last_hw_sleep"
 #define PM_SUSPEND_TOTAL_HW_SLEEP	"/sys/power/suspend_stats/total_hw_sleep"
 #define WAKEUP_SOURCE_PATH		"/sys/kernel/debug/wakeup_sources"
 #define INTEL_PM_S2IDLE_SLP_S0		"/sys/kernel/debug/pmc_core/slp_s0_residency_usec"
@@ -378,6 +379,22 @@ static uint64_t get_uint64_sysfs(const char *path)
 }
 
 /*
+ *  get_last_s2idle_residency()
+ *
+ *  Returns:
+ *  - Hardware sleep residency from the last sleep cycle
+ *  - 0 if it is not available
+ *
+ */
+static uint64_t get_last_s2idle_residency(void)
+{
+	if (access(PM_SUSPEND_LAST_HW_SLEEP, F_OK) != 0)
+		return 0;
+
+	return get_uint64_sysfs(PM_SUSPEND_LAST_HW_SLEEP);
+}
+
+/*
  *  get_total_s2idle_residency()
  *  @fname: Optional parameter to set the filename used to check residency
  *
@@ -562,6 +579,18 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 				    fname, *total_s2idle_residency, residency);
 		}
 		*total_s2idle_residency = residency;
+
+		residency = get_last_s2idle_residency();
+		if (duration > 10 && residency) {
+			float pct = (float)residency / ((float)duration * 1000000) * 100.0;
+			if (pct < 70) {
+				(*s2idle_errors)++;
+				fwts_failed(fw, LOG_LEVEL_HIGH, "S2idleNotDeepest",
+					    "Expected %s to be at least 70%% of the last sleep cycle, got %.2f%%.",
+					    PM_SUSPEND_LAST_HW_SLEEP, pct);
+				} else
+					fwts_log_info(fw, "Spent %.2f%% of %ds in hardware sleep state", pct, duration);
+		}
 	}
 
 	if (duration < delay) {

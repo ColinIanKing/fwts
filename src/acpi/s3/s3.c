@@ -33,8 +33,9 @@
 #define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
 #define PM_SUSPEND_PATH			"/sys/power/mem_sleep"
-#define PM_S2IDLE_SLP_S0		"/sys/kernel/debug/pmc_core/slp_s0_residency_usec"
+#define PM_SUSPEND_TOTAL_HW_SLEEP	"/sys/power/suspend_stats/total_hw_sleep"
 #define WAKEUP_SOURCE_PATH		"/sys/kernel/debug/wakeup_sources"
+#define INTEL_PM_S2IDLE_SLP_S0		"/sys/kernel/debug/pmc_core/slp_s0_residency_usec"
 
 static char sleep_type[7];
 static char sleep_type_orig[7];
@@ -361,16 +362,12 @@ static int wrap_pmutils_do_suspend(fwts_pm_method_vars *fwts_settings,
 	return status;
 }
 
-/*
- *  get_s2_idle_residency()
- *	read PM_S2IDLE_SLP_S0, return 0 if it is not available
- */
-static uint64_t get_s2_idle_residency(void)
+static uint64_t get_uint64_sysfs(const char *path)
 {
-	char *str;
 	uint64_t val;
+	char *str;
 
-	str = fwts_get(PM_S2IDLE_SLP_S0);
+	str = fwts_get(path);
 	if (!str)
 		return 0;
 
@@ -380,12 +377,39 @@ static uint64_t get_s2_idle_residency(void)
 	return val;
 }
 
+/*
+ *  get_total_s2idle_residency()
+ *  @fname: Optional parameter to set the filename used to check residency
+ *
+ *  Returns:
+ *  - Total hardware sleep residency since the system was booted
+ *  - 0 if it is not available
+ *
+ */
+static uint64_t get_total_s2idle_residency(const char **fname)
+{
+	const char *check;
+	uint64_t val;
+
+	if (access(PM_SUSPEND_TOTAL_HW_SLEEP, F_OK) == 0)
+		check = PM_SUSPEND_TOTAL_HW_SLEEP;
+	else
+		check = INTEL_PM_S2IDLE_SLP_S0;
+
+	val = get_uint64_sysfs(check);
+
+	if (fname)
+		*fname = check;
+
+	return val;
+}
+
 static int s3_do_suspend_resume(fwts_framework *fw,
 	int *hw_errors,
 	int *pm_errors,
 	int *hook_errors,
 	int *s2idle_errors,
-	uint64_t *s2idle_residency,
+	uint64_t *total_s2idle_residency,
 	int delay,
 	int percent)
 {
@@ -528,15 +552,16 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	}
 
 	if (!strncmp(sleep_type, "s2idle", strlen("s2idle"))) {
-		uint64_t residency = get_s2_idle_residency();
-		bool intel;
-		if (fwts_cpu_is_Intel(&intel) == FWTS_OK && intel && residency <= *s2idle_residency) {
+		const char *fname;
+		uint64_t residency = get_total_s2idle_residency(&fname);
+
+		if (residency <= *total_s2idle_residency) {
 			(*s2idle_errors)++;
-			fwts_failed(fw, LOG_LEVEL_HIGH, "S2idleNotDeepest",
-				"Expected %s to increase from %" PRIu64 ", got %" PRIu64 ".",
-				PM_S2IDLE_SLP_S0, *s2idle_residency, residency);
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "S2idleNotDeepest",
+				    "Expected %s to increase from %" PRIu64 ", got %" PRIu64 ".",
+				    fname, *total_s2idle_residency, residency);
 		}
-		*s2idle_residency = residency;
+		*total_s2idle_residency = residency;
 	}
 
 	if (duration < delay) {
@@ -740,7 +765,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	int resume_too_long = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
-	uint64_t s2idle_residency = get_s2_idle_residency();
+	uint64_t total_s2idle_residency = get_total_s2idle_residency(NULL);
 	int pm_debug;
 
 #if FWTS_ENABLE_LOGIND
@@ -766,7 +791,7 @@ static int s3_test_multiple(fwts_framework *fw)
 			fwts_log_error(fw, "Cannot read kernel log.");
 
 		ret = s3_do_suspend_resume(fw, &hw_errors, &pm_errors, &hook_errors,
-					   &s2idle_errors, &s2idle_residency,
+					   &s2idle_errors, &total_s2idle_residency,
 					   s3_sleep_delay, percent);
 		if (ret == FWTS_OUT_OF_MEMORY) {
 			fwts_log_error(fw, "%s cycle %d failed - out of memory error.", sleep_type, i+1);

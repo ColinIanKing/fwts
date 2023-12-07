@@ -12,6 +12,8 @@ wmi                 Instance       : 0x01
 wmi                 Driver         : dell-wmi-descriptor (Dell)
 wmi             PASSED: Test 1, 8D9DDCBC-A997-11DA-B012-B622A1EF5492 has
 wmi             associated query method \_SB_.AMW0.WQAA
+wmi             PASSED: Test 1, 8D9DDCBC-A997-11DA-B012-B622A1EF5492 has
+wmi             more than zero instances
 wmi             
 wmi             \_SB_.AMW0._WDG (2 of 6)
 wmi               GUID: A80593CE-A997-11DA-B012-B622A1EF5492
@@ -22,6 +24,8 @@ wmi                 Instance       : 0x01
 wmi                 Driver         : alienware-wmi (Alienware)
 wmi             PASSED: Test 1, A80593CE-A997-11DA-B012-B622A1EF5492 has
 wmi             associated method \_SB_.AMW0.WMBA
+wmi             PASSED: Test 1, A80593CE-A997-11DA-B012-B622A1EF5492 has
+wmi             more than zero instances
 wmi             
 wmi             \_SB_.AMW0._WDG (3 of 6)
 wmi               GUID: DD8C7670-1CB5-11DB-A98B-669A0C200008
@@ -31,6 +35,8 @@ wmi                 Object ID      : BC
 wmi                 Instance       : 0x01
 wmi             PASSED: Test 1, DD8C7670-1CB5-11DB-A98B-669A0C200008 has
 wmi             associated method \_SB_.AMW0.WMBC
+wmi             PASSED: Test 1, DD8C7670-1CB5-11DB-A98B-669A0C200008 has
+wmi             more than zero instances
 wmi             
 wmi             \_SB_.AMW0._WDG (4 of 6)
 wmi               GUID: 9DBB5994-A997-11DA-B012-B622A1EF5492
@@ -40,6 +46,8 @@ wmi                 Notification ID: 0xd0
 wmi                 Reserved       : 0x00
 wmi                 Instance       : 0x01
 wmi                 Driver         : dell-wmi-base (Dell)
+wmi             PASSED: Test 1, 9DBB5994-A997-11DA-B012-B622A1EF5492 has
+wmi             more than zero instances
 wmi             
 wmi             \_SB_.AMW0._WDG (5 of 6)
 wmi               GUID: A3776CE0-1E88-11DB-A98B-0800200C9A66
@@ -51,6 +59,8 @@ wmi             FAILED [LOW] WMIMissingQueryMethod: Test 1, GUID
 wmi             A3776CE0-1E88-11DB-A98B-0800200C9A66 should have an
 wmi             associated query method WQBC defined, however this does
 wmi             not seem to exist.
+wmi             PASSED: Test 1, A3776CE0-1E88-11DB-A98B-0800200C9A66 has
+wmi             more than zero instances
 wmi             
 wmi             \_SB_.AMW0._WDG (6 of 6)
 wmi               GUID: 05901221-D566-11D1-B2F0-00A0C9062910
@@ -61,10 +71,12 @@ wmi                 Instance       : 0x01
 wmi                 Driver         : wmi-bmof (Generic)
 wmi             PASSED: Test 1, 05901221-D566-11D1-B2F0-00A0C9062910 has
 wmi             associated query method \_SB_.AMW0.WQMO
+wmi             PASSED: Test 1, 05901221-D566-11D1-B2F0-00A0C9062910 has
+wmi             more than zero instances
 wmi             PASSED: Test 1, All events associated with \_SB_.AMW0._WDG
 wmi             are handled by a kernel driver.
 wmi             
 wmi             ==========================================================
-wmi             5 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+wmi             11 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
 wmi             info only.
 wmi             ==========================================================

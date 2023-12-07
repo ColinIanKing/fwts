@@ -461,6 +461,12 @@ static void wmi_parse_wdg_data(
 			wmi_known_driver(fw, known);
 			wmi_block_query_exist_count(fw, info, acpi_object_name, guid_str);
 		}
+
+		if (info->instance == 0)
+			fwts_failed(fw, LOG_LEVEL_LOW, "WMIZeroInstance",
+				    "GUID %s has zero instances", guid_str);
+		else
+			fwts_passed(fw, "%s has more than zero instances", guid_str);
 	}
 
 	if (events && all_events_known)

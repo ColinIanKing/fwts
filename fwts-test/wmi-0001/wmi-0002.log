@@ -12,6 +12,8 @@ wmi                 Instance       : 0x01
 wmi                 Driver         : asus-wmi (Asus)
 wmi             PASSED: Test 1, 97845ED0-4E6D-11DE-8A39-0800200C9A66 has
 wmi             associated method \_SB_.ATKD.WMNB
+wmi             PASSED: Test 1, 97845ED0-4E6D-11DE-8A39-0800200C9A66 has
+wmi             more than zero instances
 wmi             
 wmi             \_SB_.ATKD._WDG (2 of 2)
 wmi               GUID: 0B3CBB35-E3C2-45ED-91C2-4C5A6D195D1C
@@ -21,10 +23,12 @@ wmi                 Notification ID: 0xff
 wmi                 Reserved       : 0x00
 wmi                 Instance       : 0x01
 wmi                 Driver         : asus-nb-wmi (Asus)
+wmi             PASSED: Test 1, 0B3CBB35-E3C2-45ED-91C2-4C5A6D195D1C has
+wmi             more than zero instances
 wmi             PASSED: Test 1, All events associated with \_SB_.ATKD._WDG
 wmi             are handled by a kernel driver.
 wmi             
 wmi             ==========================================================
-wmi             2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+wmi             4 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
 wmi             info only.
 wmi             ==========================================================

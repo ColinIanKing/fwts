@@ -93,6 +93,7 @@ static fwts_wmi_known_guid fwts_wmi_known_guids[] = {
 	{ "F1DDEE52-063C-4784-A11E-8A06684B9BF4", "dell-wmi-sysman", "Dell" },
 	{ "70FE8229-D03B-4214-A1C6-1F884B1A892A", "dell-wmi-sysman", "Dell" },
 	{ "8A42EA14-4F2A-FD45-6422-0087F7A7E608", "dell-wmi-ddv", "Dell" },
+	{ "F1DDEE52-063C-4784-A11E-8A06684B9B01", "dell-smm-hwmon", "Dell" },
 	{ "ABBC0F72-8EA1-11D1-00A0-C90629100000", "eeepc-wmi",	"Asus" },
 	{ "97845ED0-4E6D-11DE-8A39-0800200C9A66", "eeepc-wmi",	"Asus" },
 	{ "DEADBEEF-2001-0000-00A0-C90629100000", "gigabyte-wmi",	"Gigabyte" },

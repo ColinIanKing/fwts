@@ -31,8 +31,15 @@
 int fwts_check_root_euid(fwts_framework *fw, const bool warn)
 {
 	if (geteuid() != 0) {
-		if (warn)
-			fwts_log_error(fw, "Must be run as root or sudo to be able to read system information.");
+		if (warn) {
+			if (warn)
+				fwts_log_error(fw, "Must be run as root or sudo to be able to read system information.");
+		}
+		return FWTS_ERROR;
+	}
+	/* If $SNAP environment variable set, assume it's a snap install */
+	if (getenv("SNAP") != NULL) {
+		fwts_log_error(fw, "FWTS snaps need to be installed using --devmode to be able to read system information.");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;

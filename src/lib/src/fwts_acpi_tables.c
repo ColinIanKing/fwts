@@ -60,6 +60,7 @@ int acpi_table_generic_init(fwts_framework *fw, char *name, fwts_acpi_table_info
 {
 	if (fwts_acpi_find_table(fw, name, 0, table) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot read ACPI tables.");
+		fwts_check_root_euid(fw, true);
 		return FWTS_ERROR;
 	}
 	if (*table == NULL || (*table)->length == 0) {

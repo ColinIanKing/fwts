@@ -575,10 +575,10 @@ static const char *madt_sub_names[] = {
 	/* 0x12 */ "LIO PIC",
 	/* 0x13 */ "HT PIC",
 	/* 0x14 */ "EIO PIC",
-	/* 0x16 */ "MSI PIC",
-	/* 0x17 */ "BIO PIC",
-	/* 0x18 */ "LPC PIC",
-	/* 0x11 - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
+	/* 0x15 */ "MSI PIC",
+	/* 0x16 */ "BIO PIC",
+	/* 0x17 */ "LPC PIC",
+	/* 0x18 - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
 	/* 0x80 - 0xff */ "Reserved for OEM use",
 	NULL
 };

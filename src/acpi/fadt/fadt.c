@@ -1603,7 +1603,7 @@ static void acpi_table_check_fadt_sleep_control_reg(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SleepControlRegNotAllowed",
 				    "FADT SLEEP_CONTROL_REG is defined but "
-				    "will be ignored reduced hardware mode.");
+				    "will be ignored when not in reduced hardware mode.");
 	}
 }
 
@@ -1633,7 +1633,7 @@ static void acpi_table_check_fadt_sleep_status_reg(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SleepStatusRegNotAllowed",
 				    "FADT SLEEP_STATUS_REG is defined but "
-				    "will be ignored reduced hardware mode.");
+				    "will be ignored when not in reduced hardware mode.");
 	}
 }
 

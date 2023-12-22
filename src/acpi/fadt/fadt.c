@@ -150,8 +150,17 @@ static int fadt_info(fwts_framework *fw)
 	flag_info(fw, "HW_REDUCED_ACPI",
 		  fadt->flags & FWTS_FACP_FLAG_HW_REDUCED_ACPI);
 	flag_info(fw, "LOW_POWER_S0_IDLE_CAPABLE",
-		  fadt->flags & FWTS_FACP_FLAG_LOW_POWER_S0_IDLE_CAPABLE);
-
+		  fadt->flags & FWTS_FACP_FLAG_LOW_POWER_S0_IDLE_CAPABLE); 
+	if ((fadt->flags & FWTS_FACP_FLAG_PERSISTENT_CPU_CACHES) == 0)
+		fwts_log_info(fw, "     PERSISTENT_CPU_CACHES is not reported");
+	else if ((fadt->flags & FWTS_FACP_FLAG_PERSISTENT_CPU_CACHES) == FWTS_FACP_FLAG_PERSISTENT_CPU_CACHES) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			    "FADTCPUCACHESRESERVED",
+			    "FADT persistent cpu caches value 11b should be reserved.");
+	} else {
+		fwts_log_info(fw, "     PERSISTENT_CPU_CACHES is 0x%" PRIx8,
+		(fadt->flags & FWTS_FACP_FLAG_PERSISTENT_CPU_CACHES) >> 22);
+	}
 	fwts_log_info(fw, "FADT: IA-PC Boot Architecture flag states");
 	flag_info(fw, "LEGACY_DEVICES", fadt->iapc_boot_arch &
 		  FWTS_FACP_IAPC_BOOT_ARCH_LEGACY_DEVICES);

@@ -88,6 +88,7 @@
  * _DMA 	 Y
  * _DOD 	 Y
  * _DOS 	 Y
+ * _DSC          Y
  * _DSD 	 Y
  * _DSM 	 N
  * _DSS 	 Y
@@ -1540,6 +1541,7 @@ method_test_SxW(_S1W)
 method_test_SxW(_S2W)
 method_test_SxW(_S3W)
 method_test_SxW(_S4W)
+method_test_SxW(_DSC)
 
 static int method_test_RST(fwts_framework *fw)
 {
@@ -4818,6 +4820,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_S4W, "Test _S4W (S4 Device Wake State)." },
 	{ method_test_RST, "Test _RST (Device Reset)." },
 	{ method_test_PRR, "Test _PRR (Power Resource for Reset)." },
+	{ method_test_DSC, "Test _DSC (Deepest State for Configuration)." },
 
 	/* Section 7.3 OEM-Supplied System-Level Control Methods */
 	{ method_test_S0_, "Test _S0_ (S0 System State)." },

@@ -93,8 +93,42 @@ srat
 srat            FAILED [HIGH] SRATReservedBitsNonZero: Test 1, SRAT Memory
 srat            Affinity Flags Bits [31..3] must be zero, got 0x00000008
 srat            instead
+srat            SRAT Port Affinity Structure:
+srat              Type:                     0x06
+srat              Length:                   0x20
+srat              Reserved:                 0x01
+srat              Device Handle Type:       0x01
+srat              Proximity Domain:         0x00000000
+srat            FAILED [MEDIUM] SRATReservedNonZero: Test 1, SRAT Port
+srat            Affinity Reserved field must be zero, got 0x01 instead
+srat              Device Handle:
+srat                PCI Segment:            0x0201
+srat                PCI BDF Number:         0x0403
+srat                Reserved:
+srat                  00 00 00 00 FF FF FF FF FF FF FF FF 
+srat            FAILED [MEDIUM] SRATReservedNonZero: Test 1, SRAT Port
+srat            Affinity Device Handle Reserved field must be all zero,
+srat            got below instead
+srat                Port Affinity Device Handle Reserved [00] = 0x00
+srat                Port Affinity Device Handle Reserved [01] = 0x00
+srat                Port Affinity Device Handle Reserved [02] = 0x00
+srat                Port Affinity Device Handle Reserved [03] = 0x00
+srat                Port Affinity Device Handle Reserved [04] = 0xff
+srat                Port Affinity Device Handle Reserved [05] = 0xff
+srat                Port Affinity Device Handle Reserved [06] = 0xff
+srat                Port Affinity Device Handle Reserved [07] = 0xff
+srat                Port Affinity Device Handle Reserved [08] = 0xff
+srat                Port Affinity Device Handle Reserved [09] = 0xff
+srat                Port Affinity Device Handle Reserved [10] = 0xff
+srat                Port Affinity Device Handle Reserved [11] = 0xff
+srat              Flags:                    0x00000000
+srat              Reserved:                 0xff000000
+srat            
+srat            FAILED [MEDIUM] SRATReservedNonZero: Test 1, SRAT Port
+srat            Affinity Reserved field must be zero, got 0xff000000
+srat            instead
 srat            
 srat            ==========================================================
-srat            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+srat            0 passed, 7 failed, 0 warning, 0 aborted, 0 skipped, 0
 srat            info only.
 srat            ==========================================================

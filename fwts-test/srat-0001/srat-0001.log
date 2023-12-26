@@ -82,6 +82,19 @@ srat              Reserved:                 0x00000001
 srat              Flags:                    0x00000001
 srat              Reserved:                 0x0000000000000000
 srat            
+srat            SRAT Port Affinity Structure:
+srat              Type:                     0x06
+srat              Length:                   0x20
+srat              Reserved:                 0x00
+srat              Device Handle Type:       0x00
+srat              Proximity Domain:         0x00000000
+srat              Device Handle:
+srat                ACPI _HID:              0x7766554433221100
+srat                ACPI _UID:              0x33221100
+srat                Reserved:               0x00000000
+srat              Flags:                    0x00000000
+srat              Reserved:                 0x00000000
+srat            
 srat            PASSED: Test 1, No issues found in SRAT table.
 srat            
 srat            ==========================================================

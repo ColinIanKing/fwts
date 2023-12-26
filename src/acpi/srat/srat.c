@@ -307,28 +307,27 @@ static void srat_check_initiator_affinity(
 	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved1);
 	fwts_log_info_simp_int(fw, "  Device Handle Type:       ", affinity->device_handle_type);
 	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
-	fwts_log_info_verbatim(fw, "  Device Handle:");
-	if (affinity->device_handle_type == 0) {
-		fwts_log_info_simp_int(fw, "    ACPI _HID:                ", (uint64_t)affinity->device_handle[0]);
-		fwts_log_info_simp_int(fw, "    ACPI _UID:                ", (uint32_t)affinity->device_handle[8]);
-	} else if (affinity->device_handle_type == 1) {
-		fwts_log_info_simp_int(fw, "    PCI Segment:              ", (uint16_t)affinity->device_handle[0]);
-		fwts_log_info_simp_int(fw, "    PCI BDF Number:           ", (uint16_t)affinity->device_handle[2]);
-	}
-	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
-	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved2);
-	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero("SRAT", "Initiator Affinity Reserved", affinity->reserved1, passed);
 	fwts_acpi_reserved_bits("SRAT", "Initiator Affinity Device Handle Type", affinity->device_handle_type, 1, 7, passed);
-	if (affinity->device_handle_type == 0)
-		h_reserved = affinity->device_handle[12];
-	else if (affinity->device_handle_type == 1) {
-		uint8_t i;
-		for (i = 4; i < 16; i++)
-			h_reserved += affinity->device_handle[i];
+
+	fwts_log_info_verbatim(fw, "  Device Handle:");
+	if (affinity->device_handle_type == 0) {
+		fwts_log_info_simp_int(fw, "    ACPI _HID:              ", *(uint64_t *)affinity->device_handle);
+		fwts_log_info_simp_int(fw, "    ACPI _UID:              ", *(uint32_t *)(affinity->device_handle + 8));
+		h_reserved = *(uint32_t *)(affinity->device_handle + 12);
+		fwts_log_info_simp_int(fw, "    Reserved:               ", h_reserved);
+		fwts_acpi_reserved_zero("SRAT", "Initiator Affinity Device Handle Reserved", h_reserved, passed);
+	} else if (affinity->device_handle_type == 1) {
+		fwts_log_info_simp_int(fw, "    PCI Segment:            ", *(uint16_t *)affinity->device_handle);
+		fwts_log_info_simp_int(fw, "    PCI BDF Number:         ", *(uint16_t *)(affinity->device_handle + 2));
+		fwts_log_info_verbatim(fw, "    Reserved:");
+		fwts_hexdump_data_prefix_all(fw, affinity->device_handle + 4, "      ", 12);
+		fwts_acpi_reserved_zero_array(fw, "SRAT", "  Initiator Affinity Device Handle Reserved", affinity->device_handle + 4, 12, passed);
 	}
-	fwts_acpi_reserved_zero("SRAT", "Initiator Affinity Device Handle Reserve", h_reserved, passed);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved2);
+
 	fwts_acpi_reserved_bits("SRAT", "Initiator Affinity Flags", affinity->flags, 2, 31, passed);
 	fwts_acpi_reserved_zero("SRAT", "Initiator Affinity Reserved", affinity->reserved2, passed);
 

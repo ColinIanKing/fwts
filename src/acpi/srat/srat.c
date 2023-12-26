@@ -337,6 +337,70 @@ done:
 	*data += sizeof(fwts_acpi_table_initiator_affinity);
 }
 
+static void srat_check_port_affinity(
+	fwts_framework *fw,
+	ssize_t		*length,
+	uint8_t		**data,
+	bool		*passed)
+{
+	uint32_t h_reserved = 0;
+
+	fwts_acpi_table_port_affinity *affinity =
+		(fwts_acpi_table_port_affinity *)*data;
+
+	if ((ssize_t)sizeof(fwts_acpi_table_port_affinity) > *length) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SRATPortAffinityShort",
+			"SRAT Port Affinity structure too short, got "
+			"%zu bytes, expecting %zu bytes",
+			*length, sizeof(fwts_acpi_table_port_affinity));
+		*passed = false;
+		goto done;
+	}
+
+	if (!fwts_acpi_structure_length(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_port_affinity))) {
+		*passed = false;
+		goto done;
+	}
+
+	fwts_log_info_verbatim(fw, "SRAT Port Affinity Structure:");
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved1);
+	fwts_log_info_simp_int(fw, "  Device Handle Type:       ", affinity->device_handle_type);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
+
+	fwts_acpi_reserved_zero("SRAT", "Port Affinity Reserved", affinity->reserved1, passed);
+	fwts_acpi_reserved_bits("SRAT", "Port Affinity Device Handle Type", affinity->device_handle_type, 1, 7, passed);
+
+	fwts_log_info_verbatim(fw, "  Device Handle:");
+	if (affinity->device_handle_type == 0) {
+		fwts_log_info_simp_int(fw, "    ACPI _HID:              ", *(uint64_t *)(affinity->device_handle));
+		fwts_log_info_simp_int(fw, "    ACPI _UID:              ", *(uint32_t *)(affinity->device_handle + 8));
+		h_reserved = *(uint32_t *)(affinity->device_handle + 12);
+		fwts_log_info_simp_int(fw, "    Reserved:               ", *(uint32_t *)(affinity->device_handle + 12));
+		fwts_acpi_reserved_zero("SRAT", "Port Affinity Device Handle Reserved", h_reserved, passed);
+	} else if (affinity->device_handle_type == 1) {
+		fwts_log_info_simp_int(fw, "    PCI Segment:            ", *(uint16_t *)(affinity->device_handle));
+		fwts_log_info_simp_int(fw, "    PCI BDF Number:         ", *(uint16_t *)(affinity->device_handle + 2));
+		fwts_log_info_verbatim(fw, "    Reserved:");
+		fwts_hexdump_data_prefix_all(fw, affinity->device_handle + 4, "      ", 12);
+		fwts_acpi_reserved_zero_array(fw, "SRAT", "  Port Affinity Device Handle Reserved", affinity->device_handle + 4, 12, passed);
+	}
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved2);
+	fwts_log_nl(fw);
+
+	fwts_acpi_reserved_bits("SRAT", "Port Affinity Flags", affinity->flags, 2, 31, passed);
+	fwts_acpi_reserved_zero("SRAT", "Port Affinity Reserved", affinity->reserved2, passed);
+
+done:
+	*length -= sizeof(fwts_acpi_table_port_affinity);
+	*data += sizeof(fwts_acpi_table_port_affinity);
+}
+
+
 /*
  *  See ACPI 6.0, Section 5.2.16
  */
@@ -371,6 +435,9 @@ static int srat_test1(fwts_framework *fw)
 			break;
 		case 0x05:
 			srat_check_initiator_affinity(fw, &length, &data, &passed);
+			break;
+		case 0x06:
+			srat_check_port_affinity(fw, &length, &data, &passed);
 			break;
 		default:
 			fwts_failed(fw, LOG_LEVEL_HIGH,

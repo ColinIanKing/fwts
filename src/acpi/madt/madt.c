@@ -1091,6 +1091,10 @@ static int madt_gicc(fwts_framework *fw,
 		mask = 0xfffffff8;
 		start = 3;
 	}
+	if (hdr->length == 82) {	/* ACPI 6.5 */
+		mask = 0xfffffff0;
+		start = 4;
+	}
 	if (gic->flags & mask)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTGICFLags",
@@ -1102,6 +1106,15 @@ static int madt_gicc(fwts_framework *fw,
 			    "MADT %s, flags, bits %d..31 are reserved and "
 			    "properly set to zero.",
 			    madt_sub_names[hdr->type], start);
+
+	if (hdr->length == 82) {	/* ACPI 6.5 */
+		/* If the Enabled bit is set, Online Capable bit is reserved and must be zero. */
+		if ((gic->flags & 1) && (gic->flags & (1 << 3)))
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "MADTGICBadFLag",
+				    "MADT %s, flags, if Enable bit is set, the Online Capable bit "
+				    "is reserved and must be zero.",madt_sub_names[hdr->type]);
+	}
 
 	if (gic->parking_protocol_version != 0 &&
 	    gic->parking_protocol_version != 1)

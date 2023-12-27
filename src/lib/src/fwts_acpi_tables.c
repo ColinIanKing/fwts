@@ -1629,7 +1629,8 @@ static const char *get_space_id_name(const uint8_t id)
 		"IPMI (0x7)",
 		"General PurposeIO (0x8)",
 		"GenericSerialBus (0x9)",
-		"Platform Communications Channel (0xa)"
+		"Platform Communications Channel (0xa)",
+		"Platform Runtime Mechanism (0xb)"
 	};
 
 	if (id < FWTS_ARRAY_SIZE(gas_space_id_names))

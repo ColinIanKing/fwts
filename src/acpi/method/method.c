@@ -271,6 +271,7 @@
 #define DEVICE_D3COLD	4
 
 static bool fadt_mobile_platform;	/* True if a mobile platform */
+static uint32_t gcp_return_value;
 
 #define method_test_integer(name, type)				\
 static int method_test ## name(fwts_framework *fw)		\
@@ -296,6 +297,7 @@ static int method_init(fwts_framework *fw)
 	bool got_fadt = false;
 
 	fadt_mobile_platform = false;
+	gcp_return_value = 0;
 
 	/* Some systems have multiple FADTs, sigh */
 	for (i = 0; i < 256; i++) {
@@ -2927,11 +2929,94 @@ static int method_test_UPP(fwts_framework *fw)
 /*
  * Section 9.18 Wake Alarm Device
  */
+static void method_test_GCP_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t *mask = (uint32_t *) private;
+	bool failed = false;
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	gcp_return_value = obj->Integer.Value;
+
+	if (gcp_return_value & *mask) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodIllegalReserved",
+			"%s returned value 0x%4.4" PRIx32 " and some of the "
+			"reserved bits are set when they should be zero.",
+			name, (uint32_t)obj->Integer.Value);
+	}
+	/* If wake on DC is supported (bit 1), then wake from AC (bit 0) must be supported */
+	if (gcp_return_value & (1 << 1) && !(gcp_return_value & 1)) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if DC is supported(bit 1), "
+			"then wake from AC(bit 0) must be supported.", name, gcp_return_value);
+	}
+        /* If wake on AC from S5 is supported (bit 6), then wake on AC from S4 must be supported (bit 5) */
+	if (gcp_return_value & (1 << 6) && !(gcp_return_value & (1 << 5))) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if wake on AC from S5 is supported(bit 6), "
+			"then wake on AC from S4 must be supported(bit 5).", name, gcp_return_value);
+	}
+        /* If wake on AC from S4 is supported (bit 5), then wake on AC must be supported (bit 0) */
+	if (gcp_return_value & (1 << 5) && !(gcp_return_value & 1)) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if wake on AC from S4 is supported(bit 5), "
+			"then wake on AC must be supported(bit 0).", name, gcp_return_value);
+	}
+        /* If wake on DC from S5 is supported (bit 8), then wake on DC from S4 must be supported (bit 7) */
+	if (gcp_return_value & (1 << 8) && !(gcp_return_value & (1 << 7))) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if wake on DC from S5 is supported(bit 8), "
+			"then wake on DC from S4 must be supported(bit 7).", name, gcp_return_value);
+	}
+        /* If wake on DC from S4 is supported (bit 7), then wake on DC must be supported (bit 1) */
+	if (gcp_return_value & (1 << 7) && !(gcp_return_value & (1 << 1))) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if wake on DC from S4 is supported(bit 7), "
+			"then wake on DC must be supported(bit 1).", name, gcp_return_value);
+	}
+        /* If wake on DC from S4 is supported (bit 7), then wake on AC from S4 must be supported (bit 5) */
+	if (gcp_return_value & (1 << 7) && !(gcp_return_value & (1 << 5))) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if wake on DC from S4 is supported(bit 7), "
+			"then wake on AC from S4 must be supported(bit 5).", name, gcp_return_value);
+	}
+        /* If wake on DC from S5 is supported (bit 8), then wake on AC from S5 must be supported (bit 6) */
+	if (gcp_return_value & (1 << 8) && !(gcp_return_value & (1 << 6))) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if wake on DC from S5 is supported(bit 8), "
+			"then wake on AC from S5 must be supported(bit 6).", name, gcp_return_value);
+	}
+        /* If wake from S4/S5 is supported (bits 5-8), then _GWS must be supported (bit 4) */
+	if (gcp_return_value & 0x1e0 && !(gcp_return_value & (1 << 4))) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadSupport",
+			"%s returned value 0x%4.4" PRIx32 ", if wake from S4/S5 is supported(bits 5-8), "
+			"then _GWS must be supported(bit 4).", name, gcp_return_value);
+	}
+
+	if (!failed)
+		fwts_passed(fw, "%s correctly returned an integer.", name);
+}
+
 static int method_test_GCP(fwts_framework *fw)
 {
-	uint64_t mask = ~0x1ff;
+	uint32_t mask = ~0x1ff;
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GCP", NULL, 0, fwts_method_test_integer_reserved_bits_return, &mask);
+		"_GCP", NULL, 0, method_test_GCP_return, &mask);
 }
 
 static void method_test_GRT_return(
@@ -2958,8 +3043,13 @@ static void method_test_GRT_return(
 
 static int method_test_GRT(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GRT", NULL, 0, method_test_GRT_return, NULL);
+	/* This object is required if the capabilities bit 2 is set to 1 */
+	if (gcp_return_value & (1 << 2))
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_GRT", NULL, 0, method_test_GRT_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_GRT", NULL, 0, method_test_GRT_return, NULL);
 }
 
 static int method_test_SRT(fwts_framework *fw)
@@ -2979,9 +3069,13 @@ static int method_test_SRT(fwts_framework *fw)
 	arg0.Type = ACPI_TYPE_BUFFER;
 	arg0.Buffer.Length = time_size;
 	arg0.Buffer.Pointer = (void *)&real_time;
-
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_SRT", &arg0, 1, fwts_method_test_integer_return, NULL);
+	/* This object is required if the capabilities bit 2 is set to 1 */
+	if (gcp_return_value & (1 << 2))
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_SRT", &arg0, 1, fwts_method_test_integer_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_SRT", &arg0, 1, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_GWS(fwts_framework *fw)
@@ -2992,8 +3086,13 @@ static int method_test_GWS(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GWS", arg, 1, fwts_method_test_integer_reserved_bits_return, &mask);
+	/* This object is required if the capabilities bit 0 is set to 1 */
+	if (gcp_return_value & 1)
+		return method_evaluate_method(fw, METHOD_MANDATORY, "_GWS",
+			arg, 1, fwts_method_test_integer_reserved_bits_return, &mask);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL, "_GWS",
+			arg, 1, fwts_method_test_integer_reserved_bits_return, &mask);
 }
 
 static void method_test_CWS_return(
@@ -3025,8 +3124,13 @@ static int method_test_CWS(fwts_framework *fw)
 
 	for (i = 0; i < 2; i++) {
 		arg[0].Integer.Value = i;
-		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_CWS", arg, 1, method_test_CWS_return, NULL);
+		/* This object is required if the capabilities bit 0 is set to 1 */
+		if (gcp_return_value & 1)
+			ret = method_evaluate_method(fw, METHOD_MANDATORY,
+				"_CWS", arg, 1, method_test_CWS_return, NULL);
+		else
+			ret = method_evaluate_method(fw, METHOD_OPTIONAL,
+				"_CWS", arg, 1, method_test_CWS_return, NULL);
 
 		if (ret != FWTS_OK)
 			break;
@@ -3044,8 +3148,13 @@ static int method_test_STP(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 0;	/* wake up instantly */
 
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_STP", arg, 2, fwts_method_test_passed_failed_return, "_STP");
+	/* This object is required if the capabilities bit 0 is set to 1 */
+	if (gcp_return_value & 1)
+		return method_evaluate_method(fw, METHOD_MANDATORY, "_STP",
+			arg, 2, fwts_method_test_passed_failed_return, "_STP");
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL, "_STP",
+			arg, 2, fwts_method_test_passed_failed_return, "_STP");
 }
 
 static int method_test_STV(fwts_framework *fw)
@@ -3057,8 +3166,13 @@ static int method_test_STV(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 100;	/* timer value */
 
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_STV", arg, 2, fwts_method_test_passed_failed_return, "_STV");
+	/* This object is required if the capabilities bit 0 is set to 1 */
+	if (gcp_return_value & 1)
+		return method_evaluate_method(fw, METHOD_MANDATORY, "_STV",
+			arg, 2, fwts_method_test_passed_failed_return, "_STV");
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL, "_STV",
+			arg, 2, fwts_method_test_passed_failed_return, "_STV");
 }
 
 static int method_test_TIP(fwts_framework *fw)
@@ -3068,8 +3182,13 @@ static int method_test_TIP(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TIP", arg, 1, fwts_method_test_integer_return, NULL);
+	/* This object is required if the capabilities bit 0 is set to 1 */
+	if (gcp_return_value & 1)
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_TIP", arg, 1, fwts_method_test_integer_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_TIP", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_TIV(fwts_framework *fw)
@@ -3079,8 +3198,14 @@ static int method_test_TIV(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TIV", arg, 1, fwts_method_test_integer_return, NULL);
+	/* This object is required if the capabilities bit 0 is set to 1 */
+	if (gcp_return_value & 1)
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_TIV", arg, 1, fwts_method_test_integer_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_TIV", arg, 1, fwts_method_test_integer_return, NULL);
+
 }
 
 /*

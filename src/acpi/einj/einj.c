@@ -81,14 +81,26 @@ static int einj_test1(fwts_framework *fw)
 		fwts_log_info_verbatim(fw, "    Mask                : 0x%16.16"
 				PRIx64, entry->mask);
 
-		if (entry->serialization_action > 0x9 &&
-		    entry->serialization_action != 0xFF) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				    "EINJBadInjectionAction",
-				    "EINJ Injection Action must be within 0~9 "
-				    "or 0xFF got 0x%" PRIx8 " instead",
-				    entry->serialization_action);
-			passed = false;
+		if (einj->header.revision >= 2) {
+			if (entry->serialization_action > 0x11 &&
+			    entry->serialization_action != 0xFF) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					    "EINJBadInjectionAction",
+					    "EINJ Injection Action must be within 0~9 "
+					    "or 0xFF got 0x%" PRIx8 " instead",
+					    entry->serialization_action);
+				passed = false;
+			}
+		} else {
+			if (entry->serialization_action > 0x9 &&
+			    entry->serialization_action != 0xFF) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					    "EINJBadInjectionAction",
+					    "EINJ Injection Action must be within 0~9 "
+					    "or 0xFF got 0x%" PRIx8 " instead",
+					    entry->serialization_action);
+				passed = false;
+			}
 		}
 
 		if (entry->instruction > 0x4) {

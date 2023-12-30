@@ -85,6 +85,8 @@ static int tpmevlog_eventtype_check(fwts_framework *fw, const fwts_tpmlog_event_
 	case EV_EFI_VARIABLE_AUTHORITY:
 	case EV_EFI_SPDM_FIRMWARE_BLOB:
 	case EV_EFI_SPDM_FIRMWARE_CONFIG:
+	case EV_EFI_SPDM_DEVICE_POLICY:
+	case EV_EFI_SPDM_DEVICE_AUTHORITY:
 	case EV_COMPACT_HASH:
 		return FWTS_OK;
 	default:

@@ -2844,12 +2844,12 @@ static void method_test_UPC_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	uint32_t i, connector_type;
+	uint32_t connector_type, capabilities;
 
 	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_INTEGER,	"Connectable" },
 		{ ACPI_TYPE_INTEGER,	"Type" },
-		{ ACPI_TYPE_INTEGER,	"Reserved0" },
+		{ ACPI_TYPE_INTEGER,	"USB-C Port Capabilities" },
 		{ ACPI_TYPE_INTEGER,	"Reserved1" },
 	};
 
@@ -2868,13 +2868,33 @@ static void method_test_UPC_return(
 		return;
 	}
 
-	for (i = 2; i < 4; i++) {
-		if (obj->Package.Elements[i].Integer.Value != 0) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_UPCBadReturnType",
-				"%s element %" PRIu32 " is not zero.", name, i);
+	capabilities = obj->Package.Elements[2].Integer.Value;
+	switch (connector_type) {
+	case 0x08:
+	case 0x09:
+	case 0x0a:
+		if (capabilities & 0xffffffc0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UPCBadReturnType",
+				"%s %s set reserved bits (%d)",
+				name, elements[2].name, capabilities);
 			return;
 		}
+		break;
+	default:
+		if (capabilities != 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UPCBadReturnType",
+				"%s %s returned %d which is incompatible with connector type %d.",
+				name, elements[2].name, capabilities, connector_type);
+			return;
+		}
+		break;
+	}
+
+	if (obj->Package.Elements[3].Integer.Value != 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_UPCBadReturnType",
+			"%s element 3 is not zero.", name);
+		return;
 	}
 
 	fwts_method_passed_sane(fw, name, "package");

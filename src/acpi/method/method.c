@@ -2494,7 +2494,7 @@ static void method_test_LPI_return(
 				case 0 ... 5:
 					if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
 						fwts_failed(fw, LOG_LEVEL_HIGH,
-							"Method_LPIBadESublementType",
+							"Method_LPIBadSubElementType",
 							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
 							"an integer.", name, i, j);
 						failed = true;
@@ -2504,7 +2504,7 @@ static void method_test_LPI_return(
 					if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER &&
 					    pkg->Package.Elements[j].Type != ACPI_TYPE_BUFFER) {
 						fwts_failed(fw, LOG_LEVEL_HIGH,
-							"Method_LPIBadESublementType",
+							"Method_LPIBadSubElementType",
 							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
 							"a buffer or an integer.", name, i, j);
 						failed = true;
@@ -2513,7 +2513,7 @@ static void method_test_LPI_return(
 				case 7 ... 8:
 					if (pkg->Package.Elements[j].Type != ACPI_TYPE_BUFFER) {
 						fwts_failed(fw, LOG_LEVEL_HIGH,
-							"Method_LPIBadESublementType",
+							"Method_LPIBadSubElementType",
 							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
 							"a buffer.", name, i, j);
 						failed = true;
@@ -2522,7 +2522,7 @@ static void method_test_LPI_return(
 				case 9:
 					if (pkg->Package.Elements[j].Type != ACPI_TYPE_STRING) {
 						fwts_failed(fw, LOG_LEVEL_HIGH,
-							"Method_LPIBadESublementType",
+							"Method_LPIBadSubElementType",
 							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
 							"a string.", name, i, j);
 						failed = true;
@@ -2530,7 +2530,7 @@ static void method_test_LPI_return(
 					break;
 				default:
 					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"Method_LPIBadESublement",
+						"Method_LPIBadSubElement",
 						"%s sub-package %" PRIu32 " element %" PRIu32 " should have "
 						"9 elements, got .", name, i, j+1);
 					failed = true;
@@ -2591,7 +2591,7 @@ static void method_test_RDI_return(
 		for (j = 0; j < pkg->Package.Count; j++) {
 			if (pkg->Package.Elements[j].Type != ACPI_TYPE_LOCAL_REFERENCE) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"Method_RDIBadESublementType",
+					"Method_RDIBadSubElementType",
 					"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
 					"a Reference.", name, i, j);
 				failed = true;

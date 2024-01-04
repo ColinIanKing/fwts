@@ -158,6 +158,7 @@
  * _PCT 	 Y
  * _PDC 	 deprecated
  * _PDL 	 Y
+ * _PDO          Y
  * _PIC 	 Y
  * _PIF 	 Y
  * _PLD 	 Y
@@ -2911,6 +2912,86 @@ static int method_test_UPC(fwts_framework *fw)
 }
 
 /*
+ * Section 9.13 USB Power Data Object ACPI6.5
+ */
+static void method_test_PDO_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i, j;
+	bool failed = false;
+	uint32_t flags;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_PDOBadElementType",
+			"%s element %" PRIu32 " is not an integer.", name, 0);
+		failed = true;
+	}
+
+	if (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_PDOBadElementType",
+			"%s element %" PRIu32 " is not an integer.", name, 1);
+		failed = true;
+	}
+	flags = obj->Package.Elements[1].Integer.Value;
+	if (flags & 0xfffffff0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PDOElementValue",
+			"%s package element 1 had upper 28 bits "
+			"of bits that were non-zero, value 0x%4.4" PRIu32
+			".", name, flags);
+		failed = true;
+	}
+	if ((flags & 0x7) > 4) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PDOElementValue",
+			"%s package element 1 has reserved bits that are non-zero "
+			"Bits[2:0] value 101b-111b is reserved.", name);
+		failed = true;
+	}
+
+	for (i = 2; i < 4; i++) {
+		ACPI_OBJECT *pkg;
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"Method_PDOBadElementType",
+				"%s element %" PRIu32 " is not a package.", name, i);
+			failed = true;
+			continue;
+		}
+		pkg = &obj->Package.Elements[i];
+		for (j = 0; j < pkg->Package.Count; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Method_PDOBadSubElementType",
+					"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
+					"an integer.", name, i, j);
+				failed = true;
+			}
+		}
+	}
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PDO(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PDO", NULL, 0, method_test_PDO_return, NULL);
+}
+
+/*
  * Section 9.16 User Presence Detection Device
  */
 
@@ -5016,6 +5097,9 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 9.13 USB Port Capabilities */
 	{ method_test_UPC, "Test _UPC (USB Port Capabilities)." },
+
+	/* Section 9.13 USB Power Data Object ACPI(6.5)*/
+	{ method_test_PDO, "Test _PDO (USB Power Data Object)." },
 
 	/* Section 9.14 Device Object Name Collision */
 	/* { method_test_DSM, "Test _DSM (Device Specific Method)." }, */

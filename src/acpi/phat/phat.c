@@ -25,6 +25,8 @@
 
 #include "fwts_uefi.h"
 
+static const char reset_reason_guid[] = "7A014CE2-F263-4B77-B88A-E6336B782C14";
+
 static fwts_acpi_table_info *table;
 acpi_table_init(PHAT, &table)
 
@@ -87,6 +89,7 @@ static void phat_health_test(
 
 	char guid[37];
 	char buffer[2048];
+	uint8_t supported_src, source;
 
 	fwts_guid_buf_to_str(entry->data_signature, guid, sizeof(guid));
 	device_path = (uint16_t *)((char *)entry + sizeof(fwts_acpi_table_phat_health));
@@ -115,9 +118,17 @@ static void phat_health_test(
 			*passed = false;
 		}
 		else {
-			fwts_log_info_verbatim(fw, "    Vendor Data:");
+			fwts_log_info_verbatim(fw, "    Device-specific Data:");
 			fwts_hexdump_data_prefix_all(fw, (uint8_t *)entry + entry->data_offset,
 					"      ", entry->header.length - entry->data_offset);
+
+			/* Check Reset Reason Health Record Supported Sources and source*/
+			if (strcmp(reset_reason_guid, guid) == 0) {
+				supported_src = *((uint8_t *)entry + entry->data_offset);
+				source = *((uint8_t *)entry + entry->data_offset + 1);
+				fwts_acpi_reserved_bits("PHAT", "Supported Sources", supported_src, 5, 7, passed);
+				fwts_acpi_reserved_bits("PHAT", "Source", source, 5, 7, passed);
+			}
 		}
 	}
 

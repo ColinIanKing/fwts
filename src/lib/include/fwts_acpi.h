@@ -2747,4 +2747,59 @@ typedef struct {
 	uint64_t		reserved;
 } __attribute__ ((packed)) fwts_acpi_table_ibft;
 
+/*
+ * Virtual I/O Translation (VIOT) Table
+ * ACPI6.5 5.2.32
+ */
+typedef struct
+{
+
+	uint8_t		type;
+	uint8_t		reserved;
+	uint16_t	length;
+} __attribute__ ((packed)) fwts_acpi_viot_node_hdr;
+
+typedef struct
+{
+	fwts_acpi_viot_node_hdr hdr;
+	uint32_t	endpoint_start;
+	uint16_t	pci_seg_start;
+	uint16_t	pci_seg_end;
+	uint16_t	pci_bdf_start;
+	uint16_t	pci_bdf_end;
+	uint16_t	output_node;
+	uint8_t		reserved[6];
+} __attribute__ ((packed)) fwts_acpi_viot_pci_rng_node;
+
+typedef struct
+{
+	fwts_acpi_viot_node_hdr hdr;
+	uint32_t	endpoint_id;
+	uint64_t	base_addr;
+	uint16_t	output_node;
+	uint8_t		reserved[6];
+} __attribute__ ((packed)) fwts_acpi_viot_mmio_ep_node;
+
+typedef struct
+{
+	fwts_acpi_viot_node_hdr hdr;
+	uint16_t	pci_seg;
+	uint16_t	pci_bdf_num;
+	uint64_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_viot_pci_iommu_node;
+
+typedef struct
+{
+	fwts_acpi_viot_node_hdr hdr;
+	uint32_t	reserved;
+	uint64_t	base_addr;
+} __attribute__ ((packed)) fwts_acpi_viot_mmio_iommu_node;
+
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint16_t		node_count;
+	uint16_t		node_offset;
+	uint64_t		reserved;
+} __attribute__ ((packed)) fwts_acpi_table_viot;
+
 #endif

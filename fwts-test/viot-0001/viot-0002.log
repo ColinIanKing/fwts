@@ -1,0 +1,88 @@
+viot            viot: VIOT Virtual I/O Translation Table test.
+viot            ----------------------------------------------------------
+viot            Test 1 of 1: Validate VIOT table.
+viot            VIOT Virtual I/O Translation Table:
+viot              Node Count:           0x0007
+viot              Node Offset:          0x0030
+viot              Reserved:             0xffffffffffffffff
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be zero, got 0xffffffffffffffff instead
+viot              PCI Range Node Structure:
+viot                Type:               0x01
+viot                Reserved:           0xff
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be zero, got 0xff instead
+viot                length:             0x0018
+viot                Endpoint Start:     0x00000000
+viot                PCI Segment Start:  0x0000
+viot                PCI Segment End:    0x0000
+viot                PCI BDF Start:      0x0000
+viot                PCI BDF End:        0xffff
+viot                PCI Segment End:    0x0060
+viot                  FF FF FF FF FF FF 
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be all zero, got below instead
+viot              Reserved [00] = 0xff
+viot              Reserved [01] = 0xff
+viot              Reserved [02] = 0xff
+viot              Reserved [03] = 0xff
+viot              Reserved [04] = 0xff
+viot              Reserved [05] = 0xff
+viot            
+viot              Single MMIO Endpoint Node Structure:
+viot                Type:               0x02
+viot                Reserved:           0xff
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be zero, got 0xff instead
+viot                length:             0x0018
+viot                Endpoint ID:        0x00010000
+viot                Base Address:       0x000000001c000000
+viot                Output Node:        0x0070
+viot                  FF FF FF FF FF FF 
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be all zero, got below instead
+viot              Reserved [00] = 0xff
+viot              Reserved [01] = 0xff
+viot              Reserved [02] = 0xff
+viot              Reserved [03] = 0xff
+viot              Reserved [04] = 0xff
+viot              Reserved [05] = 0xff
+viot            
+viot              Virtio-iommu based on virtio-pci Node Structure:
+viot                Type:               0x03
+viot                Reserved:           0xff
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be zero, got 0xff instead
+viot                length:             0x0010
+viot                PCI Segment:        0x0000
+viot                PCI BDF Number:     0x0000
+viot                Reserved:           0xffffffffffffffff
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be zero, got 0xffffffffffffffff instead
+viot            
+viot              Virtio-iommu based on virtio-pci Node Structure:
+viot                Type:               0x04
+viot                Reserved:           0xff
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be zero, got 0xff instead
+viot                length:             0x0010
+viot                Reserved:           0xffffffff
+viot            FAILED [MEDIUM] VIOTReservedNonZero: Test 1, VIOT Reserved
+viot            field must be zero, got 0xffffffff instead
+viot                Base Address:       0x000000001d000000
+viot            
+viot            FAILED [HIGH] VIOTBadNodeType: Test 1, VIOT node structure
+viot            types must not have the value 0, 0x05..0xff, got 0x00
+viot            instead
+viot            
+viot            FAILED [HIGH] VIOTBadNodeType: Test 1, VIOT node structure
+viot            types must not have the value 0, 0x05..0xff, got 0x06
+viot            instead
+viot            
+viot            FAILED [HIGH] VIOTOutOfRangeOffset: Test 1, VIOT Node Data
+viot            Offset is out of range.
+viot            
+viot            ==========================================================
+viot            0 passed, 12 failed, 0 warning, 0 aborted, 0 skipped, 0
+viot            info only.
+viot            ==========================================================

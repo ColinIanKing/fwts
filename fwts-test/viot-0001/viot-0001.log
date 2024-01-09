@@ -1,0 +1,49 @@
+viot            viot: VIOT Virtual I/O Translation Table test.
+viot            ----------------------------------------------------------
+viot            Test 1 of 1: Validate VIOT table.
+viot            VIOT Virtual I/O Translation Table:
+viot              Node Count:           0x0004
+viot              Node Offset:          0x0030
+viot              Reserved:             0x0000000000000000
+viot              PCI Range Node Structure:
+viot                Type:               0x01
+viot                Reserved:           0x00
+viot                length:             0x0018
+viot                Endpoint Start:     0x00000000
+viot                PCI Segment Start:  0x0000
+viot                PCI Segment End:    0x0000
+viot                PCI BDF Start:      0x0000
+viot                PCI BDF End:        0xffff
+viot                PCI Segment End:    0x0060
+viot                  00 00 00 00 00 00 
+viot            
+viot              Single MMIO Endpoint Node Structure:
+viot                Type:               0x02
+viot                Reserved:           0x00
+viot                length:             0x0018
+viot                Endpoint ID:        0x00010000
+viot                Base Address:       0x000000001c000000
+viot                Output Node:        0x0070
+viot                  00 00 00 00 00 00 
+viot            
+viot              Virtio-iommu based on virtio-pci Node Structure:
+viot                Type:               0x03
+viot                Reserved:           0x00
+viot                length:             0x0010
+viot                PCI Segment:        0x0000
+viot                PCI BDF Number:     0x0000
+viot                Reserved:           0x0000000000000000
+viot            
+viot              Virtio-iommu based on virtio-pci Node Structure:
+viot                Type:               0x04
+viot                Reserved:           0x00
+viot                length:             0x0010
+viot                Reserved:           0x00000000
+viot                Base Address:       0x000000001d000000
+viot            
+viot            PASSED: Test 1, No issues found in VIOT table.
+viot            
+viot            ==========================================================
+viot            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+viot            info only.
+viot            ==========================================================

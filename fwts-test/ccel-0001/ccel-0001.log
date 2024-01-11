@@ -1,0 +1,16 @@
+ccel            ccel: CCEL CC Event Log ACPI Table test.
+ccel            ----------------------------------------------------------
+ccel            Test 1 of 1: Validate CCEL table.
+ccel            CC Event Log ACPI Table:
+ccel              CC Type:                       0x01
+ccel              CC Subtype:                    0x00
+ccel              Reserved:                      0x0000
+ccel              Log Area Minimum Length(LAML): 0x0012345678abcdef
+ccel              Log Area Start Address(LASA):  0x00abcdef12345678
+ccel            
+ccel            PASSED: Test 1, No issues found in CCEL table.
+ccel            
+ccel            ==========================================================
+ccel            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+ccel            info only.
+ccel            ==========================================================

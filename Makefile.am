@@ -98,6 +98,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/bgrt-0001/test-0002.sh \
 	fwts-test/boot-0001/test-0001.sh \
 	fwts-test/boot-0001/test-0002.sh \
+	fwts-test/ccel-0001/test-0001.sh \
+        fwts-test/ccel-0001/test-0002.sh \
 	fwts-test/cedt-0001/test-0001.sh \
 	fwts-test/cedt-0001/test-0002.sh \
 	fwts-test/checksum-0001/test-0001.sh \

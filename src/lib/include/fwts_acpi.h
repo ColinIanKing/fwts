@@ -2802,4 +2802,21 @@ typedef struct {
 	uint64_t		reserved;
 } __attribute__ ((packed)) fwts_acpi_table_viot;
 
+/*
+ * Miscellaneous GUIDed Table Entries
+ * ACPI6.5 5.2.33
+ */
+typedef struct {
+	uint8_t		entry_guid[16];
+	uint32_t	entry_len;
+	uint32_t	revision;
+	uint32_t	producer_id;
+	uint8_t		data[0];
+} __attribute__ ((packed)) fwts_acpi_misc_guided_entry;
+
+typedef struct {
+	fwts_acpi_table_header		header;
+	fwts_acpi_misc_guided_entry 	entry[0];
+} __attribute__ ((packed)) fwts_acpi_table_misc;
+
 #endif

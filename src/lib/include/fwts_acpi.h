@@ -2819,4 +2819,17 @@ typedef struct {
 	fwts_acpi_misc_guided_entry 	entry[0];
 } __attribute__ ((packed)) fwts_acpi_table_misc;
 
+/*
+ * CC Event Log ACPI Table
+ * ACPI6.5 5.2.34
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint8_t			cc_type;
+	uint8_t			cc_subtype;
+	uint16_t		reserved;
+	uint64_t		laml;
+	uint64_t		lasa;
+} __attribute__ ((packed)) fwts_acpi_table_ccel;
+
 #endif

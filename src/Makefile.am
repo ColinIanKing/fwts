@@ -69,6 +69,7 @@ fwts_SOURCES = main.c 				\
 	acpi/brightness/brightness-helper.c	\
 	acpi/brightness/brightness.c 		\
 	acpi/brightness/autobrightness.c 	\
+        acpi/ccel/ccel.c                        \
 	acpi/cedt/cedt.c			\
 	acpi/checksum/checksum.c 		\
 	acpi/cpep/cpep.c			\

@@ -31,7 +31,7 @@ phat                AmHealthy:                      0x00
 phat                Device Signature:               91AF0530-5D86-470E-A6B0-0A2DB9408249
 phat                Device-specific Data Offset:    0x0000003a
 phat                Device Path:                    \_SB.PCI0.ABCD
-phat                Vendor Data:
+phat                Device-specific Data:
 phat                  FF 11 55 AA 
 phat            
 phat             Firmware Health Data Record (Type 1):
@@ -40,11 +40,11 @@ phat                Record Length:                  0x004a
 phat                Revision:                       0x00
 phat                Reserved:                       0x0000
 phat                AmHealthy:                      0x00
-phat                Device Signature:               18D5DD11-BA12-4924-A75A-46D251ECB593
+phat                Device Signature:               7A014CE2-F263-4B77-B88A-E6336B782C14
 phat                Device-specific Data Offset:    0x00000042
 phat                Device Path:                    \_SB.PCI0.GFX0.XYZ
-phat                Vendor Data:
-phat                  12 34 56 78 90 AB CD EF 
+phat                Device-specific Data:
+phat                  00 00 45 67 89 AB CD EF 
 phat            
 phat            PASSED: Test 1, No issues found in PHAT table.
 phat            

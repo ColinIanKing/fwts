@@ -35,7 +35,7 @@ phat                Device-specific Data Offset:    0x0000003a
 phat                Device Path:                    \_SB.PCI0.ABCD
 phat            FAILED [MEDIUM] PHATReservedNonZero: Test 1, PHAT Reserved
 phat            field must be zero, got 0xabcd instead
-phat                Vendor Data:
+phat                Device-specific Data:
 phat                  FF 11 55 AA 
 phat            
 phat             Firmware Health Data Record (Type 1):

@@ -1,0 +1,18 @@
+misc            misc: MISC Miscellaneous GUIDed Table Entries test.
+misc            ----------------------------------------------------------
+misc            Test 1 of 1: Validate MISC table.
+misc            Miscellaneous GUIDed Table Entries:
+misc              Entry GUID ID:     44332211-6655-8877-9900-AABBCCDDEEFF
+misc              Entry Length:      0x0000002c
+misc              Revision:          0x00000000
+misc              Producer ID:       0x44434241
+misc              Data:
+misc                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+misc            
+misc            FAILED [HIGH] MISCOutOfRangeOffset: Test 1, MISC GUIDed
+misc            Entry Offset is out of range.
+misc            
+misc            ==========================================================
+misc            0 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+misc            info only.
+misc            ==========================================================

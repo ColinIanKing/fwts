@@ -1,0 +1,25 @@
+misc            misc: MISC Miscellaneous GUIDed Table Entries test.
+misc            ----------------------------------------------------------
+misc            Test 1 of 1: Validate MISC table.
+misc            Miscellaneous GUIDed Table Entries:
+misc              Entry GUID ID:     44332211-6655-8877-9900-AABBCCDDEEFF
+misc              Entry Length:      0x0000002c
+misc              Revision:          0x00000000
+misc              Producer ID:       0x44434241
+misc              Data:
+misc                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+misc            
+misc            Miscellaneous GUIDed Table Entries:
+misc              Entry GUID ID:     CCDDEEFF-AABB-8899-7766-554433221100
+misc              Entry Length:      0x00000028
+misc              Revision:          0x00000000
+misc              Producer ID:       0x41424344
+misc              Data:
+misc                FF FF FF FF FF FF FF FF FF FF FF FF 
+misc            
+misc            PASSED: Test 1, No issues found in MISC table.
+misc            
+misc            ==========================================================
+misc            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+misc            info only.
+misc            ==========================================================

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2016-2023 Canonical
+# Copyright (C) 2016-2024 Canonical
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

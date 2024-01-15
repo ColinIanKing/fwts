@@ -2832,4 +2832,21 @@ typedef struct {
 	uint64_t		lasa;
 } __attribute__ ((packed)) fwts_acpi_table_ccel;
 
+/*
+ * Storage Volume Key Location Table
+ * ACPI6.5 5.2.35
+ */
+typedef struct {
+	uint16_t	key_type;
+	uint16_t	key_format;
+	uint32_t	key_size;
+	uint64_t	key_address;
+} __attribute__ ((packed)) fwts_acpi_skvl_key_struct;
+
+typedef struct {
+	fwts_acpi_table_header		header;
+	uint32_t			key_count;
+	fwts_acpi_skvl_key_struct 	key_struct[0];
+} __attribute__ ((packed)) fwts_acpi_table_skvl;
+
 #endif

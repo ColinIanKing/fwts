@@ -1,0 +1,30 @@
+skvl            skvl: SKVL Storage Volume Key Location Table test.
+skvl            ----------------------------------------------------------
+skvl            Test 1 of 1: Validate SKVL table.
+skvl            Storage Volume Key Location Table:
+skvl              Key Count:    0x00000003
+skvl            
+skvl              Storage Volume Key Structure:     
+skvl              Key Type:    0x0000
+skvl              Key Format:  0x0000
+skvl              Key Size:    0x00002211
+skvl              Key Address: 0x8877665544332211
+skvl            
+skvl              Storage Volume Key Structure:     
+skvl              Key Type:    0x0000
+skvl              Key Format:  0x0000
+skvl              Key Size:    0x00003322
+skvl              Key Address: 0x9988776655443322
+skvl            
+skvl              Storage Volume Key Structure:     
+skvl              Key Type:    0x0000
+skvl              Key Format:  0x0000
+skvl              Key Size:    0x000000ff
+skvl              Key Address: 0x1100ffeeddccbbaa
+skvl            
+skvl            PASSED: Test 1, No issues found in SKVL table.
+skvl            
+skvl            ==========================================================
+skvl            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+skvl            info only.
+skvl            ==========================================================

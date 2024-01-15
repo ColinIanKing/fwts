@@ -191,6 +191,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/s0idle-0001/test-0002.sh \
 	fwts-test/sbst-0001/test-0001.sh \
 	fwts-test/sbst-0001/test-0002.sh \
+        fwts-test/skvl-0001/test-0001.sh \
+        fwts-test/skvl-0001/test-0002.sh \
 	fwts-test/spcr-0001/test-0001.sh \
 	fwts-test/spcr-0001/test-0002.sh \
 	fwts-test/srat-0001/test-0001.sh \

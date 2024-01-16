@@ -71,9 +71,14 @@ static int viot_test1(fwts_framework *fw)
 			return FWTS_OK;
 		}
 
+		fwts_acpi_viot_pci_rng_node *pci_rng = NULL;
+		fwts_acpi_viot_mmio_ep_node *mmio_ep = NULL;
+		fwts_acpi_viot_pci_iommu_node *pci_iommu = NULL;
+		fwts_acpi_viot_mmio_iommu_node *mmio_iommu = NULL;
+
 		switch(node_hdr->type) {
 			case 1:
-				fwts_acpi_viot_pci_rng_node *pci_rng = (fwts_acpi_viot_pci_rng_node *)(table->data + offset);
+				pci_rng = (fwts_acpi_viot_pci_rng_node *)(table->data + offset);
 				fwts_log_info_verbatim(fw, "  PCI Range Node Structure:");
 				fwts_log_info_simp_int(fw, "    Type:               ", pci_rng->hdr.type);
 				fwts_log_info_simp_int(fw, "    Reserved:           ", pci_rng->hdr.reserved);
@@ -90,7 +95,7 @@ static int viot_test1(fwts_framework *fw)
 				offset += sizeof(fwts_acpi_viot_pci_rng_node);
 				break;
 			case 2:
-				fwts_acpi_viot_mmio_ep_node *mmio_ep = (fwts_acpi_viot_mmio_ep_node *)(table->data + offset);
+				mmio_ep = (fwts_acpi_viot_mmio_ep_node *)(table->data + offset);
 				fwts_log_info_verbatim(fw, "  Single MMIO Endpoint Node Structure:");
 				fwts_log_info_simp_int(fw, "    Type:               ", mmio_ep->hdr.type);
 				fwts_log_info_simp_int(fw, "    Reserved:           ", mmio_ep->hdr.reserved);
@@ -104,7 +109,7 @@ static int viot_test1(fwts_framework *fw)
 				offset += sizeof(fwts_acpi_viot_mmio_ep_node);
 				break;
 			case 3:
-				fwts_acpi_viot_pci_iommu_node *pci_iommu = (fwts_acpi_viot_pci_iommu_node *)(table->data + offset);
+				pci_iommu = (fwts_acpi_viot_pci_iommu_node *)(table->data + offset);
 				fwts_log_info_verbatim(fw, "  Virtio-iommu based on virtio-pci Node Structure:");
 				fwts_log_info_simp_int(fw, "    Type:               ", pci_iommu->hdr.type);
 				fwts_log_info_simp_int(fw, "    Reserved:           ", pci_iommu->hdr.reserved);
@@ -117,7 +122,7 @@ static int viot_test1(fwts_framework *fw)
 				offset += sizeof(fwts_acpi_viot_pci_iommu_node);
 				break;
 			case 4:
-				fwts_acpi_viot_mmio_iommu_node *mmio_iommu = (fwts_acpi_viot_mmio_iommu_node *)(table->data + offset);
+				mmio_iommu = (fwts_acpi_viot_mmio_iommu_node *)(table->data + offset);
 				fwts_log_info_verbatim(fw, "  Virtio-iommu based on virtio-pci Node Structure:");
 				fwts_log_info_simp_int(fw, "    Type:               ", mmio_iommu->hdr.type);
 				fwts_log_info_simp_int(fw, "    Reserved:           ", mmio_iommu->hdr.reserved);

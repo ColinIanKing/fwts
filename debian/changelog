@@ -1,3 +1,53 @@
+fwts (24.01.00-0ubuntu1) noble; urgency=medium
+
+  [Armin Wolf]
+  * acpi/wmi: Add WMI GUID for the dell-smm-hwmon driver
+  * acpi/wmi: Warn if a WMI GUID has zero instances
+
+  [Ivan Hu]
+  * snapcraft: update the source repo for snap build
+  * snapcraft: add source type for repo
+  * lib: framework: clear the error message with the extra result filename
+    suffix
+  * snapcraft: specify devmode confinement for fwts snap
+  * acpi: fadt: clarify the check for sleep control register
+  * acpi: madt: fix typo of madt subnames
+  * lib: fwts_acpi: add the PRM type GAS defined value
+  * acpi: fadt: add PERSISTENT_CPU_CACHES bits to fixed feature flags
+    (mantis 2206)
+  * acpi: method: add _DSC method tests (mantis 2224)
+  * fwts-test: method: sync up with adding _DSC method tests
+  * acpi: srat: add new Generic Port structure for srat tests (mantis 2236)
+  * fwts-test: sync up with new Generic Port structure added for srat
+  * acpi: srat: fix to get device handle value and dump the reserved array
+  * acpi: method: clarify TAD device methods requirements (mantis 2253)
+  * lib: fwts_acpi_tables: add missing GAS address space ID
+  * acpi: madt: add GICC new flag and length change (mantis 2285, 2303)
+  * acpi: einj: test more error injection actions for einjv2 (mantis 2287)
+  * acpi: method: fix typo of subelement
+  * acpi: method: add _PDO test (mantis 2293)
+  * fwts-test: sync up the method _PDO was added
+  * acpi: phat: add reset reason health record test (mantis 2294)
+  * fwts-test: sync up for reset reason health record test
+  * acpi: viot: add test for ACPI VIOT table (mantis 2152)
+  * fwts-test: add regression tests for VIOT
+  * acpi: misc: add tests for ACPI MISC table (mantis 2297)
+  * fwts-test: add regression tests for MISC
+  * acpi: ccel: add tests for ACPI CCEL table (mantis 2314)
+  * fwts-test: add regression tests for CCEL
+  * acpi: viot: fix build fail on bionic and focal
+  * acpi: skvl: add tests for ACPI SKVL table (mantis 2314)
+  * fwts-test: add regression tests for SKVL
+  * Update copyright year to 2024
+
+  [Mario Limonciello]
+  * Upgrade MCFGMMIONotReserved to HIGH error
+  * s3: Add support for reading total s2idle residency from generic API
+  * s3: Add support for checking last sleep cycle residency
+  * Add support for ACPI 6.5 _UPC return values
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 22 Jan 2024 14:37:56 +0800
+
 fwts (23.11.00-0ubuntu1) noble; urgency=medium
 
   [Armin Wolf]

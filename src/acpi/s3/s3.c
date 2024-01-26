@@ -206,10 +206,11 @@ static int s3_init(fwts_framework *fw)
 	str = fwts_get(PM_SUSPEND_PATH);
 	if (str && strstr(str, "[s2idle]")) {
 		strncpy(sleep_type_orig, "s2idle", strlen("s2idle") + 1);
-		free(str);
 	} else {
 		strncpy(sleep_type_orig, "deep", strlen("deep") + 1);
 	}
+	if (str)
+		free(str);
 
 	if (s3_sleep_type) {
 		fwts_log_info(fw, "Override system suspend default by '%s'\n", s3_sleep_type);
@@ -220,10 +221,11 @@ static int s3_init(fwts_framework *fw)
 	str = fwts_get(PM_SUSPEND_PATH);
 	if (str && strstr(str, "[s2idle]")) {
 		strncpy(sleep_type, "s2idle", strlen("s2idle") + 1);
-		free(str);
 	} else {
 		strncpy(sleep_type, "S3", strlen("S3") + 1);
 	}
+	if (str)
+		free(str);
 
 	str = fwts_get(INTEL_PM_S0IX_WARN);
 	if (str && strstr(str, "N"))

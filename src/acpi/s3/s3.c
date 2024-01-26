@@ -37,9 +37,12 @@
 #define PM_SUSPEND_TOTAL_HW_SLEEP	"/sys/power/suspend_stats/total_hw_sleep"
 #define WAKEUP_SOURCE_PATH		"/sys/kernel/debug/wakeup_sources"
 #define INTEL_PM_S2IDLE_SLP_S0		"/sys/kernel/debug/pmc_core/slp_s0_residency_usec"
+#define INTEL_PM_S0IX_WARN		"/sys/module/intel_pmc_core/parameters/warn_on_s0ix_failures"
 
 static char sleep_type[7];
 static char sleep_type_orig[7];
+
+static bool s0ix2_warn_enable_orig = false;
 
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
@@ -222,14 +225,31 @@ static int s3_init(fwts_framework *fw)
 		strncpy(sleep_type, "S3", strlen("S3") + 1);
 	}
 
+	str = fwts_get(INTEL_PM_S0IX_WARN);
+	if (str && strstr(str, "N"))
+		(void)fwts_set(INTEL_PM_S0IX_WARN, "Y");
+	else if (str && strstr(str, "Y"))
+		s0ix2_warn_enable_orig = true;
+	if (str)
+		free(str);
+
 	return FWTS_OK;
 }
 
 static int s3_deinit(fwts_framework *fw)
 {
+	char *str;
 
 	FWTS_UNUSED(fw);
 	(void)fwts_set(PM_SUSPEND_PATH, sleep_type_orig);
+
+	str = fwts_get(INTEL_PM_S0IX_WARN);
+	if (str && strstr(str, "N") && s0ix2_warn_enable_orig)
+		(void)fwts_set(INTEL_PM_S0IX_WARN, "Y");
+	else if (str && strstr(str, "Y") && !s0ix2_warn_enable_orig)
+		(void)fwts_set(INTEL_PM_S0IX_WARN, "N");
+	if (str)
+		free(str);
 
 	return FWTS_OK;
 }

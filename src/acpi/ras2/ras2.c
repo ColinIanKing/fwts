@@ -50,7 +50,7 @@ static int ras2_test1(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_HIGH, "RAS2TooShort",
 				"RAS2 table too short, PCC descriptor list exceeds the table.");
 			passed = false;
-			break;
+			return FWTS_OK;
 		}
 		fwts_acpi_ras2_pcc_desc *pcc_desc = (fwts_acpi_ras2_pcc_desc *)(table->data + offset);
 		fwts_log_info_verbatim(fw, "  PCC Descriptor List:");

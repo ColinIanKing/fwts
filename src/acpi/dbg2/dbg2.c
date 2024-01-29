@@ -233,6 +233,9 @@ static int dbg2_test1(fwts_framework *fw)
 			case 0x0014:
 				subport = "Intel LPSS";
 				break;
+			case 0x0015:
+				subport = "RISC-V SBI console (any supported SBI mechanism)";
+				break;
 			default:
 				break;
 			}

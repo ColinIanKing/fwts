@@ -33,11 +33,15 @@
 #include <unistd.h>
 #include <inttypes.h>
 
+#include "fwts_acpi_object_eval.h"
+
 #define TABLE_NAME_LEN (16)
 #define MIN_SIG        ( 4)
 #define OEM_ID         ( 6)
 #define OEM_TABLE_ID   ( 8)
 #define OEM_CREATOR_ID ( 4)
+
+static const fwts_acpi_table_spcr *spcr;
 
 static bool acpi_table_check_field(const char *field, const size_t len)
 {
@@ -287,10 +291,109 @@ static int acpi_table_sbbr_check_test3(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int get_spcr_interface_type(fwts_framework *fw, uint8_t *type)
+{
+	fwts_acpi_table_info *table;
+
+	if (fwts_acpi_find_table(fw, "SPCR", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read ACPI tables.");
+		return FWTS_ERROR;
+	}
+	if (table == NULL || (table && table->length == 0)) {
+		fwts_log_error(fw, "ACPI SPCR table does not exist, skipping test");
+		return FWTS_SKIP;
+	}
+	spcr = (const fwts_acpi_table_spcr*)table->data;
+
+	*type = spcr->interface_type;
+
+	return FWTS_OK;
+}
+
+static int find_spcr_devices(fwts_framework *fw, bool *found, uint8_t type)
+{
+	const size_t name_len = 4;
+	fwts_list_link	*item;
+	fwts_list *objects;
+
+	if (fwts_acpi_init(fw) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot initialise ACPI.");
+		return FWTS_ERROR;
+	}
+
+	if ((objects = fwts_acpi_object_get_names()) == NULL) {
+		fwts_log_info(fw, "Cannot find any ACPI objects");
+		return FWTS_ERROR;
+	}
+
+	fwts_list_foreach(item, objects) {
+		char *name = fwts_list_data(char*, item);
+		const size_t len = strlen(name);
+		if (strncmp("_HID", name + len - name_len, name_len) == 0) {
+			ACPI_OBJECT_LIST arg_list;
+			ACPI_BUFFER buf;
+			ACPI_OBJECT *obj;
+			int ret;
+
+			arg_list.Count   = 0;
+			arg_list.Pointer = NULL;
+
+			ret = fwts_acpi_object_evaluate(fw, name, &arg_list, &buf);
+			if ((ACPI_FAILURE(ret) != AE_OK) || (buf.Pointer == NULL))
+				continue;
+
+			obj = buf.Pointer;
+			if (obj->Type == ACPI_TYPE_STRING) {
+				if (!strcmp(obj->String.Pointer, "ARMH0011")) {
+					*found = true;
+				} else {
+					if (type == 0x0e) {
+						if (!strcmp(obj->String.Pointer, "ARMHB000"))
+							*found = true;
+					}
+				}
+			}
+			free(buf.Pointer);
+		}
+	}
+
+	fwts_acpi_deinit(fw);
+	return FWTS_OK;
+}
+
+static int acpi_table_sbbr_check_test4(fwts_framework *fw)
+{
+	uint8_t interface_type;
+	int ret;
+	bool found = false;
+
+	ret = get_spcr_interface_type(fw, &interface_type);
+	if (ret != FWTS_OK)
+		return ret;
+
+	if (interface_type == 0x03 || interface_type == 0x0e) {
+		ret = find_spcr_devices(fw, &found, interface_type);
+		if (ret != FWTS_OK)
+			return ret;
+		if (!found) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "SBBRSPCRConsoleNotFound",
+				    "SPCR console devices not found for interface "
+				    "type 0x%2.2" PRIx8 ".", interface_type);
+		} else
+			fwts_passed(fw, "SBBR SPCR console devices found.");
+	} else {
+		fwts_skipped(fw, "Test skipped, SPCR interface type not 0x03 or 0x0E");
+		return FWTS_SKIP;
+	}
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test acpi_table_sbbr_check_tests[] = {
 	{ acpi_table_sbbr_namespace_check_test1, "Test that processors only exist in the _SB namespace." },
 	{ acpi_table_sbbr_check_test2, "Test DSDT and SSDT tables are implemented." },
 	{ acpi_table_sbbr_check_test3, "Check for mandatory and recommended ACPI tables." },
+	{ acpi_table_sbbr_check_test4, "Check the existence of SPCR console devices." },
 	{ NULL, NULL }
 };
 

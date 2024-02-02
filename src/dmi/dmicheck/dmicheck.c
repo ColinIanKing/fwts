@@ -1678,7 +1678,15 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Memory Technology", hdr, 0x28, 0x1, 0x7);
 			dmi_reserved_bits_check(fw, table, addr, "Memory Operating Mode Cap", hdr, sizeof(uint16_t), 0x29, 0, 0);
 			dmi_reserved_bits_check(fw, table, addr, "Memory Operating Mode Cap", hdr, sizeof(uint16_t), 0x29, 6, 15);
-			dmi_str_check(fw, table, addr, "Firmware Version", hdr, 0x2b);
+			switch(hdr->data[0x28]) {
+			case 0x04:
+			case 0x05:
+			case 0x06:
+				dmi_str_check(fw, table, addr, "Firmware Version", hdr, 0x2b);
+				break;
+			default:
+				break;
+			}
 			if (hdr->length < 0x54)
 				break;
 			dmi_reserved_bits_check(fw, table, addr, "Extended Speed", hdr, sizeof(uint32_t), 0x54, 31, 31);

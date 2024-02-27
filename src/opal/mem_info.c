@@ -399,9 +399,9 @@ static int get_linux_mem_devices(fwts_framework *fw)
 				failures++;
 			}
 			free(mba_path);
-			free(mem_buffer);
 			free(namelist[i]);
 		}
+		free(mem_buffer);
 	}
 	free(namelist);
 

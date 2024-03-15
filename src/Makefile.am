@@ -56,7 +56,8 @@ fwts_SOURCES = main.c 				\
 	acpi/ac_adapter/ac_adapter.c 		\
 	acpi/acpidump/acpidump.c 		\
 	acpi/acpiinfo/acpiinfo.c 		\
-	acpi/acpitables/acpitables.c 		\
+        acpi/acpipld/acpipld.c                  \
+        acpi/acpitables/acpitables.c 		\
 	sbbr/acpitables/acpitables.c 		\
 	acpi/aest/aest.c				\
 	acpi/apicinstance/apicinstance.c 	\

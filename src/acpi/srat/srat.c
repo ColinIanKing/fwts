@@ -408,7 +408,7 @@ static int srat_test1(fwts_framework *fw)
 	const fwts_acpi_table_srat *srat = (const fwts_acpi_table_srat *)table->data;
 	uint8_t *data = (uint8_t *)table->data;
 	bool passed = true;
-	ssize_t length = (ssize_t)srat->header.length;
+	ssize_t length = (ssize_t)table->length;
 
 	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "SRAT", "Revision1", srat->reserved1, 1, &passed);
 

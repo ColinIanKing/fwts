@@ -203,9 +203,9 @@ static int get_linux_xscom_devices(fwts_framework *fw)
 				failures++;
 			}
 			fwts_log_nl(fw);
-			free(cpus);
 			free(namelist[i]);
 		}
+		free(cpus);
 	}
 	free(namelist);
 

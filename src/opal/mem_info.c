@@ -223,9 +223,9 @@ static int process_dimm(
 				}
 			}
 			free(my_path);
-			free(my_buffer);
 			free(namelist[i]);
 		}
+		free(my_buffer);
 	}
 	free(namelist);
 
@@ -310,9 +310,9 @@ static int process_mba(
 				failures++;
 			}
 			free(my_path);
-			free(my_buffer);
 			free(namelist[i]);
 		}
+		free(my_buffer);
 	}
 	free(namelist);
 

@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2023, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2024, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -391,7 +391,7 @@ static const ACPI_DB_COMMAND_HELP   AcpiGbl_DbCommandHelp[] =
     {1, "  Debug <Namepath> [Arguments]",       "Single-Step a control method\n"},
     {7, "  [Arguments] formats:",               "Control method argument formats\n"},
     {1, "     Hex Integer",                     "Integer\n"},
-    {1, "     \"ASCII String\"",                "String\n"},
+    {1, "     \"Ascii String\"",                "String\n"},
     {1, "     (Hex Byte List)",                 "Buffer\n"},
     {1, "         (01 42 7A BF)",               "Buffer example (4 bytes)\n"},
     {1, "     [Package Element List]",          "Package\n"},

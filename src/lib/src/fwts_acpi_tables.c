@@ -170,7 +170,7 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(fwts_framework *fw, void *addr, 
 		return NULL;
 	}
 
-	if ((mem = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
+	if ((mem = fwts_mmap((long int)addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
 		return NULL;
 
 	if (fwts_safe_memcpy(rsdp, mem, sizeof(fwts_acpi_table_rsdp)) != FWTS_OK) {
@@ -483,7 +483,7 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 	if ((rsdp = fwts_acpi_get_rsdp(fw, rsdp_addr, &rsdp_len)) == NULL)
 		return FWTS_ERROR;
 
-	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(off_t)rsdp_addr, rsdp_len, FWTS_ACPI_TABLE_FROM_FIRMWARE);
+	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(long int)rsdp_addr, rsdp_len, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 
 	/* Load any tables from XSDT if it's valid */
 	if (rsdp->xsdt_address) {

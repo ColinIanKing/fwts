@@ -1,3 +1,27 @@
+fwts (24.03.00-0ubuntu1) noble; urgency=medium
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20240322
+
+  [Ivan Hu]
+  * acpi: s3: enable debug messages on S0ix failure for Intel platforms
+  * acpi: s3: fix potential memory leaks on fwts_get() calls
+  * framework: fix memory leaks caused by fwts_log_get_filenames
+  * acpi: ras2: stop for loop when list exceeds the table
+  * acpi: dbg2: update the subtype RISC-V SBI console for DBG2
+  * acpi: sbbr: check the existence of SPCR console devices
+  * opal: fix the resource leak for get_linux_mem_devices
+  * acpi: srat: fix the untrusted loop bound warning
+  * opal: fix the resource leak for process_dimm and process_mba
+  * opal: fix the resource leak for cpus
+  * acpi: acpipld: add tests to check _PLD methods only on the connectable ports
+  * lib: fwts_acpi_tables: fix the build fail on armhf
+
+  [Mario Limonciello]
+  * dmicheck: Don't check firmware version on anything but NVDIMM devices
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 08 Apr 2024 11:20:06 +0800
+
 fwts (24.01.00-0ubuntu1) noble; urgency=medium
 
   [Armin Wolf]

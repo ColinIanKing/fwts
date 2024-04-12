@@ -23,7 +23,7 @@
 # Get fwts sources, strip out .git directory, add in necessary debian packaging
 # files, build source package ready for upload.
 #
-RELEASES="bionic focal jammy lunar mantic noble"
+RELEASES="bionic focal jammy mantic noble"
 REPO=https://github.com/fwts/fwts
 RELEASE_TAR_URL=http://fwts.ubuntu.com/release
 FWTS=fwts

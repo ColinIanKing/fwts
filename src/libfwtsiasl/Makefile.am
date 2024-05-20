@@ -58,32 +58,32 @@ aslcompiler.y: $(ASL_PARSER)
 aslcompilerlex.c: $(ASL_LEXER)
 	${LEX} ${AM_LFLAGS} -PAslCompiler -o$@ $(top_srcdir)/src/acpica/source/compiler/aslcompiler.l
 
-.NOTPARALLEL: aslcompiler.c
-aslcompiler.c aslcompiler.y.h: aslcompiler.y
+aslcompiler.c: aslcompiler.y
 	${YACC} ${AM_YFLAGS} -d -baslcompiler -pAslCompiler $^
 	mv aslcompiler.tab.c aslcompiler.c
 	cp aslcompiler.tab.h aslcompiler.y.h
+aslcompiler.y.h: aslcompiler.c
 
-.NOTPARALLEL: dtcompilerparserlex.c
-dtcompilerparserlex.c dtcompilerparser.c dtcompilerparser.y.h: $(top_srcdir)/src/acpica/source/compiler/dtcompilerparser.l $(top_srcdir)/src/acpica/source/compiler/dtcompilerparser.y
+dtcompilerparserlex.c: $(top_srcdir)/src/acpica/source/compiler/dtcompilerparser.l $(top_srcdir)/src/acpica/source/compiler/dtcompilerparser.y
 	${LEX} ${AM_LFLAGS} -PDtCompilerParser -odtcompilerparserlex.c $<
 	${YACC} ${AM_YFLAGS} -bdtcompilerparser -pDtCompilerParser $(top_srcdir)/src/acpica/source/compiler/dtcompilerparser.y
 	mv dtcompilerparser.tab.c dtcompilerparser.c
 	cp dtcompilerparser.tab.h dtcompilerparser.y.h
+dtcompilerparser.c dtcompilerparser.y.h: dtcompilerparserlex.c
 
-.NOTPARALLEL: dtparserlex.c
-dtparserlex.c dtparser.c dtparser.y.h: $(top_srcdir)/src/acpica/source/compiler/dtparser.l $(top_srcdir)/src/acpica/source/compiler/dtparser.y
+dtparserlex.c: $(top_srcdir)/src/acpica/source/compiler/dtparser.l $(top_srcdir)/src/acpica/source/compiler/dtparser.y
 	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c $<
 	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser $(top_srcdir)/src/acpica/source/compiler/dtparser.y
 	mv dtparser.tab.c dtparser.c
 	cp dtparser.tab.h dtparser.y.h
+dtparser.c dtparser.y.h: dtparserlex.c
 
-.NOTPARALLEL: prparserlex.c
-prparserlex.c prparser.c prparser.y.h: $(top_srcdir)/src/acpica/source/compiler/prparser.l $(top_srcdir)/src/acpica/source/compiler/prparser.y
+prparserlex.c: $(top_srcdir)/src/acpica/source/compiler/prparser.l $(top_srcdir)/src/acpica/source/compiler/prparser.y
 	${LEX} ${AM_LFLAGS} -PPrParser -oprparserlex.c $<
 	${YACC} ${AM_YFLAGS} -bprparser -pPrParser $(top_srcdir)/src/acpica/source/compiler/prparser.y
 	mv prparser.tab.c prparser.c
 	cp prparser.tab.h prparser.y.h
+prparser.c prparser.y.h: prparserlex.c
 
 pkglib_LTLIBRARIES = libfwtsiasl.la
 

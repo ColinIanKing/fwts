@@ -200,6 +200,7 @@ static int tpmevlog_v2_check(
 	fwts_pc_client_pcr_event *pc_event;
 	fwts_efi_spec_id_event *specid_evcent;
 	fwts_spec_id_event_alg_sz *alg_sz;
+	bool separator_seen[8] = { false };
 
 	/* specid_event_check */
 	if (len < sizeof(fwts_pc_client_pcr_event)) {
@@ -379,10 +380,24 @@ static int tpmevlog_v2_check(
 				event_size, pdata + sizeof(event_size));
 		if (ret != FWTS_OK)
 			return ret;
+
+		if ((pcr_event2->pcr_index < 8) && (pcr_event2->event_type == EV_SEPARATOR))
+			separator_seen[pcr_event2->pcr_index] = true;
+
 		pdata += (event_size + sizeof(event_size));
 		len_remain -= (event_size + sizeof(event_size));
 
 	}
+
+	for (i = 0; i < 8; i++) {
+		if (!separator_seen[i]) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventV2SeparatorSeen",
+				"PCR %d did not have EV_SEPARATOR measured into it at "
+				"Platform Firmware handover.", i);
+			return FWTS_ERROR;
+		}
+	}
+
 	fwts_passed(fw, "Check TPM crypto agile event log test passed.");
 	return FWTS_OK;
 }

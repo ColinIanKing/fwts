@@ -79,7 +79,7 @@ static void cedt_chbs_test(
 
 static void cedt_cfmws_test(
 	fwts_framework *fw,
-	const fwts_acpi_table_cedt_cfmws *entry,
+	fwts_acpi_table_cedt_cfmws *entry,
 	bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  CXL Fixed Memory Window Structure (CFMWS):");
@@ -95,7 +95,9 @@ static void cedt_cfmws_test(
 	fwts_log_info_simp_int(fw, "    HBIG:                           ", entry->hbig);
 	fwts_log_info_simp_int(fw, "    Window Restrictions:            ", entry->window_restrictions);
 	fwts_log_info_simp_int(fw, "    QTG ID:                         ", entry->qtg_id);
-	fwts_log_info_verbatim(fw, "    Interleave Target List");	/* TODO: dumping the raw data */
+	fwts_log_info_verbatim(fw, "    Interleave Target List:");
+	fwts_hexdump_data_prefix_all(fw, (uint8_t *)entry->interleave_target_list,
+			"      ",sizeof(uint32_t) * entry->eniw );
 
 	fwts_acpi_reserved_zero("CEDT", "Reserved", entry->header.reserved, passed);
 	fwts_acpi_reserved_zero("CEDT", "Reserved", entry->reserved1, passed);

@@ -87,6 +87,15 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 		next_cap = rp_cap->next_cap_point;
 		rp_cap = (fwts_pcie_capability *) &rp->config[next_cap];
 	}
+	if (rp_cap) {
+		uint8_t device_type = (rp_cap->pcie_cap_reg & FWTS_PCI_EXP_FLAGS_TYPE) >> 4;
+
+		if ((device_type != FWTS_PCI_EXP_TYPE_ROOT_PORT) &&
+		    (device_type != FWTS_PCI_EXP_TYPE_DOWNSTREAM_PORT) &&
+		    (device_type != FWTS_PCI_EXP_TYPE_PCIE_BRIDGE)) {
+			return ret;
+		}
+	}
 
 	next_cap = dev->config[FWTS_PCI_CONFIG_TYPE1_CAPABILITY_POINTER];
 	device_cap = (fwts_pcie_capability *)&dev->config[next_cap];

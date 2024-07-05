@@ -1,0 +1,32 @@
+s3pt            s3pt: S3 Performance Table test.
+s3pt            ----------------------------------------------------------
+s3pt            Test 1 of 1: Validate S3PT table.
+s3pt            S3 Performance Table:
+s3pt              Basic S3 Suspend Performance Record:
+s3pt                Record Type: 0x0001
+s3pt                Record Length: 0x14
+s3pt                Revision: 0x01
+s3pt                SuspendStart: 0x0000000000000000
+s3pt                SuspendEnd: 0x0000000000000000
+s3pt            
+s3pt              Basic S3 Suspend Performance Record:
+s3pt                Record Type: 0x0001
+s3pt                Record Length: 0x14
+s3pt                Revision: 0x01
+s3pt                SuspendStart: 0x0000000000000000
+s3pt                SuspendEnd: 0x0000000000000000
+s3pt            
+s3pt            FAILED [HIGH] S3PTPerformanceRecordTypeInvalid: Test 1,
+s3pt            S3PT Performance Record Type is 2 which is invalid value.
+s3pt            
+s3pt            FAILED [HIGH] S3PTBadRecordTypeCount: Test 1, One of the
+s3pt            basic S3 resume performance record type and only will be
+s3pt            produced, but got 0
+s3pt            FAILED [HIGH] S3PTBadRecordTypeCount: Test 1, Zero to one
+s3pt            of the basic S3 suspend performance record type will be
+s3pt            produced, but got 2
+s3pt            
+s3pt            ==========================================================
+s3pt            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0
+s3pt            info only.
+s3pt            ==========================================================

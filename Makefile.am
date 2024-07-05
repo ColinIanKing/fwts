@@ -140,14 +140,6 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/klog-0002/test-0003.sh \
 	fwts-test/lpit-0001/test-0001.sh \
 	fwts-test/lpit-0001/test-0002.sh \
-	fwts-test/sdei-0001/test-0001.sh \
-	fwts-test/sdei-0001/test-0002.sh \
-	fwts-test/sdev-0001/test-0001.sh \
-	fwts-test/sdev-0001/test-0002.sh \
-	fwts-test/slic-0001/test-0001.sh \
-	fwts-test/slic-0001/test-0002.sh \
-	fwts-test/slit-0001/test-0001.sh \
-	fwts-test/slit-0001/test-0002.sh \
 	fwts-test/madt-0001/test-0001.sh \
 	fwts-test/madt-0001/test-0002.sh \
 	fwts-test/mchi-0001/test-0001.sh \
@@ -189,10 +181,20 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/rsdt-0001/test-0001.sh \
 	fwts-test/s0idle-0001/test-0001.sh \
 	fwts-test/s0idle-0001/test-0002.sh \
+        fwts-test/s3pt-0001/test-0001.sh \
+        fwts-test/s3pt-0001/test-0002.sh \
 	fwts-test/sbst-0001/test-0001.sh \
 	fwts-test/sbst-0001/test-0002.sh \
+        fwts-test/sdei-0001/test-0001.sh \
+	fwts-test/sdei-0001/test-0002.sh \
+	fwts-test/sdev-0001/test-0001.sh \
+	fwts-test/sdev-0001/test-0002.sh \
         fwts-test/skvl-0001/test-0001.sh \
         fwts-test/skvl-0001/test-0002.sh \
+	fwts-test/slic-0001/test-0001.sh \
+	fwts-test/slic-0001/test-0002.sh \
+	fwts-test/slit-0001/test-0001.sh \
+	fwts-test/slit-0001/test-0002.sh \
 	fwts-test/spcr-0001/test-0001.sh \
 	fwts-test/spcr-0001/test-0002.sh \
 	fwts-test/srat-0001/test-0001.sh \

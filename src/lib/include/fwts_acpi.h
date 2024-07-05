@@ -2849,4 +2849,32 @@ typedef struct {
 	fwts_acpi_skvl_key_struct 	key_struct[0];
 } __attribute__ ((packed)) fwts_acpi_table_skvl;
 
+/*
+ * S3 Performance Table
+ * ACPI6.5 5.2.24.8
+ */
+typedef struct {
+	char		signature[4];
+	uint32_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_s3pt_header;
+
+typedef struct {
+	uint16_t	rt_perf_record_type;
+	uint8_t		record_len;
+	uint8_t		revision;
+} __attribute__ ((packed)) fwts_acpi_s3pt_record_hdr;
+
+typedef struct {
+	fwts_acpi_s3pt_record_hdr 	header;
+	uint32_t			resume_count;
+	uint64_t			full_resume;
+	uint64_t			average_resume;
+} __attribute__ ((packed)) fwts_acpi_s3pt_resume;
+
+typedef struct {
+	fwts_acpi_s3pt_record_hdr 	header;
+	uint64_t			suspend_start;
+	uint64_t			suspend_end;
+} __attribute__ ((packed)) fwts_acpi_s3pt_suspend;
+
 #endif

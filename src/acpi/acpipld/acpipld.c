@@ -104,18 +104,18 @@ static int acpipld_test1(fwts_framework *fw)
 	}
 
 	if (!failed)
-		fwts_passed(fw, "All _PLD methods exist on the port connectable.");
+		fwts_passed(fw, "All _PLD methods exist only on the port connectable.");
 
 	return FWTS_OK;
 }
 
 static fwts_framework_minor_test acpipld_tests[] = {
-	{ acpipld_test1, "Check the  ACPI _PLD methods exist on the port connectable." },
+	{ acpipld_test1, "Check the ACPI _PLD methods exist only on the port connectable." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops acpipld_ops = {
-	.description = "Check if the  ACPI _PLD methods exist on the port connectable.",
+	.description = "Check if the ACPI _PLD methods exist only on the port connectable.",
 	.init        = acpipld_init,
 	.deinit      = acpipld_deinit,
 	.minor_tests = acpipld_tests

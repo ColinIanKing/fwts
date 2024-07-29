@@ -53,7 +53,7 @@ cedt                Reserved:                       0x0002
 cedt                HBIG:                           0x00000003
 cedt                Window Restrictions:            0x0106
 cedt                QTG ID:                         0x0001
-cedt                Interleave Target List
+cedt                Interleave Target List:
 cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
 cedt            field must be zero, got 0x00000001 instead
 cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved

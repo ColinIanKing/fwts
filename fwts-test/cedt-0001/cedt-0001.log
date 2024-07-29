@@ -19,13 +19,14 @@ cedt                Record Length:                  0x0028
 cedt                Reserved:                       0x00000000
 cedt                Base HPA:                       0x0000010000000000
 cedt                Window Size:                    0x0000010000000000
-cedt                ENIW:                           0x00
+cedt                ENIW:                           0x01
 cedt                Interleave Arithmetic:          0x00
 cedt                Reserved:                       0x0000
 cedt                HBIG:                           0x00000003
 cedt                Window Restrictions:            0x0006
 cedt                QTG ID:                         0x0001
-cedt                Interleave Target List
+cedt                Interleave Target List:
+cedt                  00 5E BA 00 
 cedt            
 cedt              CXL XOR Interleave Math Structure (CXIMS):
 cedt                Type:                           0x02

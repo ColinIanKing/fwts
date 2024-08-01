@@ -6,7 +6,7 @@
           AC_PROG_CC
 	  AC_PROG_LEX
 	  AC_PROG_YACC
-	  AC_PROG_LIBTOOL
+	  LT_INIT
 	  AC_C_INLINE
 	  AM_PROG_CC_C_O
   	  AC_CHECK_FUNCS([localtime_r])

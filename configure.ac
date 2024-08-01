@@ -4,7 +4,7 @@
 	  AC_CANONICAL_HOST
 	  AC_CONFIG_MACRO_DIR([m4])
           AC_PROG_CC
-	  AC_PROG_LEX
+	  AC_PROG_LEX([noyywrap])
 	  AC_PROG_YACC
 	  LT_INIT
 	  AC_C_INLINE

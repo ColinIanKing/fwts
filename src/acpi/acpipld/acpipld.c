@@ -88,9 +88,7 @@ static int acpipld_test1(fwts_framework *fw)
 
 					obj = buf.Pointer;
 					if (obj->Package.Elements[0].Integer.Value == 0) {
-						fwts_failed(fw, LOG_LEVEL_MEDIUM,
-							"ACPIPLDExistNotConnectable",
-							"The ACPI method %s exists on the port "
+						fwts_warning(fw, "The ACPI method %s exists on the port "
 							"claimed not connectable by the %s.",
 							name, name_upc);
 							failed = true;

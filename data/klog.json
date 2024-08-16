@@ -499,6 +499,20 @@
    "label": "KlogAcpiErstFailedMemAllocate",
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "Failed to map GSI to IRQ for generic hardware error source",
+   "advice": "The ACPI Generic Hardware Error Source (GHES) driver attempted to map GSI to IRQ but failed.",
+   "label": "KlogAcpiGhesFailedMapIrq",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "Failed to register IRQ for generic hardware error source",
+   "advice": "The ACPI Generic Hardware Error Source (GHES) driver attempted to register IRQ but failed.",
+   "label": "KlogAcpiGhesFailedRegisterIrq",
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Can not request .* for Trigger table",

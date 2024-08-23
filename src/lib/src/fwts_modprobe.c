@@ -182,12 +182,12 @@ int fwts_module_load(fwts_framework *fw, const char *module)
 	struct utsname u;
 	const size_t modlen = strlen(module);
 	char module_ko[modlen + 4];
+	char module_ko_zst[modlen + 8];
 	char path[PATH_MAX];
 	char modpath[PATH_MAX];
-	const char *params = "";
-	int fd;
 	bool loaded = false;
-
+	int status = 0;
+	char modeprobe_ko[64];
 	/*
 	 *  No need to unload if it's not already loaded
 	 */
@@ -207,26 +207,19 @@ int fwts_module_load(fwts_framework *fw, const char *module)
 	(void)snprintf(module_ko, sizeof(module_ko), "%s.ko", module);
 	(void)snprintf(modpath, sizeof(modpath), "/lib/modules/%s", u.release);
 	if (!fwts_module_find(module_ko, modpath, path, sizeof(path))) {
-		fwts_log_error(fw, "Cannot find module %s\n", module);
-		return FWTS_ERROR;
+		(void)snprintf(module_ko_zst, sizeof(module_ko_zst), "%s.ko.zst", module);
+		if (!fwts_module_find(module_ko_zst, modpath, path, sizeof(path))) {
+			fwts_log_error(fw, "Cannot find module %s\n", module);
+			return FWTS_ERROR;
+		}
 	}
 
-	/*
-	 *  We've found it, now try and load it
-	 */
-	fd = open(path, O_RDONLY);
-	if (fd < 0) {
-		fwts_log_error(fw, "Cannot open module %s, errno=%d (%s)\n",
-			path, errno, strerror(errno));
+	(void)snprintf(modeprobe_ko, sizeof("modprobe ") + modlen, "modprobe %s", module);
+	(void)fwts_exec(modeprobe_ko, &status);
+	if (status != FWTS_OK) {
+		fwts_log_error(fw, "modprobe module %s failed\n", module);
 		return FWTS_ERROR;
 	}
-	if (sys_finit_module(fd, params, 0) < 0) {
-		fwts_log_error(fw, "Cannot load module %s, errno=%d (%s)\n",
-			path, errno, strerror(errno));
-		(void)close(fd);
-		return FWTS_ERROR;
-	}
-	(void)close(fd);
 
 	return FWTS_OK;
 }
@@ -241,7 +234,9 @@ int fwts_module_load(fwts_framework *fw, const char *module)
 int fwts_module_unload(fwts_framework *fw, const char *module)
 {
 	bool loaded = false;
-	int ret;
+	char modeprobe_ko[64];
+	const size_t modlen = strlen(module);
+	int status = 0;
 
 	/*
 	 *  No need to unload if it's not already loaded
@@ -251,11 +246,12 @@ int fwts_module_unload(fwts_framework *fw, const char *module)
 			return FWTS_OK;
 	}
 
-	ret = sys_delete_module(module, O_NONBLOCK);
-	if (ret < 0) {
-		fwts_log_error(fw, "Cannot unload module %s, errno=%d (%s)\n",
-			module, errno, strerror(errno));
+	(void)snprintf(modeprobe_ko, sizeof("modprobe -r") + modlen, "modprobe -r %s", module);
+	(void)fwts_exec(modeprobe_ko, &status);
+	if (status != FWTS_OK) {
+		fwts_log_error(fw, "Cannot unload module %s\n", module);
 		return FWTS_ERROR;
 	}
+
 	return FWTS_OK;
 }

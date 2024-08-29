@@ -329,7 +329,7 @@ acpidump        [010h 0016 008h]                Oem Table ID : "TP-68   "
 acpidump        [018h 0024 004h]                Oem Revision : 06040000
 acpidump        [01Ch 0028 004h]             Asl Compiler ID : "TBD "
 acpidump        [020h 0032 004h]       Asl Compiler Revision : 00000001
-acpidump        [024h 0036 152h] Software Licensing Structure : 53 4C 49 43 76 01 00 00 01 99 4C 45 4E 4F 56 4F /* SLICv.....LENOVO */\
+acpidump        [024h 0036 152h] Software Licensing Structure : 00 00 00 00 9C 00 00 00 06 02 00 00 00 24 00 00 /* .............$.. */\
 acpidump        
 acpidump        APIC @ bf6dff70 (104 bytes) (loaded from file)
 acpidump        ----

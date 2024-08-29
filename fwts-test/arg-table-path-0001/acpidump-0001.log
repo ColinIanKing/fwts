@@ -245,7 +245,7 @@ acpidump        [024h 0036 004h]       ACPI Table Address   0 : BFF00000
 acpidump        [024h 0036 004h]   OspmFlags (decoded below) : 00000000
 acpidump        [024h 0036 008h]                    Reserved : 0000000000000000
 acpidump        [024h 0036 008h]       ACPI Table Address   0 : 00000000BFF00000
-acpidump        [024h 0036 152h] Software Licensing Structure : 53 4C 49 43 76 01 00 00 01 99 4C 45 4E 4F 56 4F /* SLICv.....LENOVO */\
+acpidump        [024h 0036 152h] Software Licensing Structure : 00 00 00 00 9C 00 00 00 06 02 00 00 00 24 00 00 /* .............$.. */\
 acpidump        [025h 0037 003h]                    Reserved : 000000
 acpidump        [026h 0038 004h]        Min Event Log Length : 00010000
 acpidump        [028h 0040 001h]                    Space ID : 00 [SystemMemory]

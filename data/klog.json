@@ -1656,6 +1656,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Not enough memory",
+   "advice": "ACPI could not allocate memory for the _FPS object, the memory allocation failed due to insufficient resources.",
+   "label": "KlogAcpiNotEnoughMem"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Invalid _FPS element",
    "advice": "ACPI could not evaluate the fan device information via the _FPS object, the returned package contained an element that was not of the correct ACPI type.",
    "label": "KlogAcpiGetFanDevInfoBadData"

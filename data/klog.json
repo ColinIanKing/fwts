@@ -5280,6 +5280,27 @@
    "label": "KlogAcpiEfiRsdpError"
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Cannot map memory that high",
+   "advice": "Get ACPI memory mappings by a given physical address range, the given physicall address range too high over the maxium ULONG_MAX, so it cannot look up the given physical address range in the list of existing ACPI memory mappings.",
+   "label": "KlogAcpiPhysicalAddrInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unsupported os_execute type",
+   "advice": "The os_execute type is unsupported, so the function cannot be executed by the kernel ACPI OSL driver .",
+   "label": "KlogAcpiOslExecTypeInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unable to queue work",
+   "advice": "The os_execute function cannot be queued for work by the kernel ACPI OSL driver .",
+   "label": "KlogAcpiOslQueueFail"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Invalid EFI RTC value: write of .* to EFI RTC failed",

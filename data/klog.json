@@ -1222,6 +1222,34 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to find PCC channel for subspace",
+   "advice": "The ACPI PCC driver failed to find PCC channel for subspace, so it cannot get the details of communicating with the remote by calling the pcc_mbox_request_channel.",
+   "label": "KlogAcpiPCCSubspaceNotFound"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "This channel-.* does not support interrupt",
+   "advice": "The requested PCC channel for subspace was found not support interrupt, so the requested channel gets free by the ACPI PCC driver.",
+   "label": "KlogAcpiPCCInterruptNoSupport"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "PCC command executed timeout!",
+   "advice": "The ACPI PCC driver gets the timeout for execute PCC command by the handler.",
+   "label": "KlogAcpiPCCExecCmdTimeout"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "OperationRegion handler could not be installed",
+   "advice": "The ACPI driver could not be initialized, the installation of the space handler failed.",
+   "label": "KlogAcpiOPRegInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Failed to ioremap PCC comm region mem",
    "advice": "The ACPI CPPC driver could not map the PCC subspace communication region, so the CPU freq driver cannot control CPU performance via the _CPC ACPI tables.",
    "label": "KlogAcpiCppcIomapFailed"

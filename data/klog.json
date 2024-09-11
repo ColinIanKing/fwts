@@ -347,9 +347,30 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Could not allocate size",
+   "advice": "The ACPI driver could not allocate memory by function acpi_ut_allocate_zeroed_and_track.",
+   "label": "KlogAcpiUtAllocateMemFail",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Attempt to delete a NULL address",
    "advice": "The ACPI memory tracking debug has detected an attempt to delete a NULL address, this indicates a bug in the ACPICA core.",
    "label": "KlogAcpiUtTrackNullAddrDelete",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Could not free memory",
+   "advice": "The ACPI driver could not free allocated memory, this indicates a bug in the ACPICA core.",
+   "label": "KlogAcpiUtMemFreeFail",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Empty allocation list, nothing to free!",
+   "advice": "The ACPI driver could not remove allocated memory, this indicates a bug in the ACPICA core.",
+   "label": "KlogAcpiUtRemoveAllocateMemFail",
   },
   {
    "compare_mode": "string",

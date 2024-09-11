@@ -1875,7 +1875,28 @@
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Error registering device",
    "advice": "An error occurred when adding a new ACPI device, the device registration failed. See acpi_device_add().",
-   "label": "KlogAcpi"
+   "label": "KlogAcpiRegisterDevice"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unable to extract wakeup power resources",
+   "advice": "An error occurred when extract wakeup power resources with the _PRW object.",
+   "label": "KlogAcpiGetWakeSourceFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "error in _DSW or _PSW evaluation",
+   "advice": "An error occurred when calling _PSW/_DSW object to disable its ability to wake the sleeping system for the ACPI device with the _PRW object and has been ignored.",
+   "label": "KlogAcpiEvaluateFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Error reading device info",
+   "advice": "An error occurred when setting PNP IDs, due to cannot get device infomation with ACPI bus type device.",
+   "label": "KlogAcpiReadInfoFail"
   },
   {
    "compare_mode": "string",

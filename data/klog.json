@@ -1844,6 +1844,20 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "PRM: EFI runtime services unavailable",
+   "advice": "The ACPI PRMT driver could not be initialized, the EFI runtime services are not enabled.",
+   "label": "KlogAcpiInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "PRM: OperationRegion handler could not be installed",
+   "advice": "The ACPI PRMT driver could not be initialized, the installation of the space handler failed.",
+   "label": "KlogAcpiOPRegInitFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "kset create error",
    "advice": "The ACPI initialization failed to create the acpi_kobj kobject and so it won't appear in /sys/firmware. This may cause some user space applications difficulties if this is not created and populated. See acpi_init().",

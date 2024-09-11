@@ -467,7 +467,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Failed to get table",
-   "advice": "The ACPI Error Record Serialization (ERST) driver found the table, but it cannot get the table for some format exceptions.",
+   "advice": "The ACPI driver cannot find the table, which causes a failure during initialization.",
    "label": "KlogAcpiErstGetTableFail",
   },
   {
@@ -1596,6 +1596,55 @@
    "pattern": "underrun cmd: .* buf_len: .* out_len:",
    "advice": "ACPI NFIT driver could not send a control message, output buffer overran",
    "label": "KlogAcpiNfit"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Node pointer overflows",
+   "advice": "ACPI VIOT driver detected an VIOT node that is outside the ACPI VIOT table. The table as been deemed to be broken and has been ignored.",
+   "label": "KlogAcpiViotNodeOutsideTable"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Empty node",
+   "advice": "ACPI VIOT driver detected an VIOT node is empty. The node as been deemed to be broken and has been ignored.",
+   "label": "KlogAcpiViotNodeEmpty"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Could not find PCI IOMMU",
+   "advice": "ACPI VIOT driver could not find PCI IOMMU. The node as been deemed to be broken and has been ignored.",
+   "label": "KlogAcpiViotNodeNotFound"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Could not find MMIO IOMMU",
+   "advice": "ACPI VIOT driver could not find MMIO IOMMU. The node as been deemed to be broken and has been ignored.",
+   "label": "KlogAcpiViotNodeNotFound"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid PCI node size",
+   "advice": "ACPI VIOT driver detected an invalid PCI node size. The table as been deemed to be broken and has been ignored.",
+   "label": "KlogAcpiViotNodeSizeInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid MMIO node size",
+   "advice": "ACPI VIOT driver detected an invalid MMIO node size. The table as been deemed to be broken and has been ignored.",
+   "label": "KlogAcpiViotNodeSizeInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unsupported node",
+   "advice": "ACPI VIOT driver detected an unsupported node size, it won't be handled and has been ignored.",
+   "label": "KlogAcpiViotNodeUnsupport"
   },
   {
    "compare_mode": "regex",

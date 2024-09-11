@@ -892,6 +892,13 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "ACPI NUMA: Too many proximity domains while processing CFMWS",
+   "advice": "The ACPI NUMA driver failed to map the pxm to the node while processing CFMWS.",
+   "label": "KlogAcpiMapNodeFail",
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "wrong table version",
    "advice": "The ACPI Serial Port Console Redirection Table (SPCR) was expected to be at least version 2 or higher. APCI Serial Port Console will be ignored.",

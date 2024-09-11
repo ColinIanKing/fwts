@@ -65,6 +65,20 @@
    "label": "KlogAcpiBixBroken",
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "extension failed to load:",
+   "advice": "The ACPI battery driver has to notify the hook that a battery is available for each battery, but the registration of the extension has failed.",
+   "label": "KlogAcpiRegistrationFail",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "error in extension, unloading:",
+   "advice": "The ACPI battery driver adds a new battery to the list and calls add_battery for each hook that was registered, but gets the notification of the extensions has failed.",
+   "label": "KlogAcpiRegistrationFail",
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "BIOS reported wrong ACPI id .* for the processor",

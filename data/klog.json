@@ -1250,6 +1250,20 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Can't register IPMI opregion space handle",
+   "advice": "TThe ACPI IPMI driver could not be initialized, the installation of the space handler failed.",
+   "label": "KlogAcpiIpmiInitFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Can't register IPMI system interface watcher",
+   "advice": "TThe ACPI IPMI driver could not be initialized, the SMI watcher register failed.",
+   "label": "KlogAcpiIpmiInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Failed to ioremap PCC comm region mem",
    "advice": "The ACPI CPPC driver could not map the PCC subspace communication region, so the CPU freq driver cannot control CPU performance via the _CPC ACPI tables.",
    "label": "KlogAcpiCppcIomapFailed"

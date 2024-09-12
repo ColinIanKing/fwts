@@ -2452,11 +2452,25 @@
     "label": "KlogAcpiPciRootBridgeAddFailed"
   },
   {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "did not return any object",
+    "advice": "An ACPI object find and evaluate has failed, it didn't return any value.",
+    "label": "KlogAcpiNoObjReturn"
+  },
+  {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Incorrect return type .* requested .*",
     "advice": "An ACPI object find and evaluate has failed, the return object requested does not match the requested type.  This is most probably a firmware bug.",
     "label": "KlogAcpiIncorrectReturnType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Insufficient arguments .* are required",
+    "advice": "An ACPI object evaluate has failed, checking incoming argument count against the method definition.",
+    "label": "KlogAcpiInsufficientArgs"
   },
   {
     "compare_mode": "string",

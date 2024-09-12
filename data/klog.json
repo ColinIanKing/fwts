@@ -4694,6 +4694,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "CreateBufferField failure",
+   "advice": "The ACPI interpreter failed to create buffer field, this occurred during the loading of the namespace, see acpi_ds_load2_end_op.",
+   "label": "KlogAcpiCreateBuffFieldFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Divide by zero",
    "advice": "The ACPI interpreter detected a zero divisor which produce a division by zero error.  The AML code is buggy and this will return an undefined value that may cause unexpected behaviour.",
    "label": "KlogAcpiAmlDivideByZero"

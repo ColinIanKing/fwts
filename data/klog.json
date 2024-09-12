@@ -2776,6 +2776,13 @@
   {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Null parameter",
+    "advice": "An attempt to store an ACPI value into a location failed because the null parameters found. See acpi_ex_store().",
+    "label": "KlogAcpiNullParameter"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Target is not a Reference or Constant object",
     "advice": "An attempt to store an ACPI value into a location failed because the target is not a reference or a constat object. See acpi_ex_store().",
     "label": "KlogAcpiTargetNotRefOrConstantObject"

@@ -3868,6 +3868,13 @@
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unable to save memory mapping at 0x.*, size",
+   "advice": "The ACPI interpreter was requested to read or write to a memory region via a memory space handler but cannot to create a new mappings list entry due  to allocate memory fail.",
+   "label": "KlogAcpiAllocMemfail"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not map memory at 0x.*, size",
    "advice": "The ACPI interpreter was requested to read or write to a memory region via a memory space handler but the logical address could not be mapped from the given physical address given.  This memory region is not mappable, so it could be an AML opregion bug or a bug in the kernel (less likely).",
    "label": "KlogAcpiOpRegionMemMapError"

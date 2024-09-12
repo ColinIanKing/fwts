@@ -4358,6 +4358,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Opcode is not deferred",
+   "advice": "The ACPI driver failed to initialize object, the object type is not expected.",
+   "label": "KlogAcpiNsInitFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not execute arguments for",
    "advice": "The ACPI driver failed to initialize methods or op regions during the namespace traversal.",
    "label": "KlogAcpiNsExecArgFailed"

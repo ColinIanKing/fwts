@@ -4546,6 +4546,13 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to get unique processor _UID",
+   "advice": "ACPI failed to get a processor unigue processor _UID. This normally occurs because of buggy firmware that implemented duplicate UID for processors.",
+   "label": "KlogAcpiDuplicateProcessorUID"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Evaluating _TPC",
    "advice": "The ACPI driver failed to get the current number of supported CPU throttling T States because the ACPI control _TPC (Throttling Present Capabilities) failed to evaluate.",
@@ -5312,6 +5319,13 @@
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Processor driver could not be attached",
    "advice": "An attempt to add a processor to the system failed in acpi_processor_add(), the processor driver's .probe failed calling device_attach(). The CPU cannot be added to the system under ACPI control.",
+   "label": "KlogAcpiProcessorNotAttached"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "ACPI: Failed to claim processor _CST control",
+   "advice": "An attempt to request _CST control from SMI command base on FADT but fail.",
    "label": "KlogAcpiProcessorNotAttached"
   },
   {

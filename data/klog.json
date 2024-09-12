@@ -3084,9 +3084,23 @@
   {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Invalid direct read using bidirectional write-then-read protocol",
+    "advice": "Got an accessor type unexpected when reading GSBUS address space.",
+    "label": "KlogAcpiTypeUnexpected"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
     "pattern": "SMBus/IPMI/GenericSerialBus write requires Buffer, found type",
     "advice": "A SMBus, IPMI or GenericSerialBus write to a named field required a buffer to write into, but got a different type instead.",
     "label": "KlogAcpiWriteRequiresBuffer"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Invalid protocol ID for GSBus:",
+    "advice": "Got invalid protocol ID when reading/writing GSBUS address space.",
+    "label": "KlogAcpiInvalidID"
   },
   {
     "compare_mode": "regex",

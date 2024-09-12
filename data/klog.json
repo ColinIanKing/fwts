@@ -4862,6 +4862,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid object type:",
+   "advice": "ACPI execution run time error: The ACPI interpreter has got an object type that is invalid when doing index OP. ",
+   "label": "KlogAcpiInvalidObjType"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Invalid AML Opcode: 0x",
    "advice": "ACPI execution run time error: The ACPI interpreter has reached an opcode that is unknown, this normally is a bug in the underlying AML code either because of badly written AML code or the compiler has produced code that is incorrect or the ACPI interpreter does not support this valid opcode. ",
    "label": "KlogAcpiUnknownAmlOpcode"

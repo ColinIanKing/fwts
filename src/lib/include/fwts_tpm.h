@@ -32,6 +32,9 @@ PRAGMA_PACK_WARN_OFF
 #define TPM2_SHA384_DIGEST_SIZE  48
 #define TPM2_SHA512_DIGEST_SIZE  64
 
+/* Number of PCRs used for firmware, rather than OS, measurements */
+#define TPM2_FIRMWARE_PCR_COUNT 8
+
 typedef uint16_t TPM2_ALG_ID;
 #define TPM2_ALG_ERROR               ((TPM2_ALG_ID) 0x0000)
 #define TPM2_ALG_RSA                 ((TPM2_ALG_ID) 0x0001)
@@ -185,6 +188,8 @@ typedef struct {
 
 void fwts_tpm_data_hexdump(fwts_framework *fw, const uint8_t *data,
 	const size_t size, const char *str);
+bool fwts_tpm_extend_pcr(uint8_t *pcr, const size_t pcr_len,
+	TPM2_ALG_ID alg, const uint8_t *data);
 uint8_t fwts_tpm_get_hash_size(const TPM2_ALG_ID hash);
 
 PRAGMA_POP

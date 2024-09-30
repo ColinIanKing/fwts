@@ -19,6 +19,7 @@
 #include "fwts.h"
 
 #include <sys/types.h>
+#include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -27,7 +28,59 @@
 #include "fwts_tpm.h"
 #include "fwts_uefi.h"
 
+#define FWTS_TPM_DEVICE_PATH	"/sys/class/tpm"
 #define FWTS_TPM_LOG_DIR_PATH	"/sys/kernel/security"
+
+struct tpm_pcr_state {
+	uint8_t pcr[TPM2_FIRMWARE_PCR_COUNT][TPM2_SHA256_DIGEST_SIZE];
+};
+
+static bool tpmevlog_parsed = false;
+static struct tpm_pcr_state tpmevlog_pcrs = {};
+
+static int tpmevlog_read_device_pcrs(fwts_framework *fw, const char *tpm, struct tpm_pcr_state *pcrs)
+{
+	char path[PATH_MAX];
+	char buffer[TPM2_SHA256_DIGEST_SIZE * 2 + 2]; /* Trailing \n + NUL */
+	int i, j;
+	int fd;
+
+	memset(pcrs, 0, sizeof(*pcrs));
+	for (i = 0; i < TPM2_FIRMWARE_PCR_COUNT; i++) {
+		snprintf(path, sizeof(path), FWTS_TPM_DEVICE_PATH "/%s/pcr-sha256/%d",
+			tpm, i);
+
+		if ((fd = open(path, O_RDONLY)) >= 0) {
+			const ssize_t n = read(fd, buffer, sizeof(buffer) - 1);
+
+			if (n <= 0 || buffer[n - 1] != '\n') {
+				fwts_log_info(fw, "Cannot read TPM PCR%d value.", i);
+				(void)close(fd);
+				return FWTS_ERROR;
+			}
+
+			for (j = 0; j < (n - 1); j++) {
+				char c = toupper(buffer[j]);
+
+				if (!isxdigit(c)) {
+					fwts_log_info(fw, "Cannot parse TPM PCR%d value.", i);
+					(void)close(fd);
+					return FWTS_ERROR;
+				}
+
+				if (j & 1) {
+					pcrs->pcr[i][j >> 1] |= isdigit(c) ? c - '0' : c - 'A' + 10;
+				} else {
+					pcrs->pcr[i][j >> 1] = (isdigit(c) ? c - '0' : c - 'A' + 10) << 4;
+				}
+			}
+
+			(void)close(fd);
+		}
+	}
+
+	return FWTS_OK;
+}
 
 static int tpmevlog_pcrindex_value_check(fwts_framework *fw, const uint32_t pcr)
 {
@@ -200,7 +253,8 @@ static int tpmevlog_v2_check(
 	fwts_pc_client_pcr_event *pc_event;
 	fwts_efi_spec_id_event *specid_evcent;
 	fwts_spec_id_event_alg_sz *alg_sz;
-	bool separator_seen[8] = { false };
+	bool separator_seen[TPM2_FIRMWARE_PCR_COUNT] = { false };
+	bool startuplocality_seen = false;
 
 	/* specid_event_check */
 	if (len < sizeof(fwts_pc_client_pcr_event)) {
@@ -361,6 +415,18 @@ static int tpmevlog_v2_check(
 				return FWTS_ERROR;
 			}
 
+			/*
+			 * Extend the current PCR hash with the new hash from the log
+			 */
+			if ((!tpmevlog_parsed) && (alg_id == TPM2_ALG_SHA256) &&
+			    (pcr_event2->event_type != EV_NO_ACTION) &&
+			    (pcr_event2->pcr_index < TPM2_FIRMWARE_PCR_COUNT)) {
+				fwts_tpm_extend_pcr(tpmevlog_pcrs.pcr[pcr_event2->pcr_index],
+						TPM2_SHA256_DIGEST_SIZE,
+						alg_id,
+						pdata);
+			}
+
 			pdata += hash_size;
 			len_remain -= hash_size;
 		}
@@ -381,15 +447,33 @@ static int tpmevlog_v2_check(
 		if (ret != FWTS_OK)
 			return ret;
 
-		if ((pcr_event2->pcr_index < 8) && (pcr_event2->event_type == EV_SEPARATOR))
+		if ((pcr_event2->pcr_index < TPM2_FIRMWARE_PCR_COUNT) &&
+		    (pcr_event2->event_type == EV_SEPARATOR))
 			separator_seen[pcr_event2->pcr_index] = true;
 
-		pdata += (event_size + sizeof(event_size));
-		len_remain -= (event_size + sizeof(event_size));
+		pdata += sizeof(event_size);
+		len_remain -= sizeof(event_size);
 
+		if (pcr_event2->event_type == EV_NO_ACTION &&
+		    pcr_event2->pcr_index == 0 &&
+		    event_size == 17 &&
+		    memcmp(pdata, "StartupLocality", sizeof("StartupLocality")) == 0) {
+			if (!startuplocality_seen) {
+				tpmevlog_pcrs.pcr[0][TPM2_SHA256_DIGEST_SIZE - 1] =
+					pdata[sizeof("StartupLocality")];
+				startuplocality_seen = true;
+			} else {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventV2StartupLocalitySeenTwice",
+					"Event log contained more than one StartupLocality event");
+				return FWTS_ERROR;
+			}
+		}
+
+		pdata += event_size;
+		len_remain -= event_size;
 	}
 
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < TPM2_FIRMWARE_PCR_COUNT; i++) {
 		if (!separator_seen[i]) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "EventV2SeparatorSeen",
 				"PCR %d did not have EV_SEPARATOR measured into it at "
@@ -398,6 +482,7 @@ static int tpmevlog_v2_check(
 		}
 	}
 
+	tpmevlog_parsed = true;
 	fwts_passed(fw, "Check TPM crypto agile event log test passed.");
 	return FWTS_OK;
 }
@@ -551,8 +636,34 @@ static int tpmevlog_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int tpmevlog_test2(fwts_framework *fw)
+{
+	struct tpm_pcr_state pcrs_actual = {};
+	if (!tpmevlog_parsed) {
+		fwts_skipped(fw, "No TPM 2.0 event log has not been parsed, skipping.");
+		return FWTS_SKIP;
+	}
+
+	if (tpmevlog_read_device_pcrs(fw, "tpm0", &pcrs_actual) != FWTS_OK) {
+		fwts_skipped(fw, "Could not read PCRs from TPM, skipping.");
+		return FWTS_SKIP;
+	}
+
+	for (int i = 0; i < TPM2_FIRMWARE_PCR_COUNT; i++) {
+		if (memcmp(pcrs_actual.pcr[i], tpmevlog_pcrs.pcr[i], TPM2_SHA256_DIGEST_SIZE) != 0) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "PCRsMatchEvLog",
+				"PCR %d differs between actual value and log.", i);
+			return FWTS_ERROR;
+		}
+	}
+
+	fwts_passed(fw, "Check TPM event log machines actual TPM PCRs.");
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test tpmevlog_tests[] = {
 	{ tpmevlog_test1, "Sanity check TPM event log." },
+	{ tpmevlog_test2, "Check TPM event log matches TPM PCRs." },
 	{ NULL, NULL }
 };
 

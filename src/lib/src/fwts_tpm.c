@@ -20,6 +20,8 @@
 #include "fwts.h"
 #include "fwts_tpm.h"
 
+#include <glib.h>
+
 /*
  *  fwts_tpm_data_hexdump
  *	hex dump of a tpm event log data
@@ -40,6 +42,42 @@ void fwts_tpm_data_hexdump(
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
 		fwts_log_info_verbatim(fw, "%s", buffer + 2);
 	}
+}
+
+/*
+ *  fwts_tpm_extend_pcr
+ *	extend a PCR hash given the supplied event data
+ */
+bool fwts_tpm_extend_pcr(uint8_t *pcr, const size_t pcr_len,
+	TPM2_ALG_ID alg, const uint8_t *data)
+{
+	GChecksum *hasher;
+	gsize hash_len;
+
+	hash_len = fwts_tpm_get_hash_size(alg);
+	if (hash_len > pcr_len)
+		return false;
+
+	switch (alg) {
+	case TPM2_ALG_SHA256:
+		hasher = g_checksum_new(G_CHECKSUM_SHA256);
+		break;
+	case TPM2_ALG_SHA384:
+		hasher = g_checksum_new(G_CHECKSUM_SHA384);
+		break;
+	case TPM2_ALG_SHA512:
+		hasher = g_checksum_new(G_CHECKSUM_SHA512);
+		break;
+	default:
+		return false;
+	}
+
+	g_checksum_update(hasher, pcr, hash_len);
+	g_checksum_update(hasher, data, hash_len);
+	g_checksum_get_digest(hasher, pcr, &hash_len);
+	g_checksum_free(hasher);
+
+	return true;
 }
 
 /*

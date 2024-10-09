@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <fcntl.h>
 
-#define DMI_VERSION			(0x0370)
+#define DMI_VERSION			(0x0371)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 

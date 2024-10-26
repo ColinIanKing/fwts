@@ -259,7 +259,7 @@ static char *wmi_acpi_get_parent_name(const char *object_name)
 
 /*
  * wmi_acpi_method_count_on_object()
- *	count occurance of methods on acpi object
+ *	count occurrence of methods on acpi object
  */
 static int wmi_acpi_method_count_on_object(const char *object_name, const char *method_name)
 {

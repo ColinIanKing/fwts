@@ -34,7 +34,7 @@ static int ccel_test1(fwts_framework *fw)
 	if (ccel->header.length != sizeof(fwts_acpi_table_ccel)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"CCELBadTableLength",
-			"CCEL table lengthe shoud be %" PRIu32 ", got %" PRIu32
+			"CCEL table length should be %" PRIu32 ", got %" PRIu32
 			 " instead.", (uint32_t)sizeof(fwts_acpi_table_ccel),
 			 ccel->header.length);
 		return FWTS_OK;

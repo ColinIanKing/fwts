@@ -405,7 +405,7 @@ static void iort_memory_access_properties_check(
 	fwts_acpi_reserved_zero("IORT", field, properties->reserved, passed);
 
 	snprintf(field, sizeof(field), "%s  Memory Access Flags", name);
-	fwts_acpi_reserved_bits("IORT", field, properties->memory_access_flags, 2, 7, passed);
+	fwts_acpi_reserved_bits("IORT", field, properties->memory_access_flags, 3, 7, passed);
 
 	cca = properties->cache_coherent & 1;
 	cpm = properties->memory_access_flags & 1;

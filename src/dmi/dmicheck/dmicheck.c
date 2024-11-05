@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <fcntl.h>
 
-#define DMI_VERSION			(0x0371)
+#define DMI_VERSION			(0x0380)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -56,6 +56,7 @@
 #define DMI_RESERVED_VALUE_USED		"DMIReservedValueUsed"
 #define DMI_RESERVED_BIT_USED		"DMIReservedBitUsed"
 #define DMI_RESERVED_OFFSET_NONZERO	"DMIReservedOffsetNonZero"
+#define DMI_BAD_STRING			"DMIBadString"
 
 #define GET_UINT8(x) (uint8_t)(*(const uint8_t *)(x))
 #define GET_UINT16(x) (uint16_t)(*(const uint16_t *)(x))
@@ -1411,7 +1412,8 @@ static void dmicheck_entry(fwts_framework *fw,
 					table, addr, "Status", 0x18);
 			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 3, 5);
 			dmi_reserved_bits_check(fw, table, addr, "Status", hdr, sizeof(uint8_t), 0x18, 7, 7);
-			dmi_min_max_uint8_check(fw, table, addr, "Processor Upgrade", hdr, 0x19, 0x1, 0x50);
+			fwts_dmi_value_range t4_ranges[] = {{0x1, 0x57}, {0xff, 0xff}};
+			dmi_ranges_uint8_check(fw, table, addr, "Processor Upgrade", hdr, 0x19, t4_ranges);
 			if (hdr->length < 0x23)
 				break;
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x20);
@@ -1432,6 +1434,16 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x32)
 				break;
 			dmi_min_max_uint16_check(fw, table, addr, "Thread Enabled", hdr, 0x30, 0, 0xfffe);
+			if (hdr->length < 0x33)
+				break;
+			dmi_str_check(fw, table, addr, "Socket Type", hdr, 0x32);
+			if (GET_UINT8(data + 0x19) == 0xFF && ((char)data[0x32] == '\0'))
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					DMI_BAD_STRING,
+					"Must be non-null if 'Processor Upgrade' at offset 19h is FFh "
+					"while accessing entry '%s' @ 0x%8.8" PRIx32
+					"on field '%s', offset 0x%2.2" PRIx8,
+					table, addr, "Socket Type", 0x32);
 			break;
 
 		case 5: /* 7.6 (Type 5 is obsolete) */
@@ -1655,7 +1667,7 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			if (hdr->length < 0x15)
 				break;
-			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0x10);
+			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0x11);
 			dmi_str_check(fw, table, addr, "Locator", hdr, 0x10);
 			dmi_str_check(fw, table, addr, "Bank Locator", hdr, 0x11);
 			fwts_dmi_value_range t17_ranges[] = {{0x1, 0x14}, {0x18, 0x24}};
@@ -1675,7 +1687,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_reserved_bits_check(fw, table, addr, "Extended Size", hdr, sizeof(uint32_t), 0x1c, 31, 31);
 			if (hdr->length < 0x4c)
 				break;
-			dmi_min_max_uint8_check(fw, table, addr, "Memory Technology", hdr, 0x28, 0x1, 0x7);
+			dmi_min_max_uint8_check(fw, table, addr, "Memory Technology", hdr, 0x28, 0x1, 0x8);
 			dmi_reserved_bits_check(fw, table, addr, "Memory Operating Mode Cap", hdr, sizeof(uint16_t), 0x29, 0, 0);
 			dmi_reserved_bits_check(fw, table, addr, "Memory Operating Mode Cap", hdr, sizeof(uint16_t), 0x29, 6, 15);
 			switch(hdr->data[0x28]) {

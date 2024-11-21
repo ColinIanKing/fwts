@@ -33,7 +33,7 @@ static int hda_audio_read_pins(const char *path, const char *file, fwts_list *se
 	FILE 		*fp;
 	uint16_t	pin;
 	uint32_t	setting;
-	char 		name[PATH_MAX];
+	char 		name[PATH_MAX*2];
 
 	fwts_list_init(settings);
 
@@ -84,7 +84,7 @@ static void hda_audio_dev_info(fwts_framework *fw, const char *label,
 	const char *path, const char *file)
 {
 	char *info;
-	char fullpath[PATH_MAX];
+	char fullpath[PATH_MAX*2];
 
 	snprintf(fullpath, sizeof(fullpath), "%s/%s", path, file);
 

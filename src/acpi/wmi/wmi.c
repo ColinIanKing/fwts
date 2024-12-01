@@ -402,13 +402,9 @@ static void wmi_no_known_driver(
 	if (!wmi_advice_given) {
 		wmi_advice_given = true;
 		fwts_log_advice(fw,
-			"A WMI driver probably needs to be written for this "
-			"WMI event. It can checked for using: wmi_has_guid(\"%s\"). "
-			"One can install a notify handler using "
-			"wmi_install_notify_handler(\"%s\", handler, NULL).  "
-			"http://lwn.net/Articles/391230 describes how to write an "
-			"appropriate driver.",
-			guid_str, guid_str);
+			"A WMI driver probably needs to be written for this WMI event. "
+			"https://docs.kernel.org/wmi/driver-development-guide.html describes how "
+			"to write an appropriate WMI driver.");
 	}
 }
 

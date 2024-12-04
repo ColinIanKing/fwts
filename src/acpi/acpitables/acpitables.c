@@ -169,7 +169,7 @@ static const fwts_acpi_table_rev acpi_62_rev[] = {
 	{"MSCT", 1},
 	{"MPST", 1},
 	{"NFIT", 1},
-	{"PCCT", 1},
+	{"PCCT", 2},
 	{"PMTT", 1},
 	{"PPTT", 1},
 	{"RASF", 1},

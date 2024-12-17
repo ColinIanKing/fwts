@@ -104,7 +104,7 @@ static int uniqueid_evaluate_method(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-static bool is_uniqueid_equal(acpi_ids *obj1, acpi_ids *obj2)
+static bool is_uniqueid_equal(fwts_framework *fw, acpi_ids *obj1, acpi_ids *obj2)
 {
 	bool hid_match = false;
 
@@ -129,6 +129,42 @@ static bool is_uniqueid_equal(acpi_ids *obj1, acpi_ids *obj2)
 			return false;
 		hid_match = true;
 		break;
+	default:
+		/*
+		 * For _CID, it may be of Package type.
+		 * Compare all items in the package, and if any item matches,
+		 * it is considered a match (as the OS might use the same one).
+		 * Then, further verify the _UID value.
+		 */
+		if ((strstr(obj1->hid_name, "_CID") != NULL) &&
+				obj1->hid_obj->Type == ACPI_TYPE_PACKAGE) {
+			for (int i = 0; i < obj1->hid_obj->Package.Count; i++) {
+				for (int j = 0; j < obj2->hid_obj->Package.Count; j++) {
+					switch (obj1->hid_obj->Package.Elements[i].Type) {
+					case ACPI_TYPE_STRING:
+						if (!strcmp(obj1->hid_obj->Package.Elements[i].String.Pointer,
+							obj2->hid_obj->Package.Elements[j].String.Pointer))
+							hid_match = true;
+						break;
+					case ACPI_TYPE_INTEGER:
+						if (obj1->hid_obj->Package.Elements[i].Integer.Value ==
+							obj2->hid_obj->Package.Elements[j].Integer.Value)
+							hid_match = true;
+						break;
+					}
+					if (hid_match)
+						break;
+				}
+				if (hid_match)
+					break;
+			}
+			if (!hid_match)
+				return false;
+			break;
+		}
+
+		fwts_log_error(fw, "Unknow type for _HID or _CID.");
+		return true;
 	}
 
 	switch (obj1->uid_obj->Type) {
@@ -188,7 +224,7 @@ static void unique_HID_return(
 
 	fwts_list_foreach(item, hid_list) {
 		acpi_ids *obj2 = fwts_list_data(acpi_ids*, item);
-		if (is_uniqueid_equal(obj1, obj2)) {
+		if (is_uniqueid_equal(fw, obj1, obj2)) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH, "HardwareIDNotUnique",
 				"%s/_UID conflict with %s/_UID", name, obj2->hid_name);

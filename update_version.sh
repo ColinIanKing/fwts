@@ -8,7 +8,7 @@ fi
 version=$1
 cat << EOF > src/lib/include/fwts_version.h
 /*
- * Copyright (C) 2010-2024 Canonical
+ * Copyright (C) 2010-2025 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

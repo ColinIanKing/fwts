@@ -5,7 +5,7 @@ Source: git://kernel.ubuntu.com/hwe/fwts
 Files: *
        src/libfwtsiasl/fwts_iasl_interface.c
        src/libfwtsacpica/fwts_acpica.c
-Copyright: 2010-2024, Canonical Ltd
+Copyright: 2010-2025, Canonical Ltd
 License: GPL-2
 
 Files: src/acpi/acpiinfo/acpiinfo.c
@@ -19,25 +19,25 @@ Files: src/acpi/acpiinfo/acpiinfo.c
        src/cpu/cpufreq/cpufreq.c
        src/cpu/microcode/microcode.c
        src/pci/maxreadreq/maxreadreq.c
-Copyright: 2010-2024, Canonical Ltd
+Copyright: 2010-2025, Canonical Ltd
            2006, Intel Corporation
 License: GPL-2
 
 Files: src/cpu/virt/virt.c
-Copyright: 2010-2024, Canonical Ltd
+Copyright: 2010-2025, Canonical Ltd
            2007, AMD Inc
            2006, Intel Corporation
 License: GPL-2
 
 Files: src/lib/src/fwts_pipeio.c
        src/lib/src/fwts_stringextras.c
-Copyright: 2010-2024, Canonical Ltd
+Copyright: 2010-2025, Canonical Ltd
            2010, Lennart Poettering
 License: GPL-2
 
 Files: src/cpu/virt/virt_svm.c
        src/cpu/virt/virt_vmx.c
-Copyright: 2010-2024, Canonical Ltd
+Copyright: 2010-2025, Canonical Ltd
            2007, AMD Inc
            2006, Intel Corporation
 License: LGPL

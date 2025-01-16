@@ -431,10 +431,10 @@ static uint64_t get_total_s2idle_residency(const char **fname)
 	const char *check;
 	uint64_t val;
 
-	if (access(PM_SUSPEND_TOTAL_HW_SLEEP, F_OK) == 0)
-		check = PM_SUSPEND_TOTAL_HW_SLEEP;
-	else
+	if (access(INTEL_PM_S2IDLE_SLP_S0, F_OK) == 0)
 		check = INTEL_PM_S2IDLE_SLP_S0;
+	else
+		check = PM_SUSPEND_TOTAL_HW_SLEEP;
 
 	val = get_uint64_sysfs(check);
 

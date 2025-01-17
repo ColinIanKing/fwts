@@ -124,3 +124,24 @@ bool fwts_kernel_config_set(const char *config)
 
 	return false;
 }
+
+/*
+ *  fwts_kernel_config_exist
+ *	 check whether kernel config exist
+ */
+bool fwts_kernel_config_exist()
+{
+	char config_file[PATH_MAX];
+	size_t config_file_len;
+	struct utsname buf;
+
+	uname(&buf);
+	config_file_len = strlen(CONFIG_FILE_PREFIX) + strlen(buf.release) + 1;
+	(void)strlcpy(config_file, CONFIG_FILE_PREFIX, config_file_len);
+	(void)strlcat(config_file, buf.release, config_file_len);
+
+	if ((access(config_file, F_OK) != 0) && (access(CONFIG_FILE_PROC, F_OK) != 0))
+		return false;
+
+	return true;
+}

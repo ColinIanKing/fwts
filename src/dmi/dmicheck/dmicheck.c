@@ -422,7 +422,8 @@ static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
 	}
 
 #ifdef FWTS_ARCH_AARCH64
-	if (fwts_kernel_config_set("CONFIG_STRICT_DEVMEM")) {
+	if (!fwts_kernel_config_exist() ||
+			fwts_kernel_config_set("CONFIG_STRICT_DEVMEM")) {
 		fwts_warning(fw, "Skipping scanning SMBIOS table in memory for arm64 systems");
 		return NULL;
 	}
@@ -477,7 +478,8 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 	}
 
 #ifdef FWTS_ARCH_AARCH64
-	if (fwts_kernel_config_set("CONFIG_STRICT_DEVMEM")) {
+	if (!fwts_kernel_config_exist() ||
+			fwts_kernel_config_set("CONFIG_STRICT_DEVMEM")) {
 		fwts_warning(fw, "Skipping scanning SMBIOS3 table in memory for arm64 systems");
 		return NULL;
 	}

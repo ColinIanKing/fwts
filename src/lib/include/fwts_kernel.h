@@ -21,5 +21,6 @@
 #define __FWTS_KERNEL_H__
 
 bool fwts_kernel_config_set(const char *config);
+bool fwts_kernel_config_exist(void);
 
 #endif

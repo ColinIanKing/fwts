@@ -1,3 +1,27 @@
+fwts (25.01.00-0ubuntu1) plucky; urgency=medium
+
+  [Armin Wolf] 
+  * acpi/wmi: Stop directing users to outdated LWN article
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20241212
+
+  [Hector Cao]
+  * acpi/s3 : fix stack smashing crash for s3 test
+
+  [Ivan Hu]
+  * dmicheck: fix the wrong size check for type 4
+  * acpi: uniqueid: fix the uniqueid test for the CID with package
+  * acpitables: update ACPI table revsion test to ACPI 6.5
+  * Update copyright year to 2025
+  * acpi: s3: reading residencyslp_s0_residency_usec for intel platforms
+  * dmicheck: check the config files exist for CONFIG_STRICT_DEVMEM setting
+
+  [Mario Limonciell]o
+  * acpi: acpitables: Correct PCCT revision for ACPI 6.2
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 21 Jan 2025 11:18:25 +0800
+
 fwts (24.11.00-0ubuntu1) plucky; urgency=medium
 
   [Armin Wolf]

@@ -59,7 +59,7 @@ cedt            field must be zero, got 0x00000001 instead
 cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
 cedt            field must be zero, got 0x0002 instead
 cedt            FAILED [HIGH] CEDTReservedBitsNonZero: Test 1, CEDT Window
-cedt            Restrictions Bits [15..5] must be zero, got 0x0106 instead
+cedt            Restrictions Bits [15..6] must be zero, got 0x0106 instead
 cedt            
 cedt              CXL XOR Interleave Math Structure (CXIMS):
 cedt                Type:                           0x02
@@ -80,13 +80,26 @@ cedt                Record Length:                  0x0010
 cedt                RCEC Segment Number             0x0000
 cedt                RCEC BDF:                       0x0109
 cedt                Protocol Type:                  0x02
-cedt                Base Address                    0x0000000001000000
+cedt                Base Address                    0x0400000001000000
 cedt            FAILED [HIGH] CEDTBadProtocolType: Test 1, CEDT CFMWS
 cedt            protocol type must have the value with 0 or 1, got 0x02
 cedt            instead
 cedt            
+cedt              CXL System Description Structure (CSDS):
+cedt                Type:                           0x04
+cedt                Reserved:                       0x03
+cedt                Record Length:                  0x0008
+cedt                System Capabilities:            0x0103
+cedt                Reserved:                       0x1000
+cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
+cedt            field must be zero, got 0x03 instead
+cedt            FAILED [HIGH] CEDTReservedBitsNonZero: Test 1, CEDT System
+cedt            Capabilities Bits [15..6] must be zero, got 0x0103 instead
+cedt            FAILED [MEDIUM] CEDTReservedNonZero: Test 1, CEDT Reserved
+cedt            field must be zero, got 0x1000 instead
+cedt            
 cedt            
 cedt            ==========================================================
-cedt            0 passed, 9 failed, 0 warning, 0 aborted, 0 skipped, 0
+cedt            0 passed, 12 failed, 0 warning, 0 aborted, 0 skipped, 0
 cedt            info only.
 cedt            ==========================================================

@@ -45,7 +45,14 @@ cedt                Record Length:                  0x0010
 cedt                RCEC Segment Number             0x0901
 cedt                RCEC BDF:                       0x0000
 cedt                Protocol Type:                  0x00
-cedt                Base Address                    0x0000000001000000
+cedt                Base Address                    0x0400000001000000
+cedt            
+cedt              CXL System Description Structure (CSDS):
+cedt                Type:                           0x04
+cedt                Reserved:                       0x00
+cedt                Record Length:                  0x0008
+cedt                System Capabilities:            0x0003
+cedt                Reserved:                       0x0000
 cedt            
 cedt            PASSED: Test 1, No issues found in CEDT table.
 cedt            

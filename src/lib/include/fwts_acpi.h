@@ -2375,7 +2375,8 @@ typedef enum {
 	FWTS_CEDT_TYPE_CFMWS	= 1,
 	FWTS_CEDT_TYPE_CXIMS	= 2,
 	FWTS_CEDT_TYPE_RDPAS	= 3,
-	FWTS_CEDT_TYPE_RESERVED	= 4,
+	FWTS_CEDT_TYPE_CSDS	= 4,
+	FWTS_CEDT_TYPE_RESERVED	= 5,
 } fwts_acpi_cedt_type;
 
 typedef struct {
@@ -2422,6 +2423,12 @@ typedef struct {
 	uint8_t	protocol_type;
 	uint64_t	base_addr;
 } __attribute__ ((packed)) fwts_acpi_table_cedt_rdpas;
+
+typedef struct {
+	fwts_acpi_table_cedt_header	header;
+	uint16_t	system_cap;
+	uint16_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_cedt_csds;
 
 /*
  * ACPI AEST (Arm Error Source Table)

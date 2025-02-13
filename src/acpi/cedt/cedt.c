@@ -111,7 +111,7 @@ static void cedt_cfmws_test(
 			"0x%2.2" PRIx8 "instead", entry->interleave_arithmetic);
 	}
 
-	fwts_acpi_reserved_bits("CEDT", "Window Restrictions", entry->window_restrictions, 5, 15, passed);
+	fwts_acpi_reserved_bits("CEDT", "Window Restrictions", entry->window_restrictions, 6, 15, passed);
 
 }
 
@@ -163,6 +163,24 @@ static void cedt_rdpas_test(
 
 }
 
+static void cedt_csds_test(
+	fwts_framework *fw,
+	const fwts_acpi_table_cedt_csds *entry,
+	bool *passed)
+{
+	fwts_log_info_verbatim(fw, "  CXL System Description Structure (CSDS):");
+	fwts_log_info_simp_int(fw, "    Type:                           ", entry->header.type);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->header.reserved);
+	fwts_log_info_simp_int(fw, "    Record Length:                  ", entry->header.record_length);
+	fwts_log_info_simp_int(fw, "    System Capabilities:            ", entry->system_cap);
+	fwts_log_info_simp_int(fw, "    Reserved:                       ", entry->reserved);
+
+	fwts_acpi_reserved_zero("CEDT", "Reserved", entry->header.reserved, passed);
+	fwts_acpi_reserved_bits("CEDT", "System Capabilities", entry->system_cap, 6, 15, passed);
+	fwts_acpi_reserved_zero("CEDT", "Reserved", entry->reserved, passed);
+
+}
+
 static void cedt_structure(
 	fwts_framework *fw,
 	fwts_acpi_table_cedt_header *entry,
@@ -181,11 +199,14 @@ static void cedt_structure(
 		case FWTS_CEDT_TYPE_RDPAS:
 			cedt_rdpas_test(fw, (fwts_acpi_table_cedt_rdpas *)entry, passed);
 			break;
+		case FWTS_CEDT_TYPE_CSDS:
+			cedt_csds_test(fw, (fwts_acpi_table_cedt_csds *)entry, passed);
+			break;
 		default:
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"CEDTBadSubtableType",
-				"CEDT must have subtable with Type 0 to 3, got "
+				"CEDT must have subtable with Type 0 to 4, got "
 				"0x%4.4" PRIx16 " instead", entry->type);
 			break;
 	}

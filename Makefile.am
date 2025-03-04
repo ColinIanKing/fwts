@@ -54,6 +54,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/aest-0001/test-0002.sh \
 	fwts-test/apicinstance-0001/test-0001.sh \
 	fwts-test/apicinstance-0001/test-0002.sh \
+	fwts-test/apmt-0001/test-0001.sh \
+	fwts-test/apmt-0001/test-0002.sh \
 	fwts-test/arg-help-0001/test-0001.sh \
 	fwts-test/arg-help-0001/test-0002.sh \
 	fwts-test/arg-json-0001/test-0001.sh \

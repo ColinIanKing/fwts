@@ -1,0 +1,39 @@
+apmt            apmt: APMT Arm Performance Monitoring Unit table test.
+apmt            ----------------------------------------------------------
+apmt            Test 1 of 1: Validate APMT table.
+apmt            APMT node:
+apmt              Length:                   0x0038
+apmt              Node flags:               0x04
+apmt              Node type:                0x03
+apmt              Identifier:               0x00000000
+apmt              Node Instance primary:    0x0000000000000001
+apmt              Node Instance secondary:  0x00000000
+apmt              Base address 0:           0x0000000000002000
+apmt              Base address 1:           0x0000000000002000
+apmt              Overflow interrupt:       0x00000003
+apmt              Reserved1:                0x00000000
+apmt              Overflow interrupt flags: 0x00000000
+apmt              Processor affinity:       0x00000000
+apmt              Implementation ID:        0x0000036b
+apmt            
+apmt            APMT node:
+apmt              Length:                   0x0038
+apmt              Node flags:               0x06
+apmt              Node type:                0x03
+apmt              Identifier:               0x00000001
+apmt              Node Instance primary:    0x0000000000000002
+apmt              Node Instance secondary:  0x00000000
+apmt              Base address 0:           0x0000000000003000
+apmt              Base address 1:           0x0000000000003000
+apmt              Overflow interrupt:       0x00000004
+apmt              Reserved1:                0x00000000
+apmt              Overflow interrupt flags: 0x00000001
+apmt              Processor affinity:       0x00000001
+apmt              Implementation ID:        0x0000036b
+apmt            
+apmt            PASSED: Test 1, No issues found in APMT table.
+apmt            
+apmt            ==========================================================
+apmt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+apmt            info only.
+apmt            ==========================================================

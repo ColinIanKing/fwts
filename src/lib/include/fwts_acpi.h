@@ -2884,4 +2884,30 @@ typedef struct {
 	uint64_t			suspend_end;
 } __attribute__ ((packed)) fwts_acpi_s3pt_suspend;
 
+/*
+ * ACPI APMT(Arm Performance Monitoring Unit table)
+ * https://developer.arm.com/documentation/den0117/latest/
+ */
+
+typedef struct {
+	uint16_t	length;
+	uint8_t		flags;
+	uint8_t		type;
+	uint32_t	identifier;
+	uint64_t	instance_prim;
+	uint32_t	instance_secondary;
+	uint64_t	base_addr_0;
+	uint64_t	base_addr_1;
+	uint32_t	overflow_intr;
+	uint32_t	reserved1;
+	uint32_t	overflow_intr_flag;	
+	uint32_t	processor_affinity;
+	uint32_t	implementation_id;
+} __attribute__ ((packed)) fwts_acpi_apmt_node;
+
+typedef struct {
+	fwts_acpi_table_header	header;
+	fwts_acpi_apmt_node 	entry[0];
+} __attribute__ ((packed)) fwts_acpi_table_apmt;
+
 #endif

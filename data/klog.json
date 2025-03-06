@@ -2972,6 +2972,13 @@
   {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Null Object! State=.* Num=.*",
+    "advice": "Failed to push an object onto the current ACPI result stack, it appears to push a Null object. This is an internal ACPICA bug.",
+    "label": "KlogAcpiNullObjectPush"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Null Object! Obj=.* State=.* Num=.*",
     "advice": "Failed to push an object onto the current ACPI result stack, the object is NULL.",
     "label": "KlogAcpiResultStackNullObject"

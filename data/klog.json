@@ -6936,6 +6936,13 @@
    "pattern": "Return object type is incorrect",
    "advice": "Return object type is not the correct type, this is an AML error in the DSDT or SSDT. See also acpi_ut_evaluate_object().",
    "label": "KlogAcpiReturnObjectTypeIncorrect"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": ": Unexpected i2c-addr: 0x.* \\(reg-addr 0x.* value 0x.* mask 0x.*\\)",
+   "advice": "Intel pmic driver got an unexpected I2C address was encountered while accessing a specific register, this may be due to misconfiguration, incorrect device mapping, or hardware issues.",
+   "label": "KlogAcpiI2cAddrUnexpected"
   }
  ],
  "pm_error_warning_patterns":

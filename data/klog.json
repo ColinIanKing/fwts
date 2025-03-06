@@ -926,6 +926,20 @@
    "label": "KlogAcpiSprWrongVersion"
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unacceptable wide SPCR Access Width. Defaulting to byte size",
+   "advice": "The ACPI Serial Port Console Redirection Table (SPCR) got unacceptable Access width, and it was set to default byte size.",
+   "label": "KlogAcpiSpcrInvalidAccessWidth"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Unexpected SPCR Access Width. Defaulting to byte size",
+   "advice": "The ACPI Serial Port Console Redirection Table (SPCR) got Unexpected Access width, and it was set to default byte size.",
+   "label": "KlogAcpiSpcrInvalidAccessWidth"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "acpi resource window .* ignored, not CPU addressable",

@@ -3070,6 +3070,13 @@
   {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Missing child while evaluating opcode",
+    "advice": "Failed to get the operands and complete the buffer and package data object types because missing child data, it was ignored if child is invalid.",
+    "label": "KlogAcpiInvalidChild"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
     "pattern": "No Sleep State object returned from",
     "advice": "An evaluation of the _Sx namespace object containing register values for the sleep state failed. It is entirely possible that the _Sx is broken in the firmware.  See also acpi_get_sleep_type_data():",
     "label": "KlogAcpiNoSleepStateObject"

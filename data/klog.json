@@ -6957,6 +6957,41 @@
    "pattern": ": Unexpected i2c-addr: 0x.* \\(reg-addr 0x.* value 0x.* mask 0x.*\\)",
    "advice": "Intel pmic driver got an unexpected I2C address was encountered while accessing a specific register, this may be due to misconfiguration, incorrect device mapping, or hardware issues.",
    "label": "KlogAcpiI2cAddrUnexpected"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "invalid physical address: 0x.*!",
+   "advice": "ACPI fpdt driver got an invalid physical address from firmware when processing subtable.",
+   "label": "KlogAcpiFpdtAddrInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "subtable signature and type mismatch!",
+   "advice": "ACPI fpdt driver got the subtable signature(FBPT or S3PT) and type mismatch from firmware when processing subtable.",
+   "label": "KlogAcpiFpdtTypeMismatch"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Zero-length record found in FPTD.",
+   "advice": "ACPI fpdt driver found the record length from firmware is zero when processing subtable.",
+   "label": "KlogAcpiFpdtLengthInvalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid .* for subtable",
+   "advice": "ACPI fpdt driver found the invalid record from firmware for certain stbtable when processing subtable.",
+   "label": "KlogAcpiFpdtRecordInvalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Duplicate .* performance record found.",
+   "advice": "ACPI fpdt driver found there are duplicate performance records when processing subtable.",
+   "label": "KlogAcpiFpdtRecordDuplicate"
   }
  ],
  "pm_error_warning_patterns":

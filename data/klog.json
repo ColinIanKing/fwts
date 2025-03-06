@@ -4218,6 +4218,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Timeout from EC hardware or EC device driver",
+   "advice": "This is most probably caused by when a read or write operation to the EC memory has failed because of a timeout waiting for the Embedded Controller to complete the transaction.  Normally, the kernel waits for 500ms for the Embedded Controller status port to indicate that a transaction is complete, but in this case it has not and a AE_TIME error has been returned. ",
+   "label": "KlogAcpiTimeOutReturnedByHandler"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "from region _REG",
    "advice": "The ACPI driver detected an error when attempting to execute an ACPI_REG_DISCONNECT on a _REG (Region) method.",
    "label": "KlogAcpiRegDisconnectFailed"

@@ -1276,6 +1276,20 @@
    "label": "KlogAcpiPccNoSubspace"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "PCC check channel failed for ss: .*.",
+   "advice": "The ACPI PCC driver failed to check PCC channel for specific subsystem, it cannot establish communication for a specific subsystem.",
+   "label": "KlogAcpiPCCFailCommSS"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Err sending PCC mbox message. ss: .* cmd:.*, ret:",
+   "advice": "The ACPI PCC driver got errors for sending a message through the PCC mailbox to a specific subsystem.",
+   "label": "KlogAcpiPCCFailSendMbox"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Failed to find PCC channel for subspace",

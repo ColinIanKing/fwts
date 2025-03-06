@@ -5555,6 +5555,13 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Kernel thread creation failed",
+   "advice": "The kernel debug thread creation failed, so the function cannot be executed by the kernel ACPI OSL driver .",
+   "label": "KlogAcpiOslThreadCreateFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Unsupported os_execute type",
    "advice": "The os_execute type is unsupported, so the function cannot be executed by the kernel ACPI OSL driver .",
    "label": "KlogAcpiOslExecTypeInvalid"

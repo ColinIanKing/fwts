@@ -1068,6 +1068,20 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "security state retrieval failed",
+   "advice": "The ACPI NFIT intel driver got a failure in retrieving the security state of an Intel NVDIMM device.",
+   "label": "KlogAcpiNfitStateGetFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "invalid firmware activate state",
+   "advice": "The ACPI NFIT intel driver encountered the firmware has reported an unexpected or unsupported activation state.",
+   "label": "KlogAcpiNfitStateInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Failed to set state by _FSL",
    "advice": "The ACPI fan driver could not set the fan speed because the Fan Set Level (_FSL) control failed",
    "label": "KlogAcpiFanFslSetFailed"

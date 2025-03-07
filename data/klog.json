@@ -3558,6 +3558,13 @@
     "label": "KlogAcpiInvalidHandle"
   },
   {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_MEDIUM",
+    "pattern": "Parse execute mode is not set",
+    "advice": "ACPI execution attempted to process a field, but the interpreter was not in execution mode.",
+    "label": "KlogAcpiFieldExeModeUnset"
+  },
+  {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Bit offset within field too large.*0xFFFFFFFF",
@@ -3577,6 +3584,13 @@
     "pattern": "Invalid opcode in field list: 0x",
     "advice": "An invalid opcode was found while parsing a field list. This is invariable due to buggy firmware.",
     "label": "KlogAcpiFieldListInvalidOpcode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_MEDIUM",
+    "pattern": "Parse deferred mode is not set",
+    "advice": " ACPI namespace object that requires deferred parsing was attempted to be processed, but the ACPI interpreter was not in deferred mode.",
+    "label": "KlogAcpiFieldDefferModeUnet"
   },
   {
     "compare_mode": "string",

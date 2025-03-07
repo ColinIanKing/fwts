@@ -3742,6 +3742,13 @@
   {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "This object type \\[.*\\] never contains data and cannot be evaluated",
+    "advice": "ACPI NS evaluates objects that attempts to evaluate an ACPI namespace object that is not meant to be executed or contain data",
+    "label": "KlogAcpiInvalidNSObjectType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
     "pattern": "unknown tag .* length",
     "advice": "Failed to parse the PnPBIOS resource data, an unknown tag length specifier was found. This is a bug in the firmware resource data.",
     "label": "KlogAcpiPnpBios"

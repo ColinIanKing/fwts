@@ -7013,6 +7013,34 @@
    "pattern": "Duplicate .* performance record found.",
    "advice": "ACPI fpdt driver found there are duplicate performance records when processing subtable.",
    "label": "KlogAcpiFpdtRecordDuplicate"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Expressions within package elements are not supported",
+   "advice": "This is the case where an expression has returned a value. The use of expressions (term_args) within individual package elements is not supported by the AML interpreter",
+   "label": "KlogAcpiExpNoSupport"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "****DS namepath not found",
+   "advice": "Device Scope (DS) namepath referenced in the ACPI namespace was not found during ACPI table initialization or parsing.",
+   "label": "KlogAcpiNamepathNotFound"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "While resolving a named reference package element - ",
+   "advice": "ACPI subsystem encountered an error while trying to resolve a named reference within an ACPI package element.",
+   "label": "KlogAcpiExpPkgResolveError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Could not resolve named package element \\[.*\\] in \\[.*\\]",
+   "advice": "ACPI subsystem failed to resolve a name reference inside an ACPI package object during initialization, return a NULL package element.",
+   "label": "KlogAcpiPkgResolveFail"
   }
  ],
  "pm_error_warning_patterns":

@@ -3620,6 +3620,13 @@
     "advice": "A table or method owner ID allocation was attempted but the owner ID already exists.  The allocation has failed.",
     "label": "KlogAcpiOwnerIdAlreadyExists"
   },
+ {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Could not allocate new OwnerId (4095 max), AE_OWNER_ID_LIMIT",
+    "advice": "A table or method owner ID allocation failed because all owner IDs (maximum of 4095) are in use. This only happens if there are very deep nestings of invoked control methods or there is an ACPI bug where owner IDs are not being released.",
+    "label": "KlogAcpiOwnerIdAllocFail"
+  },
   {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
@@ -3633,6 +3640,13 @@
     "pattern": "Invalid OwnerId: 0x",
     "advice": "An attempt to release an owner ID failed because the owner ID is invalid. Only owner IDs 1 to 255 are allowed.",
     "label": "KlogAcpiInvalidOwnerId"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Attempted release of non-allocated OwnerId: 0x",
+    "advice": "An attempt to release an owner ID failed because the owner ID is not already allocated. This is a double-release error.",
+    "label": "KlogAcpiOwnerIdDoubleRelease"
   },
   {
     "compare_mode": "string",

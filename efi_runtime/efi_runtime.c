@@ -763,7 +763,6 @@ static const struct file_operations efi_runtime_fops = {
 	.unlocked_ioctl	= efi_runtime_ioctl,
 	.open		= efi_runtime_open,
 	.release	= efi_runtime_close,
-	.llseek		= no_llseek,
 };
 
 static struct miscdevice efi_runtime_dev = {

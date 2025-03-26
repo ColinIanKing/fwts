@@ -1,3 +1,27 @@
+fwts (25.03.00-0ubuntu1) plucky; urgency=medium
+
+  [Ivan Hu]
+  * acpi: cedt: update the cedt tests for CXL spec rev3.2
+  * fwts-test: cedt: sync up tests with CEDT version update
+  * acpi: apmt: add tests for acpi APMT table
+  * fwts-test: add regression tests for APMT
+  * klog.json: Add the thread create failed message to klog database
+  * klog.json: Add more spcr access width messages to klog database
+  * klog.json: Add more cppc checking and sending messages to klog database
+  * klog.json: Add more intel pmic messages to klog database
+  * klog.json: Add nfit intel messages to klog database
+  * klog.json: Add ACPI fpdt messages to klog database
+  * klog.json: Add EC timeout messages to klog database
+  * klog.json: Add null object pushing message to klog database
+  * klog.json: Add child missing data message to klog database
+  * klog.json: Add package init messages to klog database
+  * klog.json: Add more ownerid allocate and release messages to klog database
+  * klog.json: Add the object type for evaluation messages to klog database
+  * klog.json: Add more parse mode setting messages to klog database
+  * efi_runtime: remove no_llseek which have been removed on kernel 6.12
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 26 Mar 2025 11:06:43 +0800
+
 fwts (25.01.00-0ubuntu1) plucky; urgency=medium
 
   [Armin Wolf] 

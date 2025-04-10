@@ -333,7 +333,6 @@ static const msr_info AMD_MSRs[] = {
 	{ "VM_CR",			0xc0010114,	0xffffffffffffffffULL, NULL },
 	{ "IGNNE",			0xc0010115,	0xffffffffffffffffULL, NULL },
 	{ "SMM_CTL",			0xc0010116,	0xffffffffffffffffULL, NULL },
-	{ "VM_HSAVE_PA",		0xc0010117,	0xffffffffffffffffULL, NULL },
 	{ "SVM_KEY_MSR",		0xc0010118,	0xffffffffffffffffULL, NULL },
 	{ "OSVW_ID_Length",		0xc0010140,	0xffffffffffffffffULL, NULL },
 	{ NULL,				0x00000000,	0, NULL }

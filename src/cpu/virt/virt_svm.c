@@ -37,7 +37,7 @@
 #include <limits.h>
 #include <errno.h>
 
-#define MSR_FEATURE_CONTROL	0xC0000080
+#define MSR_VM_CR		0xC0010114
 
 extern fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
@@ -58,10 +58,10 @@ static int vt_locked_by_bios(fwts_framework *fw)
 	if (!can_lock_with_msr())
 		return 0;
 
-	if (fwts_cpu_readmsr(fw, 0, MSR_FEATURE_CONTROL, &msr))
+	if (fwts_cpu_readmsr(fw, 0, MSR_VM_CR, &msr))
 		return -1;
 
-	return ((msr & 0x1000) == 0x1000); /* SVM capable but locked by bios*/
+	return ((msr & 0x10) == 0x10); /* SVM locked */
 }
 
 void virt_check_svm(fwts_framework *fw)

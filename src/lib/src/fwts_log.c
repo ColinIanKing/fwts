@@ -204,7 +204,7 @@ void fwts_log_print_fields(void)
 	fwts_log_field field;
 
 	printf("Available fields: ");
-	for (field = 1; ; field <<= 1) {
+	for (field = 1; field <= LOG_NO_FIELDS; field <<= 1) {
 		char *str = fwts_log_field_to_str(field);
 		if (strcmp(str, LOG_UNKNOWN_FIELD) == 0)
 			break;

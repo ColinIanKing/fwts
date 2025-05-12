@@ -954,8 +954,6 @@ static int parse_kernel_message(parser *p, token *t)
 
 		token_clear(t);
 	}
-	free(line);
-	return PARSER_OK;
 }
 
 static bool hash_find(char *token)

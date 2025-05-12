@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <errno.h>
 
 #include "fwts.h"
 
@@ -184,15 +185,19 @@ static void fwts_memory_map_dmesg_info(void *data, void *private)
 	if ((str = strstr(line,"BIOS-memory_map:")) != NULL) {
 		uint64_t start;
 
+		errno = 0;
 		start = strtoull(str+10, NULL, 16);
+		if (errno != 0)
+			return;
 		str = strstr(line," - ");
 		if (str) {
 			uint64_t end;
-
+			errno = 0;
 			str += 3;
-			end = strtoull(str, NULL, 16) - 1;
-
-			fwts_register_memory_map_line(memory_map_list, start, end, fwts_memory_map_str_to_type(line));
+			end = strtoull(str, NULL, 16);
+			if (errno != 0 || end == 0)
+				return;
+			fwts_register_memory_map_line(memory_map_list, start, end - 1, fwts_memory_map_str_to_type(line));
 		}
 	}
 }

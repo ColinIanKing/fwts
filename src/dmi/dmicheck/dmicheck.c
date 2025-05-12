@@ -378,6 +378,10 @@ static int dmi_load_file_variable_size(
 		return FWTS_ERROR;
 
 	for (p = buf, total = count = 0; ; p += count) {
+		if (total >= sz) {
+			close(fd);
+			return FWTS_ERROR;
+		}
 		count = read(fd, p, sz - total);
 		if (count == -1) {
 			close(fd);

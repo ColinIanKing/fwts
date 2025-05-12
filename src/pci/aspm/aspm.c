@@ -81,25 +81,29 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 
 	next_cap = rp->config[FWTS_PCI_CONFIG_TYPE1_CAPABILITY_POINTER];
 	rp_cap = (fwts_pcie_capability *) &rp->config[next_cap];
-	while (rp_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
+	while (rp_cap && rp_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
 		if (rp_cap->next_cap_point == FWTS_PCI_CAPABILITIES_LAST_ID)
 			break;
 		next_cap = rp_cap->next_cap_point;
 		rp_cap = (fwts_pcie_capability *) &rp->config[next_cap];
 	}
-	if (rp_cap) {
-		uint8_t device_type = (rp_cap->pcie_cap_reg & FWTS_PCI_EXP_FLAGS_TYPE) >> 4;
 
-		if ((device_type != FWTS_PCI_EXP_TYPE_ROOT_PORT) &&
-		    (device_type != FWTS_PCI_EXP_TYPE_DOWNSTREAM_PORT) &&
-		    (device_type != FWTS_PCI_EXP_TYPE_PCIE_BRIDGE)) {
-			return ret;
-		}
+	if (!rp_cap) {
+		fwts_log_warning(fw, "Could not get  pcie root port capability.");
+		return FWTS_ERROR;
+	}
+
+	uint8_t device_type = (rp_cap->pcie_cap_reg & FWTS_PCI_EXP_FLAGS_TYPE) >> 4;
+
+	if ((device_type != FWTS_PCI_EXP_TYPE_ROOT_PORT) &&
+	    (device_type != FWTS_PCI_EXP_TYPE_DOWNSTREAM_PORT) &&
+	    (device_type != FWTS_PCI_EXP_TYPE_PCIE_BRIDGE)) {
+		return ret;
 	}
 
 	next_cap = dev->config[FWTS_PCI_CONFIG_TYPE1_CAPABILITY_POINTER];
 	device_cap = (fwts_pcie_capability *)&dev->config[next_cap];
-	while (device_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
+	while (device_cap && device_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
 		if (device_cap->next_cap_point == FWTS_PCI_CAPABILITIES_LAST_ID)
 			break;
 		next_cap = device_cap->next_cap_point;
@@ -119,6 +123,11 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 		fwts_warning(fw, "RP %04Xh:%02Xh:%02Xh.%02Xh L1 not enabled.",
 			rp->segment, rp->bus, rp->dev, rp->func);
 		l1_disabled = true;
+	}
+
+	if (!device_cap) {
+		fwts_log_warning(fw, "Could not get pcie device capability.");
+		return FWTS_ERROR;
 	}
 
 	if (((device_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L0_FIELD) >> 10) !=

@@ -72,6 +72,11 @@ static int get_config(fwts_framework *fw,
 		uint64_t value;
 
 		cfline = strstr((char *)line, DELIM);
+		if (!cfline) {
+			fwts_log_warning(fw, "Unexpected line format: %s", line);
+			continue;
+		}
+
 		cfline = cfline + strlen(DELIM);
 		value = strtoul(cfline, &p, 16);
 

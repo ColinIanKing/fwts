@@ -64,9 +64,9 @@ static int fwts_memory_map_str_to_type(const char *str)
 
 	/* Strings from kernel log */
 
-	if (strstr(str, "(usable)"))
+	if (strstr(str, "usable"))
 		return FWTS_MEMORY_MAP_USABLE;
-	if (strstr(str, "(reserved)"))
+	if (strstr(str, "reserved"))
 		return FWTS_MEMORY_MAP_RESERVED;
 	if (strstr(str, "ACPI"))
 		return FWTS_MEMORY_MAP_ACPI;
@@ -195,6 +195,22 @@ static void fwts_memory_map_dmesg_info(void *data, void *private)
 			errno = 0;
 			str += 3;
 			end = strtoull(str, NULL, 16);
+			if (errno != 0 || end == 0)
+				return;
+			fwts_register_memory_map_line(memory_map_list, start, end - 1, fwts_memory_map_str_to_type(line));
+		}
+	} else if ((str = strstr(line,"BIOS-e820:")) != NULL) {
+		uint64_t start;
+
+		errno = 0;
+		start = strtoull(str + sizeof("BIOS-e820: [mem 0x"), NULL, 16);
+		if (errno != 0)
+			return;
+		str = strstr(line,"-0x");
+		if (str) {
+			uint64_t end;
+			errno = 0;
+			end = strtoull(str + sizeof("-0x"), NULL, 16);
 			if (errno != 0 || end == 0)
 				return;
 			fwts_register_memory_map_line(memory_map_list, start, end - 1, fwts_memory_map_str_to_type(line));

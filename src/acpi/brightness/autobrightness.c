@@ -131,7 +131,7 @@ static int auto_brightness_test2(fwts_framework *fw)
 			continue;
 		}
 
-		brightness_fail = calloc(sizeof(bool), max_brightness + 1);
+		brightness_fail = calloc(max_brightness + 1, sizeof(bool));
 		if (brightness_fail == NULL) {
 			fwts_log_error(fw, "Cannot allocate brightness table.");
 			continue;

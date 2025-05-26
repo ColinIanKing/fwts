@@ -127,7 +127,7 @@
 #define FWTS_USE_DEVMEM 1
 #endif
 
-/* verision 3-tuple into integer */
+/* version 3-tuple into integer */
 #define _VER_(major, minor, patchlevel)                 \
 	((major * 10000) + (minor * 100) + patchlevel)
 

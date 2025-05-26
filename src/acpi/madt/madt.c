@@ -1083,7 +1083,8 @@ static int madt_gicc(fwts_framework *fw,
 			    "MADT %s reserved field properly set to zero.",
 			    madt_sub_names[hdr->type]);
 
-	madt_find_processor_uid(fw, gic->processor_uid, "GICC");
+	if((gic->flags & 1) != 0)
+		madt_find_processor_uid(fw, gic->processor_uid, "GICC");
 
 	mask = 0xfffffffc;
 	start = 2;

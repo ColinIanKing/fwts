@@ -1,3 +1,35 @@
+fwts (25.05.00-0ubuntu1) questing; urgency=medium
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20250404
+
+  [Gergo Koteles]
+  * acpi: method: Fix _DDC test arguments
+
+  [Heinrich Schuchardt]
+  * lib/fwts_cpu: correct determination of SEV enablement
+  * fwts.h: fix typo verision
+
+  [Ivan Hu]
+  * efi_runtime: Fix missing pending status update in getwakeuptime
+  * aspm: fix dereference pointer rp_cap before null check
+  * opal: fix the unexpected line format
+  * kernelscan: fix structurally unreachable code
+  * lib: fwts_log: fix the potential overflow for dumping all log fields
+  * lib: fwts_memorymap: fix the unchecked end address for strtoull
+  * lib: fwts_memorymap: fix failure to retrieve BIOS memory map from dmesg e820
+  * autobrightness: fix calloc argument order for GCC 15 compatibility
+  * auto-packager: mkpackage.sh: add questing
+  * dmicheck: add total size read checking below maximum allowed
+
+  [Mario Limonciello]
+  * cpu/msr: Drop `VM_HSAVE_PA` from consistency checks
+
+  [monty.zhao]
+  * acpi: madt: fix false FAIL on missing GICC UID for disabled CPUs
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 27 May 2025 10:16:04 +0800
+
 fwts (25.03.00-0ubuntu1) plucky; urgency=medium
 
   [Ivan Hu]

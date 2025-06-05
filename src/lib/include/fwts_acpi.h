@@ -2273,14 +2273,41 @@ typedef struct {
 
 /*
  *  ACPI ASPT
- *	determined by reverse engineering
+ *	https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58028_1_00-PUB.pdf
  */
 typedef struct {
+	uint16_t	type;
+	uint16_t	length;
+} __attribute__ ((packed)) fwts_aspt_sub_header;
+
+typedef struct {
+	fwts_aspt_sub_header header;
+	uint32_t	reserved;
+	uint64_t	feature_reg_addr;
+	uint64_t	interrupt_enable_reg_addr;
+	uint64_t	interrupt_stable_reg_addr;
+} __attribute__ ((packed)) fwts_acpi_table_asp_global;
+
+typedef struct {
+	fwts_aspt_sub_header header;
+	uint8_t		mailbox_interrupt_id;
+	uint8_t		reserved[3];
+	uint64_t	cmdresp_reg_addr;
+	uint64_t	cmdbufaddr_lo_reg_addr;
+	uint64_t	cmdbufaddr_hi_reg_addr;
+} __attribute__ ((packed)) fwts_acpi_table_sev_mailbox;
+
+typedef struct {
+	fwts_aspt_sub_header header;
+	uint32_t	reserved;
+	uint64_t	cmdresp_reg_addr;
+	uint8_t		reserved1[16];
+} __attribute__ ((packed)) fwts_acpi_table_acpi_mailbox;
+
+typedef struct {
 	fwts_acpi_table_header  header;
-	uint32_t	sptt_addr_start;
-	uint32_t	sptt_addr_end;
-	uint32_t	amrt_addr_start;
-	uint32_t	amrt_addr_end;
+	uint32_t	asp_reg_count;
+	uint8_t		asp_reg_structure[0];
 } __attribute__ ((packed)) fwts_acpi_table_aspt;
 
 /*

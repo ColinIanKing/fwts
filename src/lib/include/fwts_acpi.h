@@ -2283,30 +2283,65 @@ typedef struct {
 typedef struct {
 	fwts_aspt_sub_header header;
 	uint32_t	reserved;
-	uint64_t	feature_reg_addr;
-	uint64_t	interrupt_enable_reg_addr;
-	uint64_t	interrupt_stable_reg_addr;
+	union {
+		struct{
+			uint64_t	feature_reg_addr;
+			uint64_t	interrupt_enable_reg_addr;
+			uint64_t	interrupt_stable_reg_addr;
+		} __attribute__ ((packed)) v1;
+		struct {
+			uint32_t	feature_reg_offset;
+			uint32_t	interrupt_enable_reg_offset;
+			uint32_t	interrupt_stable_reg_offset;
+		} __attribute__ ((packed)) v2;
+	};
 } __attribute__ ((packed)) fwts_acpi_table_asp_global;
 
 typedef struct {
 	fwts_aspt_sub_header header;
 	uint8_t		mailbox_interrupt_id;
 	uint8_t		reserved[3];
-	uint64_t	cmdresp_reg_addr;
-	uint64_t	cmdbufaddr_lo_reg_addr;
-	uint64_t	cmdbufaddr_hi_reg_addr;
+	union {
+		struct{
+			uint64_t	cmdresp_reg_addr;
+			uint64_t	cmdbufaddr_lo_reg_addr;
+			uint64_t	cmdbufaddr_hi_reg_addr;
+		} __attribute__ ((packed)) v1;
+		struct {
+			uint32_t	cmdresp_reg_offset;
+			uint32_t	cmdbufaddr_lo_reg_offset;
+			uint32_t	cmdbufaddr_hi_reg_offset;
+		} __attribute__ ((packed)) v2;
+	};
 } __attribute__ ((packed)) fwts_acpi_table_sev_mailbox;
 
 typedef struct {
 	fwts_aspt_sub_header header;
 	uint32_t	reserved;
-	uint64_t	cmdresp_reg_addr;
-	uint8_t		reserved1[16];
+	union {
+		struct{
+			uint64_t	cmdresp_reg_addr;
+			uint8_t		reserved1[16];
+		} __attribute__ ((packed)) v1;
+		struct {
+			uint32_t	cmdresp_reg_offset;
+			uint8_t		reserved1[8];
+		} __attribute__ ((packed)) v2;
+	};
 } __attribute__ ((packed)) fwts_acpi_table_acpi_mailbox;
 
 typedef struct {
 	fwts_acpi_table_header  header;
-	uint32_t	asp_reg_count;
+	union {
+		struct{
+			uint32_t	asp_reg_count;
+		} __attribute__ ((packed)) v1;
+		struct {
+			uint64_t	asp_reg_base_addr;
+			uint32_t	asp_reg_apace_pages;
+			uint32_t	asp_reg_count;
+		} __attribute__ ((packed)) v2;
+	};
 	uint8_t		asp_reg_structure[0];
 } __attribute__ ((packed)) fwts_acpi_table_aspt;
 

@@ -1,0 +1,36 @@
+aspt            aspt: ASPT Table test.
+aspt            ----------------------------------------------------------
+aspt            Test 1 of 1: ASPT Table test.
+aspt            AMD Secure Processor Table:
+aspt              ASP Register Base Address:       0x00000000fdb00000
+aspt              ASP Register Space Pages:        0x00000000
+aspt              ASP Register Structure Count:    0x00000003
+aspt              ASP Global Registers:
+aspt                Type:                             0x0000
+aspt                Length:                           0x0014
+aspt                Reserved:                         0x00000000
+aspt                Feature Register Offset:          0xfe000008
+aspt                Interrupt Enable Register Offset: 0xfea00008
+aspt                Interrupt Status Register Offset: 0xfeb00008
+aspt              SEV Mailbox Registers:
+aspt                Type:                             0x0001
+aspt                Length:                           0x0014
+aspt                Mailbox Interrupt ID:             0x01
+aspt                Reserved:
+aspt                  00 00 00 
+aspt                CmdResp Register Offset:          0xfeb00010
+aspt                CmdBufAddr_Lo Register Offset:    0xfeb00014
+aspt                CmdBufAddr_Hi Register Offset:    0xfeb00018
+aspt              ACPI Mailbox Registers:
+aspt                Type:                             0x0002
+aspt                Length:                           0x0014
+aspt                Reserved:                         0x00000000
+aspt                CmdResp Register Offset:          0xfeb00020
+aspt                Reserved:
+aspt                   00 00 00 00 00 00 00 00 
+aspt            PASSED: Test 1, No issues found in ASPT table.
+aspt            
+aspt            ==========================================================
+aspt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+aspt            info only.
+aspt            ==========================================================

@@ -1,18 +1,63 @@
 aspt            aspt: ASPT Table test.
 aspt            ----------------------------------------------------------
 aspt            Test 1 of 1: ASPT Table test.
-aspt            ASPT Table:
-aspt              SPTT Start Address: 0xf0000020
-aspt              SPTT End Address:   0xf0000000
-aspt              AMRT Start Address: 0xe0000010
-aspt              AMRT End Address:   0xe0000000
-aspt            
-aspt            FAILED [HIGH] ASPTSpttEndError: Test 1, ASPT SPTT end
-aspt            address is less than the SPTT start address.
-aspt            FAILED [HIGH] ASPTAmrtEndError: Test 1, ASPT AMRT end
-aspt            address is less than the AMRT start address.
+aspt            AMD Secure Processor Table:
+aspt              ASP Register Structure Count:    0x00000003
+aspt              ASP Global Registers:
+aspt                Type:                              0x0000
+aspt                Length:                            0x0020
+aspt                Reserved:                          0x00000001
+aspt            FAILED [MEDIUM] ASPTReservedNonZero: Test 1, ASPT Reserved
+aspt            field must be zero, got 0x00000001 instead
+aspt                Feature Register Address:          0x00000000feb00000
+aspt                Interrupt Enable Register Address: 0x00000000feb00004
+aspt                Interrupt Status Register Address: 0x00000000feb00008
+aspt              SEV Mailbox Registers:
+aspt                Type:                              0x0001
+aspt                Length:                            0x0020
+aspt                Mailbox Interrupt ID:              0xf1
+aspt            FAILED [HIGH] ASPTReservedBitsNonZero: Test 1, ASPT
+aspt            Mailbox Interrupt ID Bits [7..6] must be zero, got 0xf1
+aspt            instead
+aspt                Reserved:
+aspt                  00 02 00 
+aspt            FAILED [MEDIUM] ASPTReservedNonZero: Test 1, ASPT Reserved
+aspt            field must be all zero, got below instead
+aspt              Reserved [00] = 0x00
+aspt              Reserved [01] = 0x02
+aspt              Reserved [02] = 0x00
+aspt                CmdResp Register Address:          0x00000000feb00010
+aspt                CmdBufAddr_Lo Register Address:    0x00000000feb00014
+aspt                CmdBufAddr_Hi Register Address:    0x00000000feb00018
+aspt              ACPI Mailbox Registers:
+aspt                Type:                              0x0002
+aspt                Length:                            0x0020
+aspt                Reserved:                          0x01000000
+aspt            FAILED [MEDIUM] ASPTReservedNonZero: Test 1, ASPT Reserved
+aspt            field must be zero, got 0x01000000 instead
+aspt                CmdResp Register Address:          0x00000000feb00020
+aspt                Reserved:
+aspt                  00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF 00 
+aspt            FAILED [MEDIUM] ASPTReservedNonZero: Test 1, ASPT Reserved
+aspt            field must be all zero, got below instead
+aspt              Reserved [00] = 0x00
+aspt              Reserved [01] = 0x00
+aspt              Reserved [02] = 0x00
+aspt              Reserved [03] = 0x00
+aspt              Reserved [04] = 0x00
+aspt              Reserved [05] = 0x00
+aspt              Reserved [06] = 0x00
+aspt              Reserved [07] = 0x00
+aspt              Reserved [08] = 0x00
+aspt              Reserved [09] = 0x00
+aspt              Reserved [10] = 0x00
+aspt              Reserved [11] = 0x00
+aspt              Reserved [12] = 0x00
+aspt              Reserved [13] = 0x00
+aspt              Reserved [14] = 0xff
+aspt              Reserved [15] = 0x00
 aspt            
 aspt            ==========================================================
-aspt            0 passed, 2 failed, 0 warning, 0 aborted, 0 skipped, 0
+aspt            0 passed, 5 failed, 0 warning, 0 aborted, 0 skipped, 0
 aspt            info only.
 aspt            ==========================================================

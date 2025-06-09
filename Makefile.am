@@ -94,6 +94,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/asf-0001/test-0002.sh \
 	fwts-test/aspt-0001/test-0001.sh \
 	fwts-test/aspt-0001/test-0002.sh \
+	fwts-test/aspt-0001/test-0003.sh \
+	fwts-test/aspt-0001/test-0004.sh \
 	fwts-test/bert-0001/test-0001.sh \
 	fwts-test/bert-0001/test-0002.sh \
 	fwts-test/bgrt-0001/test-0001.sh \

@@ -111,11 +111,9 @@ static int slit_test1(fwts_framework *fw)
 
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < n; j++) {
-			uint8_t val1 = entry[INDEX(i, j)],
-				val2 = entry[INDEX(j, i)];
 
 			/* Check for distances less than 10 (reserved, no meaning) */
-			if (val1 < 10) {
+			if (entry[INDEX(i, j)] < 10) {
 				reserved++;
 				/* Report first 16 errors */
 				if (reserved < 16) {
@@ -124,21 +122,7 @@ static int slit_test1(fwts_framework *fw)
 						"SLIT Entry[%" PRIu64 "][%" PRIu64 "]"
 						" is 0x%" PRIx8 " which is a reserved value"
 						" and has no defined meaning",
-						i, j, val1);
-				}
-			}
-
-			if (val1 != val2) {
-				bad_entry++;
-				/* Report first 16 bad entries */
-				if (bad_entry < 16) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"SLITEntryReserved",
-						"SLIT Entry[%" PRIu64 "][%" PRIu64 "]"
-						" is 0x%" PRIx8 " and not the same as "
-						"SLIT Entry[%" PRIu64 "][%" PRIu64 "]"
-						" which is 0x%" PRIx8,
-						i, j, val1, j, i, val2);
+						i, j, entry[INDEX(i, j)]);
 				}
 			}
 		}

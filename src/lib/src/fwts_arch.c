@@ -31,6 +31,7 @@ static const struct fwts_arch_info arch_info[] = {
 	{ FWTS_ARCH_IA64, "ia64" },
 	{ FWTS_ARCH_ARM64, "arm64" },
 	{ FWTS_ARCH_ARM64, "aarch64" },
+	{ FWTS_ARCH_RISCV64, "riscv64" },
 	{ FWTS_ARCH_OTHER, "other" }
 };
 
@@ -38,6 +39,7 @@ static const struct fwts_arch_info arch_name[] = {
 	{ FWTS_ARCH_X86, "x86" },
 	{ FWTS_ARCH_IA64, "ia64" },
 	{ FWTS_ARCH_ARM64, "arm64" },
+	{ FWTS_ARCH_RISCV64, "riscv64" },
 	{ FWTS_ARCH_OTHER, "other" },
 };
 

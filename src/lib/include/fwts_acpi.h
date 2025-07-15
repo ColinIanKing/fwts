@@ -3027,4 +3027,50 @@ typedef struct {
 	fwts_acpi_apmt_node 	entry[0];
 } __attribute__ ((packed)) fwts_acpi_table_apmt;
 
+/*
+ * ACPI RHCT (RISC-V Hart Capabilities Table), 5.2.37
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t	flags;
+	uint64_t	time_base_freq;
+	uint32_t	node_count;
+	uint32_t	node_offset;
+} __attribute__ ((packed)) fwts_acpi_table_rhct;
+
+typedef struct {
+	uint16_t	type;
+	uint16_t	length;
+	uint16_t	revision;
+} __attribute__ ((packed)) fwts_acpi_rhct_node_header;
+
+typedef enum {
+	FWTS_RHCT_NODE_ISA_STRING = 0x0,
+	FWTS_RHCT_NODE_CMO,
+	FWTS_RHCT_NODE_MMU,
+	FWTS_RHCT_NODE_HART_INFO = 0xFFFF
+} fwts_acpi_rhct_node_type;
+
+typedef struct {
+	uint16_t	isa_length;
+	char		isa[];
+} __attribute__ ((packed)) fwts_acpi_rhct_node_isa_string;
+
+typedef struct {
+	uint8_t	reserved;
+	uint8_t	cbom_size;
+	uint8_t	cbop_size;
+	uint8_t	cboz_size;
+} __attribute__ ((packed)) fwts_acpi_rhct_node_cmo;
+
+typedef struct {
+	uint8_t	reserved;
+	uint8_t	mmu_type;
+} __attribute__ ((packed)) fwts_acpi_rhct_node_mmu;
+
+typedef struct {
+	uint16_t	num_offsets;
+	uint32_t	uid;
+} __attribute__ ((packed)) fwts_acpi_rhct_node_hart_info;
+
 #endif

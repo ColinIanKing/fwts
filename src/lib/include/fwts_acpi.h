@@ -544,6 +544,10 @@ typedef enum {
 	FWTS_MADT_MSI_PIC,
 	FWTS_MADT_BIO_PIC,
 	FWTS_MADT_LPC_PIC,
+	FWTS_MADT_RINTC,
+	FWTS_MADT_IMSIC,
+	FWTS_MADT_APLIC,
+	FWTS_MADT_PLIC,
 	FWTS_MADT_RESERVED, /* does not have defined structure */
 	FWTS_MADT_OEM /* does not have defined structure */
 } fwts_acpi_madt_type;
@@ -712,6 +716,57 @@ typedef struct {
 	uint32_t	physical_processor_id;
 	uint32_t	flag;
 } __attribute__ ((packed)) fwts_acpi_madt_core_pic;
+
+/* Type 24, FWTS_MADT_RINTC */
+typedef struct {
+	uint8_t version;
+	uint8_t reserved;
+	uint32_t flags;
+	uint64_t hart_id;
+	uint32_t uid;
+	uint32_t ext_intc_id;
+	uint64_t imsic_addr;
+	uint32_t imsic_size;
+} __attribute__ ((packed)) fwts_acpi_madt_rintc;
+
+/* Type 25, FWTS_MADT_IMSIC */
+typedef struct {
+	uint8_t version;
+	uint8_t reserved;
+	uint32_t flags;
+	uint16_t num_ids;
+	uint16_t num_guest_ids;
+	uint8_t guest_index_bits;
+	uint8_t hart_index_bits;
+	uint8_t group_index_bits;
+	uint8_t group_index_shift;
+} __attribute__ ((packed)) fwts_acpi_madt_imsic;
+
+/* Type 26, FWTS_MADT_APLIC */
+typedef struct {
+	uint8_t version;
+	uint8_t id;
+	uint32_t flags;
+	uint8_t hw_id[8];
+	uint16_t num_idcs;
+	uint16_t num_sources;
+	uint32_t gsi_base;
+	uint64_t addr;
+	uint32_t size;
+} __attribute__ ((packed)) fwts_acpi_madt_aplic;
+
+/* Type 27, FWTS_MADT_PLIC */
+typedef struct {
+	uint8_t version;
+	uint8_t id;
+	uint8_t hw_id[8];
+	uint16_t num_irqs;
+	uint16_t max_prio;
+	uint32_t flags;
+	uint32_t size;
+	uint64_t base_addr;
+	uint32_t gsi_base;
+} __attribute__ ((packed)) fwts_acpi_madt_plic;
 
 /*
  * ACPI TCPA (Trusted Computing Platform Alliance Capabilities Table)

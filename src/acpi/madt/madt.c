@@ -122,7 +122,7 @@
 
 #define SUBTABLE_UNDEFINED	0x00
 #define SUBTABLE_VARIABLE	0xff
-#define NUM_SUBTABLE_TYPES	24
+#define NUM_SUBTABLE_TYPES	28
 #define MAX_IO_APIC_ID		256 /* IO APIC ID field is 1 byte */
 
 #define SBBR_ACPI_MAJOR_VERSION 6
@@ -246,6 +246,15 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
 			     16, 16, 12, 82, 24, 24, 16, 20, 16,
 			     15, 23, 21, 13, 19, 17, 15 }
+	},
+	{ /* for ACPI 6.6 */
+		.major_version = 6,
+		.minor_version = 6,
+		.madt_version = 7,
+		.num_types = 28,
+		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
+			     16, 16, 12, 82, 24, 24, 16, 20, 16,
+			     15, 23, 21, 13, 19, 17, 15, 36, 16, 36, 36 }
 	},
 	{ /* terminator */
 		.major_version = 0,
@@ -516,6 +525,9 @@ static int madt_arch_revision(fwts_framework *fw)
 	if (fw->target_arch == FWTS_ARCH_ARM64) {
 		minrev = 3;
 		arch = "aarch64";
+	} else if (fw->target_arch == FWTS_ARCH_RISCV64) {
+		minrev = 6;
+		arch = "riscv64";
 	} else {
 		minrev = 1;
 		arch = "intel";

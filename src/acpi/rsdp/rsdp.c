@@ -165,6 +165,11 @@ static int rsdp_test1(fwts_framework *fw)
 			passed = true;
 		break;
 
+	case FWTS_ARCH_RISCV64:
+		if (rsdp->xsdt_address != 0)
+			passed = true;
+		break;
+
 	default:
 		passed = true;
 		fwts_log_advice(fw,

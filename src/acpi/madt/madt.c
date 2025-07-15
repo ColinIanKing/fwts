@@ -590,7 +590,11 @@ static const char *madt_sub_names[] = {
 	/* 0x15 */ "MSI PIC",
 	/* 0x16 */ "BIO PIC",
 	/* 0x17 */ "LPC PIC",
-	/* 0x18 - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
+	/* 0x18 */ "RINTC",
+	/* 0x19 */ "IMSIC",
+	/* 0x1a */ "APLIC",
+	/* 0x1b */ "PLIC",
+	/* 0x1c - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
 	/* 0x80 - 0xff */ "Reserved for OEM use",
 	NULL
 };
@@ -1573,6 +1577,280 @@ static void madt_ioapic_sapic_compare(fwts_framework *fw,
 			    "SAPIC entry.");
 }
 
+static int madt_rintc(fwts_framework *fw,
+		      fwts_acpi_madt_sub_table_header *hdr,
+		      uint8_t *data)
+{
+	/* specific checks for subtable type 0x18: RINTC */
+	fwts_acpi_madt_rintc *rintc = (fwts_acpi_madt_rintc *) data;
+
+	if (rintc->version != 1)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTRINTCVersion",
+			    "MADT %s version field should be 1, "
+			    "but instead got 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], rintc->version);
+	else
+		fwts_passed(fw,
+			    "MADT %s version field is properly set "
+			    "to 1.",
+			    madt_sub_names[hdr->type]);
+
+	if (rintc->reserved)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTRINTCReservedNonZero",
+			    "MADT %s reserved field should be 0, "
+			    "instead got 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], rintc->reserved);
+	else
+		fwts_passed(fw,
+			    "MADT %s reserved field is properly set "
+			    "to 0.",
+			    madt_sub_names[hdr->type]);
+
+	if (rintc->flags & 0xfffffffc)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTRINTCFlags",
+			    "MADT %s flags, bit 2..31 are reserved "
+			    "and should be 0, but are set as: 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], rintc->flags);
+	else
+		fwts_passed(fw,
+			    "MADT %s flags, bit 2..31 are reserved "
+			    "and properly set to 0.",
+			    madt_sub_names[hdr->type]);
+
+	madt_find_processor_uid(fw, rintc->uid, "RINTC");
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
+static int madt_imsic(fwts_framework *fw,
+		      fwts_acpi_madt_sub_table_header *hdr,
+		      uint8_t *data)
+{
+	/* specific checks for subtable type 0x19: IMSIC */
+	fwts_acpi_madt_imsic *imsic = (fwts_acpi_madt_imsic *) data;
+
+	if (imsic->version != 1)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICVersion",
+			    "MADT %s version field should be 1, "
+			    "but instead got 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], imsic->version);
+	else
+		fwts_passed(fw,
+			    "MADT %s version field is properly set "
+			    "to 1.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->reserved)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "SPECMADTMIMSICReservedNonZero",
+			    "MADT %s reserved field should be 0, "
+			    "instead got 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], imsic->reserved);
+	else
+		fwts_passed(fw,
+			    "MADT %s reserved field is properly set "
+			    "to 0.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->flags)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICFlags",
+			    "MADT %s flags field should be 0, "
+			    "but are set as: 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], imsic->flags);
+	else
+		fwts_passed(fw,
+			    "MADT %s flags field should be 0 "
+			    "and properly set to 0.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->num_ids < 63 || imsic->num_ids > 2047)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICNumIDs",
+			    "MADT %s num_ids field should be 63..2047, "
+			    "but are set as: 0x%" PRIx16 ".",
+			    madt_sub_names[hdr->type], imsic->num_ids);
+	else
+		fwts_passed(fw,
+			    "MADT %s num_ids field should be 63..2047 "
+			    "and properly set.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->num_guest_ids < 63 || imsic->num_guest_ids > 2047)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICNumGuestIDs",
+			    "MADT %s num_guest_ids field should be 63..2047, "
+			    "but are set as: 0x%" PRIx16 ".",
+			    madt_sub_names[hdr->type], imsic->num_guest_ids);
+	else
+		fwts_passed(fw,
+			    "MADT %s num_guest_ids field should be 63..2047 "
+			    "and properly set.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->guest_index_bits > 7)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICGuestIndexBits",
+			    "MADT %s guest_index_bits field should be 0..7, "
+			    "but are set as: 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], imsic->guest_index_bits);
+	else
+		fwts_passed(fw,
+			    "MADT %s guest_index_bits field should be 0..7 "
+			    "and properly set.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->hart_index_bits > 15)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICHartIndexBits",
+			    "MADT %s hart_index_bits field should be 0..15, "
+			    "but are set as: 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], imsic->hart_index_bits);
+	else
+		fwts_passed(fw,
+			    "MADT %s hart_index_bits field should be 0..15 "
+			    "and properly set.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->group_index_bits > 7)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICGroupIndexBits",
+			    "MADT %s group_index_bits field should be 0..7, "
+			    "but are set as: 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], imsic->group_index_bits);
+	else
+		fwts_passed(fw,
+			    "MADT %s group_index_bits field should be 0..7 "
+			    "and properly set.",
+			    madt_sub_names[hdr->type]);
+
+	if (imsic->group_index_shift > 55)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTIMSICGroupIndexShift",
+			    "MADT %s group_index_shift field should be 0..55, "
+			    "but are set as: 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], imsic->group_index_shift);
+	else
+		fwts_passed(fw,
+			    "MADT %s group_index_shift field should be 0..55 "
+			    "and properly set.",
+			    madt_sub_names[hdr->type]);
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
+static int madt_aplic(fwts_framework *fw,
+		      fwts_acpi_madt_sub_table_header *hdr,
+		      uint8_t *data)
+{
+	/* specific checks for subtable type 0x1a: APLIC */
+	fwts_acpi_madt_aplic *aplic = (fwts_acpi_madt_aplic *) data;
+
+	if (aplic->version != 1)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTAPLICVersion",
+			    "MADT %s version field should be 1, "
+			    "but instead got 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], aplic->version);
+	else
+		fwts_passed(fw,
+			    "MADT %s version field is properly set "
+			    "to 1.",
+			    madt_sub_names[hdr->type]);
+
+	if (aplic->flags)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTAPLICFlags",
+			    "MADT %s flags field should be 0, "
+			    "but are set as: 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], aplic->flags);
+	else
+		fwts_passed(fw,
+			    "MADT %s flags field should be 0 "
+			    "and properly set to 0.",
+			    madt_sub_names[hdr->type]);
+
+	if (aplic->num_sources < 1 || aplic->num_sources > 1023)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "MADTAPLICNumSources",
+			    "MADT %s num_sources field is %" PRIu16 ", must be 1..1023.",
+			    madt_sub_names[hdr->type], aplic->num_sources);
+	else
+		fwts_passed(fw,
+			    "MADT %s num_sources field is %" PRIu16 " and in 1..1023.",
+			    madt_sub_names[hdr->type], aplic->num_sources);
+
+	if (aplic->addr == 0)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "MADTAPLICADDR",
+			    "MADT %s addr field is 0, appears not defined.",
+			    madt_sub_names[hdr->type]);
+	else
+		fwts_passed(fw,
+			    "MADT %s addr field is properly defined.",
+			    madt_sub_names[hdr->type]);
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
+static int madt_plic(fwts_framework *fw,
+		      fwts_acpi_madt_sub_table_header *hdr,
+		      uint8_t *data)
+{
+	/* specific checks for subtable type 0x1b: PLIC */
+	fwts_acpi_madt_plic *plic = (fwts_acpi_madt_plic *) data;
+
+	if (plic->version != 1)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTPLICVersion",
+			    "MADT %s version field should be 1, "
+			    "but instead got 0x%" PRIx8 ".",
+			    madt_sub_names[hdr->type], plic->version);
+	else
+		fwts_passed(fw,
+			    "MADT %s version field is properly set "
+			    "to 1.",
+			    madt_sub_names[hdr->type]);
+
+	if (plic->num_irqs < 1 || plic->num_irqs > 1023)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "MADTPLICNumIrqs",
+			    "MADT %s num_irqs field is %" PRIu16 ", must be 1..1023.",
+			    madt_sub_names[hdr->type], plic->num_irqs);
+	else
+		fwts_passed(fw,
+			    "MADT %s num_irqs field is %" PRIu16 " and in 1..1023.",
+			    madt_sub_names[hdr->type], plic->num_irqs);
+
+	if (plic->flags)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTPLICFlags",
+			    "MADT %s flags field should be 0, "
+			    "but are set as: 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], plic->flags);
+	else
+		fwts_passed(fw,
+			    "MADT %s flags field should be 0 "
+			    "and properly set to 0.",
+			    madt_sub_names[hdr->type]);
+
+	if (plic->base_addr == 0)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "MADTPLICADDR",
+			    "MADT %s base_addr field is 0, appears not defined.",
+			    madt_sub_names[hdr->type]);
+	else
+		fwts_passed(fw,
+			    "MADT %s base_addr field is properly defined.",
+			    madt_sub_names[hdr->type]);
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
 static int madt_subtables(fwts_framework *fw)
 {
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *)mtable->data;
@@ -1767,6 +2045,22 @@ static int madt_subtables(fwts_framework *fw)
 		case FWTS_MADT_BIO_PIC:
 		case FWTS_MADT_LPC_PIC:
 			skip = madt_general_pic(fw, hdr, data);
+			break;
+
+		case FWTS_MADT_RINTC:
+			skip = madt_rintc(fw, hdr, data);
+			break;
+
+		case FWTS_MADT_IMSIC:
+			skip = madt_imsic(fw, hdr, data);
+			break;
+
+		case FWTS_MADT_APLIC:
+			skip = madt_aplic(fw, hdr, data);
+			break;
+
+		case FWTS_MADT_PLIC:
+			skip = madt_plic(fw, hdr, data);
 			break;
 
 		case FWTS_MADT_RESERVED:

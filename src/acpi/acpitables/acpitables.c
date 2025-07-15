@@ -276,6 +276,40 @@ static const fwts_acpi_table_rev acpi_65_rev[] = {
 	{NULL, 0xff}	// end of table
 };
 
+static const fwts_acpi_table_rev acpi_66_rev[] = {
+	{"APIC", 7},
+	{"BERT", 1},
+	{"BGRT", 1},
+	{"CPEP", 1},
+	{"DSDT", 2},
+	{"ECDT", 1},
+	{"EINJ", 2},
+	{"ERST", 1},
+	{"FACP", 6},
+	{"FPDT", 1},
+	{"GTDT", 3},
+	{"HEST", 2},
+	{"MISC", 1},
+	{"MSCT", 1},
+	{"MPST", 1},
+	{"NFIT", 1},
+	{"PCCT", 2},
+	{"PHAT", 1},
+	{"PMTT", 2},
+	{"PPTT", 3},
+	{"RASF", 1},
+	{"RAS2", 1},
+	{"RHCT", 1},
+	{"RSDT", 1},
+	{"SBST", 1},
+	{"SDEV", 1},
+	{"SLIT", 1},
+	{"SRAT", 3},
+	{"SSDT", 2},
+	{"XSDT", 1},
+	{NULL, 0xff}	// end of table
+};
+
 static int acpi_table_check_test2(fwts_framework *fw)
 {
 	const fwts_acpi_table_rev *tables_rev;
@@ -301,6 +335,9 @@ static int acpi_table_check_test2(fwts_framework *fw)
 			break;
 		case FWTS_ACPI_VERSION_65:
 			tables_rev = acpi_65_rev;
+			break;
+		case FWTS_ACPI_VERSION_66:
+			tables_rev = acpi_66_rev;
 			break;
 		default:
 			fwts_log_info_verbatim(fw, "This test does not support ACPI %4.4" PRIx32 ".",  version);

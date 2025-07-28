@@ -33,6 +33,9 @@ static int aspt_revision1_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 {
 	bool passed = true;
 	uint32_t offset;
+	fwts_acpi_table_asp_global *entry_global;
+	fwts_acpi_table_sev_mailbox *entry_sev;
+	fwts_acpi_table_acpi_mailbox *entry_acpi;
 
 	fwts_log_info_verbatim(fw, "AMD Secure Processor Table:");
 	fwts_log_info_simp_int(fw, "  ASP Register Structure Count:    ", aspt->v1.asp_reg_count);
@@ -48,7 +51,6 @@ static int aspt_revision1_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 		uint16_t type = ((fwts_aspt_sub_header *)((uint8_t *)table->data + offset))->type;
 		switch (type) {
 			case 0:
-				fwts_acpi_table_asp_global *entry_global;
 				entry_global = (fwts_acpi_table_asp_global *)((uint8_t *)table->data + offset);
 				fwts_log_info_verbatim(fw, "  ASP Global Registers:");
 				fwts_log_info_simp_int(fw, "    Type:                              ", entry_global->header.type);
@@ -61,7 +63,6 @@ static int aspt_revision1_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 				offset += entry_global->header.length;
 				break;
 			case 1:
-				fwts_acpi_table_sev_mailbox *entry_sev;
 				entry_sev = (fwts_acpi_table_sev_mailbox *)((uint8_t *)table->data + offset);
 				fwts_log_info_verbatim(fw, "  SEV Mailbox Registers:");
 				fwts_log_info_simp_int(fw, "    Type:                              ", entry_sev->header.type);
@@ -77,7 +78,6 @@ static int aspt_revision1_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 				offset += entry_sev->header.length;
 				break;
 			case 2:
-				fwts_acpi_table_acpi_mailbox *entry_acpi;
 				entry_acpi = (fwts_acpi_table_acpi_mailbox *)((uint8_t *)table->data + offset);
 				fwts_log_info_verbatim(fw, "  ACPI Mailbox Registers:");
 				fwts_log_info_simp_int(fw, "    Type:                              ", entry_acpi->header.type);
@@ -109,6 +109,9 @@ static int aspt_revision2_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 {
 	bool passed = true;
 	uint32_t offset;
+	fwts_acpi_table_asp_global *entry_global;
+	fwts_acpi_table_sev_mailbox *entry_sev;
+	fwts_acpi_table_acpi_mailbox *entry_acpi;
 
 	fwts_log_info_verbatim(fw, "AMD Secure Processor Table:");
 	fwts_log_info_simp_int(fw, "  ASP Register Base Address:       ", aspt->v2.asp_reg_base_addr);
@@ -127,7 +130,6 @@ static int aspt_revision2_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 		uint16_t type = ((fwts_aspt_sub_header *)((uint8_t *)table->data + offset))->type;
 		switch (type) {
 			case 0:
-				fwts_acpi_table_asp_global *entry_global;
 				entry_global = (fwts_acpi_table_asp_global *)((uint8_t *)table->data + offset);
 				fwts_log_info_verbatim(fw, "  ASP Global Registers:");
 				fwts_log_info_simp_int(fw, "    Type:                             ", entry_global->header.type);
@@ -140,7 +142,6 @@ static int aspt_revision2_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 				offset += entry_global->header.length;
 				break;
 			case 1:
-				fwts_acpi_table_sev_mailbox *entry_sev;
 				entry_sev = (fwts_acpi_table_sev_mailbox *)((uint8_t *)table->data + offset);
 				fwts_log_info_verbatim(fw, "  SEV Mailbox Registers:");
 				fwts_log_info_simp_int(fw, "    Type:                             ", entry_sev->header.type);
@@ -156,7 +157,6 @@ static int aspt_revision2_test(fwts_framework *fw, fwts_acpi_table_aspt *aspt)
 				offset += entry_sev->header.length;
 				break;
 			case 2:
-				fwts_acpi_table_acpi_mailbox *entry_acpi;
 				entry_acpi = (fwts_acpi_table_acpi_mailbox *)((uint8_t *)table->data + offset);
 				fwts_log_info_verbatim(fw, "  ACPI Mailbox Registers:");
 				fwts_log_info_simp_int(fw, "    Type:                             ", entry_acpi->header.type);

@@ -181,6 +181,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/rasf-0001/test-0002.sh \
 	fwts-test/rgrt-0001/test-0001.sh \
 	fwts-test/rgrt-0001/test-0002.sh \
+	fwts-test/rhct-0001/test-0001.sh \
+	fwts-test/rhct-0001/test-0002.sh \
 	fwts-test/rsdp-0001/test-0001.sh \
 	fwts-test/rsdt-0001/test-0001.sh \
 	fwts-test/s0idle-0001/test-0001.sh \

@@ -1,0 +1,57 @@
+rhct            rhct: RHCT RISC-V Hart Capabilities Table test.
+rhct            ----------------------------------------------------------
+rhct            Test 1 of 1: RHCT RISC-V Hart Capabilities Table test.
+rhct            FAILED [MEDIUM] SPECRHCTChecksum: Test 1, RHCT Check Sum
+rhct            is incorrect
+rhct            FAILED [MEDIUM] RHCTFlagsNonZero: Test 1, RHCT flags field
+rhct            , bit 1..31 are reserved and should be zero, but are set
+rhct            as: 0x2. 
+rhct            RHCT Node ISA String Structure:
+rhct              Type:               0x0000
+rhct              Length:             0x0034
+rhct              Revision:           0x0002
+rhct            FAILED [MEDIUM] RHCTBadFieldValue: Test 1, RHCT revision
+rhct            field must be 1, got 2 instead.
+rhct              ISA Length:         0x002b
+rhct              ISA String: rv64imafdch_zicsr_zifencei_zba_zbb_zbc_zbs
+rhct            
+rhct            RHCT Node CMO:
+rhct              Type:               0x0001
+rhct              Length:             0x000a
+rhct              Revision:           0x0003
+rhct            FAILED [MEDIUM] RHCTBadFieldValue: Test 1, RHCT revision
+rhct            field must be 1, got 3 instead.
+rhct              Reserved:           0xff
+rhct            FAILED [MEDIUM] RHCTNodeCMOReserved: Test 1, RHCT cmo node
+rhct            structure reserved field should be zero, got 0xff
+rhct              CBOM block size:    0x06
+rhct              CBOP block size:    0x06
+rhct              CBOZ block size:    0x06
+rhct            
+rhct            RHCT Node MMU:
+rhct              Type:               0x0002
+rhct              Length:             0x0008
+rhct              Revision:           0x000f
+rhct            FAILED [MEDIUM] RHCTBadFieldValue: Test 1, RHCT revision
+rhct            field must be 1, got 15 instead.
+rhct              Reserved:           0x01
+rhct            FAILED [MEDIUM] RHCTNodeMMUReserved: Test 1, RHCT mmu node
+rhct            structure reserved field should be zero, got 0x1
+rhct              MMU Type:           0x0f
+rhct            FAILED [MEDIUM] RHCTNodeMMUType: Test 1, RHCT mmu node
+rhct            structure type field should be 0..2, got 0xf
+rhct            
+rhct            RHCT Node Hart Info Structure:
+rhct              Type:               0xffff
+rhct              Length:             0x0018
+rhct              Revision:           0x0010
+rhct            FAILED [MEDIUM] RHCTBadFieldValue: Test 1, RHCT revision
+rhct            field must be 1, got 16 instead.
+rhct              Number of offsets:  0x0003
+rhct              ACPI Processor UID: 0x00000000
+rhct            
+rhct            
+rhct            ==========================================================
+rhct            0 passed, 9 failed, 0 warning, 0 aborted, 0 skipped, 0
+rhct            info only.
+rhct            ==========================================================

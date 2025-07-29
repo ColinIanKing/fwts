@@ -253,7 +253,7 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 		.madt_version = 7,
 		.num_types = 28,
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
-			     16, 16, 12, 82, 24, 24, 16, 20, 16,
+			     16, 16, 12, 82, 24, 24, 16, 20, 24,
 			     15, 23, 21, 13, 19, 17, 15, 36, 16, 36, 36 }
 	},
 	{ /* terminator */

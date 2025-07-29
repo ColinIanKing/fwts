@@ -49,22 +49,26 @@ static void rhct_check_node_isa_string(fwts_framework *fw,
 		goto done;
 	}
 
+	fwts_log_info_verbatim(fw, "RHCT Node ISA String Structure:");
+	fwts_log_info_simp_int(fw, "  Type:               ", hdr->type);
+	fwts_log_info_simp_int(fw, "  Length:             ", hdr->length);
+	fwts_log_info_simp_int(fw, "  Revision:           ", hdr->revision);
+
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "RHCT", "revision", hdr->revision, 1, passed);
+
+	fwts_log_info_simp_int(fw, "  ISA Length:         ", node->isa_length);
+
 	if (node->isa_length != strlen(node->isa) + 1) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 			"RHCTBadISAStringLength",
-			"RHCT isa string should have length %d"
+			"RHCT isa string should have length %" PRIu16
 			" ,got %zu",
 			node->isa_length, strlen(node->isa) + 1);
 		*passed = false;
 		goto done;
 	}
 
-	fwts_log_info_verbatim(fw, "RHCT Node ISA String Structure:");
-	fwts_log_info_simp_int(fw, "  Type:        ", hdr->type);
-	fwts_log_info_simp_int(fw, "  Length:      ", hdr->length);
-	fwts_log_info_simp_int(fw, "  Revision:    ", hdr->revision);
-	fwts_log_info_simp_int(fw, "  ISA Length:  ", node->isa_length);
-	fwts_log_info_verbatim(fw, "  ISA String:  %s", node->isa);
+	fwts_log_info_verbatim(fw, "  ISA String: %s", node->isa);
 	fwts_log_nl(fw);
 
 done:
@@ -91,23 +95,26 @@ static void rhct_check_node_cmo(fwts_framework *fw,
 		goto done;
 	}
 
+	fwts_log_info_verbatim(fw, "RHCT Node CMO:");
+	fwts_log_info_simp_int(fw, "  Type:               ", hdr->type);
+	fwts_log_info_simp_int(fw, "  Length:             ", hdr->length);
+	fwts_log_info_simp_int(fw, "  Revision:           ", hdr->revision);
+
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "RHCT", "revision", hdr->revision, 1, passed);
+
+	fwts_log_info_simp_int(fw, "  Reserved:           ", node->reserved);
+
 	if (node->reserved) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"RHCTNodeCMOReserved",
 			"RHCT cmo node structure reserved field should be zero, got "
 			"0x%" PRIx8, node->reserved);
 		*passed = false;
-		goto done;
 	}
 
-	fwts_log_info_verbatim(fw, "RHCT Node CMO:");
-	fwts_log_info_simp_int(fw, "  Type:             ", hdr->type);
-	fwts_log_info_simp_int(fw, "  Length:           ", hdr->length);
-	fwts_log_info_simp_int(fw, "  Revision:         ", hdr->revision);
-	fwts_log_info_simp_int(fw, "  Reserved:         ", node->reserved);
-	fwts_log_info_simp_int(fw, "  CBOM block size:  ", node->cbom_size);
-	fwts_log_info_simp_int(fw, "  CBOP block size:  ", node->cbop_size);
-	fwts_log_info_simp_int(fw, "  CBOZ block size:  ", node->cboz_size);
+	fwts_log_info_simp_int(fw, "  CBOM block size:    ", node->cbom_size);
+	fwts_log_info_simp_int(fw, "  CBOP block size:    ", node->cbop_size);
+	fwts_log_info_simp_int(fw, "  CBOZ block size:    ", node->cboz_size);
 	fwts_log_nl(fw);
 
 done:
@@ -134,14 +141,24 @@ static void rhct_check_node_mmu(fwts_framework *fw,
 		goto done;
 	}
 
+	fwts_log_info_verbatim(fw, "RHCT Node MMU:");
+	fwts_log_info_simp_int(fw, "  Type:               ", hdr->type);
+	fwts_log_info_simp_int(fw, "  Length:             ", hdr->length);
+	fwts_log_info_simp_int(fw, "  Revision:           ", hdr->revision);
+
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "RHCT", "revision", hdr->revision, 1, passed);
+
+	fwts_log_info_simp_int(fw, "  Reserved:           ", node->reserved);
+
 	if (node->reserved) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"RHCTNodeMMUReserved",
 			"RHCT mmu node structure reserved field should be zero, got "
 			"0x%" PRIx8, node->reserved);
 		*passed = false;
-		goto done;
 	}
+
+	fwts_log_info_simp_int(fw, "  MMU Type:           ", node->mmu_type);
 
 	if (node->mmu_type > 2) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -149,15 +166,8 @@ static void rhct_check_node_mmu(fwts_framework *fw,
 			"RHCT mmu node structure type field should be 0..2, got "
 			"0x%" PRIx8, node->mmu_type);
 		*passed = false;
-		goto done;
 	}
 
-	fwts_log_info_verbatim(fw, "RHCT Node MMU:");
-	fwts_log_info_simp_int(fw, "  Type:      ", hdr->type);
-	fwts_log_info_simp_int(fw, "  Length:    ", hdr->length);
-	fwts_log_info_simp_int(fw, "  Revision:  ", hdr->revision);
-	fwts_log_info_simp_int(fw, "  Reserved:  ", node->reserved);
-	fwts_log_info_simp_int(fw, "  MMU Type:  ", node->mmu_type);
 	fwts_log_nl(fw);
 
 done:
@@ -185,11 +195,14 @@ static void rhct_check_node_hart_info(fwts_framework *fw,
 	}
 
 	fwts_log_info_verbatim(fw, "RHCT Node Hart Info Structure:");
-	fwts_log_info_simp_int(fw, "  Type:                ", hdr->type);
-	fwts_log_info_simp_int(fw, "  Length:              ", hdr->length);
-	fwts_log_info_simp_int(fw, "  Revision:            ", hdr->revision);
-	fwts_log_info_simp_int(fw, "  Number of offsets:   ", node->num_offsets);
-	fwts_log_info_simp_int(fw, "  ACPI Processor UID:  ", node->uid);
+	fwts_log_info_simp_int(fw, "  Type:               ", hdr->type);
+	fwts_log_info_simp_int(fw, "  Length:             ", hdr->length);
+	fwts_log_info_simp_int(fw, "  Revision:           ", hdr->revision);
+
+	fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "RHCT", "revision", hdr->revision, 1, passed);
+
+	fwts_log_info_simp_int(fw, "  Number of offsets:  ", node->num_offsets);
+	fwts_log_info_simp_int(fw, "  ACPI Processor UID: ", node->uid);
 	fwts_log_nl(fw);
 
 done:
@@ -225,8 +238,6 @@ static int rhct_test1(fwts_framework *fw)
 
 	while (length > 0) {
 		hdr = (fwts_acpi_rhct_node_header *)data;
-
-		fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "RHCT", "revision", hdr->revision, 1, &passed);
 
 		data += sizeof(fwts_acpi_rhct_node_header);
 		length -= sizeof(fwts_acpi_rhct_node_header);

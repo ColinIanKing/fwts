@@ -1,3 +1,39 @@
+fwts (25.07.00-0ubuntu1) questing; urgency=medium
+
+  [G Edhaya Chandran]
+  * smccc: Test for implementation of ARM_SMCCC functions
+  * dmicheck: Validation in AARCH64 for Processor ID field in SMBIOS type04
+
+  [Haibo Xu]
+  * lib: Add fwts_architecture macro for RISC-V
+  * acpi: rsdp: Add xsdt_address check for RISC-V
+  * acpi: madt: update madt revisions to ACPI 6.6 and add RISC-V
+  * acpi: madt: Add AIA and PLIC sub-tables test for RISC-V
+  * acpi: rhct: Add tests for ACPI RHCT table
+  * acpi: acpitables: Update acpitables test for ACPI 6.6
+
+  [Ivan Hu]
+  * acpi: aspt: update ASPT tests for official revision 1 specification
+  * fwts-test: sync up the aspt revision 1 update
+  * acpi: aspt: support for the aspt revision 2
+  * fwts-test: add regression tests for ASPT v2
+  * acpi: slit: remove the checking of the bi-directional equality
+  * fwts: slit: sync up with the slit remove equality checking
+  * lib: fwts_klog: return list null when klog read returns zero length
+  * acpi: aspt: fix the lable of statement build error
+  * auto-packager: mkpackage.sh: remove oracular
+  * acpi: rhct: refine test result layout and format specifiers
+  * fwts-test: add regression tests for RHCT
+  * acpi: madt: fix the wrong length of the multiprocessor wakeup structure
+
+  [Miao Wang]
+  * lib: Enable checks and compilation on LoongArch
+
+  [Sunil V L]
+  * lib: Update current version to ACPI 6.6
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 30 Jul 2025 15:14:58 +0800
+
 fwts (25.05.00-0ubuntu1) questing; urgency=medium
 
   [Colin Ian King]

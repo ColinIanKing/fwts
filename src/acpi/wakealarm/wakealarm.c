@@ -31,6 +31,7 @@
 #include <linux/rtc.h>
 
 static struct rtc_time rtc_tm;
+static bool skip_suite = false;
 
 static int wakealarm_test1(fwts_framework *fw)
 {
@@ -47,6 +48,8 @@ static int wakealarm_test1(fwts_framework *fw)
 			"does not exist, so the wake alarm tests will be aborted.");
 		return FWTS_ABORTED;
 #else
+		skip_suite = true;
+
 		fwts_log_info(fw,
 			"non-x86 devices sometimes do not have an RTC wake alarm that "
 			"is normally controlled by the RTC alarm ioctl() interface. This "
@@ -59,6 +62,10 @@ static int wakealarm_test1(fwts_framework *fw)
 
 static int wakealarm_test2(fwts_framework *fw)
 {
+	if (skip_suite) {
+		return FWTS_SKIP;
+	}
+
 	fwts_log_info(fw, "Trigger wakealarm for 1 seconds in the future.");
 	if (fwts_wakealarm_trigger(fw, 1)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "WakeAlarmNotTriggeredTest2",
@@ -76,6 +83,10 @@ static int wakealarm_test2(fwts_framework *fw)
 static int wakealarm_test3(fwts_framework *fw)
 {
 	int ret;
+
+	if (skip_suite) {
+		return FWTS_SKIP;
+	}
 
 	ret = fwts_wakealarm_test_firing(fw, 2);
 	if (ret < 0) {
@@ -97,6 +108,10 @@ static int wakealarm_test4(fwts_framework *fw)
 {
 	uint32_t i;
 	int failed = 0;
+
+	if (skip_suite) {
+		return FWTS_SKIP;
+	}
 
 	for (i = 1; i < 5; i++) {
 		fwts_log_info(fw, "Trigger wakealarm for %" PRIu32 " seconds in the future.", i);
@@ -124,6 +139,10 @@ static int wakealarm_test4(fwts_framework *fw)
 static int wakealarm_test5(fwts_framework *fw)
 {
 	struct rtc_time rtc_now;
+
+	if (skip_suite) {
+		return FWTS_SKIP;
+	}
 
 	if (fwts_wakealarm_set(fw, &rtc_tm) == FWTS_OK) {
 		fwts_passed(fw, "RTC wakealarm set.");

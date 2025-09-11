@@ -1,0 +1,48 @@
+msct            msct: MSCT Maximum System Characteristics Table test.
+msct            ----------------------------------------------------------
+msct            Test 1 of 1: MSCT Maximum System Characteristics Table
+msct            test.
+msct            MSCT Max System Characteristics Table:
+msct              Proximity Offset:      0x00000038
+msct              Max Proximity Domains: 0x00000003
+msct              Max Clock Domains:     0x00000000
+msct              Max Physical Address:  0x00000fffffffffff
+msct            
+msct              Proximity Domain 00
+msct                Revision:               0x01
+msct                Length:                 0x16
+msct                Domain Range (low):     0x00000000
+msct                Domain Range (high):    0x00000003
+msct                Max Processor Capacity: 0x00000010
+msct                Max Memory Capacity:    0x0000004000000000
+msct            
+msct              Proximity Domain 01
+msct                Revision:               0x01
+msct                Length:                 0x16
+msct                Domain Range (low):     0x00000000
+msct                Domain Range (high):    0x00000000
+msct                Max Processor Capacity: 0x00000000
+msct                Max Memory Capacity:    0x0000000000000000
+msct            
+msct              Proximity Domain 02
+msct                Revision:               0x01
+msct                Length:                 0x16
+msct                Domain Range (low):     0x00000000
+msct                Domain Range (high):    0x00000000
+msct                Max Processor Capacity: 0x00000000
+msct                Max Memory Capacity:    0x0000000000000000
+msct            
+msct              Proximity Domain 03
+msct                Revision:               0x01
+msct                Length:                 0x16
+msct                Domain Range (low):     0x00000000
+msct                Domain Range (high):    0x00000000
+msct                Max Processor Capacity: 0x00000000
+msct                Max Memory Capacity:    0x0000000000000000
+msct            
+msct            PASSED: Test 1, No issues found in MSCT table.
+msct            
+msct            ==========================================================
+msct            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+msct            info only.
+msct            ==========================================================

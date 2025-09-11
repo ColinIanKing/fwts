@@ -56,12 +56,12 @@ static int msct_test1(fwts_framework *fw)
 	} else
 		offset_proximity = msct->proximity_offset;
 
-	if (offset_proximity + sizeof(fwts_acpi_msct_proximity) *
-		msct->max_proximity_domains > msct->header.length) {
+	if (msct->header.length > offset_proximity + sizeof(fwts_acpi_msct_proximity) *
+		(msct->max_proximity_domains + 1)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"MSCTBadTableLength",
-			"MSCT Table is too small to include maximum number of "
-			"Proximity Domains");
+			"MSCT table length is larger than expected for the offset "
+			"that includes the maximum number of proximity domains");
 		passed = false;
 	}
 

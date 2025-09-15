@@ -251,7 +251,6 @@ static const struct file_operations smccc_test_fops = {
 	.unlocked_ioctl	= smccc_test_ioctl,
 	.open		= smccc_test_open,
 	.release	= smccc_test_close,
-	.llseek		= no_llseek,
 };
 
 static struct miscdevice smccc_test_dev = {

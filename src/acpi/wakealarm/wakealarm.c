@@ -146,6 +146,14 @@ static int wakealarm_test5(fwts_framework *fw)
 					rtc_tm.tm_mday, rtc_tm.tm_mon + 1,
 					rtc_tm.tm_year + 1900, rtc_tm.tm_hour,
 					rtc_tm.tm_min, rtc_tm.tm_sec);
+		} else if (rtc_now.tm_hour == rtc_tm.tm_hour &&
+		    rtc_now.tm_min == rtc_tm.tm_min &&
+		    rtc_now.tm_sec == rtc_tm.tm_sec) {
+			fwts_skipped(fw,
+				"The kernel adjusted the RTC_ALM_SET alarm by up to 24 hours "
+				"because the requested time was earlier than the current time. "
+				"This behavior ensures the alarm always points to a future time.");
+			return FWTS_SKIP;
 		} else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"WakeAlarmNotResetTest5",

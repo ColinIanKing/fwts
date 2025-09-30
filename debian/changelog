@@ -1,3 +1,22 @@
+fwts (25.09.00-0ubuntu1) questing; urgency=medium
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20250807
+
+  [Ivan Hu]
+  * dmicheck: minor code style clean-ups, no functional changes
+  * smccc: minor code style clean-ups, no functional changes
+  * smccc: move the smccc folder out of pci
+  * acpi: msct: fix incorrect length check on max proximity domains
+  * fwts-test: add regression tests for MSCT
+  * wakealarm: skip the reset check when RTC time earlier than current system time
+  * auto-packer: mkpackage.sh: use the github tag source directly
+
+  [Weizhao Ouyang]
+  * smccc_test: remove deprecated no_llseek to fix the compilation error
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 30 Sep 2025 13:26:07 +0800
+
 fwts (25.07.00-0ubuntu1) questing; urgency=medium
 
   [G Edhaya Chandran]

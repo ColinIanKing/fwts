@@ -60,7 +60,7 @@ static int ras2_test1(fwts_framework *fw)
 		fwts_log_info_simp_int(fw, "    Instance:                ", pcc_desc->instance);
 
 		fwts_acpi_reserved_zero("RAS2", "Reserved", pcc_desc->reserved, &passed);
-		if (pcc_desc->reserved >= 0x01 && pcc_desc->feature_type <= 0x7F) {
+		if (pcc_desc->feature_type >= 0x01 && pcc_desc->feature_type <= 0x7F) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "RAS2ReservedType",
 				"RAS2 RAS feature types 0x01-0x7f is reserved, got 0x%" PRIx8,
 				pcc_desc->feature_type);

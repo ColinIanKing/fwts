@@ -155,6 +155,7 @@
  * _OST 	 n/a
  * _PAI 	 n/a
  * _PCL 	 Y
+ * _PCS 	 Y
  * _PCT 	 Y
  * _PDC 	 deprecated
  * _PDL 	 Y
@@ -187,6 +188,7 @@
  * _PSL 	 Y
  * _PSR 	 Y
  * _PSS 	 Y
+ * _PST 	 Y
  * _PSV 	 Y
  * _PSW 	 Y
  * _PTC 	 Y
@@ -3622,6 +3624,97 @@ static int method_test_PIF(fwts_framework *fw)
 		"_PIF", NULL, 0, method_test_PIF_return, NULL);
 }
 
+static void method_test_PCS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+	ACPI_OBJECT *element;
+	static const fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTEGER,	"Reserved" },
+		{ ACPI_TYPE_INTEGER,	"Current Output Power" },
+	};
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_count_equal(fw, name, obj, 3) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_type(fw, name, obj, elements) != FWTS_OK)
+		return;
+
+	element = &obj->Package.Elements[0];
+	if (element->Integer.Value != 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PCSBadRevision",
+			"%s element 0 (Revision) returned %" PRIu64 ", expected 1.",
+			name, (uint64_t)element->Integer.Value);
+		failed = true;
+	}
+
+	element = &obj->Package.Elements[1];
+	if (element->Integer.Value != 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PCSBadReserved",
+			"%s element 1 (Reserved) returned %" PRIu64 ", expected 0.",
+			name, (uint64_t)element->Integer.Value);
+		failed = true;
+	}
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PCS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PCS", NULL, 0, method_test_PCS_return, NULL);
+}
+
+static void method_test_PST_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value > 5) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PSTInvalidStatus",
+			"%s returned 0x%" PRIx64 ", expected a value between 0 and 5.",
+			name, (uint64_t)obj->Integer.Value);
+	} else {
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
+	}
+}
+
+static int method_test_PST(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[3];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+	arg[1].Type = ACPI_TYPE_INTEGER;
+	arg[1].Integer.Value = 0;
+	arg[2].Type = ACPI_TYPE_INTEGER;
+	arg[2].Integer.Value = 0;
+
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PST", arg, 3, method_test_PST_return, NULL);
+}
+
 /*
  * Section 10.4 Power Meters
  */
@@ -5153,9 +5246,11 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 10.3 AC Adapters and Power Source Objects */
 
 	{ method_test_PCL, "Test _PCL (Power Consumer List)." },
+	{ method_test_PCS, "Test _PCS (Power Source Current Status)." },
 	{ method_test_PIF, "Test _PIF (Power Source Information)." },
 	{ method_test_PRL, "Test _PRL (Power Source Redundancy List)." },
 	{ method_test_PSR, "Test _PSR (Power Source)." },
+	{ method_test_PST, "Test _PST (Power Status Threshold)." },
 
 	/* Section 10.4 Power Meters */
 	{ method_test_GAI, "Test _GAI (Get Averaging Level)." },

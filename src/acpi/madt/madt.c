@@ -1085,6 +1085,9 @@ static int madt_gicc(fwts_framework *fw,
 {
 	/* specific checks for subtable type 0xb: GICC */
 	fwts_acpi_madt_gic *gic = (fwts_acpi_madt_gic *)data;
+	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *)mtable->data;
+	fwts_acpi_table_fadt *fadt = ftable ?
+		(fwts_acpi_table_fadt *)ftable->data : NULL;
 	uint32_t mask;
 	int start;
 
@@ -1133,19 +1136,56 @@ static int madt_gicc(fwts_framework *fw,
 				    "is reserved and must be zero.",madt_sub_names[hdr->type]);
 	}
 
-	if (gic->parking_protocol_version != 0 &&
-	    gic->parking_protocol_version != 1)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "SPECMADTGICCParkingVersion",
-			    "MADT %s, protocol versions defined are 0..1 but "
-			    "%" PRIu32 " is being used.",
-			    madt_sub_names[hdr->type],
-			    gic->parking_protocol_version);
-	else
-		fwts_passed(fw,
-			    "MADT %s, is using a defined parking protocol "
-			    "version.",
-			    madt_sub_names[hdr->type]);
+	if (madt && madt->header.revision >= 7) {
+		if (gic->parking_protocol_version != 0)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SPECMADTGICCParkingVersion",
+				    "MADT revision %" PRIu8 " requires the Parking Protocol "
+				    "Version field to be zero, but MADT %s reports %" PRIu32 ".",
+				    madt->header.revision,
+				    madt_sub_names[hdr->type],
+				    gic->parking_protocol_version);
+		else
+			fwts_passed(fw,
+				    "MADT %s uses Parking Protocol Version 0 as "
+				    "required for MADT revision %" PRIu8 ".",
+				    madt_sub_names[hdr->type],
+				    madt->header.revision);
+
+		if (!fadt)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "MADTArmPsciCompliance",
+				    "MADT revision %" PRIu8 " requires verifying PSCI compliance "
+				    "but the FADT table is not available.",
+				    madt->header.revision);
+		else if (!(fadt->arm_boot_flags & FWTS_FACP_ARM_BOOT_ARCH_PSCI_COMPLIANT))
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "MADTArmPsciCompliance",
+				    "MADT revision %" PRIu8 " requires PSCI to be implemented, "
+				    "but the FADT ARM Boot Architecture PSCI_COMPLIANT flag "
+				    "is not set (flags = 0x%4.4" PRIx16 ").",
+				    madt->header.revision,
+				    fadt->arm_boot_flags);
+		else
+			fwts_passed(fw,
+				    "FADT ARM Boot Architecture PSCI_COMPLIANT flag is set "
+				    "as required for MADT revision %" PRIu8 ".",
+				    madt->header.revision);
+	} else {
+		if (gic->parking_protocol_version != 0 &&
+		    gic->parking_protocol_version != 1)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SPECMADTGICCParkingVersion",
+				    "MADT %s, protocol versions defined are 0..1 but "
+				    "%" PRIu32 " is being used.",
+				    madt_sub_names[hdr->type],
+				    gic->parking_protocol_version);
+		else
+			fwts_passed(fw,
+				    "MADT %s is using a defined parking protocol "
+				    "version.",
+				    madt_sub_names[hdr->type]);
+	}
 
 	/*
 	 * TODO: is it even possible to verify the MPIDR is valid?  Or,

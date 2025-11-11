@@ -399,6 +399,49 @@ done:
 	*data += sizeof(fwts_acpi_table_port_affinity);
 }
 
+static void srat_check_rintc_affinity(
+	fwts_framework *fw,
+	ssize_t		*length,
+	uint8_t		**data,
+	bool		*passed)
+{
+	fwts_acpi_table_rintc_affinity *affinity =
+		(fwts_acpi_table_rintc_affinity *)*data;
+
+	if ((ssize_t)sizeof(fwts_acpi_table_rintc_affinity) > *length) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SRATRintcAffinityShort",
+			"SRAT RINTC Affinity structure too short, got "
+			"%zu bytes, expecting %zu bytes",
+			*length, sizeof(fwts_acpi_table_rintc_affinity));
+		*passed = false;
+		goto done;
+	}
+
+	if (!fwts_acpi_structure_length(fw, "SRAT", affinity->type,
+	    affinity->length, sizeof(fwts_acpi_table_rintc_affinity))) {
+		*passed = false;
+		goto done;
+	}
+
+	fwts_log_info_verbatim(fw, "SRAT RINTC Affinity Structure:");
+	fwts_log_info_simp_int(fw, "  Type:                     ", affinity->type);
+	fwts_log_info_simp_int(fw, "  Length:                   ", affinity->length);
+	fwts_log_info_simp_int(fw, "  Reserved:                 ", affinity->reserved);
+	fwts_log_info_simp_int(fw, "  Proximity Domain:         ", affinity->proximity_domain);
+	fwts_log_info_simp_int(fw, "  ACPI Processor UID:       ", affinity->acpi_processor_uid);
+	fwts_log_info_simp_int(fw, "  Flags:                    ", affinity->flags);
+	fwts_log_info_simp_int(fw, "  Clock Domain              ", affinity->clock_domain);
+	fwts_log_nl(fw);
+
+	fwts_acpi_reserved_zero("SRAT", "RINTC Affinity Reserved", affinity->reserved, passed);
+	fwts_acpi_reserved_bits("SRAT", "RINTC Affinity Flags", affinity->flags, 1, 31, passed);
+
+done:
+	*length -= sizeof(fwts_acpi_table_rintc_affinity);
+	*data += sizeof(fwts_acpi_table_rintc_affinity);
+}
+
 
 /*
  *  See ACPI 6.0, Section 5.2.16
@@ -438,11 +481,14 @@ static int srat_test1(fwts_framework *fw)
 		case 0x06:
 			srat_check_port_affinity(fw, &length, &data, &passed);
 			break;
+		case 0x07:
+			srat_check_rintc_affinity(fw, &length, &data, &passed);
+			break;
 		default:
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"SRATInvalidType",
 				"SRAT Affinity Structure Type 0x%" PRIx8
-				" is an invalid type, expecting 0x00..0x02",
+				" is an invalid type, expecting 0x00..0x07",
 				*data);
 			passed = false;
 			length = 0;

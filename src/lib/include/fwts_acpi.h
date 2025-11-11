@@ -432,6 +432,16 @@ typedef struct {
 typedef struct {
 	uint8_t		type;
 	uint8_t		length;
+	uint16_t	reserved;
+	uint32_t	proximity_domain;
+	uint32_t	acpi_processor_uid;
+	uint32_t	flags;
+	uint32_t	clock_domain;
+} __attribute__ ((packed)) fwts_acpi_table_rintc_affinity;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		length;
 	uint32_t	proximity_domain;
 	uint16_t	reserved;
 	uint32_t	its_id;

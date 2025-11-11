@@ -127,8 +127,20 @@ srat
 srat            FAILED [MEDIUM] SRATReservedNonZero: Test 1, SRAT Port
 srat            Affinity Reserved field must be zero, got 0xff000000
 srat            instead
+srat            SRAT RINTC Affinity Structure:
+srat              Type:                     0x07
+srat              Length:                   0x14
+srat              Reserved:                 0x0000
+srat              Proximity Domain:         0x00000001
+srat              ACPI Processor UID:       0x00000010
+srat              Flags:                    0x00000003
+srat              Clock Domain              0x00000004
+srat            
+srat            FAILED [HIGH] SRATReservedBitsNonZero: Test 1, SRAT RINTC
+srat            Affinity Flags Bits [31..1] must be zero, got 0x00000003
+srat            instead
 srat            
 srat            ==========================================================
-srat            0 passed, 7 failed, 0 warning, 0 aborted, 0 skipped, 0
+srat            0 passed, 8 failed, 0 warning, 0 aborted, 0 skipped, 0
 srat            info only.
 srat            ==========================================================

@@ -95,6 +95,15 @@ srat                Reserved:               0x00000000
 srat              Flags:                    0x00000000
 srat              Reserved:                 0x00000000
 srat            
+srat            SRAT RINTC Affinity Structure:
+srat              Type:                     0x07
+srat              Length:                   0x14
+srat              Reserved:                 0x0000
+srat              Proximity Domain:         0x00000001
+srat              ACPI Processor UID:       0x00000010
+srat              Flags:                    0x00000001
+srat              Clock Domain              0x00000004
+srat            
 srat            PASSED: Test 1, No issues found in SRAT table.
 srat            
 srat            ==========================================================

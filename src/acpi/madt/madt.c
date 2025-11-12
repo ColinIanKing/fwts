@@ -1368,23 +1368,50 @@ static int madt_gicr(fwts_framework *fw,
 {
 	/* specific checks for subtable type 0xe: GICR */
 	fwts_acpi_madt_gicr *gicr = (fwts_acpi_madt_gicr *)data;
+	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *)mtable->data;
 
 	/*
 	 * TODO: GICR structures should only be used when GICs implement
 	 * version 3 or higher.
 	 */
 
-	if (gicr->reserved)
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			    "MADTGICRReservedNonZero",
-			    "MADT %s reserved field should be zero, "
-			    "instead got 0x%" PRIx32 ".",
-			    madt_sub_names[hdr->type],
-			    gicr->reserved);
-	else
-		fwts_passed(fw,
-			    "MADT %s reserved field properly set to zero.",
-			    madt_sub_names[hdr->type]);
+	if (madt && madt->header.revision >= 7) {
+		if (gicr->gicr.flags & ~0x1) {
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				    "MADTGICRReservedFlags",
+				    "MADT %s flags bits 1..7 are reserved and should "
+				    "be zero, but 0x%" PRIx8 " was reported.",
+				    madt_sub_names[hdr->type], gicr->gicr.flags);
+		} else {
+			fwts_passed(fw,
+				    "MADT %s reserved flag bits are properly cleared.",
+				    madt_sub_names[hdr->type]);
+		}
+
+		if (gicr->gicr.reserved)
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				    "MADTGICRReservedNonZero",
+				    "MADT %s reserved byte should be zero, "
+				    "instead got 0x%" PRIx8 ".",
+				    madt_sub_names[hdr->type],
+				    gicr->gicr.reserved);
+		else
+			fwts_passed(fw,
+				    "MADT %s reserved byte properly set to zero.",
+				    madt_sub_names[hdr->type]);
+	} else {
+		if (gicr->reserved)
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				    "MADTGICRReservedNonZero",
+				    "MADT %s reserved field should be zero, "
+				    "instead got 0x%" PRIx16 ".",
+				    madt_sub_names[hdr->type],
+				    gicr->reserved);
+		else
+			fwts_passed(fw,
+				    "MADT %s reserved field properly set to zero.",
+				    madt_sub_names[hdr->type]);
+	}
 
 	/*
 	 * TODO: can Discovery Range Base Address ever be zero?
@@ -1411,20 +1438,46 @@ static int madt_gic_its(fwts_framework *fw,
 {
 	/* specific checks for subtable type 0xf: GIC ITS */
 	fwts_acpi_madt_gic_its *gic_its = (fwts_acpi_madt_gic_its *)data;
+	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *)mtable->data;
 	fwts_list_link *item;
 	bool found;
 
-	if (gic_its->reserved)
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			    "SPECMADTGICITSReservedNonZero",
-			    "MADT %s first reserved field should be zero, "
-			    "instead got 0x%" PRIx32 ".",
-			    madt_sub_names[hdr->type], gic_its->reserved);
-	else
-		fwts_passed(fw,
-			    "MADT %s first reserved field is properly set "
-			    "to zero.",
-			    madt_sub_names[hdr->type]);
+	if (madt && madt->header.revision >= 7) {
+		if (gic_its->gic_its.flags & ~0x1)
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				    "SPECMADTGICITSReservedFlags",
+				    "MADT %s flags bits 1..7 are reserved and should "
+				    "be zero, but 0x%" PRIx8 " was reported.",
+				    madt_sub_names[hdr->type], gic_its->gic_its.flags);
+		else
+			fwts_passed(fw,
+				    "MADT %s reserved flag bits are properly cleared.",
+				    madt_sub_names[hdr->type]);
+
+		if (gic_its->gic_its.reserved)
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				    "SPECMADTGICITSReservedNonZero",
+				    "MADT %s reserved byte should be zero, "
+				    "instead got 0x%" PRIx8 ".",
+				    madt_sub_names[hdr->type], gic_its->gic_its.reserved);
+		else
+			fwts_passed(fw,
+				    "MADT %s reserved byte is properly set "
+				    "to zero.",
+				    madt_sub_names[hdr->type]);
+	} else {
+		if (gic_its->reserved)
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				    "SPECMADTGICITSReservedNonZero",
+				    "MADT %s reserved field should be zero, "
+				    "instead got 0x%" PRIx16 ".",
+				    madt_sub_names[hdr->type], gic_its->reserved);
+		else
+			fwts_passed(fw,
+				    "MADT %s reserved field is properly set "
+				    "to zero.",
+				    madt_sub_names[hdr->type]);
+	}
 
 	/*
 	 * Check ITS ID against previously found IDs to see if it

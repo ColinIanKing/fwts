@@ -697,7 +697,13 @@ typedef struct {
 /* New in ACPI 5.1, GICR structure, 5.2.12.17 */
 /* Type 14, FWTS_MADT_GIC_R_REDISTRIBUTOR */
 typedef struct {
-	uint16_t	reserved;
+	union {
+		uint16_t	reserved;
+		struct {
+			uint8_t	flags;
+			uint8_t	reserved;
+		} __attribute__ ((packed)) gicr;
+	};
 	uint64_t	discovery_range_base_address;
 	uint32_t	discovery_range_length;
 } __attribute__ ((packed)) fwts_acpi_madt_gicr;
@@ -705,7 +711,13 @@ typedef struct {
 /* New in ACPI 6.0, GIC ITS structure, 5.2.12.18 */
 /* Type 15, FWTS_MADT_GIC_ITS */
 typedef struct {
-	uint16_t	reserved;
+	union {
+		uint16_t	reserved;
+		struct {
+			uint8_t	flags;
+			uint8_t	reserved;
+		} __attribute__ ((packed)) gic_its;
+	};
 	uint32_t	its_id;
 	uint64_t	physical_base_address;
 	uint32_t	reserved2;

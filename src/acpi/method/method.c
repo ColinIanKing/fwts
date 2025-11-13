@@ -261,6 +261,7 @@
  * _UPC 	 Y
  * _UPD 	 Y
  * _UPP 	 Y
+ * _VDM 	 Y
  * _VPO 	 Y
  * _WAK 	 Y
  * _WPC 	 Y
@@ -5164,6 +5165,12 @@ static int method_test_CDM(fwts_framework *fw)
 		"_CDM", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
+static int method_test_VDM(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_VDM", NULL, 0, fwts_method_test_integer_return, NULL);
+}
+
 /*
  * Intelligent Platform Management Interface (IPMI) Specification
  */
@@ -5220,6 +5227,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 6.2 Device Configurations Objects */
 
 	{ method_test_CDM, "Test _CDM (Clock Domain)." },
+	{ method_test_VDM, "Test _VDM (Voltage Domain)." },
 	{ method_test_CRS, "Test _CRS (Current Resource Settings)." },
 	{ method_test_DSD, "Test _DSD (Device Specific Data)." },
 	{ method_test_DIS, "Test _DIS (Disable)." },

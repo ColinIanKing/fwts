@@ -1698,6 +1698,154 @@ static int method_test_SWS(fwts_framework *fw)
 /*
  * Section 8.4 Declaring Processors
  */
+
+static bool method_test_CPC_int_or_buffer(
+	fwts_framework *fw,
+	const char *name,
+	const ACPI_OBJECT *obj,
+	const char *field_name,
+	uint32_t index)
+{
+	if (obj->Type == ACPI_TYPE_INTEGER || obj->Type == ACPI_TYPE_BUFFER)
+		return true;
+
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"Method_CPCResourcePriorityBadType",
+		"%s Resource Priority entry %" PRIu32 " field %s returned "
+		"an unexpected object type (%u). Expected an integer or buffer.",
+		name, index, field_name, obj->Type);
+	return false;
+}
+
+static bool method_test_CPC_resource_priority_descriptor(
+	fwts_framework *fw,
+	const char *name,
+	const ACPI_OBJECT *descriptor,
+	uint32_t index)
+{
+	static const uint32_t expected_elements = 5;
+	const ACPI_OBJECT *controlled_resources;
+	const ACPI_OBJECT *enable_value;
+	const ACPI_OBJECT *enable_register;
+	const ACPI_OBJECT *priority_count;
+	const ACPI_OBJECT *priority_register;
+	bool passed = true;
+
+	if (descriptor->Type != ACPI_TYPE_PACKAGE) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityDescriptorType",
+			"%s Resource Priority entry %" PRIu32
+			" is type %u, expected a package.",
+			name, index, descriptor->Type);
+		return false;
+	}
+
+	if (descriptor->Package.Count != expected_elements) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityDescriptorCount",
+			"%s Resource Priority entry %" PRIu32
+			" should contain %" PRIu32 " elements, got %" PRIu32 ".",
+			name, index, expected_elements, descriptor->Package.Count);
+		return false;
+	}
+
+	controlled_resources = &descriptor->Package.Elements[0];
+	enable_value = &descriptor->Package.Elements[1];
+	enable_register = &descriptor->Package.Elements[2];
+	priority_count = &descriptor->Package.Elements[3];
+	priority_register = &descriptor->Package.Elements[4];
+
+	if (controlled_resources->Type != ACPI_TYPE_PACKAGE) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityControlledResourcesType",
+			"%s Resource Priority entry %" PRIu32
+			" first element must be a package of resource IDs.",
+			name, index);
+		passed = false;
+	} else if (controlled_resources->Package.Count == 0) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityControlledResourcesEmpty",
+			"%s Resource Priority entry %" PRIu32
+			" must describe at least one resource type.",
+			name, index);
+		passed = false;
+	} else {
+		uint32_t i;
+
+		for (i = 0; i < controlled_resources->Package.Count; i++) {
+			if (controlled_resources->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Method_CPCResourcePriorityControlledResourcesType",
+					"%s Resource Priority entry %" PRIu32
+					" resource list item %" PRIu32
+					" is not an integer.",
+					name, index, i);
+				passed = false;
+			}
+		}
+	}
+
+	if (!method_test_CPC_int_or_buffer(fw, name, enable_value, "EnableValue", index))
+		passed = false;
+
+	if (enable_register->Type != ACPI_TYPE_BUFFER) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityEnableRegisterType",
+			"%s Resource Priority entry %" PRIu32
+			" EnableRegister must be a buffer containing a Register() descriptor.",
+			name, index);
+		passed = false;
+	}
+
+	if (!method_test_CPC_int_or_buffer(fw, name, priority_count, "PriorityCount", index))
+		passed = false;
+	else if (priority_count->Type == ACPI_TYPE_INTEGER &&
+		 priority_count->Integer.Value < 2) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityCountValue",
+			"%s Resource Priority entry %" PRIu32
+			" PriorityCount must be >= 2, got %" PRIu64 ".",
+			name, index, (uint64_t)priority_count->Integer.Value);
+		passed = false;
+	}
+
+	if (priority_register->Type != ACPI_TYPE_BUFFER) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityRegisterType",
+			"%s Resource Priority entry %" PRIu32
+			" PriorityRegister must be a buffer containing a Register() descriptor.",
+			name, index);
+		passed = false;
+	}
+
+	return passed;
+}
+
+static bool method_test_CPC_resource_priority_registers(
+	fwts_framework *fw,
+	const char *name,
+	const ACPI_OBJECT *pkg)
+{
+	bool passed = true;
+	uint32_t i;
+
+	if (pkg->Type != ACPI_TYPE_PACKAGE) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_CPCResourcePriorityType",
+			"%s ResourcePriorityRegisters element is not a package.",
+			name);
+		return false;
+	}
+
+	for (i = 0; i < pkg->Package.Count; i++) {
+		if (!method_test_CPC_resource_priority_descriptor(fw, name,
+				&pkg->Package.Elements[i], i))
+			passed = false;
+	}
+
+	return passed;
+}
+
 static void method_test_CPC_return(
 	fwts_framework *fw,
 	char *name,
@@ -1777,6 +1925,34 @@ static void method_test_CPC_return(
 		{ ACPI_TYPE_INTBUF,	"Nominal Frequency" }
 	};
 
+	static const fwts_package_element elementsv4[] = {
+		{ ACPI_TYPE_INTEGER,	"Number of Entries" },
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTBUF,	"Highest Performance" },
+		{ ACPI_TYPE_INTBUF,	"Nominal Performance" },
+		{ ACPI_TYPE_INTBUF,	"Lowest Non Linear Performance" },
+		{ ACPI_TYPE_INTBUF,	"Lowest Performance" },
+		{ ACPI_TYPE_BUFFER,	"Guaranteed Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Desired Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Minimum Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Maximum Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Performance Reduction Tolerance Register" },
+		{ ACPI_TYPE_BUFFER,	"Timed Window Register" },
+		{ ACPI_TYPE_INTBUF,	"Counter Wraparound Time" },
+		{ ACPI_TYPE_BUFFER,	"Reference Performance Counter Register" },
+		{ ACPI_TYPE_BUFFER,	"Delivered Performance Counter Register" },
+		{ ACPI_TYPE_BUFFER,	"Performance Limited Register" },
+		{ ACPI_TYPE_BUFFER,	"CPPC Enable Register" },
+		{ ACPI_TYPE_INTBUF,	"Autonomous Selection Enable" },
+		{ ACPI_TYPE_BUFFER,	"Autonomous Activity Window Register" },
+		{ ACPI_TYPE_BUFFER,	"Energy Performance Preference Register" },
+		{ ACPI_TYPE_INTBUF,	"Reference Performance" },
+		{ ACPI_TYPE_INTBUF,	"Lowest Frequency" },
+		{ ACPI_TYPE_INTBUF,	"Nominal Frequency" },
+		{ ACPI_TYPE_BUFFER,	"OSPM Nominal Performance Register" },
+		{ ACPI_TYPE_PACKAGE,	"Resource Priority Registers" }
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -1796,11 +1972,18 @@ static void method_test_CPC_return(
 		/* For now, just check types */
 		if (fwts_method_package_elements_type(fw, name, obj, elementsv3) != FWTS_OK)
 			return;
+	} else if (revision == 4) {	// CPPC V4
+		if (fwts_method_package_elements_type(fw, name, obj, elementsv4) != FWTS_OK)
+			return;
+
+		if (!method_test_CPC_resource_priority_registers(fw, name,
+				&obj->Package.Elements[24]))
+			return;
 	} else {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"Method_CPCBadRevision",
 			"_CPC's revision is incorrect, "
-			"expecting 1, 2 or 3, got 0x%" PRIx8 , revision);
+			"expecting 1, 2, 3 or 4, got 0x%" PRIx8 , revision);
 
 		return;
 	}

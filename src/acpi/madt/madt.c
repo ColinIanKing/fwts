@@ -1532,18 +1532,24 @@ static int madt_mp_wakup(fwts_framework *fw,
 			     uint8_t *data)
 {
 	/* specific checks for subtable type 0x10: Multiprocessor Wakeup */
-	fwts_acpi_madt_mp_wakeup *mp_wakeup = (fwts_acpi_madt_mp_wakeup *) data;
-
-	if (mp_wakeup->mail_box_version != 0)
+	fwts_acpi_madt_mp_wakeup *mp_wakeup = (fwts_acpi_madt_mp_wakeup *)data;
+	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *)mtable->data;
+	uint8_t madt_revision = madt ? madt->header.revision : 0;
+	uint32_t expected_version = (madt_revision >= 7) ? 1 : 0;
+	if (mp_wakeup->mail_box_version != expected_version) {
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			    "SPECMADTMPWAKEUPVersion",
-			    "MADT %s mailbox version should be in 0, "
-			    "but instead have 0x%" PRIx32 ".",
-			    madt_sub_names[hdr->type], mp_wakeup->mail_box_version);
-	else
+			    "MADT %s mailbox version should be %" PRIu32
+			    " for MADT revision %" PRIu8 ", but instead has 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type],
+			    expected_version,
+			    madt_revision,
+			    mp_wakeup->mail_box_version);
+	} else {
 		fwts_passed(fw,
-			    "MADT %s mailbox version is in 0.",
-			    madt_sub_names[hdr->type]);
+			    "MADT %s mailbox version is set to %" PRIu32 ".",
+			    madt_sub_names[hdr->type], expected_version);
+	}
 
 	if (mp_wakeup->reserved)
 		fwts_failed(fw, LOG_LEVEL_LOW,
@@ -1565,10 +1571,8 @@ static int madt_mp_wakup(fwts_framework *fw,
 			    madt_sub_names[hdr->type], mp_wakeup->mail_box_address);
 	else
 		fwts_passed(fw,
-			    "MADT %s mailbox version is in 0.",
+			    "MADT %s mailbox address is 4K aligned.",
 			    madt_sub_names[hdr->type]);
-
-
 
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }

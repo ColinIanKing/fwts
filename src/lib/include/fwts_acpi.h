@@ -729,6 +729,7 @@ typedef struct {
 	uint16_t	mail_box_version;
 	uint32_t	reserved;
 	uint64_t	mail_box_address;
+	uint64_t	reset_vector;	/* Present (ACPI 6.6) */
 } __attribute__ ((packed)) fwts_acpi_madt_mp_wakeup;
 
 /* New in ACPI 6.5 Core Programmable Interrupt Controller (CORE PIC) Structure, 5.2.12.20 */

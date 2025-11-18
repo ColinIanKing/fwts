@@ -5,18 +5,45 @@ fpdt              S3 Performance Table Pointer Record:
 fpdt                Perf Rec Type:	0x0001
 fpdt                Rec Length:	0x10
 fpdt                Revision:	0x01
-fpdt                Reserved:	0x00000000
+fpdt                Reserved:	0xff000000
 fpdt                S3PT Pointer:	0x00000000d9ec0018
+fpdt            FAILED [MEDIUM] FPDTReservedNonZero: Test 1, FPDT Reserved
+fpdt            field must be zero, got 0xff000000 instead
 fpdt            Note: currently fwts does not check S3PT validity and the
 fpdt            associated data
-fpdt            FAILED [HIGH] FPDTFWBootPerfPrtRecBadLength: Test 1, FPDT
-fpdt            Firmware Basic Boot Performance Pointer Record is 17 bytes
-fpdt            and should be 16 bytes in size
-fpdt            FAILED [HIGH] FPDTPerformanceRecordTypeInvalid: Test 1,
-fpdt            FPDT Performance Record Type is 0x4000 which is a reserved
-fpdt            type for future use only
+fpdt                Host Firmware Boot Performance Pointer Record:
+fpdt                Perf Rec Type:	0x0000
+fpdt                Rec Length:	0x10
+fpdt                Revision:	0x02
+fpdt                Reserved:	0x00000011
+fpdt                FBPT Pointer:	0x00000000d9ec0038
+fpdt            FAILED [MEDIUM] FPDTReservedNonZero: Test 1, FPDT Reserved
+fpdt            field must be zero, got 0x00000011 instead
+fpdt            Note: currently fwts does not check Host Firmware Boot
+fpdt            Performance Table validity and the associated data
+fpdt            FAILED [MEDIUM] FPDTBadFieldValue: Test 1, FPDT FBPT
+fpdt            Revision field must be 1, got 2 instead.
+fpdt              Microcontroller Boot Performance Table Pointer Record:
+fpdt                Perf Rec Type:	0x0002
+fpdt                Rec Length:	0x10
+fpdt                Revision:	0x01
+fpdt                Reserved:	0x01000000
+fpdt                MBPT Pointer:	0x00000000d9ec0058
+fpdt            FAILED [MEDIUM] FPDTReservedNonZero: Test 1, FPDT Reserved
+fpdt            field must be zero, got 0x01000000 instead
+fpdt              Timestamp Delta Record:
+fpdt                Perf Rec Type:	0x0003
+fpdt                Rec Length:	0x18
+fpdt                Revision:	0x05
+fpdt                Reserved:	0x00000001
+fpdt                Timestamp Domain ID:	0x0000000000000002
+fpdt                Timestamp Delta:	0x0000000012345678
+fpdt            FAILED [MEDIUM] FPDTReservedNonZero: Test 1, FPDT Reserved
+fpdt            field must be zero, got 0x00000001 instead
+fpdt            FAILED [MEDIUM] FPDTBadFieldValue: Test 1, FPDT Timestamp
+fpdt            Delta Revision field must be 1, got 5 instead.
 fpdt            
 fpdt            ==========================================================
-fpdt            0 passed, 2 failed, 0 warning, 0 aborted, 0 skipped, 0
+fpdt            0 passed, 6 failed, 0 warning, 0 aborted, 0 skipped, 0
 fpdt            info only.
 fpdt            ==========================================================

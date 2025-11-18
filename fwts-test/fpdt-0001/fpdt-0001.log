@@ -9,14 +9,27 @@ fpdt                Reserved:	0x00000000
 fpdt                S3PT Pointer:	0x00000000d9ec0018
 fpdt            Note: currently fwts does not check S3PT validity and the
 fpdt            associated data
-fpdt                Firmware Basic Boot Performance Pointer Record:
+fpdt                Host Firmware Boot Performance Pointer Record:
 fpdt                Perf Rec Type:	0x0000
 fpdt                Rec Length:	0x10
 fpdt                Revision:	0x01
 fpdt                Reserved:	0x00000000
 fpdt                FBPT Pointer:	0x00000000d9ec0038
-fpdt            Note: currently fwts does not check FBPT validity and the
-fpdt            associated data
+fpdt            Note: currently fwts does not check Host Firmware Boot
+fpdt            Performance Table validity and the associated data
+fpdt              Microcontroller Boot Performance Table Pointer Record:
+fpdt                Perf Rec Type:	0x0002
+fpdt                Rec Length:	0x10
+fpdt                Revision:	0x01
+fpdt                Reserved:	0x00000000
+fpdt                MBPT Pointer:	0x00000000d9ec0058
+fpdt              Timestamp Delta Record:
+fpdt                Perf Rec Type:	0x0003
+fpdt                Rec Length:	0x18
+fpdt                Revision:	0x01
+fpdt                Reserved:	0x00000000
+fpdt                Timestamp Domain ID:	0x0000000000000002
+fpdt                Timestamp Delta:	0x0000000012345678
 fpdt            PASSED: Test 1, No issues found in FPDT table.
 fpdt            
 fpdt            ==========================================================

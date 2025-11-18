@@ -1115,6 +1115,25 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_fpdt_basic_boot_perf_ptr;
 
 /*
+ * ACPI Microcontroller Boot Performance Table Pointer Record, 5.2.24.6
+ */
+typedef struct {
+	fwts_acpi_table_fpdt_header	fpdt;
+	uint32_t	reserved;
+	uint64_t	mbpt_addr;
+} __attribute__ ((packed)) fwts_acpi_table_fpdt_micro_boot_perf_ptr;
+
+/*
+ * ACPI Timestamp Delta Record, 5.2.24.7
+ */
+typedef struct {
+	fwts_acpi_table_fpdt_header	fpdt;
+	uint32_t	reserved;
+	uint64_t	timestamp_domain_id;
+	uint64_t	timestamp_delta;
+} __attribute__ ((packed)) fwts_acpi_table_fpdt_timestamp_delta;
+
+/*
  * ACPI GTDT (Generic Timer Description Table), 5.2.24
  */
 typedef struct {

@@ -63,6 +63,9 @@ static int fpdt_test1(fwts_framework *fw)
 	uint8_t *data = (uint8_t *)table->data, *ptr = data;
 	fwts_acpi_table_header *header= (fwts_acpi_table_header *)table->data;
 	bool passed = true;
+	uint32_t host_fw_boot_ptr_count = 0;
+	uint32_t micro_boot_ptr_count = 0;
+	const uint32_t acpi_version = fwts_get_acpi_version(fw);
 	const size_t fpdt_hdr_len = sizeof(fwts_acpi_table_fpdt_header);
 
 	/* Size sanity, got enough table to get initial header */
@@ -78,6 +81,8 @@ static int fpdt_test1(fwts_framework *fw)
 		fwts_acpi_table_fpdt_header *fpdt = (fwts_acpi_table_fpdt_header *)ptr;
 		fwts_acpi_table_fpdt_basic_boot_perf_ptr *fbbpr = (fwts_acpi_table_fpdt_basic_boot_perf_ptr *)ptr;
 		fwts_acpi_table_fpdt_s3_perf_ptr *s3ptpr = (fwts_acpi_table_fpdt_s3_perf_ptr *)ptr;
+		fwts_acpi_table_fpdt_micro_boot_perf_ptr *mbptpr = (fwts_acpi_table_fpdt_micro_boot_perf_ptr *)ptr;
+		fwts_acpi_table_fpdt_timestamp_delta *tdr = (fwts_acpi_table_fpdt_timestamp_delta *)ptr;
 
 		/* checking if the fpdt header fully available */
 		if (ptr + sizeof(fwts_acpi_table_fpdt_header) > (data + table->length)) {
@@ -90,16 +95,17 @@ static int fpdt_test1(fwts_framework *fw)
 		}
 
 		switch (fpdt->type) {
-		case 0x0000:	/* Firmware Basic Boot Performance Pointer Record */
+		case 0x0000:	/* Host Firmware Boot Performance Pointer Record */
+			host_fw_boot_ptr_count++;
 			if (fbbpr->fpdt.length != sizeof(fwts_acpi_table_fpdt_basic_boot_perf_ptr)) {
 				passed = false;
 				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"FPDTFWBootPerfPrtRecBadLength",
-					"FPDT Firmware Basic Boot Performance Pointer Record is %" PRIu32
+					"FPDTHostBootPerfPtrBadLength",
+					"FPDT Host Firmware Boot Performance Pointer Record is %" PRIu32
 					" bytes and should be %zu bytes in size",
 					fbbpr->fpdt.length, sizeof(fwts_acpi_table_fpdt_basic_boot_perf_ptr));
 			} else {
-				fpdt_rec_header_dump(fw, "  Firmware Basic Boot Performance Pointer Record", fpdt);
+				fpdt_rec_header_dump(fw, "  Host Firmware Boot Performance Pointer Record", fpdt);
 				fwts_log_info_simp_int(fw, "    Reserved:	", fbbpr->reserved);
 				fwts_log_info_simp_int(fw, "    FBPT Pointer:	", fbbpr->fbpt_addr);
 
@@ -110,7 +116,8 @@ static int fpdt_test1(fwts_framework *fw)
 				 * of the Firmware Basic Boot Performance Table, should also get and check
 				 * the table from the address
 				 */
-				fwts_log_info(fw, "Note: currently fwts does not check FBPT validity and the associated data");
+				fwts_log_info(fw, "Note: currently fwts does not check Host Firmware Boot Performance "
+					"Table validity and the associated data");
 			}
 
 			fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "FPDT", "FBPT Revision", fbbpr->fpdt.revision, 1, &passed);
@@ -144,7 +151,45 @@ static int fpdt_test1(fwts_framework *fw)
 
 			/* Spec doesn't mention Reserved field should be 0 or not, skip checking the reserved field */
 			break;
-		case 0x0002 ... 0x0fff:
+		case 0x0002:	/* Microcontroller Boot Performance Table Pointer Record */
+			micro_boot_ptr_count++;
+			if (mbptpr->fpdt.length != sizeof(fwts_acpi_table_fpdt_micro_boot_perf_ptr)) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"FPDTMBPTRecBadLength",
+					"FPDT Microcontroller Boot Performance Table Pointer Record is %" PRIu32
+					" bytes and should be %zu bytes in size",
+					mbptpr->fpdt.length, sizeof(fwts_acpi_table_fpdt_micro_boot_perf_ptr));
+			} else {
+				fpdt_rec_header_dump(fw, "Microcontroller Boot Performance Table Pointer Record", fpdt);
+				fwts_log_info_simp_int(fw, "    Reserved:	", mbptpr->reserved);
+				fwts_log_info_simp_int(fw, "    MBPT Pointer:	", mbptpr->mbpt_addr);
+
+				fwts_acpi_reserved_zero("FPDT", "Reserved", mbptpr->reserved, &passed);
+			}
+
+			fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "FPDT", "MBPT Revision", mbptpr->fpdt.revision, 1, &passed);
+			break;
+		case 0x0003:	/* Timestamp Delta Record */
+			if (tdr->fpdt.length != sizeof(fwts_acpi_table_fpdt_timestamp_delta)) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"FPDTTimestampDeltaBadLength",
+					"FPDT Timestamp Delta Record is %" PRIu32
+					" bytes and should be %zu bytes in size",
+					tdr->fpdt.length, sizeof(fwts_acpi_table_fpdt_timestamp_delta));
+			} else {
+				fpdt_rec_header_dump(fw, "Timestamp Delta Record", fpdt);
+				fwts_log_info_simp_int(fw, "    Reserved:	", tdr->reserved);
+				fwts_log_info_simp_int(fw, "    Timestamp Domain ID:	", tdr->timestamp_domain_id);
+				fwts_log_info_simp_int(fw, "    Timestamp Delta:	", tdr->timestamp_delta);
+
+				fwts_acpi_reserved_zero("FPDT", "Reserved", tdr->reserved, &passed);
+			}
+
+			fwts_acpi_fixed_value(fw, LOG_LEVEL_MEDIUM, "FPDT", "Timestamp Delta Revision", tdr->fpdt.revision, 1, &passed);
+			break;
+		case 0x0004 ... 0x0fff:
 			fpdt_rec_header_dump(fw, "Reserved for ACPI specification use", fpdt);
 			fpdt_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
 			break;
@@ -177,6 +222,34 @@ static int fpdt_test1(fwts_framework *fw)
 	}
 
 done:
+	if (host_fw_boot_ptr_count == 0) {
+		passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"FPDTHostBootPointerMissing",
+			"FPDT must contain one Host Firmware Boot Performance Table Pointer Record but none were found.");
+	} else if (host_fw_boot_ptr_count > 1) {
+		passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"FPDTHostBootPointerCount",
+			"FPDT must contain one Host Firmware Boot Performance Table Pointer Record but %" PRIu32
+			" were found.", host_fw_boot_ptr_count);
+	}
+
+	if (acpi_version >= FWTS_ACPI_VERSION_66) {
+		if (micro_boot_ptr_count == 0) {
+			passed = false;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"FPDTMicroBootPointerMissing",
+				"FPDT must contain one Microcontroller Boot Performance Table Pointer Record but none were found.");
+		} else if (micro_boot_ptr_count > 1) {
+			passed = false;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"FPDTMicroBootPointerCount",
+				"FPDT must contain one Microcontroller Boot Performance Table Pointer Record but %" PRIu32
+				" were found.", micro_boot_ptr_count);
+		}
+	}
+
 	if (passed)
 		fwts_passed(fw, "No issues found in FPDT table.");
 

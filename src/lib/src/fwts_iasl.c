@@ -217,6 +217,7 @@ int fwts_iasl_disassemble_all_to_file(
 	int i, j, ret;
 	char filename[PATH_MAX + 18];
 	char pathname[PATH_MAX];
+	char abspath[PATH_MAX];
 
 	ret = fwts_iasl_init(fw);
 	if (ret == FWTS_ERROR_NO_PRIV) {
@@ -244,8 +245,13 @@ int fwts_iasl_disassemble_all_to_file(
 				pathname, info->name, j);
 			if (fwts_iasl_disassemble_to_file(fw, info, true, filename) != FWTS_OK)
 				fprintf(stderr, "Could not disassemble %s\n", info->name);
-			else
-				printf("Disassembled %s to %s\n", info->name, filename);
+			else {
+				/* Resolve to absolute path for clearer output */
+				if (realpath(filename, abspath) != NULL)
+					printf("Disassembled %s to %s\n", info->name, abspath);
+				else
+					printf("Disassembled %s to %s\n", info->name, filename);
+			}
 			j++;
 		}
 	}

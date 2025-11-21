@@ -2445,7 +2445,7 @@ typedef struct {
 
 /*
  *  NHLT Table
- *   see https://01.org/sites/default/files/595976_intel_sst_nhlt.pdf
+ *   see 5.2.27 Non HDAudio Link Table (NHLT)
 */
 typedef struct {
 	fwts_acpi_table_header  header;
@@ -2453,7 +2453,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_nhlt;
 
 typedef struct  {
-	uint32_t	ep_descriptor_len;
+	uint32_t	len;
 	uint8_t		link_type;
 	uint8_t		instance_id;
 	uint16_t	vendor_id;
@@ -2468,29 +2468,40 @@ typedef struct  {
 typedef struct {
 	uint32_t capabilities_size;
 	uint8_t capabilities[0];
-} __attribute__ ((packed)) fwts_acpi_table_nhlt_specific_config;
+} __attribute__ ((packed)) fwts_acpi_table_nhlt_config_space_common;
 
 typedef struct {
-	uint16_t wformattag;
-	uint16_t nchannels;
-	uint32_t nsamplespersec;
-	uint32_t navgbytespersec;
-	uint16_t nblockalign;
-	uint16_t wbitspersample;
-	uint16_t cbsize;
-	uint16_t wvalidbitspersample;
-	uint32_t dwchannelmask;
+	uint8_t		id[16];
+	uint8_t		instance_id;
+	uint8_t		port_id;
+} __attribute__ ((packed)) fwts_acpi_table_nhlt_device_info;
+
+typedef struct {
+	uint8_t		devices_count;
+	fwts_acpi_table_nhlt_device_info devices[0];
+} __attribute__ ((packed)) fwts_acpi_table_nhlt_devices_info;
+
+typedef struct {
+	uint16_t format_tag;
+	uint16_t channels;
+	uint32_t samples_per_sec;
+	uint32_t avg_bytes_per_sec;
+	uint16_t block_align;
+	uint16_t bits_per_sample;
+	uint16_t size;
+	uint16_t valid_bits_per_sample;
+	uint32_t channel_mask;
 	uint8_t	subformat[16];
-} __attribute__ ((packed))  fwts_acpi_table_nhlt_waveformatextensible;
+} __attribute__ ((packed)) fwts_acpi_table_nhlt_wave_format_ext;
 
 typedef struct {
-	fwts_acpi_table_nhlt_waveformatextensible format;
-	fwts_acpi_table_nhlt_specific_config formatconfiguration;
+	fwts_acpi_table_nhlt_wave_format_ext format;
+	fwts_acpi_table_nhlt_config_space_common config;
 } __attribute__ ((packed))  fwts_acpi_table_nhlt_format_configuration;
 
 typedef struct {
-	uint8_t formatscount;
-	fwts_acpi_table_nhlt_format_configuration formatsconfiguration[0];
+	uint8_t formats_count;
+	fwts_acpi_table_nhlt_format_configuration formats[0];
 } __attribute__ ((packed))  fwts_acpi_table_nhlt_formats_configuration;
 
 /*

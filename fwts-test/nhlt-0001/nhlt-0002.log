@@ -1,0 +1,15 @@
+nhlt            nhlt: NHLT Non HDAudio Link Table test.
+nhlt            ----------------------------------------------------------
+nhlt            Test 1 of 1: NHLT table validation test.
+nhlt            FAILED [HIGH] NHLTBadDeviceType: Test 1, NHLT endpoint 1
+nhlt            uses reserved PDM Device Type 3.
+nhlt            FAILED [HIGH] NHLTBadDirection: Test 1, NHLT endpoint 2
+nhlt            has invalid Direction 3, must be 0 (Render) or 1
+nhlt            (Capture).
+nhlt            FAILED [HIGH] NHLTBadDeviceType: Test 1, NHLT endpoint 2
+nhlt            uses reserved SSP Device Type 7.
+nhlt            
+nhlt            ==========================================================
+nhlt            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0
+nhlt            info only.
+nhlt            ==========================================================

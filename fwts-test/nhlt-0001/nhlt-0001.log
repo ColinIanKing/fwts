@@ -1,0 +1,10 @@
+nhlt            nhlt: NHLT Non HDAudio Link Table test.
+nhlt            ----------------------------------------------------------
+nhlt            Test 1 of 1: NHLT table validation test.
+nhlt            PASSED: Test 1, NHLT table complies with ACPI 6.6 Section
+nhlt            5.2.27.
+nhlt            
+nhlt            ==========================================================
+nhlt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+nhlt            info only.
+nhlt            ==========================================================

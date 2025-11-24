@@ -124,6 +124,7 @@ fwts_SOURCES = main.c 				\
 	acpi/msdm/msdm.c 			\
 	acpi/method/method.c 			\
 	acpi/nfit/nfit.c 			\
+	acpi/nhlt/nhlt.c			\
 	acpi/nhltdump/nhltdump.c 		\
 	acpi/osilinux/osilinux.c 		\
 	acpi/pcc/pcc.c 				\

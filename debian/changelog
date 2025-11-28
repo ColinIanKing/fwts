@@ -1,3 +1,30 @@
+fwts (25.11.00-0ubuntu1) resolute; urgency=medium
+
+  [Al Korv]
+  * fwts: skip the wake alarm suite if the feature is not implemented
+
+  [Ivan Hu]
+  * acpi: ras2: fix the wrong feature type check
+  * acpi: method: add tests for _PCS and _PST power source methods (mantis 2478)
+  * fwts-test: sync with the methods _PCS and _PST were added
+  * acpi: srat: add RINTC affinity validation (mantis 2433)
+  * fwts-test: srat: add regression test for the RINTC affinity data
+  * acpi: madt: enforce PSCI when parking protocol deprecated (mantis 2425)
+  * acpi: madt: handle GICR and ITS flags for ACPI 6.6 (mantis 2422)
+  * acpi: method: extend _CPC test for ACPI 6.6 (mantis 2353)
+  * acpi: method: add _VDM voltage domain test (mantis 2374)
+  * acpi: madt: align MP wakeup struct with ACPI 6.6 (mantis 2404)
+  * fwts-test: sync with the method _VDM was added
+  * acpi: fpdt: update the FPDT records for ACPI 6.6 (mantis 2416)
+  * fwts-test: sync up with fpdt records adding
+  * acpi: remove standalone s3pt test
+  * acpi: nhltdump: sync with ACPI 6.6 NHLT spec
+  * acpi: nhlt: add ACPI 6.6 NHLT table test (mantis 2430)
+  * fwts-test: sync up adding nhlt test
+  * auto-packager: mkpackage.sh: add resolute 
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Fri, 28 Nov 2025 10:45:50 +0800
+
 fwts (25.09.00-0ubuntu1) questing; urgency=medium
 
   [Colin Ian King]

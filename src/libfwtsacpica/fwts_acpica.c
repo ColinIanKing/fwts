@@ -555,15 +555,30 @@ ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits,
 ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_HANDLE Handle)
 {
 	sem_info *sem = (sem_info *)Handle;
+	sem_info *entry = NULL;
 	ACPI_STATUS ret = AE_OK;
+	int i;
 
 	if (!sem)
 		return AE_BAD_PARAMETER;
 
 	pthread_mutex_lock(&mutex_lock_sem_table);
-	if (sem_destroy(&sem->sem) == -1)
+	for (i = 0; i < MAX_SEMAPHORES; i++) {
+		if (&sem_table[i] == sem) {
+			entry = &sem_table[i];
+			break;
+		}
+	}
+
+	if (entry == NULL || !entry->used) {
+		pthread_mutex_unlock(&mutex_lock_sem_table);
+		return AE_BAD_PARAMETER;
+	}
+
+	if (sem_destroy(&entry->sem) == -1)
 		ret = AE_BAD_PARAMETER;
-	sem->used = false;
+	entry->used = false;
+	entry->count = 0;
 
 	pthread_mutex_unlock(&mutex_lock_sem_table);
 

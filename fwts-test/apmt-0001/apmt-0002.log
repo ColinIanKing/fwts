@@ -51,7 +51,7 @@ apmt              Node type:                0x05
 apmt              Identifier:               0x00000001
 apmt              Node Instance primary:    0x0000000000000002
 apmt              Node Instance secondary:  0x00000000
-apmt            FAILED [HIGH] APMTNodeTypeUnknow: Test 1, APMT Node Type
+apmt            FAILED [HIGH] APMTNodeTypeUnknown: Test 1, APMT Node Type
 apmt            0x05 is unknown.
 apmt              Base address 0:           0x0000000000003000
 apmt              Base address 1:           0x0000000000003000

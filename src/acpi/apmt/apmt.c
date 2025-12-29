@@ -85,7 +85,7 @@ static int apmt_test1(fwts_framework *fw)
 			/* reserved */
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"APMTNodeTypeUnknow",
+				"APMTNodeTypeUnknown",
 				"APMT Node Type 0x%2.2" PRIx8 " is unknown.",
 				entry->type);
 			break;

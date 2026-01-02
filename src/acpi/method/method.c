@@ -393,7 +393,7 @@ void method_evaluate_found_method(
  *	any returned values
  */
 static int method_evaluate_method(fwts_framework *fw,
-	int test_type,  /* Manditory or optional */
+	int test_type,  /* Mandatory or optional */
 	char *name,
 	ACPI_OBJECT *args,
 	int num_args,
@@ -444,7 +444,7 @@ static int method_evaluate_method(fwts_framework *fw,
 	if (found) {
 		if ((test_type & METHOD_MOBILE) && (!fadt_mobile_platform)) {
 			fwts_warning(fw,
-				"The FADT indictates that this machine is not "
+				"The FADT indicates that this machine is not "
 				"a mobile platform, however it has a mobile "
 				"platform specific object %s defined. "
 				"Either the FADT referred PM profile is "
@@ -455,7 +455,7 @@ static int method_evaluate_method(fwts_framework *fw,
 		return FWTS_OK;
 	} else {
 		if (!(test_type & METHOD_SILENT)) {
-			/* Mandatory not-found test are a failure */
+			/* Mandatory not-found test is a failure */
 			if (test_type & METHOD_MANDATORY) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodNotExist",
 					"Object %s did not exist.", name);
@@ -598,7 +598,7 @@ static void check_evt_event (
 		return;
 	}
 
-	/* Get the handle of return;the _EVT method. */
+	/* Get the handle of the _EVT method. */
 	snprintf (path, 251, "%s._EVT", &gpio->ResourceSource.StringPtr[i]);
 
 	status = AcpiGetHandle (NULL, path, &evt_handle);
@@ -934,7 +934,7 @@ static void method_test_PRT_return(
 			}
 		}
 
-		/* check sub-packages's PCI address */
+		/* check sub-package's PCI address */
 		element = &pkg->Package.Elements[0];
 		if ((element->Integer.Value & 0xFFFF) != 0xFFFF) {
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
@@ -944,7 +944,7 @@ static void method_test_PRT_return(
 			failed = true;
 		}
 
-		/* check sub-packages's PCI pin number */
+		/* check sub-package's PCI pin number */
 		element = &pkg->Package.Elements[1];
 		if (element->Integer.Value > 3) {
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
@@ -2396,7 +2396,7 @@ static void method_test_PSS_return(
 			fwts_advice(fw,
 				"_PSS P-States must be ordered in descending "
 				"order of power dissipation, so that the "
-				"zero'th entry has the highest power "
+				"zeroth entry has the highest power "
 				"dissipation level and the Nth has the "
 				"lowest.");
 			failed = true;
@@ -2641,7 +2641,7 @@ static void method_test_LPI_return(
 	if (fwts_method_package_count_min(fw, name, obj, 3) != FWTS_OK)
 		return;
 
-	/* first 3 elements are integers, and rests are packages */
+	/* first 3 elements are integers, and the rest are packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		if (i < 3) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
@@ -2718,8 +2718,8 @@ static void method_test_LPI_return(
 				default:
 					fwts_failed(fw, LOG_LEVEL_HIGH,
 						"Method_LPIBadSubElement",
-						"%s sub-package %" PRIu32 " element %" PRIu32 " should have "
-						"9 elements, got .", name, i, j+1);
+						"%s sub-package %" PRIu32 " should have "
+						"10 elements, got %" PRIu32 ".", name, i, j+1);
 					failed = true;
 					break;
 				}
@@ -3956,7 +3956,7 @@ static void method_test_PMC_return(
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Method_PMCBadElement",
 			"%s element 0 has reserved bits that are non-zero, got "
-			"0x%" PRIx32 " and expected 0 for these field. ", name,
+			"0x%" PRIx32 " and expected 0 for these fields. ", name,
 			(uint32_t) element->Integer.Value);
 		failed = true;
 	}
@@ -4308,7 +4308,7 @@ static void method_test_ART_return(
 			continue;
 		}
 
-		/* First two elements are references, and rests are integers */
+		/* First two elements are references, and the rest are integers */
 		for (j = 0; j < 2; j++) {
 			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_LOCAL_REFERENCE))
 				elements_ok = false;
@@ -4370,7 +4370,7 @@ static void method_test_TRT_return(
 			continue;
 		}
 
-		/* First two elements are references, and rests are integers */
+		/* First two elements are references, and the rest are integers */
 		for (j = 0; j < 2; j++) {
 			if (fwts_method_check_element_type(fw, name, pkg, i, j, ACPI_TYPE_LOCAL_REFERENCE))
 				elements_ok = false;
@@ -4900,7 +4900,7 @@ static void method_test_BCL_return(
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Method_BCLAscendingOrder",
 			"Some or all of the brightness "
-			"level are not in ascending "
+			"levels are not in ascending "
 			"order which should be fixed "
 			"in the firmware.");
 		failed = true;

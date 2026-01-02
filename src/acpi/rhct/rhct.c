@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2023 Intel Corporation
  * Copyright (C) 2025 Ventana Micro Systems Inc
+ * Copyright (C) 2026 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -62,7 +63,7 @@ static void rhct_check_node_isa_string(fwts_framework *fw,
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 			"RHCTBadISAStringLength",
 			"RHCT isa string should have length %" PRIu16
-			" ,got %zu",
+			", got %zu",
 			node->isa_length, strlen(node->isa) + 1);
 		*passed = false;
 		goto done;

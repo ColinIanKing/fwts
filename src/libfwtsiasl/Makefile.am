@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011-2025 Canonical, Ltd.
+# Copyright (C) 2011-2026 Canonical, Ltd.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

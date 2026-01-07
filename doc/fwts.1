@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH FWTS 1 "10 September, 2021"
+.TH FWTS 1 "7 January, 2026"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -32,7 +32,7 @@ firmware test suite.
 The tool
 .B fwts
 is comprised of over 150 tests that are designed to examine and test
-different aspects of PC firmware. Many of these tests need super user
+different aspects of PC firmware. Many of these tests need superuser
 access to extract tables and interact with the firmware and ACPI, so running
 .B
 fwts
@@ -52,10 +52,10 @@ outputs the test results into the log file
 results.log
 however a different log file name can be specified and if required, output to stderr or stdout can be selected.
 .P
-Note that there a variety of tests, including tests that can potentially hang a machine (such as a suspend/hibernate/resume).
+Note that there are a variety of tests, including tests that can potentially hang a machine (such as a suspend/hibernate/resume).
 
 .SH OPTIONS
-fwts options are as follow:
+fwts options are as follows:
 .TP
 .B \-
 output results to stdout.
@@ -63,7 +63,7 @@ output results to stdout.
 .B \-\-acpica
 enable ACPICA execution mode options. These can be specified as a comma separated
 list of one or more options. Available options are: serialized (serialized execution
-of AML), slack (run in less pedeantic mode), ignore\-errors (ignore ACPICA exception
+of AML), slack (run in less pedantic mode), ignore\-errors (ignore ACPICA exception
 errors), disable\-auto\-repair (disable ACPICA from automatically fixing broken ACPICA controls).
 Note that the slack mode will turn on implicit returns of zero on control methods to attempt
 to allow buggy AML to work on non-Windows systems.
@@ -141,14 +141,14 @@ specifies the number of times to query a variable in the uefirtvariable query va
 run all general UEFI tests.
 .TP
 .B \-\-filter\-error\-discard
-specifies the errors that one wants to silently ignore. One supplies a comma sperated
+specifies the errors that one wants to silently ignore. One supplies a comma separated
 list of fwts error message labels that one wants fwts to not report as errors. fwts will
 run the test but if there is a test failure and the label matches the one supplied in this
 list fwts will then just ignore this error. This cannot be used with \-\-filter\-error\-keep.
 .TP
 .B \-\-filter\-error\-keep
 specifies the errors that one wants to keep, all other errors are silently ignored.
-One supplies a comma sperated list of fwts error message labels that one wants fwts
+One supplies a comma separated list of fwts error message labels that one wants fwts
 report as errors, other test failures will be not reported and silently ignored.
 This cannot be used with \-\-filter\-error\-discard.
 .TP
@@ -218,7 +218,7 @@ specify the log type. Currently plaintext, json and xml log types are available 
 default is plaintext.
 .TP
 .B \-\-lspci=path
-specify the full path and filename to the the lspci binary.
+specify the full path and filename to the lspci binary.
 .TP
 .B \-P, \-\-power\-states
 run S3 and S4 power state tests (s3, s4 tests)
@@ -267,7 +267,7 @@ minimum time between S3 iterations.
 maximum time between S3 iterations.
 .TP
 .B \-\-s3\-multiple=N
-specified the number of multiple S3 suspend/resume tests to run. The default
+specify the number of multiple S3 suspend/resume tests to run. The default
 is 2 tests.
 .TP
 .B \-\-s3\-resume\-hook=hookscript
@@ -314,7 +314,7 @@ minimum time between S4 iterations.
 maximum time between S4 iterations.
 .TP
 .B \-\-s4\-multiple=N
-specified the number of multiple S4 hibernate/resume tests to run. The default
+specify the number of multiple S4 hibernate/resume tests to run. The default
 is 2 tests.
 .TP
 .B \-\-s4\-quirks=--quirk[,--quirk]
@@ -436,14 +436,16 @@ sudo fwts s3 \-\-s3\-multiple=100 \-\-s3\-min\-delay=1 \-\-s3\-max\-delay=10 \-\
 .SH AUTHOR
 fwts was originally written by Colin King with much of the original test
 code derived from the Intel Linux Firmware test kit. Many thanks also for
-contributions from (in alphabetical order): AceLan Kao, Al Stone, Alberto
-Milone, Alex Hung, Anthony Wong, Björn Esser, Chris Goldsworthy,
-Chris Van Hoof, David Ward, Deb McLemore, Erico Nunes, Fan Wu, Fu Wei,
-Heyi Guo, Ivan Hu, Jeffrey Hugo, Jeremy Kerr, Jiri Vohanka, Kamal Mostafa,
-Keng-Yu Lin, Mahesh Bireddy, Matt Flemimg, Naresh Bhat, Paul Menzel,
+contributions from (in alphabetical order): AceLan Kao, Al Korv, Al Stone,
+Alberto Milone, Alex Hung, Anthony Wong, Armin Wolf, Björn Esser,
+Chris Goldsworthy, Chris Van Hoof, David Ward, Deb McLemore, Erico Nunes,
+Fan Wu, Fu Wei, G Edhaya Chandran, Gergo Koteles, Haibo Xu, Hector Cao,
+Heinrich Schuchardt, Heyi Guo, Ivan Hu, Jeffrey Hugo, Jeremy Kerr,
+Jiri Vohanka, Kamal Mostafa, Keng-Yu Lin, Mahesh Bireddy, Mario Limonciello,
+Matt Fleming, Miao Wang, Monty Zhao, Naresh Bhat, Paul Menzel,
 Phidias Chiang, Pradeep Gaddam, Prarit Bhargava, Rajat Goyal, Ricardo Neri,
-Robert Hooker, Rudolf Marek, Sakar Arora, Seth Forshee, Yang Kun, Yi Li and
-Zhang Rui.
+Robert Hooker, Rudolf Marek, Sakar Arora, Seth Forshee, Sunil V L,
+Weizhao Ouyang, Yang Kun, Yi Li and Zhang Rui.
 .PP
 This manual page was written by Colin King for the Ubuntu project
 (but may be used by others).

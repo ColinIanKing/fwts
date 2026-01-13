@@ -25,11 +25,34 @@
 #include <fcntl.h>
 
 #define FWTS_INTEL_HOST_PATH	"/sys/bus/pci/devices/0000:00:00.0/config"
+#define FWTS_INTEL_IGD_PATH	"/sys/bus/pci/devices/0000:00:02.0"
 
 #define FWTS_GGC		0x50
 #define FWTS_TSEGMB		0xB8
 #define FWTS_TOLUD		0xBC
 #define FWTS_LOCK_FIELD		0x01
+
+static bool smm_has_intel_igd(fwts_framework *fw)
+{
+	char path[256];
+	char *class_code_str;
+
+	FWTS_UNUSED(fw);
+
+	snprintf(path, sizeof(path), "%s/class", FWTS_INTEL_IGD_PATH);
+	class_code_str = fwts_get(path);
+	if (class_code_str == NULL)
+		return false;
+
+	/* Display controller class code starts with 0x03 */
+	if (strncmp(class_code_str, "0x03", 4) == 0) {
+		free(class_code_str);
+		return true;
+	}
+
+	free(class_code_str);
+	return false;
+}
 
 static int smm_init(fwts_framework *fw)
 {
@@ -70,6 +93,13 @@ static int smm_test0(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	(void)close(fd);
+
+	if (!smm_has_intel_igd(fw)) {
+		fwts_log_info(fw, "Intel integrated graphics device not found, "
+			"skipping client-specific SMM lock checks.");
+		fwts_skipped(fw, "SMM test not applicable to this platform.");
+		return FWTS_SKIP;
+	}
 
 	if ((config[FWTS_GGC] & FWTS_LOCK_FIELD) != 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "SMMGGCNotLocked",

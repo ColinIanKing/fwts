@@ -2615,6 +2615,8 @@ typedef enum {
 	FWTS_AEST_SMMU			= 2,
 	FWTS_AEST_VENDOR_DEFINED	= 3,
 	FWTS_AEST_GIC			= 4,
+	FWTS_AEST_PCIE_ROOT_COMPLEX	= 5,
+	FWTS_AEST_PROXY			= 6,
 	FWTS_AEST_RESERVED
 } fwts_acpi_aest_type;
 
@@ -2627,7 +2629,7 @@ typedef struct {
 	uint32_t	offset_node_interrupt_array;
 	uint32_t	node_interrupt_size;
 	uint64_t	timestamp_rate;
-	uint64_t	reserved1;
+	uint64_t	timebase_offset;
 	uint64_t	error_injection_countdown_rate;
 	/*
 	 * followed by Node-specific data, Node interface
@@ -2697,15 +2699,32 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_aest_gic;
 
 typedef struct {
+	uint32_t	iort_node_reference;
+} __attribute__ ((packed)) fwts_acpi_table_aest_pcie_root_complex;
+
+typedef struct {
+	uint64_t	node_address;
+} __attribute__ ((packed)) fwts_acpi_table_aest_proxy;
+
+typedef struct {
 	uint8_t		interface_type;
-	uint8_t		reserved[3];
+	uint8_t		group_format;
+	uint16_t	reserved;
 	uint32_t	flags;
 	uint64_t	base_address;
 	uint32_t	start_error_record_index;
 	uint32_t	number_of_error_records;
-	uint64_t	error_record_implemented;
-	uint64_t	error_record_based_status_reporting_supported;
-	uint64_t	addressing_mode;
+	/* Variable-size fields (size = 8*gf bytes each):
+	 * - Error record implemented (offset 24)
+	 * - Error group-based status reporting supported (offset 24 + 8*gf)
+	 * - Addressing mode (offset 24 + 16*gf)
+	 * V2 additional fields (offset 24 + 24*gf):
+	 * - uint32_t acpi_error_node_device
+	 * - uint32_t processor_affinity
+	 * - uint64_t error_group_register_base
+	 * - uint64_t fault_injection_register_base
+	 * - uint64_t interrupt_config_register_base
+	 */
 } __attribute__ ((packed)) fwts_acpi_table_aest_interface;
 
 typedef struct {
@@ -2713,8 +2732,7 @@ typedef struct {
 	uint16_t	reserved;
 	uint8_t		interrupt_flags;
 	uint32_t	interrupt_gsiv;
-	uint8_t		id;
-	uint8_t		reserved1[3];
+	uint32_t	reserved1;		/* Was 'id' in V1, now reserved in V2 */
 } __attribute__ ((packed)) fwts_acpi_table_aest_interrupt;
 
 /*

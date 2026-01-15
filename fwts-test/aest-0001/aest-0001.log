@@ -11,7 +11,7 @@ aest                Offset to Node Interface:       0x00000044
 aest                Offset to Node Interrupt Array: 0x00000074
 aest                Node Interrupt Array Size:      0x00000001
 aest                Timestamp Rate:                 0x0123456789abcdef
-aest                Reserved1:                      0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
 aest                Error Injection Countdown Rate: 0x0000000000000000
 aest                Node-specific data (Processor):
 aest                ACPI Processor ID:              0x0000fecd
@@ -24,21 +24,29 @@ aest                Cache Reference:                0x22223333
 aest                Reserved:                       0x00000000
 aest                Interface:
 aest                Interface Type:                 0x01
-aest                Reserved:                       0x00000000
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
 aest                Flags:                          0x00000002
 aest                Base Address:                   0x0123456789abcdef
 aest                Start Error Record Index:       0x00000000
 aest                Number Of Error Records:        0x00000001
-aest                Error Record Implemented:       0x0000000000000001
-aest                Status Reporting Supported:     0x0000000000000000
-aest                Addressing Mode:                0x0000000001111111
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  11 11 11 01 00 00 00 00 
+aest                ACPI Error Node Device:         0x10000001
+aest                Processor Affinity:             0x20000001
+aest                Error Group Register Base:      0x3000000000000001
+aest                Fault Injection Register Base:  0x4000000000000001
+aest                Interrupt Config Register Base: 0x5000000000000001
 aest                Interrupt Array
 aest                Interrupt Type:                 0x01
 aest                Reserved:                       0x0000
 aest                Interrupt Flags:                0x00
 aest                Interrupt GSIV:                 0x78abcdef
-aest                ID:                             0x56
-aest                Reserved1:                      0x00000000
+aest                Reserved:                      0x00000000
 aest            
 aest              AEST node structure:
 aest                Type:                           0x00
@@ -49,7 +57,7 @@ aest                Offset to Node Interface:       0x00000044
 aest                Offset to Node Interrupt Array: 0x00000000
 aest                Node Interrupt Array Size:      0x00000000
 aest                Timestamp Rate:                 0x0123456789abcdef
-aest                Reserved1:                      0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
 aest                Error Injection Countdown Rate: 0x0000000000000000
 aest                Node-specific data (Processor):
 aest                ACPI Processor ID:              0x00001111
@@ -62,14 +70,23 @@ aest                TLB Reference:                  0x67676767
 aest                Reserved:                       0x00000000
 aest                Interface:
 aest                Interface Type:                 0x00
-aest                Reserved:                       0x00000000
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
 aest                Flags:                          0x00000003
 aest                Base Address:                   0x0123456789abcdef
 aest                Start Error Record Index:       0x00000000
 aest                Number Of Error Records:        0x00000001
-aest                Error Record Implemented:       0x0000000000000001
-aest                Status Reporting Supported:     0x0000000000000000
-aest                Addressing Mode:                0x0000000001111111
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  02 00 00 10 02 00 00 20 
+aest                ACPI Error Node Device:         0x00000002
+aest                Processor Affinity:             0x30000000
+aest                Error Group Register Base:      0x4000000000000002
+aest                Fault Injection Register Base:  0x5000000000000002
+aest                Interrupt Config Register Base: 0x0000000001111111
 aest            
 aest              AEST node structure:
 aest                Type:                           0x01
@@ -80,20 +97,29 @@ aest                Offset to Node Interface:       0x00000030
 aest                Offset to Node Interrupt Array: 0x00000000
 aest                Node Interrupt Array Size:      0x00000000
 aest                Timestamp Rate:                 0x0000000000000000
-aest                Reserved1:                      0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
 aest                Error Injection Countdown Rate: 0x0123456789abcdef
 aest                Node-specific data (Memory Controller):
 aest                Proximity Domain:               0x0000aaaa
 aest                Interface:
 aest                Interface Type:                 0x01
-aest                Reserved:                       0x00000000
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
 aest                Flags:                          0x00000001
 aest                Base Address:                   0x0123456789abcdef
 aest                Start Error Record Index:       0x00000000
 aest                Number Of Error Records:        0x00000001
-aest                Error Record Implemented:       0x0000000000000001
-aest                Status Reporting Supported:     0x0000000000000000
-aest                Addressing Mode:                0x0000000001111111
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  11 11 11 01 03 00 00 10 
+aest                ACPI Error Node Device:         0x20000003
+aest                Processor Affinity:             0x00000003
+aest                Error Group Register Base:      0x0000000330000000
+aest                Fault Injection Register Base:  0x0000000340000000
+aest                Interrupt Config Register Base: 0x0000000050000000
 aest            
 aest              AEST node structure:
 aest                Type:                           0x02
@@ -104,21 +130,30 @@ aest                Offset to Node Interface:       0x00000034
 aest                Offset to Node Interrupt Array: 0x00000000
 aest                Node Interrupt Array Size:      0x00000000
 aest                Timestamp Rate:                 0x0000000000000000
-aest                Reserved1:                      0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
 aest                Error Injection Countdown Rate: 0x0123456789abcdef
 aest                Node-specific data (SMMU):
 aest                IORT Node Reference:            0x55555555
 aest                SMMU-specific Data Subcomponent Reference: 0x66666666
 aest                Interface:
 aest                Interface Type:                 0x01
-aest                Reserved:                       0x00000000
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
 aest                Flags:                          0x00000003
 aest                Base Address:                   0x0123456789abcdef
 aest                Start Error Record Index:       0x00000000
 aest                Number Of Error Records:        0x00000001
-aest                Error Record Implemented:       0x0000000000000001
-aest                Status Reporting Supported:     0x0000000000000000
-aest                Addressing Mode:                0x0000000001111111
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  11 11 11 01 04 00 00 10 
+aest                ACPI Error Node Device:         0x20000004
+aest                Processor Affinity:             0x00000004
+aest                Error Group Register Base:      0x0000000430000000
+aest                Fault Injection Register Base:  0x0000000440000000
+aest                Interrupt Config Register Base: 0x0000000050000000
 aest            
 aest              AEST node structure:
 aest                Type:                           0x03
@@ -129,23 +164,32 @@ aest                Offset to Node Interface:       0x00000044
 aest                Offset to Node Interrupt Array: 0x00000000
 aest                Node Interrupt Array Size:      0x00000000
 aest                Timestamp Rate:                 0x0000000000000000
-aest                Reserved1:                      0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
 aest                Error Injection Countdown Rate: 0x0123456789abcdef
 aest                Node-specific data (Vendor-defined):
-aest                Hardware ID:                        0x33333333
-aest                SMMU-specific Data Subcomponent Reference: 0x44444444
+aest                Hardware ID:                    0x33333333
+aest                Unique ID:                      0x44444444
 aest                Vendor-specific data:
 aest                  12 23 34 45 56 67 78 89 9A AB BC CD DE EF FF 55 
 aest                Interface:
 aest                Interface Type:                 0x01
-aest                Reserved:                       0x00000000
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
 aest                Flags:                          0x00000002
 aest                Base Address:                   0x0123456789abcdef
 aest                Start Error Record Index:       0x00000000
 aest                Number Of Error Records:        0x00000001
-aest                Error Record Implemented:       0x0000000000000001
-aest                Status Reporting Supported:     0x0000000000000000
-aest                Addressing Mode:                0x0000000001111111
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  11 11 11 01 05 00 00 10 
+aest                ACPI Error Node Device:         0x20000005
+aest                Processor Affinity:             0x00000005
+aest                Error Group Register Base:      0x0000000530000000
+aest                Fault Injection Register Base:  0x0000000540000000
+aest                Interrupt Config Register Base: 0x0000000050000000
 aest            
 aest              AEST node structure:
 aest                Type:                           0x04
@@ -156,35 +200,108 @@ aest                Offset to Node Interface:       0x00000034
 aest                Offset to Node Interrupt Array: 0x00000064
 aest                Node Interrupt Array Size:      0x00000002
 aest                Timestamp Rate:                 0x0000000000000000
-aest                Reserved1:                      0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
 aest                Error Injection Countdown Rate: 0x0123456789abcdef
 aest                Node-specific data (GIC):
 aest                Interface Type:                 0x00000003
 aest                Instance Identifier:            0x77778888
 aest                Interface:
 aest                Interface Type:                 0x00
-aest                Reserved:                       0x00000000
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
 aest                Flags:                          0x00000003
 aest                Base Address:                   0x0123456789abcdef
 aest                Start Error Record Index:       0x00000000
 aest                Number Of Error Records:        0x00000001
-aest                Error Record Implemented:       0x0000000000000001
-aest                Status Reporting Supported:     0x0000000000000000
-aest                Addressing Mode:                0x0000000001111111
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  11 11 11 01 06 00 00 10 
+aest                ACPI Error Node Device:         0x20000006
+aest                Processor Affinity:             0x00000006
+aest                Error Group Register Base:      0x0000000630000000
+aest                Fault Injection Register Base:  0x0000000640000000
+aest                Interrupt Config Register Base: 0x0000000050000000
 aest                Interrupt Array
 aest                Interrupt Type:                 0x00
 aest                Reserved:                       0x0000
 aest                Interrupt Flags:                0x00
 aest                Interrupt GSIV:                 0xaaaabbbb
-aest                ID:                             0xcc
-aest                Reserved1:                      0x00000000
+aest                Reserved:                      0x00000000
 aest                Interrupt Array
 aest                Interrupt Type:                 0x01
 aest                Reserved:                       0x0000
 aest                Interrupt Flags:                0x01
 aest                Interrupt GSIV:                 0x78abcdef
-aest                ID:                             0x56
-aest                Reserved1:                      0x00000000
+aest                Reserved:                      0x00000000
+aest            
+aest              AEST node structure:
+aest                Type:                           0x05
+aest                Length:                         0x0060
+aest                Reserved:                       0x00
+aest                Offset to Node-specific data:   0x0000002c
+aest                Offset to Node Interface:       0x00000030
+aest                Offset to Node Interrupt Array: 0x00000000
+aest                Node Interrupt Array Size:      0x00000000
+aest                Timestamp Rate:                 0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
+aest                Error Injection Countdown Rate: 0x0000000000000000
+aest                Node-specific data (PCIe Root Complex):
+aest                IORT Node Reference:            0x66778899
+aest                Interface:
+aest                Interface Type:                 0x01
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
+aest                Flags:                          0x00000001
+aest                Base Address:                   0x0123456789abcdef
+aest                Start Error Record Index:       0x00000000
+aest                Number Of Error Records:        0x00000001
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  00 00 00 00 00 00 00 00 
+aest                ACPI Error Node Device:         0x10000007
+aest                Processor Affinity:             0x20000007
+aest                Error Group Register Base:      0x3000000000000007
+aest                Fault Injection Register Base:  0x4000000000000007
+aest                Interrupt Config Register Base: 0x5000000000000007
+aest            
+aest              AEST node structure:
+aest                Type:                           0x06
+aest                Length:                         0x0064
+aest                Reserved:                       0x00
+aest                Offset to Node-specific data:   0x0000002c
+aest                Offset to Node Interface:       0x00000034
+aest                Offset to Node Interrupt Array: 0x00000000
+aest                Node Interrupt Array Size:      0x00000000
+aest                Timestamp Rate:                 0x0000000000000000
+aest                Timebase Offset:                0x0000000000000000
+aest                Error Injection Countdown Rate: 0x0000000000000000
+aest                Node-specific data (Proxy):
+aest                Node Address:                   0x8877665544332211
+aest                Interface:
+aest                Interface Type:                 0x01
+aest                Group Format:                   0x00
+aest                Reserved:                       0x0000
+aest                Flags:                          0x00000001
+aest                Base Address:                   0xfedcba9876543210
+aest                Start Error Record Index:       0x00000000
+aest                Number Of Error Records:        0x00000001
+aest                Error Record Implemented:
+aest                  01 00 00 00 00 00 00 00 
+aest                Status Reporting Supported:
+aest                  00 00 00 00 00 00 00 00 
+aest                Addressing Mode:
+aest                  00 00 00 00 00 00 00 00 
+aest                ACPI Error Node Device:         0x10000008
+aest                Processor Affinity:             0x20000008
+aest                Error Group Register Base:      0x3000000000000008
+aest                Fault Injection Register Base:  0x4000000000000008
+aest                Interrupt Config Register Base: 0x5000000000000008
 aest            
 aest            PASSED: Test 1, No issues found in AEST table.
 aest            

@@ -10,7 +10,6 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include			\
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
-	-I$(top_srcdir)/efi_runtime			\
 	-I$(top_srcdir)/smccc_test			\
 	-pthread					\
 	-Wall -Werror -Wextra				\

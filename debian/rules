@@ -7,12 +7,9 @@ DEBVERS := $(shell dpkg-parsechangelog | grep ^Version: | cut -d' ' -f2 \
 
 VERSION := $(shell echo '$(DEBVERS)' | sed -e 's/[+-].*//' -e 's/~//g')
 
-DKMS_EFI_RUNTIME_SRC_DIR := $(CURDIR)/debian/fwts-efi-runtime-dkms/usr/src/fwts-efi-runtime-dkms-$(VERSION)
 DKMS_SMCCC_SRC_DIR := $(CURDIR)/debian/fwts-smccc-dkms/usr/src/fwts-smccc-dkms-$(VERSION)
 
 override_dh_auto_install:
-	install -d $(DKMS_EFI_RUNTIME_SRC_DIR)
-	cp -a efi_runtime/* $(DKMS_EFI_RUNTIME_SRC_DIR)
 	install -d $(DKMS_SMCCC_SRC_DIR)
 	cp -a smccc_test/* $(DKMS_SMCCC_SRC_DIR)
 	dh_auto_install

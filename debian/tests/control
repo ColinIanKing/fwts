@@ -1,3 +1,0 @@
-Test-Command: [ -e /lib/modules/$(uname -r)/updates/dkms/efi_runtime.ko ] && /usr/lib/dkms/dkms-autopkgtest || true
-Restrictions: needs-root, allow-stderr
-Depends: dkms

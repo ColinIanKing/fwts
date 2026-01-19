@@ -1,0 +1,3 @@
+Test-Command: [ -e /lib/modules/$(uname -r)/updates/smccc_test.ko ] && /usr/lib/dkms/dkms-autopkgtest || true
+Restrictions: needs-root, allow-stderr
+Depends: dkms

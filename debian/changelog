@@ -1,3 +1,25 @@
+fwts (26.01.00-0ubuntu1) resolute; urgency=medium
+
+  [Ignacio Hernandez]
+  * Apicedge tests fail on systems with large number of CPUs
+
+  [Ivan Hu]
+  * libfwtsacpica: guard AcpiOsDeleteSemaphore against stale handles
+  * acpi: apmt: fix typo in APMTNodeTypeUnknown
+  * autobrightness: Drop test2 that checks actual_brightness
+  * ACPICA: Update to version 20251212
+  * Update copyright year to 2026
+  * acpi: rhct: fix typo in error message
+  * acpi: method: fix the LPI packages check and some typos
+  * doc: update contributors, date and spelling mistake to the manual
+  * bios: smm: skip lock checks if IGD is not present
+  * acpi: aest: update the aest tests for the specification 2.0
+  * fwts-test: sync up for aest update to 2.0
+  * efi_runtime: remove efi_runtime dkms
+  * debian/tests: only run smccc dkms test when dkms module is run
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 22 Jan 2026 11:07:22 +0800
+
 fwts (25.11.00-0ubuntu1) resolute; urgency=medium
 
   [Al Korv]

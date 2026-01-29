@@ -45,4 +45,10 @@ struct smccc_test_arg {
         _IOWR('p', 0x07, struct smccc_test_arg)
 #define SMCCC_TEST_ARCH_SOC_ID \
         _IOWR('p', 0x08, struct smccc_test_arg)
+#define SMCCC_TEST_PSCI_VERSION \
+        _IOWR('p', 0x09, struct smccc_test_arg)
+#define SMCCC_TEST_PSCI_FEATURES \
+        _IOWR('p', 0x0A, struct smccc_test_arg)
+#define SMCCC_TEST_AFFINITY_INFO \
+        _IOWR('p', 0x0B, struct smccc_test_arg)
 #endif

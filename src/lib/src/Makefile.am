@@ -21,6 +21,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/libfwtsiasl			\
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
+	-I$(top_srcdir)/smccc_test                      \
 	-DDATAROOTDIR=\"$(datarootdir)\"		\
 	-Wall -Werror -Wextra				\
 	-Wno-address-of-packed-member
@@ -107,6 +108,7 @@ libfwts_la_SOURCES = 		\
 	fwts_scan_efi_systab.c 	\
 	fwts_set.c 		\
 	fwts_smbios.c 		\
+	fwts_smccc.c 		\
 	fwts_stringextras.c 	\
 	fwts_summary.c 		\
 	fwts_text_list.c 	\

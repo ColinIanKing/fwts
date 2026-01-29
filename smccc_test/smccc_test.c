@@ -85,6 +85,18 @@ MODULE_LICENSE("GPL");
 #define SMCCC_ARCH_SOC_ID	0x80000002
 #endif
 
+#ifndef PSCI_VERSION
+#define PSCI_VERSION	0x84000000
+#endif
+
+#ifndef PSCI_FEATURES
+#define PSCI_FEATURES	0x8400000A
+#endif
+
+#ifndef AFFINITY_INFO
+#define AFFINITY_INFO	0x84000004
+#endif
+
 /*
  *  smccc_test_copy_to_user()
  *	copy arm_res a* registers to user space test_arg w array
@@ -199,6 +211,51 @@ static long smccc_test_arch_soc_id(unsigned long arg)
 	return smccc_test_copy_to_user(arg, &arm_res, conduit);
 }
 
+static long smccc_test_psci_version(unsigned long arg)
+{
+	struct arm_smccc_res arm_res = { };
+	struct smccc_test_arg test_arg;
+	int ret, conduit;
+
+	ret = smccc_test_copy_from_user(&test_arg, arg);
+	if (ret)
+		return ret;
+
+	conduit = arm_smccc_1_1_invoke(PSCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &arm_res);
+
+	return smccc_test_copy_to_user(arg, &arm_res, conduit);
+}
+
+static long smccc_test_psci_features(unsigned long arg)
+{
+	struct arm_smccc_res arm_res = { };
+	struct smccc_test_arg test_arg;
+	int ret, conduit;
+
+	ret = smccc_test_copy_from_user(&test_arg, arg);
+	if (ret)
+		return ret;
+
+	conduit = arm_smccc_1_1_invoke(PSCI_FEATURES, test_arg.w[1], 0, 0, 0, 0, 0, 0, &arm_res);
+
+	return smccc_test_copy_to_user(arg, &arm_res, conduit);
+}
+
+static long smccc_test_affinity_info(unsigned long arg)
+{
+	struct arm_smccc_res arm_res = { };
+	struct smccc_test_arg test_arg;
+	int ret, conduit;
+
+	ret = smccc_test_copy_from_user(&test_arg, arg);
+	if (ret)
+		return ret;
+
+	conduit = arm_smccc_1_1_invoke(AFFINITY_INFO, test_arg.w[1], test_arg.w[2], 0, 0, 0, 0, 0, &arm_res);
+
+	return smccc_test_copy_to_user(arg, &arm_res, conduit);
+}
+
 static long smccc_test_ioctl(struct file *file, unsigned int cmd,
 			     unsigned long arg)
 {
@@ -229,6 +286,12 @@ static long smccc_test_ioctl(struct file *file, unsigned int cmd,
 		return smccc_test_arch_features(arg);
 	case SMCCC_TEST_ARCH_SOC_ID:
 		return smccc_test_arch_soc_id(arg);
+	case SMCCC_TEST_PSCI_VERSION:
+		return smccc_test_psci_version(arg);
+	case SMCCC_TEST_PSCI_FEATURES:
+		return smccc_test_psci_features(arg);
+	case SMCCC_TEST_AFFINITY_INFO:
+		return smccc_test_affinity_info(arg);
 	default:
 		break;
 	}

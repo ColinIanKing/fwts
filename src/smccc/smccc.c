@@ -31,18 +31,12 @@
 #include <fcntl.h>
 
 #include "smccc_test.h"
+#include "fwts_smccc.h"
 
 /*
  * ARM SMCCC tests,
  *   https://developer.arm.com/documentation/den0115/latest
  */
-
-/* SMCCC conduit types */
-enum {
-	FWTS_SMCCC_CONDUIT_NONE,
-	FWTS_SMCCC_CONDUIT_SMC,
-	FWTS_SMCCC_CONDUIT_HVC,
-};
 
 /* SMCCC API function ids */
 #define PCI_VERSION	 (0x84000130)
@@ -81,11 +75,6 @@ static pci_func_id_t pci_func_ids[] = {
 	{ PCI_GET_SEG_INFO,	"PCI_GET_SEG_INFO",	false },
 };
 
-static const char *module_name = "smccc_test";
-static const char *dev_name = "/dev/smccc_test";
-static bool module_loaded;
-static int smccc_fd = -1;
-
 typedef struct {
 	const uint32_t	SMCCC_func_id;
 	const char	*SMCCC_func_id_name;
@@ -102,81 +91,6 @@ static SMCCC_func_id_t SMCCC_func_id_list[] = {
 
 static uint16_t smccc_major_version = 0;
 static uint16_t smccc_minor_version = 0;
-
-static int smccc_init(fwts_framework *fw)
-{
-	if (fwts_module_load(fw, module_name) != FWTS_OK) {
-		module_loaded = false;
-		smccc_fd = -1;
-		return FWTS_ERROR;
-	}
-
-	smccc_fd = open(dev_name, O_RDWR);
-	if (smccc_fd < 0) {
-		smccc_fd = -1;
-		fwts_log_error(fw, "Cannot open %s, errno=%d (%s)\n",
-			dev_name, errno, strerror(errno));
-	}
-
-	return FWTS_OK;
-}
-
-static int smccc_deinit(fwts_framework *fw)
-{
-	if (smccc_fd >= 0) {
-		close(smccc_fd);
-		smccc_fd = -1;
-	}
-
-	if (module_loaded && fwts_module_unload(fw, module_name) != FWTS_OK)
-		return FWTS_ERROR;
-
-	module_loaded = true;
-
-	return FWTS_OK;
-}
-
-/*
- *  smccc_pci_conduit_name()
- *	map the conduit number to human readable string
- */
-static char *smccc_pci_conduit_name(struct smccc_test_arg *arg)
-{
-	static char unknown[32];
-
-	switch (arg->conduit) {
-	case FWTS_SMCCC_CONDUIT_NONE:
-		return "SMCCC_CONDUIT_NONE";
-	case FWTS_SMCCC_CONDUIT_HVC:
-		return "SMCCC_CONDUIT_HVC";
-	case FWTS_SMCCC_CONDUIT_SMC:
-		return "SMCCC_CONDUIT_SMC";
-	default:
-		break;
-	}
-
-	snprintf(unknown, sizeof(unknown), "Unknown: 0x%x", arg->conduit);
-	return unknown;
-}
-
-/*
- *  smccc_pci_conduit_check()
- *	check if conduit number is valid
- */
-static int smccc_pci_conduit_check(fwts_framework *fw, struct smccc_test_arg *arg)
-{
-	switch (arg->conduit) {
-	case FWTS_SMCCC_CONDUIT_HVC:
-		return FWTS_OK;
-	case FWTS_SMCCC_CONDUIT_SMC:
-		return FWTS_OK;
-	default:
-		fwts_log_error(fw, "Invalid SMCCC conduit used: %s\n",
-			       smccc_pci_conduit_name(arg));
-		return FWTS_ERROR;
-	}
-	return FWTS_OK;
-}
 
 /*
  *  smccc_pci_func_implemented()

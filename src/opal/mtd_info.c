@@ -169,7 +169,7 @@ static int mtd_info_test1(fwts_framework *fw)
 	char fdt_node_path[PATH_MAX + 1];
 	int count, i, fd;
 	ssize_t bytes = 0, bytes_read = 0;
-	struct dirent **namelist;
+	struct dirent **namelist = NULL;
 
 	fd = open(FDT_FLASH_PATH, O_RDONLY);
 	if (fd < 0) {

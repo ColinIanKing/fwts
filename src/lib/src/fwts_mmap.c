@@ -61,6 +61,10 @@ void *fwts_mmap(const off_t start, const size_t size)
 	offset = ((size_t)start) & (page_size - 1);
 	length = (size_t)size + offset;
 
+	/* check for unlikely start - offset underflows */
+	if (offset >= start)
+		return ret;
+
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0)
 		return ret;
 

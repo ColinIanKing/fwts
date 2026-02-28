@@ -824,7 +824,7 @@ static int fwts_acpi_load_tables_from_file_generic(
 	const char *extension,
 	int *count)
 {
-	struct dirent **dir_entries;
+	struct dirent **dir_entries = NULL;
 	int i, n;
 
 	*count = 0;

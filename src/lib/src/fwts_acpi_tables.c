@@ -1648,9 +1648,9 @@ void fwts_acpi_space_id(
 	fwts_framework *fw,
 	const char *table,
 	const char *field,
-	bool *passed,
 	const uint8_t actual,
 	const uint8_t num_type,
+	bool *passed,
 	...)
 {
 	bool matched = false;
@@ -1664,7 +1664,7 @@ void fwts_acpi_space_id(
 	strncpy(label + 4, "BadAddressSpaceId", sizeof(label) - 4);
 	memset(must_be_id, 0, sizeof(must_be_id));
 
-	va_start(ap, num_type);
+	va_start(ap, passed);
 	for (i = 0; i < num_type; i++) {
 		const char *id_name;
 

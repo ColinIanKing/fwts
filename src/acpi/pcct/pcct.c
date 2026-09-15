@@ -58,7 +58,7 @@ static void gas_messages(
 	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
 
 	snprintf(label, sizeof(label), "Subspace Type % " PRId8, type);
-	fwts_acpi_space_id(fw, "PCCT", label, passed, gas->address_space_id, 3,
+	fwts_acpi_space_id(fw, "PCCT", label, gas->address_space_id, 3, passed,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
 			   FWTS_GAS_ADDR_SPACE_ID_FFH);
@@ -79,7 +79,7 @@ static void gas_messages2(
 	fwts_log_info_simp_int(fw, "      Address                    ", gas->address);
 
 	snprintf(label, sizeof(label), "Subspace Type % " PRId8, type);
-	fwts_acpi_space_id(fw, "PCCT", label, passed, gas->address_space_id, 2,
+	fwts_acpi_space_id(fw, "PCCT", label, gas->address_space_id, 2, passed,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 }
 

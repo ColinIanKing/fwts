@@ -87,8 +87,8 @@ bool fwts_acpi_structure_range(fwts_framework *fw, const char *table, const uint
 	const uint32_t offset);
 void fwts_acpi_fixed_value(fwts_framework *fw, const fwts_log_level level, const char *table,
 	const char *field, const uint8_t actual, const uint8_t must_be, bool *passed);
-void fwts_acpi_space_id(fwts_framework *fw, const char *table, const char *field, bool *passed,
-	const uint8_t actual, const uint8_t num_type, ...);
+void fwts_acpi_space_id(fwts_framework *fw, const char *table, const char *field,
+	const uint8_t actual, const uint8_t num_type, bool *passed, ...);
 
 uint32_t fwts_get_acpi_version(fwts_framework *fw);
 void fwts_get_fadt_version(fwts_framework *fw, uint8_t *major, uint8_t *minor);

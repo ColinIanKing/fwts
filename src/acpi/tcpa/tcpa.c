@@ -100,13 +100,13 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 		}
 	}
 
-	fwts_acpi_space_id(fw, "TCPA", "Base Address", &passed,
-			   tcpa->server.base_addr.address_space_id, 2,
+	fwts_acpi_space_id(fw, "TCPA", "Base Address",
+			   tcpa->server.base_addr.address_space_id, 2, &passed,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
-	fwts_acpi_space_id(fw, "TCPA", "Configuration Address", &passed,
-			   tcpa->server.config_addr.address_space_id, 2,
+	fwts_acpi_space_id(fw, "TCPA", "Configuration Address",
+			   tcpa->server.config_addr.address_space_id, 2, &passed,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 

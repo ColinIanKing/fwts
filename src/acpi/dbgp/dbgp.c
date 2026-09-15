@@ -90,8 +90,8 @@ static int dbgp_test1(fwts_framework *fw)
 			"DBGP Base Address Bit Width is zero.");
 	}
 
-	fwts_acpi_space_id(fw, "DBGP", "Base Address", &passed,
-			   dbgp->base_address.address_space_id, 7,
+	fwts_acpi_space_id(fw, "DBGP", "Base Address",
+			   dbgp->base_address.address_space_id, 7, &passed,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
 			   FWTS_GAS_ADDR_SPACE_ID_PCI_CONFIG,

@@ -112,7 +112,7 @@ static int einj_test1(fwts_framework *fw)
 		}
 
 		fwts_acpi_reserved_zero("EINJ", "Reserved", entry->reserved, &passed);
-		fwts_acpi_space_id(fw, "EINJ", "Register Region", &passed, gas.address_space_id, 2,
+		fwts_acpi_space_id(fw, "EINJ", "Register Region", gas.address_space_id, 2, &passed,
 				   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY, FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO);
 
 		fwts_log_nl(fw);

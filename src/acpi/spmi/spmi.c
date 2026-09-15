@@ -124,7 +124,7 @@ static int spmi_test1(fwts_framework *fw)
 	}
 
 	/* Base address must be one of 3 types, System Memory, System I/O or SMBUS */
-	fwts_acpi_space_id(fw, "SPMI", "Base Address", &passed, spmi->base_address.address_space_id, 3,
+	fwts_acpi_space_id(fw, "SPMI", "Base Address", spmi->base_address.address_space_id, 3, &passed,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
 			   FWTS_GAS_ADDR_SPACE_ID_SMBUS);
@@ -138,8 +138,8 @@ static int spmi_test1(fwts_framework *fw)
          */
 	if (spmi->interface_type == 0x04) {
 
-		fwts_acpi_space_id(fw, "SPMI", "Base Address for SSIF", &passed,
-				   spmi->base_address.address_space_id, 1,
+		fwts_acpi_space_id(fw, "SPMI", "Base Address for SSIF",
+				   spmi->base_address.address_space_id, 1, &passed,
 				   FWTS_GAS_ADDR_SPACE_ID_SMBUS);
 
 		if (spmi->base_address.address & ~0x7f) {

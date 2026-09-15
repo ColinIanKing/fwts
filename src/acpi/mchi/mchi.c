@@ -122,7 +122,7 @@ static int mchi_test1(fwts_framework *fw)
 			mchi->global_system_interrupt);
 	}
 
-	fwts_acpi_space_id(fw, "MCHI", "Base Address", &passed, mchi->base_address.address_space_id, 3,
+	fwts_acpi_space_id(fw, "MCHI", "Base Address", mchi->base_address.address_space_id, 3, &passed,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY,
 			   FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO,
 			   FWTS_GAS_ADDR_SPACE_ID_SMBUS);

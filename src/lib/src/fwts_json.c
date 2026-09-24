@@ -810,6 +810,8 @@ static inline int char_escape(const int ch)
 		return 'r';
 	case '\t':
 		return 't';
+	case '\\':
+        return '\\';
 	default:
 		break;
 	}

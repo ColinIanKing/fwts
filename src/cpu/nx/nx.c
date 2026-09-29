@@ -69,8 +69,7 @@ static int nx_test1(fwts_framework *fw)
 		fwts_advice(fw,
 			"The system cannot use the protection features provided by NX because "
 			"the BIOS is configured to disable this capability. Please ensure this "
-			"is enabled in the BIOS. For more information please consult "
-			"https://wiki.ubuntu.com/Security/CPUFeatures");
+			"is enabled in the BIOS.");
 	} else
 		fwts_passed(fw,
 			"The CPU is family %d, model %d and does not have NX capabilities.",

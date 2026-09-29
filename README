@@ -280,10 +280,10 @@ fwts git repository:
 	https://code.launchpad.net/~firmware-testing-team/fwts/+git/fwts
 
 fwts reference guide:
-	https://wiki.ubuntu.com/FirmwareTestSuite/Reference
+	https://github.com/fwts/fwts/wiki/Reference
 
 fwts LiveCD:
-	http://fwts.ubuntu.com/fwts-live/
+	https://github.com/fwts/fwts-live
 
 fwts-devel mailing list:
 	fwts-devel@lists.ubuntu.com

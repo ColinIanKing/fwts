@@ -1,3 +1,33 @@
+fwts (26.09.00-0ubuntu1) stonking; urgency=medium
+
+  [Ivan Hu]
+  * snapcraft: migrate base from core20 to core24
+  * sbbr: fadt: fix wrong field logged for non-zero SCI_INT
+  * dmicheck: update for supporting DMI version to 3.9.0
+  * dmicheck: fix buffer over-reads in Type 3, Type 9 and Type 17 checks
+  * dmicheck: fix incorrect field validation for several SMBIOS types
+  * acpi: ecdt: Validate EC_DATA address space using ec_data
+  * Update project links to GitHub
+
+  [Manuel Traut]
+  * Add missing parts of license text
+
+  [Thomas Huth]
+  * Replace the obsolete address of the FSF with an URL
+  * lib: fwts_acpi_tables: Fix compiler warning reported by Clang
+
+  [Xiang W]
+  * fwts: framework: Add --brs-i option for RISC-V BRS-I compliance testing
+  * brs-i: rsdp: Add riscv-brs ACPI_010 check
+  * brs-i: fadt: Add riscv-brs ACPI_020 check
+  * brs-i: pptt: Add riscv-brs ACPI_030 check
+  * dmi: dmicheck: Add RISC-V BRS-I SMBIOS structure requirements
+
+  [Zhongning Li]
+  * lib: fwts_json: escape backslash in JSON string output
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 29 Sep 2026 14:35:01 +0000
+
 fwts (26.07.00-0ubuntu1) stonking; urgency=medium
 
   [Dat Mach]
